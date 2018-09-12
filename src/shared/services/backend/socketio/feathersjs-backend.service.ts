@@ -12,7 +12,6 @@ import { BackendConfigClass } from './backend-config.class';
 @Injectable({
   providedIn: 'root'
 })
-
 export class FeathersjsBackendService extends BackendService {
 
   private feathers: feathersClient.Application = null;

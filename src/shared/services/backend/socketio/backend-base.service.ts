@@ -17,9 +17,9 @@ export abstract class BackendServiceConnectionState {
  * Common backend socket IO service base class
  */
 export abstract class BackendService {
+  protected config: BackendConfigClass;
   protected connectionState: BackendServiceConnectionState;
   public connectionState$: BehaviorSubject<BackendServiceConnectionState>; // Service connection state observable
-  protected config: BackendConfigClass;
   protected socketio: socketio.Socket = null;
 
   /**
