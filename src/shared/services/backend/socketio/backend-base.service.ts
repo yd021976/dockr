@@ -2,16 +2,7 @@ import { BehaviorSubject } from 'rxjs';
 import * as socketio from 'socket.io-client';
 
 import { BackendConfigClass } from './backend-config.class';
-
-/**
- * Connection state class
- */
-export abstract class BackendServiceConnectionState {
-  public isConnected?: boolean;
-  public attemptNumber?: number;
-  public connectionError?: any;
-  public user?: any;
-}
+import { BackendServiceConnectionState } from '../../../models/backend-service-connection-state.model';
 
 /**
  * Common backend socket IO service base class

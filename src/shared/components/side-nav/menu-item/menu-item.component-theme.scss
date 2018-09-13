@@ -1,0 +1,144 @@
+/*
+    USE THIS STYLE SHEET AS GLOBAL ONLY ==> Used in "sidenav" component SCSS
+    Because of "view encapsulation" and we want avoid "::ng-deep" scss property (deprecated)
+*/
+
+// left border color
+@mixin border-left($border-color) {
+    border-left-color: $border-color;
+    border-left-style: solid;
+    border-left-width: 3px;
+}
+
+/*
+                        COLOR THEMING
+    Define a mixin that accepts a theme and outputs the color styles for the component.
+*/
+
+@mixin menu-item-component-colors($theme) {
+    app-menu-item {
+        a:focus {
+            outline: none;
+        }
+        .mat-expansion-panel {
+            background-color: background-color($theme);
+            &.mat-expanded {
+                background-color: background-color-expanded($theme);
+            }
+            .mat-expansion-panel-header:not(.mat-expanded) {
+                @include border-left(background-color($theme));
+            } // second level item in accordion
+            .mat-expansion-panel {
+                background-color: background-color-expanded($theme);
+            }
+        } // header text colors and styles
+        .mat-expansion-panel-header {
+            .mat-expansion-panel-header-title {
+                color: text-color($theme);
+            }
+            &.mat-expanded,
+                {
+                .mat-expansion-panel-header-title {
+                    color: text-color-expanded($theme);
+                }
+            }
+        }
+        a.child-menu-item-link {
+            color: text-color($theme);
+            &.linkActive {
+                color: text-color-linkactive($theme);
+            }
+        }
+    }
+    /*
+        Set background color for first level item selected
+    */
+    app-menu-item {
+        .mat-expansion-panel.mat-expanded {
+            .mat-expansion-panel-header {
+                background-color: background-color-hover($theme);
+                @include border-left(accent($theme));
+            }
+            .mat-expansion-panel {
+                .mat-expansion-panel-header {
+                    background-color: inherit;
+                    @include border-left(background-color-expanded($theme));
+                }
+            }
+        }
+    }
+    /*
+        Hover colors
+    */
+    app-menu-item {
+        // first level item hover color
+        .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header {
+            &:not([aria-disabled='true']) {
+                &.cdk-keyboard-focused,
+                &.cdk-program-focused,
+                &:hover {
+                    background: background-color-hover($theme);
+                    @include border-left(accent($theme));
+                    .mat-expansion-panel-header-title {
+                        color: text-color-hover($theme);
+                    }
+                }
+            }
+        } // no hover color for sub items
+        .mat-expansion-panel .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header {
+            &:not([aria-disabled='true']) {
+                &.cdk-keyboard-focused,
+                &.cdk-program-focused,
+                &:hover {
+                    background: none;
+                    @include border-left(background-color-expanded($theme));
+                }
+            }
+        }
+        .mat-expansion-panel a.child-menu-item-link:not(.linkActive) {
+            &:hover {
+                color: text-color-hover($theme);
+            }
+        }
+    }
+}
+
+/*
+            STRUCTURAL STYLES
+*/
+
+@mixin menu-item-component-structure($theme) {
+    app-menu-item {
+        // Set panel body with no padding to avoid children to be indented
+        .mat-expansion-panel-body {
+            padding: 0;
+            /* first level */
+            .mat-expansion-panel {
+                .mat-expansion-panel-header {
+                    padding-left: 5px;
+                }
+                a {
+                    padding-left: 34px;
+                }
+                /* second level */
+                .mat-expansion-panel {
+                    .mat-expansion-panel-header {
+                        padding-left: 31px;
+                    }
+                    a {
+                        padding-left: 60px;
+                    }
+                    /* third level */
+                    .mat-expansion-panel {
+                        .mat-expansion-panel-header {
+                            padding-left: 62px;
+                        }
+                        a {
+                            padding-left: 102px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

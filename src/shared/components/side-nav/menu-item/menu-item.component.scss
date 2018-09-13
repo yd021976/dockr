@@ -1,0 +1,88 @@
+@import '../side-nav-component-theme-core.scss';
+
+/*
+            Root menu item styles
+*/
+
+.root-item-panel-body {
+    margin-left: 0px;
+    .root-item-panel-body {
+        margin-left: 0px;
+    }
+}
+
+// Header block
+.header-title {
+    display: inline-block;
+    height: 24px;
+}
+
+//Icon style
+.header-title-icon {
+    padding-right: 4px;
+    vertical-align: middle;
+    font-size: $icon-size-first-level;
+}
+
+// Header description
+.header-title-description {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+// First menu level icon size
+:host .mat-icon {
+    height: $icon-size-first-level;
+    width: $icon-size-first-level;
+}
+
+// Next menu level icon size
+:host .mat-expansion-panel .mat-expansion-panel {
+    .mat-icon {
+        height: $icon-size-next-level;
+        width: $icon-size-first-level;
+        text-align: center;
+    }
+    .header-title-icon {
+        font-size: $icon-size-next-level;
+    }
+}
+
+//
+:host .mat-expansion-panel-header {
+    padding-left: 5px;
+}
+
+
+/* 
+            Child menu item styles
+*/
+
+a.child-menu-item-link {
+    display: block;
+    padding-left: 8px;
+    height: 24px;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-size: 15px;
+    text-decoration: none;
+    &:hover{
+        cursor: pointer;
+        &.linkActive {
+            cursor: default;
+        }
+    }
+    .header-title-description {
+        display: inline-block;
+        vertical-align: middle;
+    }
+    .header-title-icon {
+        padding-right: 4px;
+        vertical-align: middle;
+        font-size: $icon-size-next-level;
+    }
+    .mat-icon {
+        height: $icon-size-next-level;
+        width: $icon-size-first-level;
+        text-align: center;
+    }
+}

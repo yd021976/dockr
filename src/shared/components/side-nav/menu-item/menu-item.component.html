@@ -1,0 +1,48 @@
+<!-- Main rendering container : Render Root and child items -->
+<ng-container *ngIf="menuItem.children">
+  <ng-container *ngTemplateOutlet="rootMenuItem ;context:{$implicit:menuItem}"></ng-container>
+</ng-container>
+<ng-container *ngIf="!menuItem.children">
+  <ng-container *ngTemplateOutlet="childMenuitem ;context:{$implicit:menuItem}"></ng-container>
+</ng-container>
+
+
+
+<!-- ******************** -->
+<!-- templates definition -->
+<!-- ******************** -->
+
+<!-- Root menu template -->
+<!-- ******************** -->
+<ng-template #rootMenuItem let-menuItem>
+  <mat-expansion-panel class="mat-elevation-z0">
+    <mat-expansion-panel-header class="panel-title" collapsedHeight="32px" expandedHeight="32px">
+      <mat-panel-title class="panel-title">
+        <div class="header-title">
+          <mat-icon class="header-title-icon">{{menuItem.data?.icon==''?'panorama_fish_eye':menuItem.data?.icon}}</mat-icon>
+          <span class="header-title-description">{{menuItem.data?.title}}</span>
+        </div>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    
+    <!-- Loop over children menu items -->
+    <ng-container *ngFor="let childItem of menuItem.children">
+      <ng-container *ngTemplateOutlet="childMenuitem ;context:{$implicit:childItem}"></ng-container>
+    </ng-container>
+  </mat-expansion-panel>
+</ng-template>
+
+
+<!-- Menu Item template -->
+<!-- ******************** -->
+<ng-template #childMenuitem let-menuItem>
+  <ng-container *ngIf="!menuItem.children">
+    <a class="child-menu-item-link" routerLink="{{menuItem.data?.link}}" #linkActive="routerLinkActive" routerLinkActive="linkActive">
+      <mat-icon class="header-title-icon">{{linkActive.isActive?'play_circle_filled':'play_circle_outline'}}</mat-icon>
+      <span class="header-title-description">{{menuItem.data?.title}}</span>
+    </a>
+  </ng-container>
+  <ng-container *ngIf="menuItem.children">
+    <ng-container *ngTemplateOutlet="rootMenuItem ;context:{$implicit:menuItem}"></ng-container>
+  </ng-container>
+</ng-template>

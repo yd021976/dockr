@@ -1,0 +1,29 @@
+<div class="navbar-container">
+  <mat-toolbar role="header" class="navbar navbar-component mat-elevation-z6">
+    <mat-toolbar-row>
+      <div class="toolbar">
+        <!-- Application and/or Brand name -->
+        <div class="brand">
+          <div>Application name</div>
+        </div>
+        <div class="left-items">
+          <!-- Left side toolbar items -->
+          <button mat-button (click)="onLogin()" [disabled]="isAuthenticated">Login</button>
+          <button mat-button (click)="onLogout()" [disabled]="!isAuthenticated">Logout</button>
+        </div>
+
+        <!-- Right side toolbar items -->
+        <div class="right-items">
+          <button mat-button [matMenuTriggerFor]="appMenu" color="accent">
+            Themes
+          </button>
+        </div>
+      </div>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</div>
+
+<!-- Themes menu -->
+<mat-menu #appMenu="matMenu" [overlapTrigger]="false">
+  <button mat-menu-item *ngFor="let theme of themes" (click)="themeChange.emit(theme.class_name)">{{theme.name}}</button>
+</mat-menu>

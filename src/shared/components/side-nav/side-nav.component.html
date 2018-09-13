@@ -1,0 +1,14 @@
+<div class="sidenav-component">
+  <mat-accordion multi="false" displayMode="default" #sidenavAccordion>
+    <ng-container *ngFor="let menuItem of routerConfig">
+      <ng-container *ngIf="menuItem.data?.isMenu">
+        <ng-container *ngIf="menuItem.children?.length!=0 ;else item">
+          <app-menu-item [menuItem]="menuItem" [accordion]="sidenavAccordion"></app-menu-item>
+          <ng-template #item>
+            <app-menu-item [menuItem]="menuItem"></app-menu-item>
+          </ng-template>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </mat-accordion>
+</div>

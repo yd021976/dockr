@@ -1,4 +1,11 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  OnInit
+} from '@angular/core';
+
+import { SandboxAppService } from '../shared/sandboxes/app/sandbox-app.service';
+
+
 
 @Component({
   selector: 'app-root',
@@ -7,4 +14,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'dockr';
+
+  constructor(public sandbox: SandboxAppService) { }
+  ngOnInit() {
+    let a = 0;
+  }
 }

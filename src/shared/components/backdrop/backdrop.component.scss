@@ -1,0 +1,29 @@
+.backdrop {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // top: 0;
+    // left: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 10;
+    color: red;
+    // background-color: #000;
+    opacity: 0.7;
+    background-image: url('./Light-Grey-Background-3.jpg');
+    filter: blur(3px);
+}
+
+.spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 11;
+    opacity: 1;
+}

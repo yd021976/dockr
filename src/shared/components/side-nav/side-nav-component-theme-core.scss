@@ -1,0 +1,43 @@
+/**
+Define side nav global theme variables 
+**/
+
+@import '~@angular/material/theming';
+//
+$icon-size-first-level: 22px;
+$icon-size-next-level: 12px;
+//
+@function primary($theme) {
+    @return mat-color(map-get($theme, primary), 500);
+}
+
+@function accent($theme) {
+    @return mat-color(map-get($theme, accent), 500);
+}
+
+@function background-color($theme) {
+    @return mat-color(map-get($theme, primary), 800);
+}
+
+@function background-color-expanded($theme) {
+    @return mat-color(map-get($theme, primary), 700);
+}
+
+@function background-color-hover($theme) {
+    @return mat-color(map-get($theme, primary), 900);
+}
+
+@function text-color($theme) {
+    @return mat-color(map-get($theme, primary), 400);
+}
+
+@function text-color-expanded($theme) {
+    @return mat-color(map-get($theme, primary), 50);
+}
+
+@function text-color-hover($theme) {
+    @return text-color-expanded($theme);
+}
+@function text-color-linkactive($theme) {
+    @return mat-color(map-get($theme, accent), 400);
+}

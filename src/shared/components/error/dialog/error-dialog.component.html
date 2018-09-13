@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>Server connection lost</h2>
+<mat-dialog-content>
+  <div>
+    Trying to reconnect to server...
+  </div>
+
+  <div style='display: block;height: 50px;padding-top: 24px'>
+    <div style='margin:0 auto;text-align: center'>Attempt #{{connectionAttemptCount}}</div>
+    <div>
+      <mat-progress-spinner mode='indeterminate' diameter='24' style='margin:0 auto;'></mat-progress-spinner>
+    </div>
+  </div>
+</mat-dialog-content>

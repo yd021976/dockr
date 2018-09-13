@@ -5,7 +5,8 @@ import * as feathersSocket from '@feathersjs/socketio-client';
 import * as feathersHooks from '@feathersjs/commons';
 import { BehaviorSubject } from 'rxjs';
 
-import { BackendService, BackendServiceConnectionState } from './backend-base.service';
+import { BackendService } from './backend-base.service';
+import { BackendServiceConnectionState } from '../../../models/backend-service-connection-state.model';
 import { BackendConfigToken } from './backend-config.token';
 import { BackendConfigClass } from './backend-config.class';
 

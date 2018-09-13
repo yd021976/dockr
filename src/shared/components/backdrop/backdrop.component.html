@@ -1,0 +1,6 @@
+<div *ngIf="show" @onNavigating>
+  <div class="backdrop" [ngStyle]="getStyles()" fxFlexFill @backdropFade></div>
+  <div *ngIf="showSpinner" class="spinner">
+    <mat-spinner @fadeSpinner></mat-spinner>
+  </div>
+</div>
