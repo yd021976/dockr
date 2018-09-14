@@ -22,6 +22,8 @@ export abstract class BackendService {
     if (config == null) this.config = { apiEndPoint: 'http://localhost:3030' };
 
     // Init connection state
+    this.connectionState = {};
+    this.connectionState$ = new BehaviorSubject<BackendServiceConnectionState>(this.connectionState);
     this.updateConnectionState({ isConnected: false, attemptNumber: 0, connectionError: '', user: null });
     this.initSocketClient();
   }

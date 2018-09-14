@@ -1,5 +1,5 @@
 <div>
-  <app-nav-bar [themes]="themes" (themeChange)="themeChange($event)" [isAuthenticated]="sandbox.isAuthenticated$ | async" (login)="onLogin()"
+  <app-nav-bar [themes]="themes" (themeChange)="themeChange($event)" [isAuthenticated]="layoutSandbox.isAuthenticated$ | async" (login)="onLogin()"
     (logout)="onLogout()">
   </app-nav-bar>
   <div class="container">

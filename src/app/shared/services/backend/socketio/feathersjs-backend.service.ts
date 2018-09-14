@@ -1,8 +1,8 @@
 import { Inject, Injectable, Optional } from '@angular/core';
-import * as feathersClient from '@feathersjs/client';
+import * as feathers from '@feathersjs/feathers';
 import * as feathersAuthenticate from '@feathersjs/authentication-client';
 import * as feathersSocket from '@feathersjs/socketio-client';
-import * as feathersHooks from '@feathersjs/commons';
+// import * as feathersHooks from '@feathersjs/commons';
 import { BehaviorSubject } from 'rxjs';
 
 import { BackendService } from './backend-base.service';
@@ -15,7 +15,7 @@ import { BackendConfigClass } from './backend-config.class';
 })
 export class FeathersjsBackendService extends BackendService {
 
-  private feathers: feathersClient.Application = null;
+  private feathers: feathers.Application = null;
 
   private currentCounter: number = 0; // For debug purpose ONLY ==> Copy of static "count" property
   static count: number = 0; // Class instances count
@@ -35,9 +35,11 @@ export class FeathersjsBackendService extends BackendService {
   }
 
   private configureFeathers() {
-    this.feathers = feathersClient()
+    this.feathers = feathers();
+
+    this.feathers
       .configure(feathersSocket(this.socketio))
-      .configure(feathersHooks.hooks())
+      // .configure(feathersHooks.hooks())
       .configure(feathersAuthenticate({
         storage: window.localStorage
       }));
@@ -69,7 +71,7 @@ export class FeathersjsBackendService extends BackendService {
     });
   }
 
-  public service(name: string): feathersClient.Service<any> {
+  public service(name: string): feathers.Service<any> {
     return this.feathers.service(name);
   }
 

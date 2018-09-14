@@ -6,7 +6,4 @@ export class SandboxAppService extends SandboxBaseService {
     constructor() {
         super();
     }
-
-    navigateLogin() { }
-    navigateLogout() { }
 }
