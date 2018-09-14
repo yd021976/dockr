@@ -1,14 +1,14 @@
 import { BehaviorSubject } from 'rxjs';
 import * as socketio from 'socket.io-client';
 
-import { BackendConfigClass } from './backend-config.class';
+import { BackendBaseService } from '../backend-base.service';
+import { BackendConfigClass } from '../../../models/backend-config.class';
 import { BackendServiceConnectionState } from '../../../models/backend-service-connection-state.model';
 
 /**
  * Common backend socket IO service base class
  */
-export abstract class BackendService {
-  protected config: BackendConfigClass;
+export abstract class BackendSocketioService extends BackendBaseService {
   protected connectionState: BackendServiceConnectionState;
   public connectionState$: BehaviorSubject<BackendServiceConnectionState>; // Service connection state observable
   protected socketio: socketio.Socket = null;
@@ -18,13 +18,11 @@ export abstract class BackendService {
    * @param config Should be provided by inherited class constructor
    */
   constructor(config?: BackendConfigClass) {
-    // If no config is provided, sets a default one
-    if (config == null) this.config = { apiEndPoint: 'http://localhost:3030' };
+    super(config);
 
     // Init connection state
-    this.connectionState = {};
+    this.connectionState = new BackendServiceConnectionState({ isConnected: false, attemptNumber: 0, connectionError: '', user: null });
     this.connectionState$ = new BehaviorSubject<BackendServiceConnectionState>(this.connectionState);
-    this.updateConnectionState({ isConnected: false, attemptNumber: 0, connectionError: '', user: null });
     this.initSocketClient();
   }
 

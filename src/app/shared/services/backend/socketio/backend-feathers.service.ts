@@ -5,15 +5,15 @@ import * as feathersSocket from '@feathersjs/socketio-client';
 // import * as feathersHooks from '@feathersjs/commons';
 import { BehaviorSubject } from 'rxjs';
 
-import { BackendService } from './backend-base.service';
+import {  BackendSocketioService} from './backend-socketio.service';
 import { BackendServiceConnectionState } from '../../../models/backend-service-connection-state.model';
 import { BackendConfigToken } from './backend-config.token';
-import { BackendConfigClass } from './backend-config.class';
+import { BackendConfigClass } from '../../../models/backend-config.class';
 
 @Injectable({
   providedIn: 'root'
 })
-export class FeathersjsBackendService extends BackendService {
+export class FeathersjsBackendService extends BackendSocketioService {
 
   private feathers: feathers.Application = null;
 

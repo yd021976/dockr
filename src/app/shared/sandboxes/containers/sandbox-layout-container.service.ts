@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { FeathersjsBackendService } from '../../services/backend/socketio/feathersjs-backend.service';
+import { FeathersjsBackendService } from '../../services/backend/socketio/backend-feathers.service';
 import { SandboxBaseService } from '../sandbox-base.service';
 
 @Injectable()

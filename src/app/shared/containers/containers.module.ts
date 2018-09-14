@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
 import { ComponentsModule } from '../components';
 import { LayoutContainer } from '../containers/layout/layout.container';
 import { SandboxLayoutContainerService } from '../sandboxes/containers/sandbox-layout-container.service';
-import { FeathersjsBackendService } from '../services/backend/socketio/feathersjs-backend.service';
+import { FeathersjsBackendService } from '../services/backend/socketio/backend-feathers.service';
 
 export const components = [
     LayoutContainer,
