@@ -83,7 +83,7 @@ export abstract class BackendSocketioService extends BackendBaseService {
    * 
    * @param newState : New state with ONLY new state values to update
    */
-  private updateConnectionState(newState: BackendServiceConnectionState) {
+  protected updateConnectionState(newState: BackendServiceConnectionState) {
     Object.assign(this.connectionState, newState);
     this.connectionState$.next(this.connectionState);
   }

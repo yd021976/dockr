@@ -5,9 +5,9 @@ import * as feathersSocket from '@feathersjs/socketio-client';
 // import * as feathersHooks from '@feathersjs/commons';
 import { BehaviorSubject } from 'rxjs';
 
-import {  BackendSocketioService} from './backend-socketio.service';
+import { BackendSocketioService } from './backend-socketio.service';
 import { BackendServiceConnectionState } from '../../../models/backend-service-connection-state.model';
-import { BackendConfigToken } from './backend-config.token';
+import { BackendConfigToken } from '../backend-config.token';
 import { BackendConfigClass } from '../../../models/backend-config.class';
 
 @Injectable({
@@ -45,14 +45,12 @@ export class FeathersjsBackendService extends BackendSocketioService {
       }));
 
     this.feathers.on('authenticated', (event) => {
-      Object.assign(this.connectionState, { user: this.feathers.get('user') });
-      this.connectionState$.next(this.connectionState);
+      this.updateConnectionState({ user: this.feathers.get('user') });
     });
     this.feathers.on('logout', (event) => {
       // Clear current user
       this.feathers.set('user', null);
-      Object.assign(this.connectionState, { user: null });
-      this.connectionState$.next(this.connectionState);
+      this.updateConnectionState({ user: null });
     });
 
     this.feathers.on('reauthentication-error', (event) => {
@@ -64,8 +62,7 @@ export class FeathersjsBackendService extends BackendSocketioService {
             this.feathers.set('user', user)
           })
           .catch(error => {
-            Object.assign(this.connectionState, { user: null });
-            this.connectionState$.next(this.connectionState);
+            this.updateConnectionState({ user: null });
           });
       }
     });
