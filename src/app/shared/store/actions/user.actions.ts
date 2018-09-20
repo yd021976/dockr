@@ -1,4 +1,4 @@
-import { loginCredentials } from '../../models/login-user-credentials';
+import { loginCredentials, UserModel, UserBackendApiModel } from '../../models/user.model';
 
 
 export class UserLoginAction {
@@ -7,7 +7,7 @@ export class UserLoginAction {
 }
 export class UserLoginSuccessAction {
     static readonly type = '[user] login success';
-    constructor(public credentials: loginCredentials) { }
+    constructor(public user: UserBackendApiModel) { }
 }
 
 export class UserLoginErrorAction {
@@ -25,5 +25,5 @@ export class UserLogoutSuccessAction {
 }
 export class UserLogoutErrorAction {
     static readonly type = '[user] logout error';
-    constructor() { }
+    constructor(public error:string) { }
 }

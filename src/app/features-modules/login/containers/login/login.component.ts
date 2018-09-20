@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { loginCredentials } from '../../../../shared/models/login-user-credentials';
+import { loginCredentials } from '../../../../shared/models/user.model';
 
 @Component({
   selector: 'app-login',

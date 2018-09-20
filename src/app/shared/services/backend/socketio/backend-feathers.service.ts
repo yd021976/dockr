@@ -8,7 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 import { BackendSocketioService } from './backend-socketio.service';
 import { BackendServiceConnectionState, stateChangeReason } from '../../../models/backend-service-connection-state.model';
 import { BackendConfigToken } from '../backend-config.token';
-import { BackendConfigClass } from '../../../models/backend-config.class';
+import { BackendConfigClass } from '../../../models/backend-config.model';
 
 @Injectable({
   providedIn: 'root'
@@ -79,19 +79,20 @@ export class FeathersjsBackendService extends BackendSocketioService {
 
   /**
    * Authenticate user and sets <user> property of this service
+   * Note : As event "authenticated" will be trigerred in this method, the user data will be fetched twice. @see configureFeathers
    */
   public authenticate(credentials?): Promise<any> {
     return this.feathers.authenticate(credentials ? credentials : {})
-      // .then(response => {
-      //   return this.feathers.passport.verifyJWT(response.accessToken)
-      // })
-      // .then((payload: any) => {
-      //   return this.feathers.service('users').get(payload.userId);
-      // })
-      // .then(user => {
-      //   this.feathers.set('user', user);
-      //   return user;
-      // })
+      .then(response => {
+        return this.feathers.passport.verifyJWT(response.accessToken)
+      })
+      .then((payload: any) => {
+        return this.feathers.service('users').get(payload.userId);
+      })
+      .then(user => {
+        this.feathers.set('user', user);
+        return user;
+      })
   }
 
   public logout(): Promise<any> {

@@ -2,7 +2,7 @@ import { BehaviorSubject } from 'rxjs';
 import * as socketio from 'socket.io-client';
 
 import { BackendBaseService } from '../backend-base.service';
-import { BackendConfigClass } from '../../../models/backend-config.class';
+import { BackendConfigClass } from '../../../models/backend-config.model';
 import { BackendServiceConnectionState, stateChangeReason } from '../../../models/backend-service-connection-state.model';
 
 /**

@@ -1,4 +1,4 @@
-import { BackendConfigClass } from '../../models/backend-config.class';
+import { BackendConfigClass } from '../../models/backend-config.model';
 
 export abstract class BackendBaseService {
     constructor(protected config: BackendConfigClass = null) {
