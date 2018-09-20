@@ -6,7 +6,7 @@ import * as feathersSocket from '@feathersjs/socketio-client';
 import { BehaviorSubject } from 'rxjs';
 
 import { BackendSocketioService } from './backend-socketio.service';
-import { BackendServiceConnectionState } from '../../../models/backend-service-connection-state.model';
+import { BackendServiceConnectionState, stateChangeReason } from '../../../models/backend-service-connection-state.model';
 import { BackendConfigToken } from '../backend-config.token';
 import { BackendConfigClass } from '../../../models/backend-config.class';
 
@@ -45,25 +45,30 @@ export class FeathersjsBackendService extends BackendSocketioService {
       }));
 
     this.feathers.on('authenticated', (event) => {
-      this.updateConnectionState({ user: this.feathers.get('user') });
+      return this.feathers.passport.verifyJWT(event.accessToken)
+        .then((payload => {
+          return this.feathers.service('users').get(payload.userId);
+        }))
+        .then((user) => {
+          this.feathers.set('user', user);
+          this.updateConnectionState({ user: this.feathers.get('user'), changeReason: stateChangeReason.Feathers_Authenticated });
+        })
     });
     this.feathers.on('logout', (event) => {
       // Clear current user
       this.feathers.set('user', null);
-      this.updateConnectionState({ user: null });
+      this.updateConnectionState({ user: null, changeReason: stateChangeReason.Feathers_Logout });
     });
 
     this.feathers.on('reauthentication-error', (event) => {
       if (event.data.name == 'TokenExpiredError') {
-        const user = this.feathers.get('user');
-        // if token has expired and user was anonymous, just auth again as anonymous
-        if (user['anonymous']) this.authenticate({ strategy: 'anonymous' })
-          .then(user => {
-            this.feathers.set('user', user)
-          })
-          .catch(error => {
-            this.updateConnectionState({ user: null });
-          });
+        const user = this.feathers.get('user'); // Get current logged in user
+        // if token has expired and user was anonymous, just auth again as anonymous else logout user and auth as anonymous
+        if (user['anonymous']) {
+          return this.authenticate({ strategy: 'anonymous' })
+        } else {
+          return this.logout().then(() => this.authenticate({ strategy: 'anonymous' }));
+        }
       }
     });
   }
@@ -77,16 +82,16 @@ export class FeathersjsBackendService extends BackendSocketioService {
    */
   public authenticate(credentials?): Promise<any> {
     return this.feathers.authenticate(credentials ? credentials : {})
-      .then(response => {
-        return this.feathers.passport.verifyJWT(response.accessToken)
-      })
-      .then((payload: any) => {
-        return this.feathers.service('users').get(payload.userId);
-      })
-      .then(user => {
-        this.feathers.set('user', user);
-        return user;
-      })
+      // .then(response => {
+      //   return this.feathers.passport.verifyJWT(response.accessToken)
+      // })
+      // .then((payload: any) => {
+      //   return this.feathers.service('users').get(payload.userId);
+      // })
+      // .then(user => {
+      //   this.feathers.set('user', user);
+      //   return user;
+      // })
   }
 
   public logout(): Promise<any> {
@@ -97,7 +102,7 @@ export class FeathersjsBackendService extends BackendSocketioService {
    * Check if user is authenticated.
    * 
    * NOTE : 
-   * - For anonymous users, return FALSE
+   * - For anonymous users, resolve FALSE
    * - You must authenticate if user is authenticated, this method DO NOT authenticated user even if payload is valid !!!
   */
   public isAuth(): Promise<boolean> {

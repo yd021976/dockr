@@ -22,7 +22,7 @@ export const components = [
     ],
     providers: [
         FeathersjsBackendService,
-        SandboxLayoutContainerService
+        SandboxLayoutContainerService,
     ],
     declarations: components,
     exports: [...components, RouterModule]

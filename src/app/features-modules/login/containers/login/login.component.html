@@ -1,0 +1,29 @@
+<div class="form-container">
+  <div>
+    <h3>
+      User login
+    </h3>
+
+  </div>
+  <form>
+    <div class="form-field">
+      <mat-form-field>
+        <input matInput [(ngModel)]="credentials.email" [ngModelOptions]="{standalone: true}" placeholder="login">
+      </mat-form-field>
+    </div>
+
+    <div class="form-field">
+      <mat-form-field>
+        <input matInput type="password" [(ngModel)]="credentials.password" [ngModelOptions]="{standalone: true}" placeholder="password">
+      </mat-form-field>
+    </div>
+    <div class="form-field">
+      <button mat-button color="accent" (click)="onLogin()">
+        Login
+      </button>
+    </div>
+    <ng-container *ngIf="AuthError$ | async as AuthError">
+      <div class="login-error">Login error : {{AuthError}}</div>
+    </ng-container>
+  </form>
+</div>

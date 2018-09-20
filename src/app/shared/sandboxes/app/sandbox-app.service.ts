@@ -4,7 +4,7 @@ import {NotificationBaseService} from '../../services/notifications/notification
 
 @Injectable()
 export class SandboxAppService extends SandboxBaseService {
-    constructor(ns:NotificationBaseService) {
-        super();
+    constructor(notificationService:NotificationBaseService) {
+        super(notificationService);
     }
 }

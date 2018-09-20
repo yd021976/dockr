@@ -3,7 +3,7 @@ import * as socketio from 'socket.io-client';
 
 import { BackendBaseService } from '../backend-base.service';
 import { BackendConfigClass } from '../../../models/backend-config.class';
-import { BackendServiceConnectionState } from '../../../models/backend-service-connection-state.model';
+import { BackendServiceConnectionState, stateChangeReason } from '../../../models/backend-service-connection-state.model';
 
 /**
  * Common backend socket IO service base class
@@ -61,19 +61,19 @@ export abstract class BackendSocketioService extends BackendBaseService {
    */
   private initSocketClientHandlers(): void {
     this.socketio.on('connect_error', (error) => {
-      this.updateConnectionState({ isConnected: false, connectionError: error });
+      this.updateConnectionState({ isConnected: false, connectionError: error, user: null, changeReason: stateChangeReason.socketIO_Connection_Error });
     });
 
     this.socketio.on('connect_timeout', (error) => {
-      this.updateConnectionState({ isConnected: false, connectionError: error });
+      this.updateConnectionState({ isConnected: false, connectionError: error, user: null, changeReason: stateChangeReason.socketIO_connection_timeout });
     });
 
     this.socketio.on('reconnect_attempt', (attempt) => {
-      this.updateConnectionState({ isConnected: false, attemptNumber: attempt });
+      this.updateConnectionState({ attemptNumber: attempt, changeReason: stateChangeReason.socketIO_Reconnect_Attempt });
     })
 
     this.socketio.on('connect', (status) => {
-      this.updateConnectionState({ isConnected: true, connectionError: '', attemptNumber: 0 });
+      this.updateConnectionState({ isConnected: true, connectionError: '', attemptNumber: 0, changeReason: stateChangeReason.socketIO_Connected });
     });
   }
 

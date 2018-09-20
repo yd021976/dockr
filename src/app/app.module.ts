@@ -6,10 +6,12 @@ import { AppComponent } from './app.component';
 import { ComponentsModule } from './shared/components';
 import { ContainersModule } from './shared/containers/containers.module';
 import { SandboxAppService } from './shared/sandboxes/app/sandbox-app.service';
+import { UserActionsComponent } from './shared/store/actions/user-actions/user-actions.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    UserActionsComponent
   ],
   imports: [
     BrowserModule,
@@ -17,7 +19,9 @@ import { SandboxAppService } from './shared/sandboxes/app/sandbox-app.service';
     ComponentsModule,
     ContainersModule
   ],
-  providers: [SandboxAppService],
+  providers: [
+    SandboxAppService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

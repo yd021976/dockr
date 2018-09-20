@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid';
 
 import { Notification, notificationAction, notificationType } from '../../models/notification-service.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 /**
  * Base notification service
  */
@@ -20,7 +20,7 @@ export class NotificationBaseService {
     /**
      * get the notifications list as iterator
      */
-    public get notifications(): IterableIterator<[string,Notification]> {
+    public get notifications(): IterableIterator<[string, Notification]> {
         return this._notifications.entries();
     }
     public addNotification(type: notificationType, message: string) {
