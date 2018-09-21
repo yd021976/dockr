@@ -10,6 +10,7 @@
           <!-- Left side toolbar items -->
           <button mat-button (click)="onLogin()" [disabled]="isAuthenticated">Login</button>
           <button mat-button (click)="onLogout()" [disabled]="!isAuthenticated">Logout</button>
+          <div style="float: right;font-size: 16px">Current user :{{user.nickname}}</div>
         </div>
 
         <!-- Right side toolbar items -->
@@ -17,6 +18,9 @@
           <button mat-button [matMenuTriggerFor]="appMenu" color="accent">
             Themes
           </button>
+          <div style="min-width: 33px">
+            <mat-spinner diameter="32" *ngIf="isProgress"></mat-spinner>
+          </div>
         </div>
       </div>
     </mat-toolbar-row>

@@ -33,13 +33,13 @@ export class UserState {
     @Action(actions.UserLoginSuccessAction)
     loginSucess(ctx: StateContext<UserModel>, action: actions.UserLoginSuccessAction) {
         ctx.patchState({
-            nickname: action.user['anonymous'] ? '' : action.user['nickname'],
-            email: action.user['anonymous'] ? '' : action.user['email'],
+            nickname: action.user['anonymous'] ? 'Anonymous' : action.user['nickname'],
+            email: action.user['anonymous'] ? 'Anonymous' : action.user['email'],
             isAnonymous: action.user['anonymous'] ? true : false,
             isLoggedIn: true,
             isProgress: false,
-            isError: false,
-            error: ''
+            isError: action.user['anonymous'] ? ctx.getState().isError : false, // don't update last error if user logged as anonymous
+            error: action.user['anonymous'] ? ctx.getState().error : '', // don't update last error if user logged as anonymous
         });
     }
 
@@ -55,9 +55,7 @@ export class UserState {
     @Action(actions.UserLogoutAction)
     logout(ctx: StateContext<UserModel>, action: actions.UserLogoutAction) {
         ctx.patchState({
-            isProgress: true,
-            isError: false,
-            error: ''
+            isProgress: true
         })
     }
     @Action(actions.UserLogoutSuccessAction)

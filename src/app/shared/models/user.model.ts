@@ -3,7 +3,6 @@ export type loginCredentials = {
   email?: string,
   password?: string,
   requestedUrl?: string
-
 }
 
 export class UserBackendApiModel {

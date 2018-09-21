@@ -1,18 +1,18 @@
 <div>
-  <app-nav-bar [themes]="themes" (themeChange)="themeChange($event)" [isAuthenticated]="layoutSandbox.isAuthenticated$ | async" (login)="onLogin()"
-    (logout)="onLogout()">
+  <app-nav-bar [themes]="themes" (themeChange)="themeChange($event)" [isProgress]="layoutSandbox.isProgress$ | async"
+    [isAuthenticated]="layoutSandbox.isLoggedin$ | async" (login)="onLogin()" (logout)="onLogout()" [user]="layoutSandbox.currentUser$ | async">
   </app-nav-bar>
   <div class="container">
     <mat-sidenav-container class="sidenav-container">
       <mat-sidenav opened mode="side" disableClose="true" class="sidenav mat-elevation-z6" tabindex="-1">
         <app-side-nav [routerConfig]="router.config"></app-side-nav>
       </mat-sidenav>
-  
+
       <!-- Main contents-->
       <mat-sidenav-content>
         <!-- show backdrop and spinner when navigating-->
         <!-- <app-backdrop [linkRouterState]="true"></app-backdrop> -->
-  
+
         <div id="contents" class="sidenav-content">
           <!-- custom router outlet performing animation transition between views/components -->
           <app-outlet></app-outlet>
@@ -20,6 +20,6 @@
         </div>
       </mat-sidenav-content>
     </mat-sidenav-container>
-  
+
   </div>
 </div>

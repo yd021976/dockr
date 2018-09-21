@@ -3,7 +3,7 @@ import { loginCredentials, UserModel, UserBackendApiModel } from '../../models/u
 
 export class UserLoginAction {
     static readonly type = '[user] login';
-    constructor(public credentials: loginCredentials) { }
+    constructor() { }
 }
 export class UserLoginSuccessAction {
     static readonly type = '[user] login success';

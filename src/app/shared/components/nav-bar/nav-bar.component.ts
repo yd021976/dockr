@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 
 import { ThemeItem } from '../../models/theme-items.model';
+import { UserModel } from '../../models/user.model';
 
 
 
@@ -12,6 +13,8 @@ import { ThemeItem } from '../../models/theme-items.model';
 export class NavBarComponent implements OnInit {
   @Input() themes: ThemeItem[] = [];
   @Input() isAuthenticated: boolean; // Is a user authenticated ?
+  @Input() isProgress:boolean; // Is something in progress ?
+  @Input() user:UserModel; // Current logged in user
   @Output() themeChange: EventEmitter<string> = new EventEmitter<string>();
   @Output() logout: EventEmitter<any> = new EventEmitter<any>();
   @Output() login: EventEmitter<any> = new EventEmitter<any>();

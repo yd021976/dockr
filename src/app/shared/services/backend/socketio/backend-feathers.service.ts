@@ -1,14 +1,14 @@
-import { Inject, Injectable, Optional } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import * as feathers from '@feathersjs/feathers';
 import * as feathersAuthenticate from '@feathersjs/authentication-client';
 import * as feathersSocket from '@feathersjs/socketio-client';
-// import * as feathersHooks from '@feathersjs/commons';
-import { BehaviorSubject } from 'rxjs';
+import { Inject, Injectable, Optional } from '@angular/core';
 
 import { BackendSocketioService } from './backend-socketio.service';
 import { BackendServiceConnectionState, stateChangeReason } from '../../../models/backend-service-connection-state.model';
 import { BackendConfigToken } from '../backend-config.token';
 import { BackendConfigClass } from '../../../models/backend-config.model';
+import { loginCredentials } from '../../../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -39,20 +39,19 @@ export class FeathersjsBackendService extends BackendSocketioService {
 
     this.feathers
       .configure(feathersSocket(this.socketio))
-      // .configure(feathersHooks.hooks())
       .configure(feathersAuthenticate({
         storage: window.localStorage
       }));
 
     this.feathers.on('authenticated', (event) => {
-      return this.feathers.passport.verifyJWT(event.accessToken)
-        .then((payload => {
-          return this.feathers.service('users').get(payload.userId);
-        }))
-        .then((user) => {
-          this.feathers.set('user', user);
-          this.updateConnectionState({ user: this.feathers.get('user'), changeReason: stateChangeReason.Feathers_Authenticated });
-        })
+      // return this.feathers.passport.verifyJWT(event.accessToken)
+      //   .then((payload => {
+      //     return this.feathers.service('users').get(payload.userId);
+      //   }))
+      //   .then((user) => {
+      //     this.feathers.set('user', user);
+      //     this.updateConnectionState({ user: this.feathers.get('user'), changeReason: stateChangeReason.Feathers_Authenticated });
+      //   })
     });
     this.feathers.on('logout', (event) => {
       // Clear current user
@@ -62,13 +61,8 @@ export class FeathersjsBackendService extends BackendSocketioService {
 
     this.feathers.on('reauthentication-error', (event) => {
       if (event.data.name == 'TokenExpiredError') {
-        const user = this.feathers.get('user'); // Get current logged in user
-        // if token has expired and user was anonymous, just auth again as anonymous else logout user and auth as anonymous
-        if (user['anonymous']) {
-          return this.authenticate({ strategy: 'anonymous' })
-        } else {
-          return this.logout().then(() => this.authenticate({ strategy: 'anonymous' }));
-        }
+        // Note that we don't clear "user" property here -> We need 
+        this.updateConnectionState({ changeReason: stateChangeReason.Feathers_reauthentication_error });
       }
     });
   }
@@ -81,7 +75,7 @@ export class FeathersjsBackendService extends BackendSocketioService {
    * Authenticate user and sets <user> property of this service
    * Note : As event "authenticated" will be trigerred in this method, the user data will be fetched twice. @see configureFeathers
    */
-  public authenticate(credentials?): Promise<any> {
+  public authenticate(credentials?: loginCredentials): Promise<any> {
     return this.feathers.authenticate(credentials ? credentials : {})
       .then(response => {
         return this.feathers.passport.verifyJWT(response.accessToken)

@@ -4,7 +4,8 @@ export enum stateChangeReason {
     socketIO_Reconnect_Attempt,
     socketIO_Connected,
     Feathers_Authenticated,
-    Feathers_Logout
+    Feathers_Logout,
+    Feathers_reauthentication_error
 }
 
 /**

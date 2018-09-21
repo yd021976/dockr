@@ -19,7 +19,6 @@ export abstract class BackendSocketioService extends BackendBaseService {
    */
   constructor(config?: BackendConfigClass) {
     super(config);
-
     // Init connection state
     this.connectionState = new BackendServiceConnectionState({ isConnected: false, attemptNumber: 0, connectionError: '', user: null });
     this.connectionState$ = new BehaviorSubject<BackendServiceConnectionState>(this.connectionState);
