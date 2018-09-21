@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { NgModule } from '@angular/core';
 import { NgxsModule } from '@ngxs/store';
 
@@ -21,6 +22,7 @@ import { UserState } from './shared/store/states/user.state';
     ComponentsModule,
     ContainersModule,
     LoginModule,
+    LoggerModule.forRoot({ level: NgxLoggerLevel.TRACE }),
     NgxsModule.forRoot([ApplicationState, UserState])
   ],
   providers: [

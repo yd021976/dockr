@@ -6,7 +6,7 @@ import { MatButtonModule, MatFormFieldModule, MatInputModule } from '@angular/ma
 import { LoginRoutingModule } from './login-routing.module';
 import { LoginComponent } from './containers/login/login.component';
 import { LogoutComponent } from './containers/logout/logout.component';
-import { LoginSandbox } from './containers/login.sandbox';
+import { AuthSandbox } from './containers/auth.sandbox';
 
 @NgModule({
   imports: [
@@ -18,6 +18,6 @@ import { LoginSandbox } from './containers/login.sandbox';
     MatInputModule
   ],
   declarations: [LoginComponent, LogoutComponent],
-  providers: [LoginSandbox]
+  providers: [AuthSandbox]
 })
 export class LoginModule { }

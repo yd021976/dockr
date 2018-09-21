@@ -1,9 +1,12 @@
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
+import { OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { loginCredentials } from '../../../../shared/models/user.model';
-import { LoginSandbox } from '../login.sandbox';
+import { AuthSandbox } from '../auth.sandbox';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +19,7 @@ export class LoginComponent implements OnInit {
   private subscribes: Array<Subscription>;
   private redirectTo: string;
 
-  constructor(public sandbox:LoginSandbox, public route: ActivatedRoute) {
+  constructor(public sandbox: AuthSandbox, public route: ActivatedRoute, private router: Router) {
     this.subscribes = new Array<Subscription>();
     this.authError$ = this.sandbox.authError$;
   }
@@ -34,7 +37,12 @@ export class LoginComponent implements OnInit {
   }
 
 
-  public onLogin() { 
-    this.sandbox.Login(this.credentials);
+  public onLogin() {
+    this.sandbox.Login(this.credentials).then((result) => {
+      if (result) {
+        this.sandbox.logger.debug('[LoginComponent] onLogin successfull, redirecting page.',this.redirectTo);
+        this.router.navigate([this.redirectTo]);
+      }
+    })
   }
 }

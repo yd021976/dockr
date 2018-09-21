@@ -29,6 +29,7 @@
     "@feathersjs/socketio-client": "^1.1.2",
     "@ngxs/store": "^3.2.0",
     "core-js": "^2.5.4",
+    "ngx-logger": "^3.1.0",
     "rxjs": "~6.2.0",
     "web-animations-js": "^2.3.1",
     "zone.js": "~0.8.26"

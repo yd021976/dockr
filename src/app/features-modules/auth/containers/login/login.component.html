@@ -8,13 +8,13 @@
   <form>
     <div class="form-field">
       <mat-form-field>
-        <input matInput [(ngModel)]="credentials.email" [ngModelOptions]="{standalone: true}" placeholder="login">
+        <input matInput [(ngModel)]="credentials.email" [ngModelOptions]="{standalone: true}" placeholder="login" autocomplete="username">
       </mat-form-field>
     </div>
 
     <div class="form-field">
       <mat-form-field>
-        <input matInput type="password" [(ngModel)]="credentials.password" [ngModelOptions]="{standalone: true}" placeholder="password">
+        <input matInput type="password" [(ngModel)]="credentials.password" [ngModelOptions]="{standalone: true}" placeholder="password" autocomplete="current-password">
       </mat-form-field>
     </div>
     <div class="form-field">

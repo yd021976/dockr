@@ -2,7 +2,10 @@ import { BehaviorSubject } from 'rxjs';
 import * as feathers from '@feathersjs/feathers';
 import * as feathersAuthenticate from '@feathersjs/authentication-client';
 import * as feathersSocket from '@feathersjs/socketio-client';
-import { Inject, Injectable, Optional } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
+import { NGXLogger } from 'ngx-logger';
+import { Optional } from '@angular/core';
+
 
 import { BackendSocketioService } from './backend-socketio.service';
 import { BackendServiceConnectionState, stateChangeReason } from '../../../models/backend-service-connection-state.model';
@@ -21,8 +24,8 @@ export class FeathersjsBackendService extends BackendSocketioService {
   static count: number = 0; // Class instances count
 
 
-  constructor(@Optional() @Inject(BackendConfigToken) config: BackendConfigClass) {
-    super(config);
+  constructor(logger: NGXLogger, @Optional() @Inject(BackendConfigToken) config: BackendConfigClass) {
+    super(logger, config);
 
     // Init Behavior subject for connection state
     this.connectionState
@@ -44,6 +47,7 @@ export class FeathersjsBackendService extends BackendSocketioService {
       }));
 
     this.feathers.on('authenticated', (event) => {
+      this.logger.debug('[FeathersjsBackendService] Authenticated event', event);
       // return this.feathers.passport.verifyJWT(event.accessToken)
       //   .then((payload => {
       //     return this.feathers.service('users').get(payload.userId);
@@ -54,14 +58,18 @@ export class FeathersjsBackendService extends BackendSocketioService {
       //   })
     });
     this.feathers.on('logout', (event) => {
+      this.logger.trace('[FeathersjsBackendService] Logout event', event);
+
       // Clear current user
       this.feathers.set('user', null);
       this.updateConnectionState({ user: null, changeReason: stateChangeReason.Feathers_Logout });
     });
 
     this.feathers.on('reauthentication-error', (event) => {
+      this.logger.debug('[FeathersjsBackendService] reauthentication-error', event);
+
       if (event.data.name == 'TokenExpiredError') {
-        // Note that we don't clear "user" property here -> We need 
+        // Note that we don't clear "user" property here -> We need
         this.updateConnectionState({ changeReason: stateChangeReason.Feathers_reauthentication_error });
       }
     });

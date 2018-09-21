@@ -1,4 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
+import { NGXLogger } from 'ngx-logger';
 import * as socketio from 'socket.io-client';
 
 import { BackendBaseService } from '../backend-base.service';
@@ -17,8 +18,8 @@ export abstract class BackendSocketioService extends BackendBaseService {
    * Constructor
    * @param config Should be provided by inherited class constructor
    */
-  constructor(config?: BackendConfigClass) {
-    super(config);
+  constructor(logger: NGXLogger, config?: BackendConfigClass) {
+    super(logger, config);
     // Init connection state
     this.connectionState = new BackendServiceConnectionState({ isConnected: false, attemptNumber: 0, connectionError: '', user: null });
     this.connectionState$ = new BehaviorSubject<BackendServiceConnectionState>(this.connectionState);

@@ -33,7 +33,7 @@ export class UserState {
     @Action(actions.UserLoginSuccessAction)
     loginSucess(ctx: StateContext<UserModel>, action: actions.UserLoginSuccessAction) {
         ctx.patchState({
-            nickname: action.user['anonymous'] ? 'Anonymous' : action.user['nickname'],
+            nickname: action.user['anonymous'] ? 'Anonymous' : action.user['nickname'] ? action.user['nickname'] : action.user['email'],
             email: action.user['anonymous'] ? 'Anonymous' : action.user['email'],
             isAnonymous: action.user['anonymous'] ? true : false,
             isLoggedIn: true,
