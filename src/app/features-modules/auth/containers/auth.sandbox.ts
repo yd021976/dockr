@@ -5,27 +5,35 @@ import { Router } from "@angular/router";
 import { Store, Select } from "@ngxs/store";
 
 import { ApplicationState } from "../../../shared/store/states/application.state";
-import { FeathersjsBackendService } from "../../../shared/services/backend/socketio/backend-feathers.service";
+import { AuthService } from "../../../shared/services/auth/auth.service";
 import { loginCredentials } from "../../../shared/models/user.model";
 import { NotificationBaseService } from "../../../shared/services/notifications/notifications-base.service";
 import { SandboxBaseService } from "../../../shared/sandboxes/sandbox-base.service";
+import { UserBackendApiModel } from "../../../shared/models/user.model";
 import { UserLoginAction, UserLoginErrorAction, UserLoginSuccessAction, UserLogoutSuccessAction, UserLogoutErrorAction } from "../../../shared/store/actions/user.actions";
+
 
 @Injectable()
 export class AuthSandbox extends SandboxBaseService {
+    // Keep track of previous server connection state
+    private currentIsConnected: boolean = false;
+
     @Select(ApplicationState.authError) public authError$: Observable<string>;
 
     constructor(
-        protected feathersBackend: FeathersjsBackendService,
+        protected authService: AuthService,
         notificationService: NotificationBaseService,
         logger: NGXLogger,
         store: Store,
         protected router: Router
     ) {
         super(notificationService, store, logger);
+        this.authService.initialAuthentication$.subscribe((user: UserBackendApiModel) => {
+            this.store.dispatch(new UserLoginSuccessAction(user));
+        })
     }
 
-    public Login(credentials: loginCredentials):Promise<boolean> {
+    public Login(credentials: loginCredentials): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
             this.doLogin(credentials).then(() => resolve(true)).catch(() => resolve(false));
         });
@@ -33,7 +41,7 @@ export class AuthSandbox extends SandboxBaseService {
     private doLogin(credentials: loginCredentials) {
         this.logger.debug('[LoginSandbox] Login user START', credentials);
         this.store.dispatch(new UserLoginAction());
-        return this.feathersBackend.authenticate(credentials)
+        return this.authService.authenticate(credentials)
             .then((user) => {
                 this.store.dispatch(new UserLoginSuccessAction(user))
                 this.logger.debug('[LoginSandbox] Login user END', 'OK', user);
@@ -43,9 +51,9 @@ export class AuthSandbox extends SandboxBaseService {
                 this.logger.debug('[LoginSandbox] Login user END', "ERROR", error);
             })
     }
-    public logout() {
+    public logout(): Promise<void> {
         this.logger.debug('[LoginSandbox] Logout START');
-        this.feathersBackend.logout()
+        return this.authService.logout()
             .then(() => {
                 this.logger.debug('[LoginSandbox] Logout END', 'OK');
                 this.store.dispatch(new UserLogoutSuccessAction())

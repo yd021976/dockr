@@ -1,6 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatButtonModule, MatDialogModule, MatExpansionModule, MatIconModule, MatMenuModule, MatProgressSpinnerModule, MatToolbarModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material';
+import { MatDialogModule } from '@angular/material';
+import { MatExpansionModule } from '@angular/material';
+import { MatIconModule } from '@angular/material';
+import { MatMenuModule } from '@angular/material';
+import { MatProgressSpinnerModule } from '@angular/material';
+import { MatToolbarModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 
 import { BackdropComponent } from './backdrop/backdrop.component';

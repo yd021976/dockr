@@ -47,7 +47,7 @@ export class FeathersjsBackendService extends BackendSocketioService {
       }));
 
     this.feathers.on('authenticated', (event) => {
-      this.logger.debug('[FeathersjsBackendService] Authenticated event', event);
+      // this.logger.debug('[FeathersjsBackendService] Authenticated event', event);
       // return this.feathers.passport.verifyJWT(event.accessToken)
       //   .then((payload => {
       //     return this.feathers.service('users').get(payload.userId);
@@ -58,7 +58,7 @@ export class FeathersjsBackendService extends BackendSocketioService {
       //   })
     });
     this.feathers.on('logout', (event) => {
-      this.logger.trace('[FeathersjsBackendService] Logout event', event);
+      // this.logger.debug('[FeathersjsBackendService] Logout event', event);
 
       // Clear current user
       this.feathers.set('user', null);
@@ -84,14 +84,19 @@ export class FeathersjsBackendService extends BackendSocketioService {
    * Note : As event "authenticated" will be trigerred in this method, the user data will be fetched twice. @see configureFeathers
    */
   public authenticate(credentials?: loginCredentials): Promise<any> {
+    this.logger.debug('[FeathersjsBackendService]', 'authenticate()', 'START', credentials);
+
     return this.feathers.authenticate(credentials ? credentials : {})
       .then(response => {
+        this.logger.debug('[FeathersjsBackendService]', 'authenticate()', 'PROGRESS', 'STEP-1', response);
         return this.feathers.passport.verifyJWT(response.accessToken)
       })
       .then((payload: any) => {
+        this.logger.debug('[FeathersjsBackendService]', 'authenticate()', 'PROGRESS', 'STEP-2', payload);
         return this.feathers.service('users').get(payload.userId);
       })
       .then(user => {
+        this.logger.debug('[FeathersjsBackendService]', 'authenticate()', 'END', 'OK', user);
         this.feathers.set('user', user);
         return user;
       })

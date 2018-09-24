@@ -24,7 +24,10 @@ export class MenuItemComponent implements OnInit, AfterViewInit, AfterContentIni
   @Input() accordion: MatAccordion = null;
   @ViewChild(MatExpansionPanel) panel: MatExpansionPanel;
 
-  constructor(private matIconRegistry: MatIconRegistry) { }
+  constructor(private matIconRegistry: MatIconRegistry) {
+    matIconRegistry.registerFontClassAlias('fontawesome', 'fa');
+    matIconRegistry.setDefaultFontSetClass('fa');
+  }
 
   ngOnInit() {
 

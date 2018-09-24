@@ -52,4 +52,8 @@ export class UserModel {
    * The last login/logout error
    */
   error: string;
+
+  constructor(user: UserModel) {
+    Object.assign(this, user);
+  }
 }

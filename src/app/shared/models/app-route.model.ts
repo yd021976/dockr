@@ -5,8 +5,9 @@ export abstract class RouteData {
   title?: string;
   icon?: string;
   link?: string;
-  isAuthRequired? : boolean;
+  isAuthRequired?: boolean;
 }
 export interface AppRoute extends Route {
-  data?: RouteData
+  data?: RouteData;
+  children?: AppRoute[]
 }

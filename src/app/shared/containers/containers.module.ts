@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatSidenavModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
-// import { RouterModule } from '@angular/router';
 
 import { ComponentsModule } from '../components';
 import { LayoutContainer } from '../containers/layout/layout.container';
