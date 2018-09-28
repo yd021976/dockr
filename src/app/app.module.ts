@@ -12,6 +12,7 @@ import { ContainersModule } from './shared/containers/containers.module';
 import { HomeModule } from './features-modules/home/home.module';
 import { SandboxAppService } from './shared/sandboxes/app/sandbox-app.service';
 import { UserState } from './shared/store/states/user.state';
+import { TemplatesState } from './shared/store/states/templates.state';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,7 @@ import { UserState } from './shared/store/states/user.state';
     ContainersModule,
     HomeModule,
     LoggerModule.forRoot({ level: NgxLoggerLevel.TRACE }),
-    NgxsModule.forRoot([ApplicationState, UserState])
+    NgxsModule.forRoot([ApplicationState, UserState, TemplatesState])
   ],
   providers: [
     SandboxAppService

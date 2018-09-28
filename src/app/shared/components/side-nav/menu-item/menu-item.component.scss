@@ -20,19 +20,21 @@
 //Icon style
 .header-title-icon {
     padding-right: 4px;
-    vertical-align: middle;
-    font-size: $icon-size-first-level;
 }
 
 // Header description
 .header-title-description {
     display: inline-block;
+    line-height: 25px;
     vertical-align: middle;
+    font-size: $icon-size-first-level;
 }
 
 // First menu level icon size
 :host .mat-icon {
-    height: $icon-size-first-level;
+    line-height: 25px;
+    vertical-align: middle;
+    // height: $icon-size-first-level;
     width: $icon-size-first-level;
 }
 
@@ -51,6 +53,8 @@
 //
 :host .mat-expansion-panel-header {
     padding-left: 5px;
+    line-height: 25px;
+    vertical-align: middle;
 }
 
 

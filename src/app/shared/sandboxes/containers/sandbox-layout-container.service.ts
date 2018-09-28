@@ -13,7 +13,7 @@ import { UserModel } from '../../models/user.model';
 
 @Injectable()
 export class SandboxLayoutContainerService extends SandboxBaseService {
-    @Select(ApplicationState.getUser) public currentUser$: Observable<UserModel>;
+    @Select(ApplicationState.getCurrentUser) public currentUser$: Observable<UserModel>;
 
     constructor(
         private feathers: FeathersjsBackendService,

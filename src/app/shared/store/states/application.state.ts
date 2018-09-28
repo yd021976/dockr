@@ -1,14 +1,14 @@
 import { Action, State, StateContext, Selector, Select } from '@ngxs/store';
+import { Observable } from 'rxjs';
 
-import * as user_actions from '../actions/user.actions';
 import { ApplicationStateModel } from '../../models/application-state.model';
 import { UserState } from '../states/user.state';
-import { Observable } from 'rxjs';
+import { TemplatesState } from './templates.state';
 
 @State<ApplicationStateModel>({
     name: 'application',
     defaults: {},
-    children: [UserState]
+    children: [UserState, TemplatesState]
 })
 export class ApplicationState {
     //
@@ -16,16 +16,16 @@ export class ApplicationState {
     //
 
     /** Flag : is User logged in */
-    @Select(UserState.isLoggedin) static isLoggedin: Observable<boolean>
+    @Select(UserState.isLoggedin) static isLoggedin$: Observable<boolean>
 
     /** */
     @Selector()
     static isProgress(state) {
-        return state.user.isProgress;
+        return state.user.isProgress | state.templates.isLoading;
     }
 
     @Selector()
-    static getUser(state) {
+    static getCurrentUser(state) {
         return state.user;
     }
 

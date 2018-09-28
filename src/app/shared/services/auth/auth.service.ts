@@ -15,11 +15,11 @@ import { stateChangeReason } from '../../../shared/models/backend-service-connec
 export class AuthService {
     private ApiServiceConnectionState$: Observable<BackendServiceConnectionState>;
     private currentIsConnected: boolean = false;
-    public initialAuthentication$: BehaviorSubject<UserBackendApiModel>;
+    public initialAuthentication$: BehaviorSubject<UserBackendApiModel | null>;
 
     constructor(protected logger: NGXLogger, protected feathersBackend: FeathersjsBackendService, protected notificationService: NotificationBaseService) {
         this.ApiServiceConnectionState$ = this.feathersBackend.connectionState$;
-        this.initialAuthentication$ = new BehaviorSubject<UserBackendApiModel>(new UserBackendApiModel());
+        this.initialAuthentication$ = new BehaviorSubject<UserBackendApiModel | null>(null);
 
         // Subscribe to connection change state to auto authenticate user
         this.ApiServiceConnectionState$.subscribe(state => {

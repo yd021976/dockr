@@ -107,10 +107,9 @@ export class FeathersjsBackendService extends BackendSocketioService {
   }
 
   /** 
-   * Check if user is authenticated.
+   * Check if user is authenticated against JWT
    * 
    * NOTE : 
-   * - For anonymous users, resolve FALSE
    * - You must authenticate if user is authenticated, this method DO NOT authenticated user even if payload is valid !!!
   */
   public isAuth(): Promise<boolean> {
@@ -132,8 +131,8 @@ export class FeathersjsBackendService extends BackendSocketioService {
             resolve(isAuth);
           }
         })
-        .catch((error) => {
-          reject(error);
+        .catch(() => {
+          resolve(isAuth);
         });
     });
   }

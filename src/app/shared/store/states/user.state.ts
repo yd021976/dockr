@@ -76,6 +76,6 @@ export class UserState {
      */
     @Selector()
     static isLoggedin(state: UserModel) {
-        if (!state.isAnonymous && state.email != '') return true;
+        if (!state.isAnonymous && state.email != '') return true; else return false;
     }
 }

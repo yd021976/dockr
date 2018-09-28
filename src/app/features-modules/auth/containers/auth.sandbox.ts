@@ -28,9 +28,6 @@ export class AuthSandbox extends SandboxBaseService {
         protected router: Router
     ) {
         super(notificationService, store, logger);
-        this.authService.initialAuthentication$.subscribe((user: UserBackendApiModel) => {
-            this.store.dispatch(new UserLoginSuccessAction(user));
-        })
     }
 
     public Login(credentials: loginCredentials): Promise<boolean> {
