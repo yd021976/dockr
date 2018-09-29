@@ -16,10 +16,12 @@ import { loginCredentials } from '../../../models/user.model';
 @Injectable({
   providedIn: 'root'
 })
+/**
+ * IMPORTANT: Current/last logged in user is a property sets in "feathers" object
+ */
 export class FeathersjsBackendService extends BackendSocketioService {
 
   private feathers: feathers.Application = null;
-
   private currentCounter: number = 0; // For debug purpose ONLY ==> Copy of static "count" property
   static count: number = 0; // Class instances count
 
@@ -47,34 +49,24 @@ export class FeathersjsBackendService extends BackendSocketioService {
       }));
 
     this.feathers.on('authenticated', (event) => {
-      // this.logger.debug('[FeathersjsBackendService] Authenticated event', event);
-      // return this.feathers.passport.verifyJWT(event.accessToken)
-      //   .then((payload => {
-      //     return this.feathers.service('users').get(payload.userId);
-      //   }))
-      //   .then((user) => {
-      //     this.feathers.set('user', user);
-      //     this.updateConnectionState({ user: this.feathers.get('user'), changeReason: stateChangeReason.Feathers_Authenticated });
-      //   })
+      this.logger.debug('[FeathersjsBackendService] Authenticated event', event);
     });
     this.feathers.on('logout', (event) => {
-      // this.logger.debug('[FeathersjsBackendService] Logout event', event);
-
-      // Clear current user
-      this.feathers.set('user', null);
-      this.updateConnectionState({ user: null, changeReason: stateChangeReason.Feathers_Logout });
+      this.logger.debug('[FeathersjsBackendService] Logout event', event);
     });
 
     this.feathers.on('reauthentication-error', (event) => {
       this.logger.debug('[FeathersjsBackendService] reauthentication-error', event);
 
       if (event.data.name == 'TokenExpiredError') {
-        // Note that we don't clear "user" property here -> We need
+        // IMPORTANT: We don't clear "user" property here. We need to keep track of last loggedin user, even after auth error or deconnexion
         this.updateConnectionState({ changeReason: stateChangeReason.Feathers_reauthentication_error });
       }
     });
   }
-
+  public getCurrentUser(): any {
+    return this.feathers.get('user');
+  }
   public service(name: string): feathers.Service<any> {
     return this.feathers.service(name);
   }
@@ -103,6 +95,10 @@ export class FeathersjsBackendService extends BackendSocketioService {
   }
 
   public logout(): Promise<any> {
+    // Clear current user
+    this.feathers.set('user', null);
+    this.updateConnectionState({ changeReason: stateChangeReason.Feathers_Logout });
+
     return this.feathers.logout();
   }
 

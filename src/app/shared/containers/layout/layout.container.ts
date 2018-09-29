@@ -4,7 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 
 import { BackendServiceConnectionState } from '../../models/backend-service-connection-state.model';
 import { ErrorDialogComponent } from '../../components/error/dialog/error-dialog.component';
-import { SandboxLayoutContainerService } from '../../sandboxes/containers/sandbox-layout-container.service';
+import { LayoutContainerSandboxService } from '../../sandboxes/containers/layout-container-sandbox.service';
 import { ThemeItem } from '../../models/theme-items.model';
 
 @Component({
@@ -22,7 +22,7 @@ export class LayoutContainer implements OnInit, OnDestroy {
     private dialogConnection: MatDialogRef<ErrorDialogComponent>;
 
     constructor(
-        public layoutSandbox: SandboxLayoutContainerService,
+        public layoutSandbox: LayoutContainerSandboxService,
         public router: Router,
         private dialogService: MatDialog) {
         this.layoutSandbox.ApiServiceConnectionState$.subscribe((connectionState) => {

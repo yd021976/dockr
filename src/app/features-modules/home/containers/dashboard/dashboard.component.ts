@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DashboardSandbox } from '../../../../shared/sandboxes/containers/sandbox-dashboard.service';
+import { DashboardSandbox } from '../../../../shared/sandboxes/containers/dashboard-sandbox.service';
 
 @Component({
   selector: 'app-dashboard',

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { HomeRoutingModule } from './home-routing.module';
 import { DashboardComponent } from './containers/dashboard/dashboard.component';
-import { DashboardSandbox } from '../../shared/sandboxes/containers/sandbox-dashboard.service';
+import { DashboardSandbox } from '../../shared/sandboxes/containers/dashboard-sandbox.service';
 
 @NgModule({
   imports: [

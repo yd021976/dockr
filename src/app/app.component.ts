@@ -3,7 +3,7 @@ import {
   OnInit
 } from '@angular/core';
 
-import { SandboxAppService } from './shared/sandboxes/app/sandbox-app.service';
+import { AppSandboxService } from './shared/sandboxes/app/app-sandbox.service';
 
 
 
@@ -15,7 +15,7 @@ import { SandboxAppService } from './shared/sandboxes/app/sandbox-app.service';
 export class AppComponent {
   title = 'dockr';
 
-  constructor(public sandbox: SandboxAppService) { }
+  constructor(public sandbox: AppSandboxService) { }
   ngOnInit() {
   }
 }

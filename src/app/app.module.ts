@@ -10,7 +10,7 @@ import { AuthModule } from './features-modules/auth/auth.module';
 import { ComponentsModule } from './shared/components';
 import { ContainersModule } from './shared/containers/containers.module';
 import { HomeModule } from './features-modules/home/home.module';
-import { SandboxAppService } from './shared/sandboxes/app/sandbox-app.service';
+import { AppSandboxService } from './shared/sandboxes/app/app-sandbox.service';
 import { UserState } from './shared/store/states/user.state';
 import { TemplatesState } from './shared/store/states/templates.state';
 
@@ -29,7 +29,7 @@ import { TemplatesState } from './shared/store/states/templates.state';
     NgxsModule.forRoot([ApplicationState, UserState, TemplatesState])
   ],
   providers: [
-    SandboxAppService
+    AppSandboxService
   ],
   bootstrap: [AppComponent]
 })

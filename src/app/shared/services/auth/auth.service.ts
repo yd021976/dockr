@@ -7,7 +7,7 @@ import { FeathersjsBackendService } from "../../../shared/services/backend/socke
 import { loginCredentials, UserBackendApiModel, UserModel } from "../../../shared/models/user.model";
 import { NotificationBaseService } from "../../../shared/services/notifications/notifications-base.service";
 import { stateChangeReason } from '../../../shared/models/backend-service-connection-state.model';
-
+import { errorType, AppError } from '../../models/app-error.model';
 /**
  * 
  */
@@ -43,7 +43,9 @@ export class AuthService {
      */
     public authenticate(credentials?: loginCredentials): Promise<UserBackendApiModel> {
         this.logger.debug('[AuthService]', 'authenticate()', credentials);
-        return this.feathersBackend.authenticate(credentials);
+        return this.feathersBackend.authenticate(credentials).catch((error) => {
+            throw new AppError(error.message, errorType.backendError, error);
+        })
     }
 
     /**
@@ -51,11 +53,42 @@ export class AuthService {
      */
     public logout(): Promise<void> {
         this.logger.debug('[AuthService]', 'logout()');
-        return this.feathersBackend.logout();
+        return this.feathersBackend.logout().catch((error) => {
+            throw new AppError(error.message, errorType.backendError, error);
+        })
 
     }
 
+    /**
+        * Before any service call, we need to check that a valid JWT exist.
+        * If JWT is invalid and last user was anonymous, try to authenticate as anonymous
+        * else throw error
+        */
+    public checkSessionActive(): Promise<boolean> {
+        // get current/Last logged in user
+        const currentLoggedInUser = this.feathersBackend.getCurrentUser();
 
+        return this.feathersBackend.isAuth()
+            .then((isAuth) => {
+                if (isAuth) {
+                    return true;
+                } else {
+                    // if last user was anonymous, silently re-auth as anonymous
+                    if (currentLoggedInUser == null || (currentLoggedInUser != null && currentLoggedInUser['anonymous'])) {
+                        return this.feathersBackend.authenticate({ strategy: 'anonymous' })
+                            .then(() => {
+                                return true;
+                            })
+                            .catch((error) => {
+                                throw new AppError(error.message, errorType.backendError, error);
+                            })
+                    } else {
+                        // JWT has expired and user was not anonymous, throw an error because we can't automatically re-auth without credentials
+                        throw new AppError("Session has expired", errorType.sessionExpired);
+                    }
+                }
+            })
+    }
     /**
     * (re) Authenticate user with existing stored token. If not, auth as anonymous
     */
@@ -72,17 +105,19 @@ export class AuthService {
                     })
                     .catch((error) => {
                         this.logger.debug('[AuthService]', 'authUser()', 'Authenticate as Anonymous', 'END', 'ERROR', error);
+                        throw new AppError(error.message, errorType.backendError, error);
                     })
             } else {
                 // try to authenticate with current valid token
-                this.logger.debug('[AuthService]', 'authUser()', 'Try to re-auth current user', 'PROGRESS', isAuth);
+                this.logger.debug('[AuthService]', 'authUser()', 'Try to re-auth last logged in user', 'PROGRESS', isAuth);
                 this.authenticate()
                     .then((user: UserBackendApiModel) => {
-                        this.logger.debug('[AuthService]', 'authUser()', 'Try to re-auth current user', 'END', 'OK', user);
+                        this.logger.debug('[AuthService]', 'authUser()', 'Try to re-auth last logged in user', 'END', 'OK', user);
                         this.initialAuthentication$.next(user);
                     })
                     .catch((error) => {
-                        this.logger.debug('[AuthService]', 'authUser()', 'Try to re-auth current user', 'END', 'ERROR', error);
+                        this.logger.debug('[AuthService]', 'authUser()', 'Try to re-auth last logged in user', 'END', 'ERROR', error);
+                        throw new AppError(error.message, errorType.backendError, error);
                     })
             }
         })

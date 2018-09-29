@@ -15,7 +15,6 @@ export class BackendServiceConnectionState {
     public isConnected?: boolean;
     public attemptNumber?: number;
     public connectionError?: any;
-    public user?: any;
     public changeReason?: stateChangeReason;
 
     constructor(state?: { isConnected?: boolean, attemptNumber?: number, connectionError?: any, user?: any, changeReason?: string }) {

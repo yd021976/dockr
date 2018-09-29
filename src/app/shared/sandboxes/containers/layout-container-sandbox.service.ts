@@ -8,11 +8,11 @@ import { ApplicationState } from '../../store/states/application.state';
 import { FeathersjsBackendService } from '../../services/backend/socketio/backend-feathers.service';
 import { NotificationBaseService } from '../../services/notifications/notifications-base.service';
 import { notificationType } from '../../models/notification-service.model';
-import { SandboxBaseService } from '../sandbox-base.service';
+import { BaseSandboxService } from '../base-sandbox.service';
 import { UserModel } from '../../models/user.model';
 
 @Injectable()
-export class SandboxLayoutContainerService extends SandboxBaseService {
+export class LayoutContainerSandboxService extends BaseSandboxService {
     @Select(ApplicationState.getCurrentUser) public currentUser$: Observable<UserModel>;
 
     constructor(

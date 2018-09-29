@@ -8,13 +8,13 @@ import { ApplicationState } from "../../../shared/store/states/application.state
 import { AuthService } from "../../../shared/services/auth/auth.service";
 import { loginCredentials } from "../../../shared/models/user.model";
 import { NotificationBaseService } from "../../../shared/services/notifications/notifications-base.service";
-import { SandboxBaseService } from "../../../shared/sandboxes/sandbox-base.service";
+import { BaseSandboxService } from "../../../shared/sandboxes/base-sandbox.service";
 import { UserBackendApiModel } from "../../../shared/models/user.model";
 import { UserLoginAction, UserLoginErrorAction, UserLoginSuccessAction, UserLogoutSuccessAction, UserLogoutErrorAction } from "../../../shared/store/actions/user.actions";
 
 
 @Injectable()
-export class AuthSandbox extends SandboxBaseService {
+export class AuthSandbox extends BaseSandboxService {
     // Keep track of previous server connection state
     private currentIsConnected: boolean = false;
 

@@ -61,11 +61,11 @@ export abstract class BackendSocketioService extends BackendBaseService {
    */
   private initSocketClientHandlers(): void {
     this.socketio.on('connect_error', (error) => {
-      this.updateConnectionState({ isConnected: false, connectionError: error, user: null, changeReason: stateChangeReason.socketIO_Connection_Error });
+      this.updateConnectionState({ isConnected: false, connectionError: error, changeReason: stateChangeReason.socketIO_Connection_Error });
     });
 
     this.socketio.on('connect_timeout', (error) => {
-      this.updateConnectionState({ isConnected: false, connectionError: error, user: null, changeReason: stateChangeReason.socketIO_connection_timeout });
+      this.updateConnectionState({ isConnected: false, connectionError: error, changeReason: stateChangeReason.socketIO_connection_timeout });
     });
 
     this.socketio.on('reconnect_attempt', (attempt) => {
