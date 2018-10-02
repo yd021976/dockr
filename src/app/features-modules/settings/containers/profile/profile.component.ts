@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { SettingsSandboxService } from '../../../../shared/sandboxes/containers/settings-sandbox.service';
 
 @Component({
-  selector: 'app-settings',
-  templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.css']
+  selector: 'app-profile',
+  templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.css']
 })
-export class SettingsComponent implements OnInit {
+export class ProfileComponent implements OnInit {
 
   constructor(public sandbox: SettingsSandboxService) { }
 

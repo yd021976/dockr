@@ -4,8 +4,12 @@ Define side nav global theme variables
 
 @import '~@angular/material/theming';
 //
-$icon-size-first-level: 16px;
-$icon-size-next-level: 12px;
+$root-menu-line-height: 25px;
+$root-icon-size:16px;
+$root-title-size:16px;
+$child-menu-line-height: 20px;
+$child-icon-size:14px;
+$child-title-size:14px;
 //
 @function primary($theme) {
     @return mat-color(map-get($theme, primary), 500);
@@ -38,6 +42,7 @@ $icon-size-next-level: 12px;
 @function text-color-hover($theme) {
     @return text-color-expanded($theme);
 }
+
 @function text-color-linkactive($theme) {
     @return mat-color(map-get($theme, accent), 400);
 }

@@ -29,8 +29,8 @@ export class DashboardSandbox extends BaseSandboxService {
     public getTemplates(): Promise<any> {
         this.store.dispatch(new TemplatesLoadAction());
 
-        return this.authService.checkSessionActive()
-            .then(() => {
+        return this.authService.checkSessionActive() // Throws error if session has expired (except for anonymous user)
+            .then((active) => {
                 this.templatesService.find()
                     .then((templates) => {
                         this.logger.debug('[DashboardSandbox]', 'getTemplates()', 'SUCCESS', templates.data);

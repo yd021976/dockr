@@ -5,7 +5,7 @@ import { AppRoute } from '../../shared/models/app-route.model';
 
 const routes: AppRoute[] = [
   {
-    path: 'home', data: { isMenu: true, title: 'Home', icon: '' }, children: [
+    path: 'home', data: { isMenu: true, title: 'Home', icon: 'fa-home' }, children: [
       { path: 'dashboard', component: DashboardComponent, data: { isMenu: true, link: 'home/dashboard', title: 'Dashboard' } }
     ]
   }

@@ -60,10 +60,17 @@ export class AuthService {
     }
 
     /**
+        * 
         * Before any service call, we need to check that a valid JWT exist.
         * If JWT is invalid and last user was anonymous, try to authenticate as anonymous
         * else throw error
-        */
+        * 
+        * @Return
+        * - True : Current JWT is valid
+        * - False : Current JWT is not valid AND re-auth as anonymous successfull
+        * - Throws error : If JWT is invalid and can't auth as anonymous because previously logged-in as a real user OR server error 
+        * 
+    **/
     public checkSessionActive(): Promise<boolean> {
         // get current/Last logged in user
         const currentLoggedInUser = this.feathersBackend.getCurrentUser();
@@ -77,7 +84,7 @@ export class AuthService {
                     if (currentLoggedInUser == null || (currentLoggedInUser != null && currentLoggedInUser['anonymous'])) {
                         return this.feathersBackend.authenticate({ strategy: 'anonymous' })
                             .then(() => {
-                                return true;
+                                return false;
                             })
                             .catch((error) => {
                                 throw new AppError(error.message, errorType.backendError, error);

@@ -2,13 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { SettingsRoutingModule } from './settings-routing.module';
-import { SettingsComponent } from './containers/settings/settings.component';
+import { ProfileComponent } from './containers/profile/profile.component';
 
 @NgModule({
   imports: [
     CommonModule,
     SettingsRoutingModule
   ],
-  declarations: [SettingsComponent]
+  declarations: [ProfileComponent]
 })
 export class SettingsModule { }

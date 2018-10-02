@@ -112,6 +112,8 @@
         // Set panel body with no padding to avoid children to be indented
         .mat-expansion-panel-body {
             padding: 0;
+            padding-top:4px;
+            min-height: 32px;
             /* first level */
             .mat-expansion-panel {
                 .mat-expansion-panel-header {

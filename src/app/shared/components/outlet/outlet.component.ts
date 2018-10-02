@@ -1,4 +1,4 @@
-import { Component, OnInit, HostBinding } from '@angular/core';
+import { Component, OnInit, HostBinding, Input } from '@angular/core';
 import {
   animate,
   animateChild,
@@ -20,6 +20,8 @@ import 'web-animations-js'; // WARNING: Needed in safari for web animations to w
     trigger('fadeAnimation', [
 
       transition('* => *', [
+        // query('#admin', [animateChild()], { optional: true }),
+
         query(':enter',
           [
             style({ opacity: 0 })
@@ -47,6 +49,7 @@ import 'web-animations-js'; // WARNING: Needed in safari for web animations to w
   ]
 })
 export class OutletComponent implements OnInit {
+  @Input() animate:boolean = true;
   constructor() { }
 
   ngOnInit() {
