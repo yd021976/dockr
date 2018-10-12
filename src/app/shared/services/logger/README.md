@@ -11,18 +11,7 @@ import {AppLoggerService} from 'tigrou-flexible-logger'
 ```
 
 2. Configure module
-import the logger service module on your module, and **use "forRoot"** to provide configuration.
-
-Module config details :
-* loggerAdapter: The adapter class to use when creating new logger instance, default is set to "AppLoggerAdapter" provided in this library
-* onlyLoggers: [] : Array of strings containing regexp to filter loggers (base on logger name)
-*  serviceConfig: Service configuration object, contains following properties 
-    isDeveloppementMode: True will output message, false disable message output
-    logLevels: Array of allowed levels for output. Use class "Level" to set output level
-* defaultLoggerConfig: Default config applied when creating new logger instance
-    logLevels : Array of allowed levels for output. Use class "Level" to set output level
-    isDeveloppementMode : True will output message, false disable message output
-    loggerConfig : Any object to configure the custom logger provided by config property "loggerAdapter". this config object will be passed to the logger adapter
+import the logger service module on your module, and **use "forRoot"** to provide configuration, keep empty if you want default module configuration.
 
 Example code :
 ```
@@ -32,6 +21,19 @@ imports:[
 ]
 ...
 ```
+
+The configuration object contains following properties :
+* **loggerAdapter**: The adapter class to use when creating new logger instance, default is set to "AppLoggerAdapter" provided in this library
+* **onlyLoggers**: [] : Array of strings containing regexp to filter loggers (base on logger name)
+*  **serviceConfig**: Service configuration object, contains following properties 
+    * **isDeveloppementMode**: True will output message, false disable message output
+    * **logLevels**: Array of allowed levels for output. Use class "Level" to set output level
+* **defaultLoggerConfig**: Default config applied when creating new logger instance
+    * **logLevels** : Array of allowed levels for output. Use class "Level" to set output level
+    * **isDeveloppementMode** : True will output message, false disable message output
+    * **loggerConfig** : Any object to configure the custom logger provided by config property "loggerAdapter". this config object will be passed to the logger adapter
+
+
 
 3. Use it in your components, services ...
 import the service in your class (component...), create a logger with a name, output messages with service methods
@@ -63,5 +65,5 @@ It provide default feature for the "logger service" library, and it is an exempl
 Easy ! Follow steps below and read example in file "app-logger-adapter.ts"
 
 # TODO
-As a xork in progress, those features should be implemented in a next release :
+As a work in progress, those features should be implemented in a next release :
 * Implement a stream concept : A stream should be responsible for output data (console, file, http request, XHR etc.)
