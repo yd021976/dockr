@@ -1,17 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatExpansionModule } from '@angular/material';
 
 import { HomeRoutingModule } from './home-routing.module';
-import { DashboardComponent } from './containers/dashboard/dashboard.component';
+import { HomeComponent } from './containers/home/home.component';
 import { DashboardSandbox } from '../../shared/sandboxes/containers/dashboard-sandbox.service';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { ComponentsModule } from '../../shared/components';
+import { TodoComponent } from './components/todo/todo.component';
 
 @NgModule({
   imports: [
     CommonModule,
-    HomeRoutingModule
+    ComponentsModule,
+    HomeRoutingModule,
+    MatExpansionModule
   ],
-  declarations: [DashboardComponent],
-  providers:[
+  declarations: [HomeComponent, DashboardComponent, TodoComponent],
+  providers: [
     DashboardSandbox
   ]
 })

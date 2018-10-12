@@ -1,8 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { NgModule } from '@angular/core';
 import { NgxsModule } from '@ngxs/store';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 
 import { AppComponent } from './app.component';
 import { ApplicationState } from './shared/store/states/application.state';
@@ -15,6 +15,8 @@ import { UserState } from './shared/store/states/user.state';
 import { TemplatesState } from './shared/store/states/templates.state';
 import { SettingsModule } from './features-modules/settings/settings.module';
 import { AdminModule } from './features-modules/admin/admin.module';
+import { AppRoutingModule } from './/app-routing.module';
+import { AppLoggerModule } from './shared/services/logger/app-logger/app-logger.module';
 
 @NgModule({
   declarations: [
@@ -27,10 +29,12 @@ import { AdminModule } from './features-modules/admin/admin.module';
     ComponentsModule,
     ContainersModule,
     HomeModule,
+    AppLoggerModule.forRoot(),
     LoggerModule.forRoot({ level: NgxLoggerLevel.TRACE }),
     NgxsModule.forRoot([ApplicationState, UserState, TemplatesState]),
     SettingsModule,
-    AdminModule
+    AdminModule,
+    AppRoutingModule
   ],
   providers: [
     AppSandboxService

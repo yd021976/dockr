@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { NGXLogger } from 'ngx-logger';
+// import { NGXLogger } from 'ngx-logger';
 import { Observable, BehaviorSubject } from "rxjs";
 import { Select, Store } from "@ngxs/store";
 
@@ -13,5 +13,5 @@ export abstract class BaseSandboxService {
     isLoggedin$: Observable<boolean> = ApplicationState.isLoggedin$;
     @Select(ApplicationState.isProgress) isProgress$: Observable<boolean>;
 
-    constructor(public notificationService: NotificationBaseService, protected store: Store, public logger: NGXLogger) { }
+    constructor(public notificationService: NotificationBaseService, protected store: Store, public logger: any) { }
 }

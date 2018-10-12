@@ -9,7 +9,6 @@ import { AuthService } from "../../../shared/services/auth/auth.service";
 import { loginCredentials } from "../../../shared/models/user.model";
 import { NotificationBaseService } from "../../../shared/services/notifications/notifications-base.service";
 import { BaseSandboxService } from "../../../shared/sandboxes/base-sandbox.service";
-import { UserBackendApiModel } from "../../../shared/models/user.model";
 import { UserLoginAction, UserLoginErrorAction, UserLoginSuccessAction, UserLogoutSuccessAction, UserLogoutErrorAction } from "../../../shared/store/actions/user.actions";
 
 

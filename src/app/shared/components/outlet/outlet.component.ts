@@ -20,7 +20,7 @@ import 'web-animations-js'; // WARNING: Needed in safari for web animations to w
     trigger('fadeAnimation', [
 
       transition('* => *', [
-        // query('#admin', [animateChild()], { optional: true }),
+        // query('app-admin app-outlet @fadeAnimation', [animateChild()], { optional: true }),
 
         query(':enter',
           [
@@ -28,28 +28,33 @@ import 'web-animations-js'; // WARNING: Needed in safari for web animations to w
           ],
           { optional: true }
         ),
-
         query(':leave',
           [
             style({ opacity: 1 }),
-            animate('0.3s', style({ opacity: 0 }))
+            animate('200ms', style({ opacity: 0 }))
           ],
           { optional: true }
         ),
-
         query(':enter',
           [
             style({ opacity: 0 }),
-            animate('0.3s', style({ opacity: 1 }))
+            animate('200ms', style({ opacity: 1 }))
           ],
           { optional: true }
-        )
+        ),
+        // ANGULAR_PATCH: workaround to animate child router outlet, @see https://github.com/angular/angular/issues/15477
+        query(':leave app-outlet router-outlet ~ *',
+          [
+            style({ opacity: 1 }),
+            animate(200, style({ opacity: 0 }))
+          ],
+          { optional: true })
       ])
     ])
   ]
 })
 export class OutletComponent implements OnInit {
-  @Input() animate:boolean = true;
+  @Input() class: string = "";
   constructor() { }
 
   ngOnInit() {

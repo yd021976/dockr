@@ -15,7 +15,8 @@ import { AppSandboxService } from './shared/sandboxes/app/app-sandbox.service';
 export class AppComponent {
   title = 'dockr';
 
-  constructor(public sandbox: AppSandboxService) { }
+  constructor(public sandbox: AppSandboxService) {
+  }
   ngOnInit() {
   }
 }

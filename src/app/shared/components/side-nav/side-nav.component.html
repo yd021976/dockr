@@ -1,9 +1,9 @@
 <div class="sidenav-component">
-  <mat-accordion multi="false" displayMode="default" #sidenavAccordion>
+  <mat-accordion multi="false" displayMode="flat">
     <ng-container *ngFor="let menuItem of routerConfig">
       <ng-container *ngIf="menuItem.data?.isMenu">
         <ng-container *ngIf="menuItem.children?.length!=0 ;else item">
-          <app-menu-item [menuItem]="menuItem" [accordion]="sidenavAccordion"></app-menu-item>
+          <app-menu-item [menuItem]="menuItem" [accordion]="accordion"></app-menu-item>
           <ng-template #item>
             <app-menu-item [menuItem]="menuItem"></app-menu-item>
           </ng-template>

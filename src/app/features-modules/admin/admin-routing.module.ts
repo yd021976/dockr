@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { AppRoute } from '../../shared/models/app-route.model';
 import { UsersComponent } from './components/users/users.component';
 import { AclComponent } from './components/acl/acl.component';

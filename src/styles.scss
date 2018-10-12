@@ -32,7 +32,7 @@ $app-default-theme: mat-light-theme($app-default-primary, $app-default-accent);
 @include auth-component-login($app-default-theme);
 @import 'app/features-modules/auth/containers/logout/logout.component.scss';
 @include auth-component-logout($app-default-theme);
-@import 'app/features-modules/home/containers/dashboard/dashboard.component.scss';
+@import 'app/features-modules/home/containers/home/home.component.scss';
 @include home-component-dashboard($app-default-theme);
 
 // alternative theme 2

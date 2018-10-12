@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { DashboardSandbox } from '../../../../shared/sandboxes/containers/dashboard-sandbox.service';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class HomeComponent implements OnInit {
 
   constructor(public sandbox: DashboardSandbox) { }
 

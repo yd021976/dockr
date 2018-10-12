@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
-import { Router } from '@angular/router';
+// import { Router } from '@angular/router';
 import { Store, Select } from '@ngxs/store';
 
 import { NotificationBaseService } from '../../services/notifications/notifications-base.service';

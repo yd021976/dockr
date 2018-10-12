@@ -1,4 +1,4 @@
-import { Component, Inject, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material';
 
@@ -25,12 +25,14 @@ export class LayoutContainer implements OnInit, OnDestroy {
         public layoutSandbox: LayoutContainerSandboxService,
         public router: Router,
         private dialogService: MatDialog) {
+
         this.layoutSandbox.ApiServiceConnectionState$.subscribe((connectionState) => {
             this.onApiServiceConnection_change(connectionState);
         });
     }
 
-    ngOnInit() { }
+    ngOnInit() {
+    }
 
     ngOnDestroy() { }
 

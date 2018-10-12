@@ -1,6 +1,7 @@
 import { Action, State, StateContext, Selector } from '@ngxs/store';
 import { UserModel } from '../../models/user.model';
 import * as actions from '../actions/user.actions';
+import { NGXLogger } from 'ngx-logger';
 
 const defaultState: UserModel = {
     nickname: '',
@@ -19,7 +20,7 @@ const defaultState: UserModel = {
     defaults: defaultState
 })
 export class UserState {
-    constructor() { }
+    constructor(protected logger: NGXLogger) { }
     @Action(actions.UserLoginAction)
     login(ctx: StateContext<UserModel>) {
         ctx.patchState({
@@ -41,6 +42,8 @@ export class UserState {
             isError: action.user['anonymous'] ? ctx.getState().isError : false, // don't update last error if user logged as anonymous
             error: action.user['anonymous'] ? ctx.getState().error : '', // don't update last error if user logged as anonymous
         });
+        this.logger.debug('[UserState]', 'loginSucess', ctx.getState());
+
     }
 
     @Action(actions.UserLoginErrorAction)
@@ -50,6 +53,7 @@ export class UserState {
             isError: true,
             error: action.error
         })
+        this.logger.debug('[UserState]', 'loginError', ctx.getState());
     }
 
     @Action(actions.UserLogoutAction)
