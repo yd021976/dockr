@@ -1,8 +1,27 @@
 # Goal
+this module re-use and is inspired by some code of ng2-logger (https://github.com/darekf77/ng2-logger)
 Provide a full extensible and configurable logger service for angular 5+
 
 # Features
-Logging message to console (with coloring, output objects...), multiple named logger, mute and filter logger by regexp and on level (info, debug, warn, error)
+- Logging capabilities
+    - Format message to console (with coloring, output objects...), 
+    - Manage multiple logger instance
+    - Filter and mute logger output by regexp and on level (info, debug, warn, error)
+
+- Provide an interface that allow developpers to :
+    - Implement their own (or npm) logger without need of change all "log" calls in the app (same interface)
+    - Implement all needed feature in the interface (such as log to console, http, localStorage)
+    - Implement all the logger output logic
+
+
+# Tchnical architecture
+
+1. The AppLoggerService
+AppLoggerService is the singleton service that you'll use everywhere in the app.
+
+
+2. The AppLoggerAdapter
+
 
 # Usage
 1. Import LoggerServiceModule in your app

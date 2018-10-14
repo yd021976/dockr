@@ -1,4 +1,4 @@
-import { Level } from "ng2-logger";
+import { Level } from "./app-logger-levels.class";
 import { AppLoggerAdapter } from "../logger/app-logger-adapter";
 import { AppLoggerAdapterBase } from "./app-logger-adapter-base.class";
 
@@ -31,6 +31,9 @@ export abstract class AppLoggerConfigBase {
  * Logger config class
  */
 export abstract class AppLoggerConfig extends AppLoggerConfigBase {
+    color: string;
+    mute: boolean;
+    fixedWidth: number;
     loggerConfig?: any; // Permit to set any config object for implemented logger if needed
 }
 

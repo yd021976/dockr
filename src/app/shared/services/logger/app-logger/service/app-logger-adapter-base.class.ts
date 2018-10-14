@@ -1,4 +1,4 @@
-import { Level } from 'ng2-logger';
+import { Level } from '../service/app-logger-levels.class';
 import { Logger } from '../logger/app-logger.class';
 import { AppLoggerConfig } from '../service/app-logger-config.class';
 import { LoggerMessage } from '../service/app-logger.service';
@@ -24,10 +24,10 @@ export abstract class AppLoggerAdapterBase<T extends any=Logger> {
     protected config: AppLoggerConfig;
     protected logger: T; // logger instance
 
-    public abstract setConfig(config: any)
-    public abstract mute(mute: boolean)
-    public abstract data(message: LoggerMessage)
-    public abstract info(message: LoggerMessage)
-    public abstract warn(message: LoggerMessage)
-    public abstract error(message: LoggerMessage)
+    public abstract setConfig(config: AppLoggerConfig):void
+    public abstract mute(mute: boolean):void
+    public abstract data(message: LoggerMessage):void
+    public abstract info(message: LoggerMessage):void
+    public abstract warn(message: LoggerMessage):void
+    public abstract error(message: LoggerMessage):void
 }

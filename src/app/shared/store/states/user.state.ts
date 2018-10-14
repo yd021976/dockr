@@ -1,7 +1,9 @@
 import { Action, State, StateContext, Selector } from '@ngxs/store';
 import { UserModel } from '../../models/user.model';
 import * as actions from '../actions/user.actions';
-import { NGXLogger } from 'ngx-logger';
+import { Inject } from '@angular/core';
+import { AppLoggerServiceToken } from '../../services/logger/app-logger/app-logger-token';
+import { AppLoggerService } from '../../services/logger/app-logger/service/app-logger.service';
 
 const defaultState: UserModel = {
     nickname: '',
@@ -20,7 +22,11 @@ const defaultState: UserModel = {
     defaults: defaultState
 })
 export class UserState {
-    constructor(protected logger: NGXLogger) { }
+    private readonly loggerName: string = "UserState";
+
+    constructor(@Inject(AppLoggerServiceToken) protected loggerService: AppLoggerService) {
+        this.loggerService.createLogger(this.loggerName);
+    }
     @Action(actions.UserLoginAction)
     login(ctx: StateContext<UserModel>) {
         ctx.patchState({
@@ -42,7 +48,7 @@ export class UserState {
             isError: action.user['anonymous'] ? ctx.getState().isError : false, // don't update last error if user logged as anonymous
             error: action.user['anonymous'] ? ctx.getState().error : '', // don't update last error if user logged as anonymous
         });
-        this.logger.debug('[UserState]', 'loginSucess', ctx.getState());
+        this.loggerService.debug(this.loggerName, { message: 'loginSucess', otherParams: [ctx.getState()] });
 
     }
 
@@ -53,7 +59,7 @@ export class UserState {
             isError: true,
             error: action.error
         })
-        this.logger.debug('[UserState]', 'loginError', ctx.getState());
+        this.loggerService.debug(this.loggerName, { message: 'loginError', otherParams: [ctx.getState()] });
     }
 
     @Action(actions.UserLogoutAction)

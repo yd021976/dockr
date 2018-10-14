@@ -1,15 +1,18 @@
 import * as feathers from '@feathersjs/feathers';
-import { Injectable } from "@angular/core";
-import { NGXLogger } from "ngx-logger";
+import { Injectable, Inject } from "@angular/core";
 
 import { FeathersjsBackendService } from "../../../shared/services/backend/socketio/backend-feathers.service";
 import { AppError, errorType } from '../../models/app-error.model';
+import { AppLoggerService } from '../logger/app-logger/service/app-logger.service';
+import { AppLoggerServiceToken } from '../logger/app-logger/app-logger-token';
 
 @Injectable({ providedIn: 'root' })
 export class TemplatesService {
+    private readonly loggerName: string = "TemplatesService";
     protected service: feathers.Service<any>;
 
-    constructor(protected backendApiService: FeathersjsBackendService, private logger: NGXLogger) {
+    constructor(protected backendApiService: FeathersjsBackendService, @Inject(AppLoggerServiceToken) public loggerService: AppLoggerService) {
+        this.loggerService.createLogger(this.loggerName);
         this.service = this.backendApiService.service('templates');
     }
 

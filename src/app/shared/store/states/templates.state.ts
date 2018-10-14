@@ -1,13 +1,20 @@
 import { Action, State, StateContext, Selector } from '@ngxs/store';
 import { TemplatesModel, TemplateModel, TemplatesNormalized } from '../../models/templates.model';
 import { TemplatesLoadAction, TemplatesLoadSuccessAction, TemplatesLoadErrorAction, TemplateLoadReset } from '../actions/templates.actions';
-import { NGXLogger } from 'ngx-logger';
+import { AppLoggerService } from '../../services/logger/app-logger/service/app-logger.service';
+import { Inject } from '@angular/core';
+import { AppLoggerServiceToken } from '../../services/logger/app-logger/app-logger-token';
 
 @State<TemplatesModel>({
     name: 'templates'
 })
 export class TemplatesState {
-    constructor(protected logger: NGXLogger) { }
+    private readonly loggerName: string = "TemplatesState";
+
+    constructor(@Inject(AppLoggerServiceToken) public loggerService: AppLoggerService) {
+        this.loggerService.createLogger(this.loggerName);
+    }
+
     @Action(TemplatesLoadAction)
     loadTemplate(ctx: StateContext<TemplatesModel>) {
         ctx.patchState({
@@ -21,7 +28,7 @@ export class TemplatesState {
         var normalized: TemplatesNormalized = {};
         action.templates.forEach((value) => {
             // Controle key doesn't already exist
-            if (normalized[value._id]) { this.logger.warn('[TemplatesState]', 'loadTemplatesSuccess()', 'Duplicate template key', value._id) }
+            if (normalized[value._id]) { this.loggerService.warn(this.loggerName, { message: 'loadTemplatesSuccess()', otherParams: ['Duplicate template key', value._id] }) }
             else normalized[value._id] = value;
         })
 

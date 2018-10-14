@@ -1,5 +1,4 @@
-import { Injectable } from "@angular/core";
-import { NGXLogger } from "ngx-logger";
+import { Injectable, Inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { Router } from "@angular/router";
 import { Store, Select } from "@ngxs/store";
@@ -10,10 +9,13 @@ import { loginCredentials } from "../../../shared/models/user.model";
 import { NotificationBaseService } from "../../../shared/services/notifications/notifications-base.service";
 import { BaseSandboxService } from "../../../shared/sandboxes/base-sandbox.service";
 import { UserLoginAction, UserLoginErrorAction, UserLoginSuccessAction, UserLogoutSuccessAction, UserLogoutErrorAction } from "../../../shared/store/actions/user.actions";
+import { AppLoggerServiceToken } from "src/app/shared/services/logger/app-logger/app-logger-token";
+import { AppLoggerService } from "src/app/shared/services/logger/app-logger/service/app-logger.service";
 
 
 @Injectable()
 export class AuthSandbox extends BaseSandboxService {
+    private readonly loggerName: string = "AuthSandbox";
     // Keep track of previous server connection state
     private currentIsConnected: boolean = false;
 
@@ -22,11 +24,12 @@ export class AuthSandbox extends BaseSandboxService {
     constructor(
         protected authService: AuthService,
         notificationService: NotificationBaseService,
-        logger: NGXLogger,
+        @Inject(AppLoggerServiceToken) public loggerService: AppLoggerService,
         store: Store,
         protected router: Router
     ) {
-        super(notificationService, store, logger);
+        super(notificationService, store, loggerService);
+        this.loggerService.createLogger(this.loggerName);
     }
 
     public Login(credentials: loginCredentials): Promise<boolean> {
@@ -35,27 +38,27 @@ export class AuthSandbox extends BaseSandboxService {
         });
     }
     private doLogin(credentials: loginCredentials) {
-        this.logger.debug('[LoginSandbox] Login user START', credentials);
+        this.loggerService.debug(this.loggerName, { message: 'login()', otherParams: ['START',credentials] });
         this.store.dispatch(new UserLoginAction());
         return this.authService.authenticate(credentials)
             .then((user) => {
                 this.store.dispatch(new UserLoginSuccessAction(user))
-                this.logger.debug('[LoginSandbox] Login user END', 'OK', user);
+                this.loggerService.debug(this.loggerName, { message: 'login()', otherParams: ['END','OK', user] });
             })
             .catch((error) => {
                 this.store.dispatch(new UserLoginErrorAction(error.message));
-                this.logger.debug('[LoginSandbox] Login user END', "ERROR", error);
+                this.loggerService.debug(this.loggerName, { message: 'login()', otherParams: ['END','ERROR', error] });
             })
     }
     public logout(): Promise<void> {
-        this.logger.debug('[LoginSandbox] Logout START');
+        this.loggerService.debug(this.loggerName, { message: 'logout()', otherParams: ['START'] });
         return this.authService.logout()
             .then(() => {
-                this.logger.debug('[LoginSandbox] Logout END', 'OK');
+                this.loggerService.debug(this.loggerName, { message: 'logout()', otherParams: ['END','OK']});
                 this.store.dispatch(new UserLogoutSuccessAction())
             })
             .catch((error) => {
-                this.logger.debug('[LoginSandbox] Logout END', 'ERROR', error);
+                this.loggerService.debug(this.loggerName,{message:'logout()',otherParams: ['END','ERROR', error]});
                 this.store.dispatch(new UserLogoutErrorAction(error.message))
             })
     }

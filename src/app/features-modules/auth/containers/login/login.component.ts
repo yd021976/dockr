@@ -14,6 +14,8 @@ import { AuthSandbox } from '../auth.sandbox';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+  private readonly loggerName: string = "LoginComponent";
+
   public credentials: loginCredentials = { strategy: 'local', email: '', password: '' };
   public authError$: Observable<string>;
   private subscribes: Array<Subscription>;
@@ -40,7 +42,7 @@ export class LoginComponent implements OnInit {
   public onLogin() {
     this.sandbox.Login(this.credentials).then((result) => {
       if (result) {
-        this.sandbox.logger.debug('[LoginComponent] onLogin successfull, redirecting page.',this.redirectTo);
+        this.sandbox.loggerService.debug(this.loggerName, { message: 'onLogin()', otherParams: ['successfull', 'redirecting', this.redirectTo] });
         this.router.navigate([this.redirectTo]);
       }
     })

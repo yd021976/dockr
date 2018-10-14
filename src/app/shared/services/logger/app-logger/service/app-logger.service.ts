@@ -1,5 +1,5 @@
-import { Injectable, Inject } from '@angular/core';
-import { Level, Display, Logger } from 'ng2-logger';
+import { Inject } from '@angular/core';
+import { Level } from './app-logger-levels.class';
 import { AppLoggerServiceConfig, loggerAdapterType, AppLoggerConfig } from './app-logger-config.class';
 import { AppLoggerConfigToken } from '../app-logger-token';
 import { contain, getRandomColor } from '../utils/app-logger-utils';
@@ -11,90 +11,158 @@ export type LoggerMessage = { message: string, otherParams: any[] }
 
 export class AppLoggerService<T extends AppLoggerAdapterBase=AppLoggerAdapter> {
   protected readonly serviceLoggerName: string = "AppLoggerService main logger";
-  protected instances: { [name: string]: T } = {};
+  protected instances: { [name: string]: T | AppLoggerAdapter } = {};
   protected config: AppLoggerServiceConfig;
   protected levels: Level[];
   protected isMuted: boolean = false;
-  protected loggerAdapterConstructor:loggerAdapterType<T>;
+  protected loggerAdapterConstructor: loggerAdapterType;
 
   constructor(@Inject(AppLoggerConfigToken) config: AppLoggerServiceConfig) {
     // Create the "Service logger"
-    this.loggerAdapterConstructor = <any>config.loggerAdapter;
+    this.loggerAdapterConstructor = config.loggerAdapter;
     this.setConfig(config);
-    this.createLogger(this.serviceLoggerName, '', true, [Level.DATA], false, 0);
+    this.createLogger(this.serviceLoggerName);
   }
   /**
    * Create or get a logger by name
    * @param name Name of the logger
    * @param levels Loggin levels for this logger
    */
-  public createLogger(name: string, color?: string, developmentMode?: boolean, levels?: Level[], isMuted?: boolean, fixedWidth?: number | undefined): void {
+  public createLogger(name: string, loggerConfig: AppLoggerConfig | null = null, loggerAdapter?: loggerAdapterType<T>): void {
+    /**
+     * If no overrided logger config, apply current service default config
+     */
+    if (loggerConfig === null) loggerConfig = this.config.defaultLoggerConfig;
 
-    // If instance doesn't already exists, create new Logger
     if (this.instances[name] == undefined) {
-      this.instances[name] = new this.loggerAdapterConstructor(
+      this.instances[name] = new (loggerAdapter ? loggerAdapter : this.loggerAdapterConstructor)(
         name,
-        color || getRandomColor(),
-        developmentMode || this.config.defaultLoggerConfig.isDeveloppementMode,
-        levels || this.config.defaultLoggerConfig.logLevels,
-        isMuted || false,
-        0 || fixedWidth,
-        this.config.defaultLoggerConfig || { isDeveloppementMode: false, logLevels: [Level.DATA] });
+        loggerConfig.color || "#000000",
+        loggerConfig.isDeveloppementMode,
+        loggerConfig.logLevels,
+        loggerConfig.mute || false,
+        loggerConfig.fixedWidth || 0,
+        loggerConfig || { isDeveloppementMode: false, logLevels: [Level.DATA], color: "#000000", fixedWidth: 0, mute: false });
     }
     else {
-      this.warn({
+      this.warn(null, {
         message: 'Logger already exists. No new instance is created',
         otherParams: [name]
       });
     }
   }
-  public debug(data: LoggerMessage, adapterInstanceName: string = this.serviceLoggerName) {
-    if (!this.canOutput(adapterInstanceName, Level.DATA)) return;
-    this.instances[adapterInstanceName].data(data);
+
+  /**
+   * 
+   * @param adapterInstanceName 
+   * @param data 
+   */
+  public debug(adapterInstanceName: string | null = this.serviceLoggerName, data: LoggerMessage): void {
+    this.log(adapterInstanceName, data, Level.DATA);
   }
-  public data(message: LoggerMessage, adapterInstanceName: string = this.serviceLoggerName) {
-    if (!this.canOutput(adapterInstanceName, Level.DATA)) return;
-    this.debug(message, adapterInstanceName);
+
+  /**
+   * 
+   * @param adapterInstanceName 
+   * @param data 
+   */
+  public info(adapterInstanceName: string | null = this.serviceLoggerName, data: LoggerMessage) {
+    this.log(adapterInstanceName, data, Level.INFO);
   }
-  public info(data: LoggerMessage, adapterInstanceName: string = this.serviceLoggerName) {
-    if (!this.canOutput(adapterInstanceName, Level.DATA)) return;
-    this.instances[adapterInstanceName].info(data);
+
+  /**
+   * 
+   * @param adapterInstanceName 
+   * @param data 
+   */
+  public warn(adapterInstanceName: string | null = this.serviceLoggerName, data: LoggerMessage) {
+    this.log(adapterInstanceName, data, Level.WARN);
   }
-  public warn(data: LoggerMessage, adapterInstanceName: string = this.serviceLoggerName) {
-    if (!this.canOutput(adapterInstanceName, Level.DATA)) return;
-    this.instances[adapterInstanceName].warn(data);
+
+  /**
+   * 
+   * @param adapterInstanceName 
+   * @param data 
+   */
+  public error(adapterInstanceName: string | null = this.serviceLoggerName, data: LoggerMessage) {
+    this.log(adapterInstanceName, data, Level.ERROR);
   }
-  public error(data: LoggerMessage, adapterInstanceName: string = this.serviceLoggerName) {
-    if (!this.canOutput(adapterInstanceName, Level.DATA)) return;
-    this.instances[adapterInstanceName].error(data);
+
+  /**
+   * 
+   * @param adapterInstanceName 
+   * @param data 
+   * @param messageLevel 
+   */
+  private log(adapterInstanceName: string | null, data: LoggerMessage, messageLevel: Level): void {
+    if (adapterInstanceName === null) adapterInstanceName = this.serviceLoggerName;
+    if (!this.canOutput(adapterInstanceName, messageLevel)) return;
+
+    var loggerMethod: string = null;
+    switch (messageLevel) {
+      case Level.DATA:
+        loggerMethod = "data";
+        break;
+      case Level.INFO:
+        loggerMethod = "info";
+        break;
+      case Level.WARN:
+        loggerMethod = "warn";
+        break;
+      case Level.ERROR:
+        loggerMethod = "error";
+        break;
+      default:
+        loggerMethod = "info";
+        break;
+    }
+    this.instances[adapterInstanceName][loggerMethod](data);
   }
   /**
    * Set new config and apply it to main service logger and all logger instances
    */
   public setConfig(config: AppLoggerServiceConfig) {
     this.config = config;
-    this.loggerAdapterConstructor = <any>config.loggerAdapter;
+    this.loggerAdapterConstructor = config.loggerAdapter;
 
     /**
      * Update logger instances config
      */
-    var instance: T;
+    var instance: T | AppLoggerAdapter;
     for (var instanceName in this.instances) {
       instance = this.instances[instanceName];
       instance.setConfig(config.defaultLoggerConfig);
 
       if (this.config.onlyLoggers.length != 0)
-        if (!contain(this.config.onlyLoggers, instanceName)) instance.mute(true);
+        this.filterLogger(instance, this.config.onlyLoggers);
     }
   }
 
   /**
-   * Mute service logger or adapter
-   * @param adapterInstanceName Adapter name to mute, mute service if empty
+   * Set logger output filter : Mute filter whom name doesn't meet a regexp 
+   * @param onlyLoggers Array of regexp that filter logger that can output messages
    */
-  public mute(adpateterInstanceName: string = "", state: boolean) {
-    adpateterInstanceName == "" ? this.isMuted = state : this.instances[adpateterInstanceName].mute(state);
+  public onlyLoggers(onlyLoggers: string[] = []) {
+    // Update service config
+    this.config.onlyLoggers = onlyLoggers;
+
+    for (var instanceName in this.instances) {
+      this.filterLogger(this.instances[instanceName], this.config.onlyLoggers);
+    }
   }
+
+
+  private filterLogger(loggerInstance: T | AppLoggerAdapter, onlyLoggers: string[]) {
+    if (!contain(onlyLoggers, loggerInstance.name)) loggerInstance.mute(true); else loggerInstance.mute(false);
+  }
+  /**
+   * Mute service logs or mute a logger by its name
+   * @param adapterInstanceName Adapter name to mute, mute service logs if null
+   */
+  public mute(adpateterInstanceName: string | null, state: boolean) {
+    adpateterInstanceName === null ? this.isMuted = state : this.instances[adpateterInstanceName].mute(state);
+  }
+
   /**
    * @param adapterInstanceName Adapter instance name
    * @param incommingLevel Message level (data, debug ...)

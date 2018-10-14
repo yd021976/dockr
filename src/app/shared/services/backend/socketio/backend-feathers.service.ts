@@ -3,7 +3,6 @@ import * as feathers from '@feathersjs/feathers';
 import * as feathersAuthenticate from '@feathersjs/authentication-client';
 import * as feathersSocket from '@feathersjs/socketio-client';
 import { Inject, Injectable } from '@angular/core';
-import { NGXLogger } from 'ngx-logger';
 import { Optional } from '@angular/core';
 
 
@@ -12,6 +11,8 @@ import { BackendServiceConnectionState, stateChangeReason } from '../../../model
 import { BackendConfigToken } from '../backend-config.token';
 import { BackendConfigClass } from '../../../models/backend-config.model';
 import { loginCredentials } from '../../../models/user.model';
+import { AppLoggerServiceToken } from '../../logger/app-logger/app-logger-token';
+import { AppLoggerService } from '../../logger/app-logger/service/app-logger.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,14 +21,17 @@ import { loginCredentials } from '../../../models/user.model';
  * IMPORTANT: Current/last logged in user is a property sets in "feathers" object
  */
 export class FeathersjsBackendService extends BackendSocketioService {
+  private readonly loggerName: string = "FeathersjsBackendService";
 
   private feathers: feathers.Application = null;
   private currentCounter: number = 0; // For debug purpose ONLY ==> Copy of static "count" property
   static count: number = 0; // Class instances count
 
 
-  constructor(logger: NGXLogger, @Optional() @Inject(BackendConfigToken) config: BackendConfigClass) {
-    super(logger, config);
+  constructor(@Inject(AppLoggerServiceToken) public loggerService: AppLoggerService, @Optional() @Inject(BackendConfigToken) config: BackendConfigClass) {
+    super(loggerService, config);
+    // Register a new logger name
+    this.loggerService.createLogger(this.loggerName);
 
     // Init Behavior subject for connection state
     this.connectionState
@@ -49,14 +53,14 @@ export class FeathersjsBackendService extends BackendSocketioService {
       }));
 
     this.feathers.on('authenticated', (event) => {
-      this.logger.debug('[FeathersjsBackendService] Authenticated event', event);
+      this.loggerService.debug(this.loggerName, { message: 'Authenticated event', otherParams: [event] });
     });
     this.feathers.on('logout', (event) => {
-      this.logger.debug('[FeathersjsBackendService] Logout event', event);
+      this.loggerService.debug(this.loggerName, { message: 'Logout event', otherParams: [event] });
     });
 
     this.feathers.on('reauthentication-error', (event) => {
-      this.logger.debug('[FeathersjsBackendService] reauthentication-error', event);
+      this.loggerService.debug(this.loggerName, { message: 'reauthentication-error', otherParams: [event] });
 
       if (event.data.name == 'TokenExpiredError') {
         // IMPORTANT: We don't clear "user" property here. We need to keep track of last loggedin user, even after auth error or deconnexion
@@ -76,19 +80,19 @@ export class FeathersjsBackendService extends BackendSocketioService {
    * Note : As event "authenticated" will be trigerred in this method, the user data will be fetched twice. @see configureFeathers
    */
   public authenticate(credentials?: loginCredentials): Promise<any> {
-    this.logger.debug('[FeathersjsBackendService]', 'authenticate()', 'START', credentials);
+    this.loggerService.debug(this.loggerName, { message: 'authenticate()', otherParams: ['START', credentials] });
 
     return this.feathers.authenticate(credentials ? credentials : {})
       .then(response => {
-        this.logger.debug('[FeathersjsBackendService]', 'authenticate()', 'PROGRESS', 'STEP-1', response);
+        this.loggerService.debug(this.loggerName,{message:'authenticate()', otherParams:['PROGRESS', 'STEP-1', response]});
         return this.feathers.passport.verifyJWT(response.accessToken)
       })
       .then((payload: any) => {
-        this.logger.debug('[FeathersjsBackendService]', 'authenticate()', 'PROGRESS', 'STEP-2', payload);
+        this.loggerService.debug(this.loggerName,{message:'authenticate()', otherParams:['PROGRESS', 'STEP-2', payload]});
         return this.feathers.service('users').get(payload.userId);
       })
       .then(user => {
-        this.logger.debug('[FeathersjsBackendService]', 'authenticate()', 'END', 'OK', user);
+        this.loggerService.debug(this.loggerName,{message:'authenticate()',otherParams:[ 'END', 'OK', user]});
         this.feathers.set('user', user);
         return user;
       })

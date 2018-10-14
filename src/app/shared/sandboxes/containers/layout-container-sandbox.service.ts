@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { NGXLogger } from 'ngx-logger';
+import { Injectable, Inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { Store, Select } from '@ngxs/store';
@@ -7,23 +6,26 @@ import { Store, Select } from '@ngxs/store';
 import { ApplicationState } from '../../store/states/application.state';
 import { FeathersjsBackendService } from '../../services/backend/socketio/backend-feathers.service';
 import { NotificationBaseService } from '../../services/notifications/notifications-base.service';
-import { notificationType } from '../../models/notification-service.model';
 import { BaseSandboxService } from '../base-sandbox.service';
 import { UserModel } from '../../models/user.model';
+import { AppLoggerService } from '../../services/logger/app-logger/service/app-logger.service';
+import { AppLoggerServiceToken } from '../../services/logger/app-logger/app-logger-token';
 
 @Injectable()
 export class LayoutContainerSandboxService extends BaseSandboxService {
+    private readonly loggerName: string = "LayoutContainerSandboxService"
+
     @Select(ApplicationState.getCurrentUser) public currentUser$: Observable<UserModel>;
 
     constructor(
         private feathers: FeathersjsBackendService,
         notificationService: NotificationBaseService,
-        logger: NGXLogger,
+        @Inject(AppLoggerServiceToken) public loggerService: AppLoggerService,
         store: Store,
         private router: Router
     ) {
-
-        super(notificationService, store, logger);
+        super(notificationService, store, loggerService);
+        this.loggerService.createLogger(this.loggerName);
         this.ApiServiceConnectionState$ = this.feathers.connectionState$;
     }
 

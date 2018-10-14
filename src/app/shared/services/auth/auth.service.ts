@@ -27,7 +27,7 @@ export class AuthService {
         this.ApiServiceConnectionState$ = this.feathersBackend.connectionState$;
         this.initialAuthentication$ = new BehaviorSubject<UserBackendApiModel | null>(null);
         this.logger.createLogger(this.loggerName);
-        
+
         // Subscribe to connection change state to auto authenticate user
         this.ApiServiceConnectionState$.subscribe(state => {
             /**
@@ -49,7 +49,7 @@ export class AuthService {
      * @param credentials Login credentials
      */
     public authenticate(credentials?: loginCredentials): Promise<UserBackendApiModel> {
-        this.logger.debug({ message: 'authenticate()', otherParams: [credentials] }, this.loggerName);
+        this.logger.debug(this.loggerName, { message: 'authenticate()', otherParams: [credentials] });
         return this.feathersBackend.authenticate(credentials).catch((error) => {
             throw new AppError(error.message, errorType.backendError, error);
         })
@@ -59,7 +59,7 @@ export class AuthService {
      * 
      */
     public logout(): Promise<void> {
-        this.logger.debug({ message: 'logout()', otherParams: [] }, this.loggerName);
+        this.logger.debug(this.loggerName, { message: 'logout()', otherParams: [] });
         return this.feathersBackend.logout().catch((error) => {
             throw new AppError(error.message, errorType.backendError, error);
         })
@@ -107,30 +107,30 @@ export class AuthService {
     * (re) Authenticate user with existing stored token. If not, auth as anonymous
     */
     private authUser() {
-        this.logger.debug({ message: '[AuthService]', otherParams: ['authUser()', 'START'] }, this.loggerName);
+        this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['START'] });
         this.feathersBackend.isAuth().then(isAuth => {
             // No valid token to auto authenticate user ==> Authenticate user as anonymous by default
             if (isAuth == false) {
-                this.logger.debug({ message: '[AuthService]', otherParams: ['authUser()', 'Authenticate as Anonymous', 'PROGRESS', isAuth] }, this.loggerName);
+                this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['Authenticate as Anonymous', 'PROGRESS', isAuth] });
                 this.authenticate({ strategy: "anonymous" })
                     .then((user: UserBackendApiModel) => {
-                        this.logger.debug({ message: '[AuthService]', otherParams: ['authUser()', 'Authenticate as Anonymous', 'END', 'OK', user] }, this.loggerName);
+                        this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['Authenticate as Anonymous', 'END', 'OK', user] });
                         this.initialAuthentication$.next(user);
                     })
                     .catch((error) => {
-                        this.logger.debug({ message: '[AuthService]', otherParams: ['authUser()', 'Authenticate as Anonymous', 'END', 'ERROR', error] }, this.loggerName);
+                        this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['Authenticate as Anonymous', 'END', 'ERROR', error] });
                         throw new AppError(error.message, errorType.backendError, error);
                     })
             } else {
                 // try to authenticate with current valid token
-                this.logger.debug({ message: '[AuthService]', otherParams: ['authUser()', 'Try to re-auth last logged in user', 'PROGRESS', isAuth] }, this.loggerName);
+                this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['Try to re-auth last logged in user', 'PROGRESS', isAuth] });
                 this.authenticate()
                     .then((user: UserBackendApiModel) => {
-                        this.logger.debug({ message: '[AuthService]', otherParams: ['authUser()', 'Try to re-auth last logged in user', 'END', 'OK', user] }, this.loggerName);
+                        this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['Try to re-auth last logged in user', 'END', 'OK', user] });
                         this.initialAuthentication$.next(user);
                     })
                     .catch((error) => {
-                        this.logger.debug({ message: '[AuthService]', otherParams: ['authUser()', 'Try to re-auth last logged in user', 'END', 'ERROR', error] }, this.loggerName);
+                        this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['Try to re-auth last logged in user', 'END', 'ERROR', error] });
                         throw new AppError(error.message, errorType.backendError, error);
                     })
             }
@@ -145,18 +145,18 @@ export class AuthService {
         switch (state.changeReason) {
             // Something went wrong with sicketIO connection
             case stateChangeReason.socketIO_Connection_Error:
-                this.logger.debug({ message: '[AuthService]', otherParams: ['updateUserState()', 'EVENT', 'stateChangeReason.socketIO_Connection_Error'] }, this.loggerName);
+                this.logger.debug(this.loggerName, { message: 'updateUserState()', otherParams: ['EVENT', 'stateChangeReason.socketIO_Connection_Error'] });
                 break;
             case stateChangeReason.socketIO_connection_timeout:
-                this.logger.debug({ message: '[AuthService]', otherParams: ['updateUserState()', 'EVENT', 'stateChangeReason.socketIO_connection_timeout'] }, this.loggerName);
+                this.logger.debug(this.loggerName, { message: 'updateUserState()', otherParams: ['EVENT', 'stateChangeReason.socketIO_connection_timeout'] });
                 break;
 
             case stateChangeReason.Feathers_Logout:
-                this.logger.debug({ message: '[AuthService]', otherParams: ['updateUserState()', 'EVENT', 'stateChangeReason.Feathers_Logout'] }, this.loggerName);
+                this.logger.debug(this.loggerName, { message: 'updateUserState()', otherParams: ['EVENT', 'stateChangeReason.Feathers_Logout'] });
                 break;
             // If token has expired, try to reconnect as anonymous
             case stateChangeReason.Feathers_reauthentication_error:
-                this.logger.debug({ message: '[AuthService]', otherParams: ['updateUserState()', 'EVENT', 'stateChangeReason.Feathers_reauthentication_error'] }, this.loggerName);
+                this.logger.debug(this.loggerName, { message: 'updateUserState()', otherParams: ['EVENT', 'stateChangeReason.Feathers_reauthentication_error'] });
                 break;
             default:
                 break;

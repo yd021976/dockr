@@ -4,7 +4,7 @@ import { AppLoggerServiceConfig } from './service/app-logger-config.class';
 import { AppLoggerService } from './service/app-logger.service';
 import { AppLoggerConfigToken, AppLoggerServiceToken } from './app-logger-token';
 import { AppLoggerAdapter } from './logger/app-logger-adapter';
-import { Level } from 'ng2-logger';
+import { Level } from './service/app-logger-levels.class';
 
 
 function loggerFactory(config: AppLoggerServiceConfig): AppLoggerService {
@@ -22,7 +22,10 @@ const defaultAppLoggerConfig: AppLoggerServiceConfig = {
   },
   defaultLoggerConfig: {
     logLevels: [Level.DATA],
-    isDeveloppementMode: true
+    isDeveloppementMode: true,
+    color: "#000000",
+    mute: false,
+    fixedWidth: 0
   }
 }
 

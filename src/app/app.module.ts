@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { NgxsModule } from '@ngxs/store';
-import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 
 import { AppComponent } from './app.component';
 import { ApplicationState } from './shared/store/states/application.state';
@@ -30,7 +29,6 @@ import { AppLoggerModule } from './shared/services/logger/app-logger/app-logger.
     ContainersModule,
     HomeModule,
     AppLoggerModule.forRoot(),
-    LoggerModule.forRoot({ level: NgxLoggerLevel.TRACE }),
     NgxsModule.forRoot([ApplicationState, UserState, TemplatesState]),
     SettingsModule,
     AdminModule,

@@ -1,5 +1,5 @@
 
-import { Level } from 'ng2-logger';
+import { Level } from '../service/app-logger-levels.class';
 import { contain } from '../utils/app-logger-utils';
 import { Logger } from './app-logger.class';
 import { AppLoggerConfig } from '../service/app-logger-config.class';
@@ -11,7 +11,7 @@ import { AppLoggerAdapterBase } from '../service/app-logger-adapter-base.class';
 /**
  * Module default Logger adapter
  */
-export class AppLoggerAdapter extends AppLoggerAdapterBase {
+export class AppLoggerAdapter extends AppLoggerAdapterBase<Logger> {
     protected logger: Logger;
 
     constructor(
@@ -21,20 +21,17 @@ export class AppLoggerAdapter extends AppLoggerAdapterBase {
         protected allowed: Level[],
         protected isMuted: boolean,
         public fixedWidth: number | undefined,
-        protected config: AppLoggerConfig = { isDeveloppementMode: false, logLevels: [Level.DATA] }
+        protected config: AppLoggerConfig = { isDeveloppementMode: false, logLevels: [Level.DATA], color: "#000000", mute: false, fixedWidth: 0 }
     ) {
         super();
         this.logger = new Logger(name, color, developmentMode, allowed, isMuted, fixedWidth);
         this.setConfig(config);
     }
 
-    public get test(): () => void {
-        return () => { }
-    }
     /**
      * 
      */
-    public setConfig(config: AppLoggerConfig) {
+    public setConfig(config: AppLoggerConfig):void {
         this.config = config;
         this.logger.setConfig(config);
     }
