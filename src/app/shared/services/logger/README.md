@@ -1,6 +1,7 @@
 # Goal
-this module re-use and is inspired by some code of ng2-logger (https://github.com/darekf77/ng2-logger)
 Provide a full extensible and configurable logger service for angular 5+
+
+this module re-use and is inspired by some code of ng2-logger (https://github.com/darekf77/ng2-logger)
 
 # Features
 - Logging capabilities

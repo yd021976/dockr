@@ -8,7 +8,7 @@ import { TodoComponent } from './components/todo/todo.component';
 const routes: AppRoute[] = [
   {
     path: 'home', component: HomeComponent, data: { isMenu: true, title: 'Home', icon: 'fa-home' }, children: [
-      { path: '', redirectTo: 'dashboard',pathMatch:'full' },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full', data: { isMenu: false ,title:'empty'} },
       { path: 'dashboard', component: DashboardComponent, data: { isMenu: true, link: 'home/dashboard', title: 'Dashboard' } },
       { path: 'todos', component: TodoComponent, data: { isMenu: true, link: 'home/todos', title: 'Todos' } }
     ]

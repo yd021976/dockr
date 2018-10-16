@@ -36,7 +36,7 @@
 <!-- Menu Item template -->
 <!-- ******************** -->
 <ng-template #childMenuitem let-menuItem>
-  <ng-container *ngIf="!menuItem.children">
+  <ng-container *ngIf="!menuItem.children && menuItem.data?.isMenu">
     <a class="child-menu-item-link" routerLink="{{menuItem.data?.link}}" #linkActive="routerLinkActive"
       routerLinkActive="linkActive">
       <mat-icon class="fa-xs child-title-icon" [fontIcon]="linkActive.isActive?'fa-angle-right':'fa-angle-right'"></mat-icon>

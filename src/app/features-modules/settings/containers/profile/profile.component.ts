@@ -8,7 +8,9 @@ import { SettingsSandboxService } from '../../../../shared/sandboxes/containers/
 })
 export class ProfileComponent implements OnInit {
 
-  constructor(public sandbox: SettingsSandboxService) { }
+  constructor(public sandbox: SettingsSandboxService) { 
+    let a=0;
+  }
 
   ngOnInit() {
   }

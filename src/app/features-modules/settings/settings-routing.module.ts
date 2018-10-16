@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 import { AppRoute } from '../../shared/models/app-route.model';
 import { ProfileComponent } from './containers/profile/profile.component';
