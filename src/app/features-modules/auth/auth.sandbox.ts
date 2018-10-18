@@ -3,12 +3,12 @@ import { Observable } from "rxjs";
 import { Router } from "@angular/router";
 import { Store, Select } from "@ngxs/store";
 
-import { ApplicationState } from "../../../shared/store/states/application.state";
-import { AuthService } from "../../../shared/services/auth/auth.service";
-import { loginCredentials } from "../../../shared/models/user.model";
-import { NotificationBaseService } from "../../../shared/services/notifications/notifications-base.service";
-import { BaseSandboxService } from "../../../shared/sandboxes/base-sandbox.service";
-import { UserLoginAction, UserLoginErrorAction, UserLoginSuccessAction, UserLogoutSuccessAction, UserLogoutErrorAction } from "../../../shared/store/actions/user.actions";
+import { ApplicationState } from "../../shared/store/states/application.state";
+import { AuthService } from "../../shared/services/auth/auth.service";
+import { loginCredentials } from "../../shared/models/user.model";
+import { NotificationBaseService } from "../../shared/services/notifications/notifications-base.service";
+import { BaseSandboxService } from "../../shared/sandboxes/base-sandbox.service";
+import { UserLoginAction, UserLoginErrorAction, UserLoginSuccessAction, UserLogoutSuccessAction, UserLogoutErrorAction } from "../../shared/store/actions/user.actions";
 import { AppLoggerServiceToken } from "src/app/shared/services/logger/app-logger/app-logger-token";
 import { AppLoggerService } from "src/app/shared/services/logger/app-logger/service/app-logger.service";
 
@@ -48,6 +48,7 @@ export class AuthSandbox extends BaseSandboxService {
             .catch((error) => {
                 this.store.dispatch(new UserLoginErrorAction(error.message));
                 this.loggerService.debug(this.loggerName, { message: 'login()', otherParams: ['END','ERROR', error] });
+                throw error;
             })
     }
     public logout(): Promise<void> {

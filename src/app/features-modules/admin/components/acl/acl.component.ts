@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-acl',
+  selector: 'app-admin-acl',
   templateUrl: './acl.component.html',
   styleUrls: ['./acl.component.css']
 })

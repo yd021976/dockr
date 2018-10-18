@@ -1,29 +1,30 @@
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
-import { OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { OnInit, OnDestroy } from '@angular/core';
 
 import { loginCredentials } from '../../../../shared/models/user.model';
-import { AuthSandbox } from '../auth.sandbox';
+import { Subscription, Observable } from 'rxjs';
+import { AuthSandbox } from '../../auth.sandbox';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-login-container',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
-  private readonly loggerName: string = "LoginComponent";
+export class LoginContainer implements OnInit {
 
-  public credentials: loginCredentials = { strategy: 'local', email: '', password: '' };
-  public authError$: Observable<string>;
+
+  private readonly loggerName: string = "LoginContainer";
+  public error$: Observable<string> = this.sandbox.authError$;
   private subscribes: Array<Subscription>;
   private redirectTo: string;
 
+  
+
+
   constructor(public sandbox: AuthSandbox, public route: ActivatedRoute, private router: Router) {
     this.subscribes = new Array<Subscription>();
-    this.authError$ = this.sandbox.authError$;
+    this.sandbox.loggerService.createLogger(this.loggerName);
   }
 
   public ngOnInit() {
@@ -37,14 +38,13 @@ export class LoginComponent implements OnInit {
         this.redirectTo = params['redirectTo'] || '/';
       }));
   }
+  public ngOnDestroy() {
+    this.subscribes.forEach(subscription => subscription.unsubscribe());
+  }
 
-
-  public onLogin() {
-    this.sandbox.Login(this.credentials).then((result) => {
-      if (result) {
-        this.sandbox.loggerService.debug(this.loggerName, { message: 'onLogin()', otherParams: ['successfull', 'redirecting', this.redirectTo] });
-        this.router.navigate([this.redirectTo]);
-      }
+  public login(credentials: loginCredentials) {
+    this.sandbox.Login(credentials).then((status) => {
+      if (status) this.router.navigate([this.redirectTo]);
     })
   }
 }
