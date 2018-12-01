@@ -12,6 +12,7 @@ import { RegisterContainer } from './containers/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import { RegisterComponent } from './components/register/register.component';
+import { AclService } from './services/acl.service';
 
 @NgModule({
   imports: [
@@ -24,6 +25,6 @@ import { RegisterComponent } from './components/register/register.component';
     MatInputModule
   ],
   declarations: [LoginContainer, LogoutContainer, RegisterContainer, LoginComponent,LogoutComponent,RegisterComponent],
-  providers: [AuthSandbox]
+  providers: [AuthSandbox, AclService]
 })
 export class AuthModule { }

@@ -2,6 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { NgxsModule } from '@ngxs/store';
+import { NgxPermissionsModule } from 'ngx-permissions';
+
 
 import { AppComponent } from './app.component';
 import { ApplicationState } from './shared/store/states/application.state';
@@ -30,6 +32,7 @@ import { AppLoggerModule } from './shared/services/logger/app-logger/app-logger.
     HomeModule,
     AppLoggerModule.forRoot(),
     NgxsModule.forRoot([ApplicationState, UserState, TemplatesState]),
+    NgxPermissionsModule.forRoot(),
     SettingsModule,
     AdminModule,
     AppRoutingModule
@@ -37,6 +40,7 @@ import { AppLoggerModule } from './shared/services/logger/app-logger/app-logger.
   providers: [
     AppSandboxService
   ],
+  exports: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -34,7 +34,6 @@ export class FeathersjsBackendService extends BackendSocketioService {
     this.loggerService.createLogger(this.loggerName);
 
     // Init Behavior subject for connection state
-    this.connectionState
     this.connectionState$ = new BehaviorSubject<BackendServiceConnectionState>(this.connectionState);
 
     // Class instance count 
@@ -81,24 +80,20 @@ export class FeathersjsBackendService extends BackendSocketioService {
    */
   public authenticate(credentials?: loginCredentials): Promise<any> {
     this.loggerService.debug(this.loggerName, { message: 'authenticate()', otherParams: ['START', credentials] });
-    return this.feathers.logout().then(() => {
-      return this.feathers.authenticate(credentials ? credentials : {})
-        .then(response => {
-          this.loggerService.debug(this.loggerName, { message: 'authenticate()', otherParams: ['PROGRESS', 'STEP-1', response] });
-          return this.feathers.passport.verifyJWT(response.accessToken)
-        })
-        .then((payload: any) => {
-          this.loggerService.debug(this.loggerName, { message: 'authenticate()', otherParams: ['PROGRESS', 'STEP-2', payload] });
-          return this.feathers.service('users').get(payload.userId);
-        })
-        .then(user => {
-          this.loggerService.debug(this.loggerName, { message: 'authenticate()', otherParams: ['END', 'OK', user] });
-          this.feathers.set('user', user);
-          return user;
-        })
-    }
-    )
-
+    return this.feathers.authenticate(credentials ? credentials : {})
+      .then(response => {
+        this.loggerService.debug(this.loggerName, { message: 'authenticate()', otherParams: ['PROGRESS', 'STEP-1', response] });
+        return this.feathers.passport.verifyJWT(response.accessToken)
+      })
+      .then((payload: any) => {
+        this.loggerService.debug(this.loggerName, { message: 'authenticate()', otherParams: ['PROGRESS', 'STEP-2', payload] });
+        return this.feathers.service('users').get(payload.userId);
+      })
+      .then(user => {
+        this.loggerService.debug(this.loggerName, { message: 'authenticate()', otherParams: ['END', 'OK', user] });
+        this.feathers.set('user', user);
+        return user;
+      })
   }
 
   public logout(): Promise<any> {

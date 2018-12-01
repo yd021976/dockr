@@ -8,17 +8,20 @@ import { DashboardSandbox } from '../../shared/sandboxes/containers/dashboard-sa
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ComponentsModule } from '../../shared/components';
 import { TodoComponent } from './components/todo/todo.component';
+import { NgxPermissionsModule } from 'ngx-permissions';
 
 @NgModule({
   imports: [
     CommonModule,
     ComponentsModule,
     HomeRoutingModule,
-    MatExpansionModule
+    MatExpansionModule,
+    NgxPermissionsModule.forChild()
   ],
   declarations: [HomeComponent, DashboardComponent, TodoComponent],
   providers: [
     DashboardSandbox
   ]
 })
-export class HomeModule { }
+export class HomeModule {
+ }

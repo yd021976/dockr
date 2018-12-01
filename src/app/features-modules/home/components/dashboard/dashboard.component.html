@@ -1,3 +1,10 @@
-<p>
-  dashboard works!
-</p>
+<div #divtest>
+  <p>Permissions test</p>
+</div>
+<div>
+  <ng-template #tpl [ngxPermissionsOnly]="['read_dashboard','toto']" (permissionsAuthorized)="authorized(true)" (permissionsUnauthorized)="authorized(false)">
+    <H3 #tag>
+      You can see me if you have USER role
+    </H3>
+  </ng-template>
+</div>

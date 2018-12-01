@@ -37,22 +37,26 @@ export class AuthService {
 
             // We should try to re-auth user after a restored socketIO connection or at first socketIO connection
             if (state.isConnected && this.currentIsConnected == false) {
-                this.authUser();
+                this.authUser().catch((error) => {
+                    let a = 0;
+                }) // we must handle catch here to avoid unhandled promise errors
                 this.currentIsConnected = state.isConnected;
+
             }
         })
     }
 
     /**
-     * This authenticate methode should ensure one call at a time and AVOID parallel call to autheticate
+     * This authenticate method should ensure one call at a time and AVOID parallel call to authenticate
      * 
      * @param credentials Login credentials
      */
-    public authenticate(credentials?: loginCredentials): Promise<UserBackendApiModel> {
+    public authenticate(credentials: loginCredentials = null): Promise<UserBackendApiModel> {
         this.logger.debug(this.loggerName, { message: 'authenticate()', otherParams: [credentials] });
-        return this.feathersBackend.authenticate(credentials).catch((error) => {
-            throw new AppError(error.message, errorType.backendError, error);
-        })
+        return this.feathersBackend.authenticate(credentials)
+            .catch((error) => {
+                throw new AppError(error.message, errorType.backendError, error);
+            })
     }
 
     /**
@@ -106,35 +110,41 @@ export class AuthService {
     /**
     * (re) Authenticate user with existing stored token. If not, auth as anonymous
     */
-    private authUser() {
+    protected authUser(): Promise<UserBackendApiModel> {
         this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['START'] });
-        this.feathersBackend.isAuth().then(isAuth => {
-            // No valid token to auto authenticate user ==> Authenticate user as anonymous by default
-            if (isAuth == false) {
-                this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['Authenticate as Anonymous', 'PROGRESS', isAuth] });
-                this.authenticate({ strategy: "anonymous" })
-                    .then((user: UserBackendApiModel) => {
-                        this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['Authenticate as Anonymous', 'END', 'OK', user] });
-                        this.initialAuthentication$.next(user);
-                    })
-                    .catch((error) => {
-                        this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['Authenticate as Anonymous', 'END', 'ERROR', error] });
-                        throw new AppError(error.message, errorType.backendError, error);
-                    })
-            } else {
-                // try to authenticate with current valid token
-                this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['Try to re-auth last logged in user', 'PROGRESS', isAuth] });
-                this.authenticate()
-                    .then((user: UserBackendApiModel) => {
-                        this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['Try to re-auth last logged in user', 'END', 'OK', user] });
-                        this.initialAuthentication$.next(user);
-                    })
-                    .catch((error) => {
-                        this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['Try to re-auth last logged in user', 'END', 'ERROR', error] });
-                        throw new AppError(error.message, errorType.backendError, error);
-                    })
-            }
-        })
+        return this.feathersBackend.isAuth()
+            .then(isAuth => {
+                // No valid token to auto authenticate user ==> Authenticate user as anonymous by default
+                if (isAuth == false) {
+                    this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['Authenticate as Anonymous', 'PROGRESS', isAuth] });
+                    return this.authenticate({ strategy: "anonymous" })
+                        .then((user: UserBackendApiModel) => {
+                            this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['Authenticate as Anonymous', 'END', 'OK', user] });
+                            this.initialAuthentication$.next(user);
+                            return user;
+                        })
+                        .catch((error) => {
+                            this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['Authenticate as Anonymous', 'END', 'ERROR', error] });
+                            throw new AppError(error.message, errorType.backendError, error);
+                        })
+                } else {
+                    // try to authenticate with current valid token
+                    this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['Try to re-auth last logged in user', 'PROGRESS', isAuth] });
+                    return this.authenticate()
+                        .then((user: UserBackendApiModel) => {
+                            this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['Try to re-auth last logged in user', 'END', 'OK', user] });
+                            this.initialAuthentication$.next(user);
+                            return user;
+                        })
+                        .catch((error) => {
+                            this.logger.debug(this.loggerName, { message: 'authUser()', otherParams: ['Try to re-auth last logged in user', 'END', 'ERROR', error] });
+                            throw new AppError(error.message, errorType.backendError, error);
+                        })
+                }
+            })
+            .catch((error) => {
+                throw error
+            })
     }
     /**
      * We should update USER state because of backend server events/state

@@ -38,28 +38,32 @@ export class AuthSandbox extends BaseSandboxService {
         });
     }
     private doLogin(credentials: loginCredentials) {
-        this.loggerService.debug(this.loggerName, { message: 'login()', otherParams: ['START',credentials] });
+        this.loggerService.debug(this.loggerName, { message: 'login()', otherParams: ['START', credentials] });
         this.store.dispatch(new UserLoginAction());
-        return this.authService.authenticate(credentials)
-            .then((user) => {
-                this.store.dispatch(new UserLoginSuccessAction(user))
-                this.loggerService.debug(this.loggerName, { message: 'login()', otherParams: ['END','OK', user] });
-            })
-            .catch((error) => {
-                this.store.dispatch(new UserLoginErrorAction(error.message));
-                this.loggerService.debug(this.loggerName, { message: 'login()', otherParams: ['END','ERROR', error] });
-                throw error;
-            })
+
+        // We must logout current user before authenticate again (FeathersJS can't auth if a JWT exist)
+        return this.logout().then(() => {
+            return this.authService.authenticate(credentials)
+                .then((user) => {
+                    this.store.dispatch(new UserLoginSuccessAction(user))
+                    this.loggerService.debug(this.loggerName, { message: 'login()', otherParams: ['END', 'OK', user] });
+                })
+                .catch((error) => {
+                    this.store.dispatch(new UserLoginErrorAction(error.message));
+                    this.loggerService.debug(this.loggerName, { message: 'login()', otherParams: ['END', 'ERROR', error] });
+                    throw error;
+                })
+        })
     }
     public logout(): Promise<void> {
         this.loggerService.debug(this.loggerName, { message: 'logout()', otherParams: ['START'] });
         return this.authService.logout()
             .then(() => {
-                this.loggerService.debug(this.loggerName, { message: 'logout()', otherParams: ['END','OK']});
+                this.loggerService.debug(this.loggerName, { message: 'logout()', otherParams: ['END', 'OK'] });
                 this.store.dispatch(new UserLogoutSuccessAction())
             })
             .catch((error) => {
-                this.loggerService.debug(this.loggerName,{message:'logout()',otherParams: ['END','ERROR', error]});
+                this.loggerService.debug(this.loggerName, { message: 'logout()', otherParams: ['END', 'ERROR', error] });
                 this.store.dispatch(new UserLogoutErrorAction(error.message))
             })
     }
