@@ -150,6 +150,7 @@ export class AuthService {
      * We should update USER state because of backend server events/state
      * @param state 
      */
+    /* istanbul ignore next */
     private updateUserState(state: BackendServiceConnectionState) {
 
         switch (state.changeReason) {

@@ -39,7 +39,7 @@ describe('AuthService', () => {
         authService = new AuthService(MockLoggerService, MockFeathersBackendInstance, MockNotifications);
         expect(authService).toBeTruthy();
     }));
-    it('#1 Should authenticate user when call to authenticate', fakeAsync(() => {
+    it('#1 Should authenticate user with success', fakeAsync(() => {
         when(MockFeathersBackend.authenticate(deepEqual({ email: 'test', password: 'test', strategy: 'local' })))
             .thenResolve(authSuccessUser)
 
@@ -49,10 +49,23 @@ describe('AuthService', () => {
             .catch(() => expect(true).toBe(false))
     }))
 
-    it('#2 Should auth as anonymous when triggering socket backend connect event', fakeAsync(() => {
+    it('#2 Should auth as anonymous with success when triggering socket backend connect event', fakeAsync(() => {
         // Mock feathers authenticate call
         when(MockFeathersBackend.authenticate(deepEqual({ strategy: 'anonymous' })))
             .thenResolve(authSuccessUser)
+
+        // Return false because we want auth service to log in as anonymous
+        when(MockFeathersBackend.isAuth()).thenResolve(false)
+
+        // update behavior subject to trigger auth service login
+        MockFeathersBackendInstance.connectionState$.next({ isConnected: true, connectionError: '', attemptNumber: 0, changeReason: stateChangeReason.socketIO_Connected })
+        tick();
+        verify(MockFeathersBackend.authenticate(deepEqual({ strategy: 'anonymous' }))).once();
+    }))
+    it('#2.1 Should auth as anonymous with error when triggering socket backend connect event', fakeAsync(() => {
+        // Mock feathers authenticate call
+        when(MockFeathersBackend.authenticate(deepEqual({ strategy: 'anonymous' })))
+            .thenReject(new AppError('Jasmine error test', errorType.notAuthenticated))
 
         // Return false because we want auth service to log in as anonymous
         when(MockFeathersBackend.isAuth()).thenResolve(false)
@@ -138,5 +151,79 @@ describe('AuthService', () => {
         authService.logout().catch((status) => logoutFlag = false)
         tick()
         expect(logoutFlag).toBe(false)
+    }))
+    it('#8 Should check session active : Return true when user is autenticated', fakeAsync(() => {
+        var checkSessionActive = false;
+
+        // Mock feathers :
+        // 1 : To return current authenticated user as anonymous
+        when(MockFeathersBackend.getCurrentUser()).thenReturn({ anonymous: true });
+        // 2 : To return that user is authenticated
+        when(MockFeathersBackend.isAuth()).thenResolve(true);
+
+        authService.checkSessionActive().then((isAuth) => {
+            checkSessionActive = isAuth;
+        })
+        tick()
+        expect(checkSessionActive).toBe(true);
+    }))
+    it('#9 Should check session active : Return false and re-auth user as anonymous', fakeAsync(() => {
+        var checkSessionActive = false;
+
+        // Given last logged in user was anonymous
+
+        // Mock feathers :
+        // 1 : To return current authenticated user as anonymous
+        when(MockFeathersBackend.getCurrentUser()).thenReturn({ anonymous: true });
+        // 2 : To return that user is NOT authenticated
+        when(MockFeathersBackend.isAuth()).thenResolve(false);
+        // 3 : To simulate anonymous auth with success
+        when(MockFeathersBackend.authenticate(deepEqual({ strategy: 'anonymous' }))).thenResolve({ email: 'test' })
+
+        // then checksessionactive return false and log user as anonymous
+        authService.checkSessionActive().then((isAuth) => {
+            checkSessionActive = isAuth;
+        })
+        tick()
+        expect(checkSessionActive).toBe(false);
+    }))
+    it('#10 Should check session active : Throw error when re-auth user as anonymous', fakeAsync(() => {
+        var checkSessionActive = false;
+
+        // Given last logged in user was anonymous
+
+        // Mock feathers :
+        // 1 : To return current authenticated user as anonymous
+        when(MockFeathersBackend.getCurrentUser()).thenReturn({ anonymous: true });
+        // 2 : To return that anonymous user is NOT authenticated
+        when(MockFeathersBackend.isAuth()).thenResolve(false);
+        // 3 : To simulate anonymous auth with success
+        when(MockFeathersBackend.authenticate(deepEqual({ strategy: 'anonymous' })))
+        .thenReject(new AppError('Feathers error', errorType.notAuthenticated, 'Jasmine test'))
+
+        // then checksessionactive throws error as feathers can't auth anonymous user
+        authService.checkSessionActive().catch((error) => {
+            checkSessionActive = true; // Set to true if error is thrown
+        })
+        tick()
+        expect(checkSessionActive).toBe(true);
+    }))
+    it('#11 Should check session active : Throw error when last logged in user was not anonymous', fakeAsync(() => {
+        var checkSessionActive = false;
+
+        // Given last logged in user was anonymous
+
+        // Mock feathers :
+        // 1 : To return current authenticated user as NOT anonymous
+        when(MockFeathersBackend.getCurrentUser()).thenReturn({ anonymous: false });
+        // 2 : To return that user is NOT authenticated
+        when(MockFeathersBackend.isAuth()).thenResolve(false);
+
+        // then checksessionactive throw error as it can't log user again (because not anonymous)
+        authService.checkSessionActive().catch((error) => {
+            checkSessionActive = true; // Set to true if error is thrown
+        })
+        tick()
+        expect(checkSessionActive).toBe(true);
     }))
 })
