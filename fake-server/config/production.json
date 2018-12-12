@@ -1,0 +1,4 @@
+{
+  "host": "fake-server-app.feathersjs.com",
+  "port": "PORT"
+}

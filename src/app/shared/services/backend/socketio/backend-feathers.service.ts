@@ -13,6 +13,7 @@ import { BackendConfigClass } from '../../../models/backend-config.model';
 import { loginCredentials } from '../../../models/user.model';
 import { AppLoggerServiceToken } from '../../logger/app-logger/app-logger-token';
 import { AppLoggerService } from '../../logger/app-logger/service/app-logger.service';
+import { BackendSocketService } from './backend-socket.token';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,9 @@ export class FeathersjsBackendService extends BackendSocketioService {
   static count: number = 0; // Class instances count
 
 
-  constructor(@Inject(AppLoggerServiceToken) public loggerService: AppLoggerService, @Optional() @Inject(BackendConfigToken) config: BackendConfigClass) {
+  constructor(
+    @Inject(AppLoggerServiceToken) public loggerService: AppLoggerService,
+    @Optional() @Inject(BackendConfigToken) config: BackendConfigClass) {
     super(loggerService, config);
     // Register a new logger name
     this.loggerService.createLogger(this.loggerName);
@@ -93,6 +96,9 @@ export class FeathersjsBackendService extends BackendSocketioService {
         this.loggerService.debug(this.loggerName, { message: 'authenticate()', otherParams: ['END', 'OK', user] });
         this.feathers.set('user', user);
         return user;
+      })
+      .catch((error) => {
+        throw error;
       })
   }
 

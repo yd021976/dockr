@@ -4,8 +4,7 @@ import { FeathersjsBackendService } from '../backend/socketio/backend-feathers.s
 import { mock, instance, when, deepEqual, reset, verify, resetCalls } from 'ts-mockito';
 import { NotificationBaseService } from '../notifications/notifications-base.service';
 import { AppLoggerService } from '../logger/app-logger/service/app-logger.service';
-import { UserBackendApiModel } from '../../models/user.model';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { BackendServiceConnectionState, stateChangeReason } from '../../models/backend-service-connection-state.model';
 import { AppError, errorType } from '../../models/app-error.model';
 
