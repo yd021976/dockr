@@ -5,11 +5,15 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "run-test": "ng test",
+    "run-test": "ng test --codeCoverage",
+    "run-test-once": "ng test --codeCoverage --watch=false",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "start-fake-server":"cd ./fake-server && npm start",
-    "test" : "start-server-and-test start-fake-server http://localhost:3030 run-test"
+    "start-fake-server": "cd ./fake-server && npm start",
+    "start-fake-server-dev": "cd ./fake-server && npm run dev",
+    "test": "start-server-and-test start-fake-server http://localhost:3030 run-test",
+    "test-debug-server": "start-server-and-test start-fake-server-dev http://localhost:3030 run-test",
+    "test-once": "start-server-and-test start-fake-server http://localhost:3030 run-test-once"
   },
   "browser": {
     "path": false,
@@ -36,6 +40,8 @@
     "@feathersjs/feathers": "^3.2.3",
     "@feathersjs/socketio-client": "^1.1.2",
     "@ngxs/store": "^3.3.1",
+    "@types/feathersjs__authentication-client": "^1.0.4",
+    "@types/feathersjs__feathers": "^3.1.1",
     "@types/socket.io-client": "^1.4.32",
     "core-js": "^2.5.7",
     "font-awesome": "^4.7.0",

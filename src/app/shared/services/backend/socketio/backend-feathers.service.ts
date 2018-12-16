@@ -46,11 +46,11 @@ export class FeathersjsBackendService extends BackendSocketioService {
   }
 
   private configureFeathers() {
-    this.feathers = feathers();
+    this.feathers = feathers.default()
 
     this.feathers
       .configure(feathersSocket(this.socketio))
-      .configure(feathersAuthenticate({
+      .configure(feathersAuthenticate.default({
         storage: window.localStorage
       }));
 
@@ -83,7 +83,7 @@ export class FeathersjsBackendService extends BackendSocketioService {
    */
   public authenticate(credentials?: loginCredentials): Promise<any> {
     this.loggerService.debug(this.loggerName, { message: 'authenticate()', otherParams: ['START', credentials] });
-    return this.feathers.authenticate(credentials ? credentials : {})
+    return this.feathers.authenticate(credentials)
       .then(response => {
         this.loggerService.debug(this.loggerName, { message: 'authenticate()', otherParams: ['PROGRESS', 'STEP-1', response] });
         return this.feathers.passport.verifyJWT(response.accessToken)

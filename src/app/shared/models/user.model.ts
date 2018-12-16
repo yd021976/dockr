@@ -1,4 +1,6 @@
-export type loginCredentials = {
+import {FeathersAuthCredentials} from '@feathersjs/authentication-client'
+
+export interface loginCredentials extends FeathersAuthCredentials {
   strategy: string,
   email?: string,
   password?: string,

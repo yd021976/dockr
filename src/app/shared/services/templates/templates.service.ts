@@ -16,9 +16,9 @@ export class TemplatesService {
         this.service = this.backendApiService.service('templates');
     }
 
-    public find(): Promise<any> {
+    public async find(params?:any): Promise<any> {
         // Ensure a valid JWT exist before request
-        return this.service.find().catch((error) => {
+        return this.service.find(params).catch((error) => {
             throw new AppError(error.message, errorType.backendError, error)
         });
     }

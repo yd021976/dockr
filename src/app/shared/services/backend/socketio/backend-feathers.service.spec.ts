@@ -18,7 +18,7 @@ describe('Feathers backend service', () => {
     })
 
 
-    beforeEach(() => {
+    beforeEach(async () => {
         mockSocketServer.on('connection', socket => {
             socket.on('upgrade', data => {
                 socket.emit('jasmine test socket upgrade')
@@ -30,10 +30,12 @@ describe('Feathers backend service', () => {
         MockLoggerService = mock(AppLoggerService)
         const socketIO = SocketIO;
         feathersBackendService = new FeathersjsBackendService(instance(MockLoggerService), null)
+
         expect(feathersBackendService).not.toBeNull()
     })
 
-    afterEach(() => {
+    afterEach(async() => {
+       await feathersBackendService.logout(); // ensure we are logged out
     })
 
     it('#1 - Should authenticate as anonymous', async () => {
@@ -71,7 +73,7 @@ describe('Feathers backend service', () => {
             })
         expect(isAuth).toBe(true);
     })
-    it('#3 - Should be authenticated after successful real user auth', async () => {
+    it('#4 - Should be authenticated after successful real user auth', async () => {
         var isAuth: boolean = false;
         await feathersBackendService.authenticate({ strategy: 'local', email: 'jasmine_test', password: 'yann' })
             .then(async (user) => {
@@ -84,7 +86,7 @@ describe('Feathers backend service', () => {
             })
         expect(isAuth).toBe(true);
     })
-    it('#4 - Should return user object after successful real user auth', async () => {
+    it('#5 - Should return user object after successful real user auth', async () => {
         await feathersBackendService.authenticate({ strategy: 'local', email: 'jasmine_test', password: 'yann' })
             .then((user) => {
             })
@@ -94,7 +96,7 @@ describe('Feathers backend service', () => {
         user = feathersBackendService.getCurrentUser()
         expect(user).toBeTruthy();
     })
-    it('#5 - Should logout', async () => {
+    it('#6 - Should logout', async () => {
         var isAuth = false;
         var isLogout = false;
 
@@ -114,5 +116,15 @@ describe('Feathers backend service', () => {
             .catch(error => { })
         expect(isLogout).toBe(true);
     })
-
+    it('#7 - Should NOT be authenticated at start', async () => {
+        var isAuth: boolean = false;
+        await feathersBackendService.isAuth()
+            .then((auth) => {
+                isAuth = auth;
+            })
+            .catch((error) => {
+                isAuth = false;
+            })
+        expect(isAuth).toBe(false);
+    })
 })
