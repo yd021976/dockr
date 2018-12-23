@@ -9,8 +9,7 @@ import { ApplicationState } from "../store/states/application.state";
 @Injectable()
 export abstract class BaseSandboxService {
     public ApiServiceConnectionState$: BehaviorSubject<BackendServiceConnectionState>;
-    isLoggedin$: Observable<boolean> = ApplicationState.isLoggedin$;
-    @Select(ApplicationState.isProgress) isProgress$: Observable<boolean>;
+    @Select(ApplicationState.isLoggedin) public isLoggedin$
 
     constructor(public notificationService: NotificationBaseService, protected store: Store, protected loggerService: any) { }
 }

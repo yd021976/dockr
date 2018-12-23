@@ -64,7 +64,7 @@ export class FeathersjsBackendService extends BackendSocketioService {
     this.feathers.on('reauthentication-error', (event) => {
       this.loggerService.debug(this.loggerName, { message: 'reauthentication-error', otherParams: [event] });
 
-      if (event.data.name == 'TokenExpiredError') {
+      if (event['data'] && event['data']['name'] == 'TokenExpiredError') {
         // IMPORTANT: We don't clear "user" property here. We need to keep track of last loggedin user, even after auth error or deconnexion
         this.updateConnectionState({ changeReason: stateChangeReason.Feathers_reauthentication_error });
       }

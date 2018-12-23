@@ -4,7 +4,7 @@ import { Store } from '@ngxs/store';
 import { AuthService } from '../../services/auth/auth.service';
 import { NotificationBaseService } from '../../services/notifications/notifications-base.service';
 import { BaseSandboxService } from '../base-sandbox.service';
-import { UserLoginSuccessAction } from '../../store/actions/user.actions';
+import { UserLoginSuccessAction, UserLogoutSuccessAction } from '../../store/actions/user.actions';
 import { UserBackendApiModel } from '../../models/user.model';
 import { Observable } from 'rxjs';
 import { ApplicationState } from '../../store/states/application.state';
@@ -23,10 +23,12 @@ export class AppSandboxService extends BaseSandboxService {
         @Inject(AppLoggerServiceToken) public loggerService: AppLoggerService) {
         super(notificationService, store, loggerService);
 
-        // Update store when authService authenticate user (ONLY when application starts)
-        this.authService.initialAuthentication$.subscribe((user: UserBackendApiModel) => {
+        // Update store when user logs in/out
+        this.authService.user$.subscribe((user: UserBackendApiModel) => {
             if (user != null) {
-                this.store.dispatch(new UserLoginSuccessAction(user));
+                this.store.dispatch(new UserLoginSuccessAction(user))
+            } else {
+                this.store.dispatch(new UserLogoutSuccessAction())
             }
         })
     }

@@ -1,0 +1,12 @@
+{
+    "anonymous strategy : fakeUser": {
+        "userId": "anonymous strategy : fakeUser",
+        "anonymous": true,
+        "email": "fake user anonymous"
+    },
+    "auth strategy : fakeUser local": {
+        "userId": "auth strategy : fakeUser local",
+        "anonymous": false,
+        "email": "fake user local auth"
+    }
+}

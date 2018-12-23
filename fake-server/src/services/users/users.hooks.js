@@ -1,4 +1,5 @@
 const { authenticate } = require('@feathersjs/authentication').hooks;
+const users = require('../../users.json')
 
 const {
   hashPassword, protect
@@ -42,7 +43,8 @@ module.exports = {
 
 function fakeUserId() {
   return function (hook) {
-    hook.result = { userId: 'fakeUSER' }
+    let response = users[hook.id]
+    hook.result = response
     return hook;
   }
 }

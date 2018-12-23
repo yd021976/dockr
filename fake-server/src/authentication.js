@@ -28,7 +28,7 @@ module.exports = function (app) {
         // When Anonymous, let's return success auth
         case 'anonymous':
           hook.params.authenticated = true;
-          hook.params.payload = { userId: 'fakeUser' }
+          hook.params.payload = { userId: 'anonymous strategy : fakeUser' }
           break;
 
         // When local auth is required, we only successfull auth for a user called "jasmine_test"
@@ -37,7 +37,7 @@ module.exports = function (app) {
             throw new Error('Auth error');
           }
           hook.params.authenticated = true;
-          hook.params.payload = { userId: 'fakeUser' }
+          hook.params.payload = { userId: 'auth strategy : fakeUser local' }
           break;
 
         // We don't handle any other auth strategy than anonymous or local

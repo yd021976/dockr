@@ -4,10 +4,11 @@ import { Observable } from 'rxjs';
 import { ApplicationStateModel } from '../../models/application-state.model';
 import { UserState } from '../states/user.state';
 import { TemplatesState } from './templates.state';
+import { UserModel } from '../../models/user.model';
+import { stat } from 'fs';
 
 @State<ApplicationStateModel>({
     name: 'application',
-    defaults: {},
     children: [UserState, TemplatesState]
 })
 export class ApplicationState {
@@ -16,21 +17,24 @@ export class ApplicationState {
     //
 
     /** Flag : is User logged in */
-    @Select(UserState.isLoggedin) static isLoggedin$: Observable<boolean>
+    @Selector()
+    static isLoggedin(state) {
+        return state.user.isLoggedIn
+    }
 
     /** */
     @Selector()
-    static isProgress(state) {
-        return state.user.isProgress | state.templates.isLoading;
+    static isProgress(state): boolean {
+        return (state.user.isProgress as boolean) || (state.templates.isLoading as boolean)
     }
 
     @Selector()
     static getCurrentUser(state) {
-        return state.user;
+        return state.user
     }
 
     @Selector()
     static authError(state) {
-        return state.user.error;
+        return state.user.error
     }
 }
