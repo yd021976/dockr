@@ -109,6 +109,7 @@ describe('Auth module -- Containers -- Login', () => {
         // Mock activatedRoute service
         let mockActivatedRoute: ActivatedRoute = mock(ActivatedRoute)
         const activatedRouteQueryParams: BehaviorSubject<Params> = new BehaviorSubject<Params>({})
+        const authSandboxError$: BehaviorSubject<string> = new BehaviorSubject<string>('')
         when(mockActivatedRoute.queryParams).thenReturn(activatedRouteQueryParams)
 
         let mockAuthSandbox: AuthSandbox = mock(AuthSandbox)
@@ -117,7 +118,7 @@ describe('Auth module -- Containers -- Login', () => {
 
         let mockLogger: AppLoggerService = mock(AppLoggerService)
         when(mockAuthSandbox.loggerService).thenReturn(instance(mockLogger))
-        when(mockAuthSandbox.authError$).thenReturn(new Observable<string>())
+        when(mockAuthSandbox.authError$).thenReturn(authSandboxError$)
         const mockCredentials: loginCredentials = { "strategy": "local", email: 'test', password: 'test' }
 
         // Create auth sandbox login mock for tests
@@ -208,6 +209,19 @@ describe('Auth module -- Containers -- Login', () => {
             expect(component.login).toHaveBeenCalled();
             expect(instance(mockAuthSandbox).Login).toHaveBeenCalledWith({ strategy: 'local', email: 'test #4', password: 'test' })
             expect(instance(mockRouter).navigate).not.toHaveBeenCalled()
+        }))
+        it('#5 Should show error message when user login is incorrect', fakeAsync(() => {
+            component.ngOnInit()
+            authSandboxError$.next('Login or password is incorrect (jasmine test)')
+            tick()
+            fixture.detectChanges()
+            let de = fixture.debugElement
+            let loginComponentDebugElement: DebugElement = de.query(By.directive(LoginComponent))
+
+            // get login component error text
+            let errorText = loginComponentDebugElement.query(By.css('#login-component-loginerror-container'))
+            expect(errorText).not.toBeNull()
+            expect((errorText.nativeElement as HTMLDivElement).textContent).toEqual('Login error : Login or password is incorrect (jasmine test)')
         }))
     })
 })

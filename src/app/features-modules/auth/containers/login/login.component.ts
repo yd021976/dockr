@@ -13,10 +13,8 @@ import { AuthSandbox } from '../../auth.sandbox';
 })
 export class LoginContainer implements OnInit, OnDestroy {
 
-
   private readonly loggerName: string = "LoginContainer";
   public error$: Observable<string> = this.sandbox.authError$
-  // public error$: Observable<string> = new Observable<string>()
   private subscribes: Array<Subscription> = []
   private redirectTo: string
 
