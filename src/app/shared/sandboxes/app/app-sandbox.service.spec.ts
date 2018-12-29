@@ -1,16 +1,9 @@
-import { fakeAsync, async, tick, flushMicrotasks, TestBed, inject } from '@angular/core/testing';
-import { mock, instance, when, deepEqual, reset, verify, resetCalls, spy } from 'ts-mockito';
-import { BehaviorSubject } from 'rxjs';
+import { TestBed, inject } from '@angular/core/testing';
 import { Store, NgxsModule } from '@ngxs/store';
 
-import { AppError, errorType } from '../../models/app-error.model';
-import { AppLoggerService } from '../../services/logger/app-logger/service/app-logger.service';
-import { AppLoggerServiceToken } from '../../services/logger/app-logger/app-logger-token'
-import { NotificationBaseService } from '../../services/notifications/notifications-base.service';
 import { AuthService } from '../../services/auth/auth.service'
 import { AppSandboxService } from './app-sandbox.service';
 import { UserBackendApiModel } from '../../models/user.model';
-import { FeathersjsBackendService } from '../../services/backend/socketio/backend-feathers.service';
 import { AppLoggerModule } from '../../services/logger/app-logger/app-logger.module';
 import { ApplicationState } from '../../store/states/application.state';
 import { UserState } from '../../store/states/user.state';
@@ -27,8 +20,7 @@ describe('App-sandbox', () => {
             "email": "jasmine_test",
             "password": "test"
         }
-        beforeAll(() => {
-        })
+       
         beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [
@@ -62,6 +54,7 @@ describe('App-sandbox', () => {
                 var loggedIn: boolean = false;
 
                 await auth.authenticate(LocalLoginRequest)
+                
                 let subscribe = sandbox.isLoggedin$.subscribe((value) => {
                     loggedIn = value
                 })

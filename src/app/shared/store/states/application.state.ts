@@ -1,11 +1,8 @@
-import { Action, State, StateContext, Selector, Select } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { State, Selector } from '@ngxs/store';
 
 import { ApplicationStateModel } from '../../models/application-state.model';
 import { UserState } from '../states/user.state';
 import { TemplatesState } from './templates.state';
-import { UserModel } from '../../models/user.model';
-import { stat } from 'fs';
 
 @State<ApplicationStateModel>({
     name: 'application',
@@ -18,23 +15,23 @@ export class ApplicationState {
 
     /** Flag : is User logged in */
     @Selector()
-    static isLoggedin(state) {
+    static isLoggedin(state: ApplicationStateModel) {
         return state.user.isLoggedIn
     }
 
     /** */
     @Selector()
-    static isProgress(state): boolean {
+    static isProgress(state: ApplicationStateModel): boolean {
         return (state.user.isProgress as boolean) || (state.templates.isLoading as boolean)
     }
 
     @Selector()
-    static getCurrentUser(state) {
+    static getCurrentUser(state: ApplicationStateModel) {
         return state.user
     }
 
     @Selector()
-    static authError(state) {
+    static authError(state: ApplicationStateModel) {
         return state.user.error
     }
 }

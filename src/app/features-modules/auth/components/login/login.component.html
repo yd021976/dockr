@@ -8,22 +8,22 @@
   <form>
     <div class="form-field">
       <mat-form-field>
-        <input matInput [(ngModel)]="credentials.email" [ngModelOptions]="{standalone: true}" placeholder="login" autocomplete="username">
+        <input id="login-component-email" matInput [(ngModel)]="credentials.email" [ngModelOptions]="{standalone: true}" placeholder="login" autocomplete="username">
       </mat-form-field>
     </div>
 
     <div class="form-field">
       <mat-form-field>
-        <input matInput type="password" [(ngModel)]="credentials.password" [ngModelOptions]="{standalone: true}" placeholder="password" autocomplete="current-password">
+        <input id="login-component-password" matInput type="password" [(ngModel)]="credentials.password" [ngModelOptions]="{standalone: true}" placeholder="password" autocomplete="current-password">
       </mat-form-field>
     </div>
     <div class="form-field">
-      <button mat-button color="accent" (click)="onLogin()">
+      <button id="login-component-loginbutton" mat-button color="accent" (click)="onLogin()">
         Login
       </button>
     </div>
     <ng-container *ngIf="error!=''">
-      <div class="login-error">Login error : {{error}}</div>
+      <div id="login-component-loginerror-container" class="login-error">Login error : {{error}}</div>
     </ng-container>
   </form>
 </div>

@@ -14,6 +14,16 @@ module.exports = function (config) {
     client: {
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
+    customLaunchers: {
+      chrome_custom: {
+        base: 'Chrome',
+        chromeDataDir: '/Users/tigrou/Library/Application\ Support/Google/Chrome/',
+        args: ['--profile-directory="Profile 3"'],
+        flags: ['--remote-debugging-port=9333'],
+        debug:true
+      }
+
+    },
     coverageIstanbulReporter: {
       dir: require('path').join(__dirname, '../coverage'),
       reports: ['html', 'lcovonly'],
@@ -24,7 +34,7 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome'],
+    browsers: ['chrome_custom'],
     singleRun: false
   });
 };

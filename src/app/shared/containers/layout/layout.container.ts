@@ -68,7 +68,8 @@ export class LayoutContainer implements OnInit, OnDestroy {
                 }
                 break;
 
-            // No default case because of boolean con only take 2 value. This line is here only to respect coding rules
+            // No default case because boolean can only take 2 values that are already handled by 2 previous "case" statements
+            // This line is here only to respect coding rules
             default:
                 break;
         }

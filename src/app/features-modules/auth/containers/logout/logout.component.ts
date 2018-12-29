@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthSandbox } from '../../auth.sandbox';
 
 @Component({
@@ -6,12 +6,17 @@ import { AuthSandbox } from '../../auth.sandbox';
   templateUrl: './logout.component.html',
   styleUrls: ['./logout.component.scss']
 })
-export class LogoutContainer implements OnInit {
+export class LogoutContainer implements OnInit, OnDestroy {
+  private readonly loggerName: string = 'LogoutContainer'
 
-  constructor(public sandbox: AuthSandbox) { }
-
-  ngOnInit() {
+  constructor(public sandbox: AuthSandbox) {
+    this.sandbox.loggerService.createLogger(this.loggerName)
   }
+
+  ngOnInit() { }
+
+  ngOnDestroy() { }
+
   onLogout() {
     this.sandbox.logout();
   }

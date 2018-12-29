@@ -5,12 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node",
+            "type": "chrome",
             "request": "attach",
-            "name": "Node: Nodemon",
-            "processId": "${command:PickProcess}",
-            "restart": false,
-            "protocol": "inspector",
-        },
+            "sourceMaps": true,
+            "name": "Attach to Chrome",
+            "port": 9333,
+            "webRoot": "${workspaceFolder}/src",
+        }
     ]
 }

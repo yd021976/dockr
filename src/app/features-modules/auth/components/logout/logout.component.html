@@ -1,3 +1,15 @@
-<p>
-  logout works!
-</p>
+<div class="form-container">
+  <div *ngIf="!isLoggedOut">
+    <h3>
+      Logout
+    </h3>
+    Please confirm logout
+  </div>
+  <div class="form-field">
+    <button id="logout-component-logout-button" mat-button color="accent" (click)="onLogout()">Confirm</button>
+  </div>
+
+  <div id="logout-component-loggedout" *ngIf="isLoggedOut">
+    You are logged out
+  </div>
+</div>
