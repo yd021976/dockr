@@ -15,14 +15,19 @@ import { MenuItemComponent } from './side-nav/menu-item/menu-item.component';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { OutletComponent } from './outlet/outlet.component';
 import { SideNavComponent } from './side-nav/side-nav.component';
+import { MenuPanelComponent } from './side-nav/menu-panel/menu-panel.component';
+import { MenuLinkComponent } from './side-nav/menu-link/menu-link.component';
 
 export const components = [
     BackdropComponent,
     ErrorDialogComponent,
-    MenuItemComponent,
     NavBarComponent,
     OutletComponent,
-    SideNavComponent
+    
+    SideNavComponent,
+    MenuPanelComponent,
+    MenuLinkComponent,
+    MenuItemComponent
 ];
 
 @NgModule({

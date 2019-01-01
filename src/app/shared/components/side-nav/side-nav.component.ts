@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { Routes, Route } from '@angular/router';
 
 // App Types
 import { AppRoute } from '../../models/app-route.model';

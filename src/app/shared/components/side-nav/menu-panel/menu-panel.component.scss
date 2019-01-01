@@ -1,0 +1,26 @@
+@import '../side-nav-component-theme-core.scss';
+/*
+            Root menu item styles
+*/
+
+// Header block
+.header-title {
+    display: inline-block;
+    line-height: $root-menu-line-height;
+    vertical-align: middle;
+}
+
+// Header icon style
+.header-title-icon {
+    padding-right: 4px;
+    line-height: $root-menu-line-height;
+    vertical-align: middle;
+    font-size: $root-icon-size; // sets icon size
+}
+
+// Header description
+.header-title-description {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: $root-title-size; // Sets title font size
+}

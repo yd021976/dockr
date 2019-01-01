@@ -1,0 +1,56 @@
+@import '../side-nav-component-theme-core.scss';
+/* 
+            Child menu item styles
+*/
+// a.menu-link-item {
+//     color: #FFFFFF;
+//     &.linkActive {
+//         color: #00FF00;
+//     }
+// }
+.menu-link-item {
+    line-height: $child-menu-line-height;
+    display: block;
+    // vertical-align: middle;
+    padding-left: 16px;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    text-decoration: none;
+    &:hover {
+        cursor: pointer;
+        &.linkActive {
+            cursor: default;
+        }
+    }
+}
+
+.menu-link-title-description {
+    display: inline-block;
+    line-height: $child-menu-line-height;
+    vertical-align: middle;
+    margin-left:-5px;
+    font-size: $child-title-size;
+}
+.menu-link-title-icon {
+    line-height: $child-menu-line-height;
+    vertical-align: middle;
+    font-size:$child-icon-size;
+}
+// First menu level icon size
+:host .mat-icon {
+    vertical-align: middle;
+}
+
+// Menu icon size
+:host .menu-link-item  {
+    .mat-icon {
+        text-align: center;
+        height:$child-menu-line-height;
+        line-height: $child-menu-line-height;
+    }
+}
+
+
+:host .mat-expansion-panel-header {
+    padding-left: 5px;
+    line-height: $root-menu-line-height;
+}

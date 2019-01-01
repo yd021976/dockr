@@ -1,0 +1,15 @@
+<mat-expansion-panel class="mat-elevation-z0">
+  <mat-expansion-panel-header class="panel-title" collapsedHeight="32px" expandedHeight="32px">
+    <mat-panel-title class="panel-title">
+      <div class="header-title">
+        <mat-icon class="fa-xs header-title-icon" [fontIcon]="menuItem.data?.icon==''?'fa-circle':menuItem.data?.icon"></mat-icon>
+        <span class="header-title-description">{{menuItem.data?.title}}</span>
+      </div>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <!-- Loop over child menu items -->
+  <ng-container *ngFor="let childItem of menuItem.children">
+    <app-menu-link [menuItem]="childItem"></app-menu-link>
+  </ng-container>
+</mat-expansion-panel>

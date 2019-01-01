@@ -1,14 +1,17 @@
-// Import all the tools needed to customize the theme and extract parts of it
+/*
+Import all the tools needed to customize the theme and extract parts of it
+*/
+
 @import '~@angular/material/theming';
 @import './side-nav-component-theme-core.scss';
-@import './menu-item/menu-item.component-theme.scss';
-// Define a mixin that accepts a theme and outputs the color styles for the component.
+/*
+Define a mixin that accepts a theme and outputs the color styles for the component.
+*/
+
 @mixin sidenav-component($theme) {
     // Extract whichever individual palettes you need from the theme.
     $primary: map-get($theme, primary);
-    $accent: map-get($theme, accent);
-    @include menu-item-component-colors($theme);
-    @include menu-item-component-structure($theme);
+    $accent: map-get($theme, accent); // @include menu-item-component-colors($theme);
     .sidenav-component {
         background-color: background-color($theme);
     }

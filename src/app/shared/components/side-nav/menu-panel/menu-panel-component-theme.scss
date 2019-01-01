@@ -1,0 +1,128 @@
+// left border color
+@mixin border-left($border-color) {
+    border-left-color: $border-color;
+    border-left-style: solid;
+    border-left-width: 3px;
+}
+
+/*
+                        COLOR THEMING
+    Define a mixin that accepts a theme and outputs the color styles for the component.
+*/
+
+@mixin menu-panel-component-colors($theme) {
+    app-menu-panel {
+        .mat-expansion-panel {
+            background-color: background-color($theme);
+            &.mat-expanded {
+                background-color: background-color-expanded($theme);
+            }
+            .mat-expansion-panel-header:not(.mat-expanded) {
+                @include border-left(background-color($theme));
+            } // second level item in accordion
+            .mat-expansion-panel {
+                background-color: background-color-expanded($theme);
+            }
+        } // header text colors and styles
+        .mat-expansion-panel-header {
+            .mat-expansion-panel-header-title {
+                color: text-color($theme);
+            }
+            &.mat-expanded,
+                {
+                .mat-expansion-panel-header-title {
+                    color: text-color-expanded($theme);
+                }
+            }
+        }
+    }
+    /*
+        Set background color for first level item selected
+    */
+    app-menu-panel {
+        .mat-expansion-panel.mat-expanded {
+            .mat-expansion-panel-header {
+                background-color: background-color-hover($theme);
+                @include border-left(accent($theme));
+            }
+            .mat-expansion-panel {
+                .mat-expansion-panel-header {
+                    background-color: inherit;
+                    @include border-left(background-color-expanded($theme));
+                }
+            }
+        }
+    }
+    /*
+        Hover colors
+    */
+    app-menu-panel {
+        // first level item hover color
+        .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header {
+            &:not([aria-disabled='true']) {
+                &.cdk-keyboard-focused,
+                &.cdk-program-focused,
+                &:hover {
+                    background: background-color-hover($theme);
+                    @include border-left(accent($theme));
+                    .mat-expansion-panel-header-title {
+                        color: text-color-hover($theme);
+                    }
+                }
+            }
+        } // no hover color for sub items
+        .mat-expansion-panel .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header {
+            &:not([aria-disabled='true']) {
+                &.cdk-keyboard-focused,
+                &.cdk-program-focused,
+                &:hover {
+                    background: none;
+                    @include border-left(background-color-expanded($theme));
+                }
+            }
+        }
+    }
+}
+
+/*
+            STRUCTURAL STYLES
+*/
+
+// TODO: Move menu links indentation to menu-link-component
+@mixin menu-panel-component-structure($theme) {
+    app-menu-panel {
+        // Set panel body with no padding to avoid children to be indented
+        .mat-expansion-panel-body {
+            padding: 0;
+            padding-top: 4px;
+            min-height: 32px;
+            /* first level */
+            .mat-expansion-panel {
+                .mat-expansion-panel-header {
+                    padding-left: 5px;
+                }
+                a {
+                    padding-left: 34px;
+                }
+                /* second level */
+                .mat-expansion-panel {
+                    .mat-expansion-panel-header {
+                        padding-left: 31px;
+                    }
+                    a {
+                        padding-left: 60px;
+                    }
+                    /* third level */
+                    .mat-expansion-panel {
+                        .mat-expansion-panel-header {
+                            padding-left: 62px;
+                        }
+                        a {
+                            padding-left: 102px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

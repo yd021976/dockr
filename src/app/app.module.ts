@@ -21,7 +21,7 @@ import { AppLoggerModule } from './shared/services/logger/app-logger/app-logger.
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     AuthModule,
