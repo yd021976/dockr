@@ -1,10 +1,4 @@
-// left border color
-@mixin border-left($border-color) {
-    border-left-color: $border-color;
-    border-left-style: solid;
-    border-left-width: 3px;
-}
-
+@import '../side-nav-component-theme-core.scss';
 /*
                         COLOR THEMING
     Define a mixin that accepts a theme and outputs the color styles for the component.
@@ -125,4 +119,11 @@
             }
         }
     }
+}
+
+// left border color
+@mixin border-left($border-color) {
+    border-left-color: $border-color;
+    border-left-style: solid;
+    border-left-width: 3px;
 }

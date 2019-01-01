@@ -4,6 +4,11 @@
     <span class="menu-link-title-description">{{menuItem.data?.title}}</span>
   </a>
 </ng-container>
+
+<!-- 
+  If we have children, create a new menu panel
+  IMPORTANT: Depth level are very limited and need to be patch to work
+-->
 <ng-container *ngIf="menuItem.children">
-  <!-- TODO: What if menu item has children ?  -->
+  <app-menu-panel [menuItem]="menuItem.children"></app-menu-panel>
 </ng-container>
