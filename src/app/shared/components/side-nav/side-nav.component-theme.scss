@@ -3,7 +3,7 @@ Import all the tools needed to customize the theme and extract parts of it
 */
 
 @import '~@angular/material/theming';
-@import './side-nav-component-theme-core.scss';
+@import './side-nav-component-theme-globals.scss';
 /*
 Define a mixin that accepts a theme and outputs the color styles for the component.
 */

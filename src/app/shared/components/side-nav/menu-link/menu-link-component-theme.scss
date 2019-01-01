@@ -1,4 +1,4 @@
-@import '../side-nav-component-theme-core.scss';
+@import '../side-nav-component-theme-globals.scss';
 @mixin menu-link-component-colors($theme) {
     app-menu-link {
         a:focus {
