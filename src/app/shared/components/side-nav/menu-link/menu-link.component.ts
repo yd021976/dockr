@@ -7,7 +7,7 @@ import { AppRoute } from 'src/app/shared/models/app-route.model';
   styleUrls: ['./menu-link.component.scss']
 })
 export class MenuLinkComponent implements OnInit {
-  @Input() menuItem: AppRoute
+  @Input() menuItem: AppRoute = {}
 
   constructor() { }
 
