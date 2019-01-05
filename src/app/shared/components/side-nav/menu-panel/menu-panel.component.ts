@@ -8,13 +8,13 @@ import { MatIconRegistry } from '@angular/material';
   styleUrls: ['./menu-panel.component.scss']
 })
 export class MenuPanelComponent implements OnInit {
-  @Input() menuItem: AppRoute
+  @Input() menuItem: AppRoute = {}
 
-  constructor(private matIconReg:MatIconRegistry) {
+  constructor(private matIconReg: MatIconRegistry) {
     matIconReg.registerFontClassAlias('fontawesome solid', 'fas');
     matIconReg.registerFontClassAlias('fontawesome regular', 'far');
     matIconReg.setDefaultFontSetClass('far');
-   }
+  }
 
   ngOnInit() {
   }
