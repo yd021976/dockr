@@ -8,14 +8,14 @@
         </div>
         <div class="left-items">
           <!-- Left side toolbar items -->
-          <button mat-button (click)="onLogin()" [disabled]="isAuthenticated">Login</button>
-          <button mat-button (click)="onLogout()" [disabled]="!isAuthenticated">Logout</button>
-          <div style="float: right;font-size: 16px">Current user :{{user.nickname}}</div>
+          <button id="navbar-login-button" mat-button (click)="onLogin()" [disabled]="isAuthenticated">Login</button>
+          <button id="navbar-logout-button" mat-button (click)="onLogout()" [disabled]="!isAuthenticated">Logout</button>
+          <div style="float: right;font-size: 16px">Current user :{{user?.nickname}}</div>
         </div>
 
         <!-- Right side toolbar items -->
         <div class="right-items">
-          <button mat-button [matMenuTriggerFor]="appMenu" color="accent">
+          <button mat-button [matMenuTriggerFor]="appMenu" color="accent" id="navbar-theme-menu-button">
             Themes
           </button>
           <div style="min-width: 33px">
@@ -28,6 +28,6 @@
 </div>
 
 <!-- Themes menu -->
-<mat-menu #appMenu="matMenu" [overlapTrigger]="false">
+<mat-menu #appMenu="matMenu" [overlapTrigger]="false" id="navbar-matmenu">
   <button mat-menu-item *ngFor="let theme of themes" (click)="themeChange.emit(theme.class_name)">{{theme.name}}</button>
 </mat-menu>

@@ -13,16 +13,15 @@ import { UserModel } from '../../models/user.model';
 export class NavBarComponent implements OnInit {
   @Input() themes: ThemeItem[] = [];
   @Input() isAuthenticated: boolean; // Is a user authenticated ?
-  @Input() isProgress:boolean; // Is something in progress ?
-  @Input() user:UserModel; // Current logged in user
+  @Input() isProgress: boolean; // Is something in progress ?
+  @Input() user: UserModel; // Current logged in user
   @Output() themeChange: EventEmitter<string> = new EventEmitter<string>();
   @Output() logout: EventEmitter<any> = new EventEmitter<any>();
   @Output() login: EventEmitter<any> = new EventEmitter<any>();
 
   constructor() { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   onLogout() {
     this.logout.emit();
