@@ -14,8 +14,8 @@
 
 - <b>To implement</b> (need to be more detailed)
     * ACL mechanism
+        * [ ] Implement in front end  (services, guards, components ...)
         * [ ] Finish backend implementation
-        * [ ] Implement in front end  (services, guards ...)
     * Front end modules
         * [ ] Admin users, settings, acl
         * [ ] Document templates (a lot of work)
