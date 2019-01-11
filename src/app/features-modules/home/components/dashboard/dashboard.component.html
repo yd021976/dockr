@@ -2,9 +2,10 @@
   <p>Permissions test</p>
 </div>
 <div>
-  <ng-template #tpl [ngxPermissionsOnly]="['read_dashboard','toto']" (permissionsAuthorized)="authorized(true)" (permissionsUnauthorized)="authorized(false)">
-    <H3 #tag>
-      You can see me if you have USER role
-    </H3>
-  </ng-template>
+  
+  <app-acl-zone>
+    <app-acl-zone-element [acl]="[{permission:'edit',ressource:'*'}]" name="edit"></app-acl-zone-element>
+    <app-acl-zone-element [acl]="[{permission:'read',ressource:'*'}]" name="bitch !"></app-acl-zone-element>
+    <app-acl-zone-element [acl]="[{permission:'create',ressource:'*'}]" name="create"></app-acl-zone-element>
+  </app-acl-zone>
 </div>

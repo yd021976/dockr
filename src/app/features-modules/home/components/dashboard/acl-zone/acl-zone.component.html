@@ -1,0 +1,16 @@
+<!-- 
+  Child contents projection. Should be type of app-acl-zone-elements
+  Otherwise, nothing will be shown by this component
+-->
+<ng-content></ng-content>
+
+<!-- The default template ref (blank display) -->
+<ng-template #blank></ng-template>
+
+<!--
+  The main container : Show #blank template or the first child template that is granted to show
+  @see AclZoneElementComponent
+-->
+<ng-container *ngIf="zone">
+  <ng-container *ngTemplateOutlet="zone"></ng-container>
+</ng-container>

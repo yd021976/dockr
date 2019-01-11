@@ -22,12 +22,14 @@ export class DashboardComponent implements OnInit {
     // this.permissionsService.addPermission('read_dashboard');
     // this.permissionsService.addPermission('update_dashboard');
 
-    this.serviceConf.addPermissionStrategy('custom_authorized', this.authorizedStrategy);
-    this.serviceConf.setDefaultOnAuthorizedStrategy('custom_authorized');
-    this.serviceConf.setDefaultOnUnauthorizedStrategy('custom_authorized');
+    // this.serviceConf.addPermissionStrategy('custom_authorized', this.authorizedStrategy);
+    // this.serviceConf.setDefaultOnAuthorizedStrategy('custom_authorized');
+    // this.serviceConf.setDefaultOnUnauthorizedStrategy('custom_authorized');
   }
 
   ngOnInit() {
+    const perm = ["edit_dashboard", "view_dashboard"]
+    this.permissionsService.loadPermissions(perm)
   }
 
   // Sets permission authorized (will be used in next strategy function call)
@@ -37,36 +39,38 @@ export class DashboardComponent implements OnInit {
       return true;
     })
   }
-
+  public authEvent(event) {
+    let a = 0
+  }
 
   public authorizedStrategy = (templateRef: TemplateRef<any>) => {
     var perm = this.currentPermissionAuthorized;
     var element = templateRef.elementRef.nativeElement.nextSibling;
-    var elementChanges: htmlElementChanges = this.htmlElementUnauthorized(element);
-    this.renderer[elementChanges.method](element, elementChanges.attribute, elementChanges.attributeValue);
+    // var elementChanges: htmlElementChanges = this.htmlElementUnauthorized(element);
+    // this.renderer[elementChanges.method](element, elementChanges.attribute, elementChanges.attributeValue);
   }
 
-  public unauthorizedStrategy = (templateRef: TemplateRef<any>) => {
-    var element = templateRef.elementRef.nativeElement.nextSibling;
-    var elementChanges: htmlElementChanges = this.htmlElementUnauthorized(element);
-    this.renderer[elementChanges.method](element, elementChanges.attribute, elementChanges.attributeValue);
-  }
+  // public unauthorizedStrategy = (templateRef: TemplateRef<any>) => {
+  //   var element = templateRef.elementRef.nativeElement.nextSibling;
+  //   var elementChanges: htmlElementChanges = this.htmlElementUnauthorized(element);
+  //   this.renderer[elementChanges.method](element, elementChanges.attribute, elementChanges.attributeValue);
+  // }
 
 
-  private htmlElementUnauthorized(element: any): htmlElementChanges {
-    var changesOperations: htmlElementChanges = { method: 'setAttribute', attribute: 'disabled', attributeValue: 'false' };
+  // private htmlElementUnauthorized(element: any): htmlElementChanges {
+  //   var changesOperations: htmlElementChanges = { method: 'setAttribute', attribute: 'disabled', attributeValue: 'false' };
 
-    switch (element.nodeName) {
-      case 'H3':
-        changesOperations = { ...changesOperations, method: 'setProperty', attribute: 'innerText', attributeValue: 'You are authorized NOT to view this content' }
-        break;
-      case 'BUTTON':
-        changesOperations = { ...changesOperations, method: 'setAttribute', attribute: 'disabled', attributeValue: 'true' }
-        break;
-      default:
-        break;
-    }
-    return changesOperations;
-  }
+  //   switch (element.nodeName) {
+  //     case 'H3':
+  //       changesOperations = { ...changesOperations, method: 'setProperty', attribute: 'innerText', attributeValue: 'You are authorized NOT to view this content' }
+  //       break;
+  //     case 'BUTTON':
+  //       changesOperations = { ...changesOperations, method: 'setAttribute', attribute: 'disabled', attributeValue: 'true' }
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  //   return changesOperations;
+  // }
 
 }
