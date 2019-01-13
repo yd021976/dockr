@@ -15,62 +15,37 @@ export type htmlElementChanges = {
 export class DashboardComponent implements OnInit {
   public readonly read_dashboard: string = "read_dashboard";
   private currentPermissionAuthorized: string;
+  public isAuthorized: Function
 
   @Input() data; // TODO: set data type for dashboard component
-  constructor(private permissionsService: NgxPermissionsService, private rolesService: NgxRolesService, private serviceConf: NgxPermissionsConfigurationService, private renderer: Renderer2) {
-    // Create fake permissions
-    // this.permissionsService.addPermission('read_dashboard');
-    // this.permissionsService.addPermission('update_dashboard');
+  constructor(private permissionsService: NgxPermissionsService, private rolesService: NgxRolesService) {
 
-    // this.serviceConf.addPermissionStrategy('custom_authorized', this.authorizedStrategy);
-    // this.serviceConf.setDefaultOnAuthorizedStrategy('custom_authorized');
-    // this.serviceConf.setDefaultOnUnauthorizedStrategy('custom_authorized');
   }
 
   ngOnInit() {
+    this.isAuthorized = this.isGranted.bind(this)
     const perm = ["edit_dashboard", "view_dashboard"]
     this.permissionsService.loadPermissions(perm)
   }
 
-  // Sets permission authorized (will be used in next strategy function call)
-  public authorized = (permissions): Promise<boolean> => {
-    this.currentPermissionAuthorized = permissions;
-    return this.permissionsService.hasPermission(permissions).then((status) => {
-      return true;
+  public isGranted(allowedPermissions: string | string[], exceptPermissions: string | string[]): Promise<boolean> {
+
+    // Note that if allowed is empty hasPermission return TRUE
+    return this.permissionsService.hasPermission(allowedPermissions).then((isAllowed) => {
+
+      // if allowed, check except permissions
+      if (isAllowed) {
+        if (exceptPermissions) {
+          this.permissionsService.hasPermission(exceptPermissions).then((isExcept) => {
+            if (isExcept) return false
+            return true
+          })
+        } else {
+          return true
+        }
+      } else {
+        return false
+      }
     })
   }
-  public authEvent(event) {
-    let a = 0
-  }
-
-  public authorizedStrategy = (templateRef: TemplateRef<any>) => {
-    var perm = this.currentPermissionAuthorized;
-    var element = templateRef.elementRef.nativeElement.nextSibling;
-    // var elementChanges: htmlElementChanges = this.htmlElementUnauthorized(element);
-    // this.renderer[elementChanges.method](element, elementChanges.attribute, elementChanges.attributeValue);
-  }
-
-  // public unauthorizedStrategy = (templateRef: TemplateRef<any>) => {
-  //   var element = templateRef.elementRef.nativeElement.nextSibling;
-  //   var elementChanges: htmlElementChanges = this.htmlElementUnauthorized(element);
-  //   this.renderer[elementChanges.method](element, elementChanges.attribute, elementChanges.attributeValue);
-  // }
-
-
-  // private htmlElementUnauthorized(element: any): htmlElementChanges {
-  //   var changesOperations: htmlElementChanges = { method: 'setAttribute', attribute: 'disabled', attributeValue: 'false' };
-
-  //   switch (element.nodeName) {
-  //     case 'H3':
-  //       changesOperations = { ...changesOperations, method: 'setProperty', attribute: 'innerText', attributeValue: 'You are authorized NOT to view this content' }
-  //       break;
-  //     case 'BUTTON':
-  //       changesOperations = { ...changesOperations, method: 'setAttribute', attribute: 'disabled', attributeValue: 'true' }
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  //   return changesOperations;
-  // }
-
 }

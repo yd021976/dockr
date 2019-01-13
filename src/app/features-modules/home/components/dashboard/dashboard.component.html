@@ -1,11 +1,17 @@
 <div #divtest>
   <p>Permissions test</p>
 </div>
+
 <div>
-  
-  <app-acl-zone>
-    <app-acl-zone-element [acl]="[{permission:'edit',ressource:'*'}]" name="edit"></app-acl-zone-element>
-    <app-acl-zone-element [acl]="[{permission:'read',ressource:'*'}]" name="bitch !"></app-acl-zone-element>
-    <app-acl-zone-element [acl]="[{permission:'create',ressource:'*'}]" name="create"></app-acl-zone-element>
+  <app-acl-zone [authorizeCheckFunction]="isAuthorized">
+    <app-acl-zone-element name="edit" authorize="edit_dashboard">
+      <div>I can edit</div>
+    </app-acl-zone-element>
+    <app-acl-zone-element name="view" authorize="view_dashboard">
+      <div>I can view</div>
+    </app-acl-zone-element>
+    <app-acl-zone-element name="hidden" authorize="edit_dashboard">
+      <div>I can't edit or view content</div>
+    </app-acl-zone-element>
   </app-acl-zone>
 </div>

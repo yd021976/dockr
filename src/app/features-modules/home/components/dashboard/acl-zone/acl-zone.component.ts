@@ -1,13 +1,5 @@
-import { Component, OnInit, ViewChildren, AfterViewInit, QueryList, ContentChildren, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ViewChildren, AfterViewInit, QueryList, ContentChildren, TemplateRef, ViewChild, ViewContainerRef, Input } from '@angular/core';
 import { AclZoneElementComponent } from '../acl-zone-element/acl-zone-element.component';
-
-@Component({
-  selector: 'app-acl-zone-blank',
-  template: '<ng-template><div>Default view</div></ng-template>'
-})
-export class AclZoneBlankComponent {
-
-}
 
 @Component({
   selector: 'app-acl-zone',
@@ -15,6 +7,7 @@ export class AclZoneBlankComponent {
   styleUrls: ['./acl-zone.component.css']
 })
 export class AclZoneComponent implements OnInit, AfterViewInit {
+  @Input('authorizeCheckFunction') checkFunction:Function
   @ContentChildren(AclZoneElementComponent) zones: QueryList<AclZoneElementComponent>
   @ViewChild('blank') defaultZone: TemplateRef<any>
   zone: TemplateRef<any>
@@ -33,18 +26,25 @@ export class AclZoneComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * 
+   * The first acl zone element that is granted will be shown, others will be ignored
+   * if no element is "granted", then nothing will be shown
    */
   ngAfterViewInit() {
-    var tpl: AclZoneElementComponent = null
+    var promises: Promise<AclZoneElementComponent>[] = []
 
+    
     this.zones.forEach((item: AclZoneElementComponent) => {
-      if (item.isGranted()) {
-        return tpl = item
-      }
+      promises.push(this.isAuthorized(item).then((authorized) => {
+        if (authorized == true) return item
+        return null
+      }))
     })
-    if (tpl !== null) {
-      this.zone = tpl.tplRef
-    }
+    Promise.all(promises).then((templates: AclZoneElementComponent[]) => {
+      var template = templates.filter((value) => value !== null)
+      if (template.length != 0) this.zone = template[0].tplRef
+    })
+  }
+  private isAuthorized(item:AclZoneElementComponent):Promise<boolean> {
+    return this.checkFunction(item.authorize,item.unAuthorize)
   }
 }
