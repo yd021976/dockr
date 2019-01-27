@@ -14,5 +14,7 @@ Define a mixin that accepts a theme and outputs the color styles for the compone
     $accent: map-get($theme, accent); // @include menu-item-component-colors($theme);
     .sidenav-component {
         background-color: background-color($theme);
+        height:100vh;
+        width:100vh;
     }
 }

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatButtonModule } from '@angular/material';
+import { MatButtonModule, MatTableModule } from '@angular/material';
 import { MatDialogModule } from '@angular/material';
 import { MatExpansionModule } from '@angular/material';
 import { MatIconModule } from '@angular/material';

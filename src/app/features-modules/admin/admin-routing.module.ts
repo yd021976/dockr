@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { AppRoute } from '../../shared/models/app-route.model';
 import { UsersContainer } from './containers/users/users.container';
 import { AclContainer } from './containers/acl/acl.container';
+import { MatTreeModule } from '@angular/material';
 
 const routes: AppRoute[] = [
   {
@@ -13,7 +14,10 @@ const routes: AppRoute[] = [
   }
 ];
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [
+    RouterModule.forChild(routes),
+    MatTreeModule
+  ],
   exports: [RouterModule]
 })
 export class AdminRoutingModule { }
