@@ -24,20 +24,20 @@ import 'web-animations-js'; // WARNING: Needed in safari for web animations to w
 
         query(':enter',
           [
-            style({ opacity: 0 })
+            style({ opacity: 0})
           ],
           { optional: true }
         ),
         query(':leave',
           [
             style({ opacity: 1 }),
-            animate('200ms', style({ opacity: 0 }))
+            animate('200ms', style({ opacity: 0, position: "fixed" }))
           ],
           { optional: true }
         ),
         query(':enter',
           [
-            style({ opacity: 0 }),
+            style({ opacity: 0}),
             animate('200ms', style({ opacity: 1 }))
           ],
           { optional: true }
@@ -45,7 +45,7 @@ import 'web-animations-js'; // WARNING: Needed in safari for web animations to w
         // ANGULAR_PATCH: workaround to animate child router outlet, @see https://github.com/angular/angular/issues/15477
         query(':leave app-outlet router-outlet ~ *',
           [
-            style({ opacity: 1 }),
+            style({ opacity: 1, position: "fixed" }),
             animate(200, style({ opacity: 0 }))
           ],
           { optional: true })

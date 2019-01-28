@@ -8,7 +8,7 @@
 
 .tree_container {
     background-color: white;
-    overflow-y:auto;
+    overflow-y:scroll;
 }
 .mat-tree-node {
     min-height: 26px;
