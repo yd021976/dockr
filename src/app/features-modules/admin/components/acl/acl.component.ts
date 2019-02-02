@@ -8,10 +8,11 @@ import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
 @Component({
   selector: 'app-admin-acl',
   templateUrl: './acl.component.html',
-  styleUrls: ['./acl.component.css']
+  styleUrls: ['./acl.component.scss']
 })
 export class AclComponent {
   @Input('maxcol') maxcol = 5
+
   treeControl: FlatTreeControl<FileFlatNode>;
   treeFlattener: MatTreeFlattener<FileNode, FileFlatNode>;
   dataSource: MatTreeFlatDataSource<FileNode, FileFlatNode>
@@ -24,6 +25,7 @@ export class AclComponent {
 
     database.dataChange.subscribe(data => this.dataSource.data = data);
   }
+  
   public getLevelOf(node) {
     var level = this.treeControl.getLevel(node)
     var levels: Number[] = []
@@ -42,7 +44,7 @@ export class AclComponent {
     return Array(n);
   }
   remainingCols(node: FileFlatNode) {
-    return Array(this.maxcol - (node.level+1))
+    return Array(this.maxcol - (node.level + 1))
   }
   private _getLevel = (node: FileFlatNode) => node.level;
 

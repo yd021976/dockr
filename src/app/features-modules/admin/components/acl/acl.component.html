@@ -1,41 +1,7 @@
-<!-- <div fxLayout="column" class="container">
-  <div fxFlex class="header_container">
-    <div fxLayout="row" class="header">
-      <div fxFlex class="header_col">col1</div>
-      <div fxFlex class="header_col">col2</div>
-      <div fxFlex class="header_col">col3</div>
-      <div fxFlex class="header_col">col4</div>
-      <div fxFlex class="header_col">col5</div>
-    </div>
-  </div>
-  <div fxFlex class="tree_container">
-    <div fxLayout="row" class="tree_level">
-      <div fxFlex class="tree_node">node level 0</div>
-      <div fxFlex></div>
-      <div fxFlex></div>
-      <div fxFlex></div>
-      <div fxFlex></div>
-    </div>
-    <div fxLayout="row" class="tree_level">
-      <div fxFlex></div>
-      <div fxFlex class="tree_node">node level 1</div>
-      <div fxFlex></div>
-      <div fxFlex></div>
-      <div fxFlex></div>
-    </div>
-    <div fxLayout="row" class="tree_level">
-      <div fxFlex></div>
-      <div fxFlex></div>
-      <div fxFlex class="tree_node">node level 2</div>
-      <div fxFlex></div>
-      <div fxFlex></div>
-    </div>
-  </div>
-</div> -->
-
+<!-- <div id="toto" #toto>toto</div> -->
 
 <div class="container">
-  <div fxLayout="column" fxFlexFill>
+  <div fxLayout="column" fxFlex="1 1 auto" #tree_header>
     <div fxFlex="32px" class="table_header_container">
       <div fxLayout="row" fxLayoutAlign="start center" fxFlexFill>
         <div class="mat-header-cell column column_header" fxFlex fxFlexFill>
@@ -56,28 +22,27 @@
       </div>
     </div>
 
-    <div fxFlex fxFlexFill class="tree_container">
-      <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+    <div fxFlex="0 1 auto" class="tree_container">
+      <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" #tree>
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle fxLayoutAlign="row" class="mat-header-cell">
           <div fxFlex fxFlexFill *ngFor="let i of array(treeControl.getLevel(node))" class="column">
-            <div fxFlex fxFlexAlign="center"></div>
+            <div fxFlex fxFlexAlign="center" class="tree_container_cell"></div>
           </div>
-          <!-- <button mat-icon-button disabled></button> -->
           <div fxFlex fxFlexFill class="column">
-            <div fxFlex fxFlexAlign="center" class="mat-header-cell">{{node.filename}} : {{node.type}}</div>
+            <div fxFlex fxFlexAlign="center" class="mat-header-cell tree_container_cell">{{node.filename}} :
+              {{node.type}}</div>
           </div>
           <div fxFlex fxFlexFill *ngFor="let i of remainingCols(node)" class="column">
-            <div fxFlex FxFlexAlign="center"></div>
+            <div fxFlex FxFlexAlign="center" class="tree_container_cell"></div>
           </div>
         </mat-tree-node>
 
         <mat-tree-node *matTreeNodeDef="let node;when: hasChild" fxLayout="row" class="mat-header-cell">
-          <!-- <div fxLayout="row" fxFlexFill class="mat-header-cell column"> -->
           <div fxFlex fxFlexFill *ngFor="let i of array(treeControl.getLevel(node))" class="column">
-            <div fxFlex FxFlexAlign="center"></div>
+            <div fxFlex FxFlexAlign="center" class="tree_container_cell"></div>
           </div>
           <div fxFlex fxFlexFill class="column">
-            <div fxFlex fxFlexAlign="center">
+            <div fxFlex fxFlexAlign="center" class="tree_container_cell">
               <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
                 <mat-icon class="fa-xs mat-icon-rtl-mirror" [fontIcon]="treeControl.isExpanded(node) ? 'fa-minus-circle' : 'fa-plus-circle'"></mat-icon>
               </button>
@@ -85,12 +50,30 @@
             </div>
           </div>
           <div fxFlex fxFlexFill *ngFor="let i of remainingCols(node)" class="column">
-            <div fxFlex fxFlexAlign="center"></div>
+            <div fxFlex fxFlexAlign="center" class="tree_container_cell"></div>
           </div>
-          <!-- </div> -->
         </mat-tree-node>
+
       </mat-tree>
     </div>
-
+    <div fxFlex="1 0 8px" class="tree_container_filler">
+      <div fxLayout="row" fxLayoutAlign="start center" fxFlexFill>
+        <div class="mat-header-cell column column_header" fxFlex fxFlexFill>
+          <div fxFlex fxFlexAlign="center"></div>
+        </div>
+        <div class="mat-header-cell column column_header" fxFlex fxFlexFill>
+          <div fxFlex fxFlexAlign="center"></div>
+        </div>
+        <div class="mat-header-cell column column_header" fxFlex fxFlexFill>
+          <div fxFlex fxFlexAlign="center"></div>
+        </div>
+        <div class="mat-header-cell column column_header" fxFlex fxFlexFill>
+          <div fxFlex fxFlexAlign="center"></div>
+        </div>
+        <div class="mat-header-cell column column_header" fxFlex fxFlexFill>
+          <div fxFlex fxFlexAlign="center"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
