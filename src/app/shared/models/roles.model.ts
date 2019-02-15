@@ -3,7 +3,7 @@ import { BackendServiceModel, BackendServicesModel } from "./backend-services.mo
 /**
  * Template object
  */
-export class RoleModel {
+export interface RoleModel {
     _id: string;
     name: string;
     services: BackendServicesModel
@@ -12,10 +12,10 @@ export class RoleModel {
 /**
  * Templates list
  */
-export abstract class RolesNormalized {
+export interface RolesNormalized {
     [id: string]: RoleModel;
 }
-export class RolesModel {
+export interface RolesModel {
     roles: RolesNormalized;
     isLoading: boolean;
     isError: boolean;

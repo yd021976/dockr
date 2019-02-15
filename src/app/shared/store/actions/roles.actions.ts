@@ -1,4 +1,4 @@
-import { RoleModel } from "../../models/roles.model";
+import { RoleModel, RolesNormalized } from "../../models/roles.model";
 
 export class RolesLoadAction {
     static readonly type = '[roles] load';

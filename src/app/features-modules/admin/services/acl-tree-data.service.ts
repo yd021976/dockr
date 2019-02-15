@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AdminModule } from '../admin.module';
-import { AclFlatTreeNode, AclTreeNode } from './acl-flat-tree-node.model';
+import { AclFlatTreeNode, AclTreeNode, NodeType } from './acl-flat-tree-node.model';
 import { FlatTreeControl, TreeControl } from '@angular/cdk/tree';
 import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
 import { Observable, Subscription, BehaviorSubject } from 'rxjs';
@@ -46,41 +46,30 @@ export class AclTreeDataService {
 
     if (this._dataSource$)
       this.dataSourceSubscribtion = this._dataSource$.subscribe((roles: RolesNormalized) => {
-        this.treeDatasource.data = this._roles = this.buildTreeNodes(roles, 0)
+        // this.treeDatasource.data = this._roles = this.buildTreeNodes(roles, 0)
+        this._roles = this.buildTreeNodes(roles, 0)
+        this.treeDatasource.data = this._roles
       })
   }
   private buildTreeNodes(obj: any = {}, level: number) {
-    // var t: RoleModel | BackendServiceModel, treeNode: AclTreeNode
-
-    // this._roles = [] // clear roles
-    // for (var node in obj) {
-    //   t = obj[node] // read object
-    //   treeNode = new AclTreeNode()
-    //   treeNode.objectData = t
-
-    //   this._roles.push(treeNode)
-    // }
     return Object.keys(obj).reduce<AclTreeNode[]>((accumulator, key) => {
-      const value = obj[key];
-      const node = new AclTreeNode();
-      const typeOfNode = obj.constructor.name
-      
-      node.objectData = value;
-      const children:Array<any> = node.objectData['services']
-      node.type = typeOfNode
-
-      // if (children.length != 0) {
-      //     node.children = this.buildTreeNodes(children, level + 1);
-      // }
-
-      return accumulator.concat(node);
-    }, []);
+      const value = obj[key]
+      const node = new AclTreeNode()
+      node.children = []
+      node.objectData = value
+      node.type = this.getNodeType(level)
+      const children: Array<any> = node.objectData['services'] || node.objectData['dataModel'] || []
+      if (children.length != 0) {
+        node.children = this.buildTreeNodes(children, level + 1)
+      }
+      return accumulator.concat(node)
+    }, [])
   }
   private nodeTransformer(node: AclTreeNode, level: number) {
     var flatNode = new AclFlatTreeNode()
     flatNode.data = node.objectData
     flatNode.level = level
-    flatNode.expandable = true
+    flatNode.expandable = (node.children.length != 0)
     return flatNode
   }
   private node_isExpandable(node: AclFlatTreeNode): boolean {
@@ -90,8 +79,26 @@ export class AclTreeDataService {
     return node.level
   }
   private node_getChildren(node: AclTreeNode) {
-    if (node.objectData['services']) return node.objectData['services']
-    return []
+    return node.children
   }
   private hasChild(level: number, node: AclFlatTreeNode) { }
+
+  private getNodeType(level): NodeType {
+    var nodeType: NodeType = ""
+
+    switch (level) {
+      case 0:
+        nodeType = "role"
+        break;
+      case 1:
+        nodeType = "service"
+        break
+      case 2:
+        nodeType = "dataModel"
+        break
+      default:
+        break;
+    }
+    return nodeType
+  }
 }
