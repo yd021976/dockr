@@ -3,10 +3,12 @@ import { State, Selector } from '@ngxs/store';
 import { ApplicationStateModel } from '../../models/application-state.model';
 import { UserState } from '../states/user.state';
 import { TemplatesState } from './templates.state';
+import { RolesState } from './roles.state';
+import { BackendServicesState } from './backend-services.state';
 
 @State<ApplicationStateModel>({
     name: 'application',
-    children: [UserState, TemplatesState]
+    children: [UserState, TemplatesState, RolesState,BackendServicesState]
 })
 export class ApplicationState {
     //

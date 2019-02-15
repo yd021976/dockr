@@ -9,7 +9,13 @@ import { AclContainer } from './containers/acl/acl.container';
 import { UsersContainer } from './containers/users/users.container';
 import { MatTreeModule, MatIconModule, MatButtonModule } from '@angular/material';
 import { FileDatabase } from './components/acl/file-database';
-import {FlexLayoutModule} from '@angular/flex-layout'
+import { FlexLayoutModule } from '@angular/flex-layout'
+import { AdminAclSandboxService } from 'src/app/shared/sandboxes/containers/admin.acl.sandbox.service';
+import { Acl2Component } from './components/acl2/acl.2.component';
+import { RoleComponent } from './components/acl2/tree_nodes/role/role.component';
+import { ServiceComponent } from './components/acl2/tree_nodes/service/service.component';
+import { ActionComponent } from './components/acl2/tree_nodes/action/action.component';
+import { FieldComponent } from './components/acl2/tree_nodes/field/field.component';
 
 @NgModule({
   imports: [
@@ -24,11 +30,18 @@ import {FlexLayoutModule} from '@angular/flex-layout'
   declarations: [
     AclContainer,
     UsersContainer,
-    UsersComponent, 
-    AclComponent
+    UsersComponent,
+    AclComponent,
+    Acl2Component,
+    RoleComponent,
+    ServiceComponent,
+    ActionComponent,
+    FieldComponent,
+
   ],
-  providers:[
-    FileDatabase
+  providers: [
+    FileDatabase,
+    AdminAclSandboxService
   ]
 })
 export class AdminModule { }

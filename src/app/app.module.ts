@@ -18,6 +18,8 @@ import { SettingsModule } from './features-modules/settings/settings.module';
 import { AdminModule } from './features-modules/admin/admin.module';
 import { AppRoutingModule } from './/app-routing.module';
 import { AppLoggerModule } from './shared/services/logger/app-logger/app-logger.module';
+import { RolesState } from './shared/store/states/roles.state';
+import { BackendServicesState } from './shared/store/states/backend-services.state';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,7 @@ import { AppLoggerModule } from './shared/services/logger/app-logger/app-logger.
     ContainersModule,
     HomeModule,
     AppLoggerModule.forRoot(),
-    NgxsModule.forRoot([ApplicationState, UserState, TemplatesState]),
+    NgxsModule.forRoot([ApplicationState, UserState, TemplatesState, RolesState, BackendServicesState]),
     NgxPermissionsModule.forRoot(),
     SettingsModule,
     AdminModule,
