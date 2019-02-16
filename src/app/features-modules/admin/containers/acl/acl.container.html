@@ -2,11 +2,11 @@
     <app-admin-acl2 [nodeTemplateRenderer]="node" [datasource]="sandbox.getTreeDataSource()"
         [treeControl]="sandbox.getTreeController()"></app-admin-acl2>
     <ng-template #node let-node>
-        <ng-container [ngSwitch]="node.level">
-            <app-admin-acl-tree-node-role *ngSwitchCase="0" [node]="node"></app-admin-acl-tree-node-role>
-            <app-admin-acl-tree-node-service *ngSwitchCase="1" [node]="node"></app-admin-acl-tree-node-service>
-            <app-admin-acl-tree-node-action *ngSwitchCase="2" [node]="node"></app-admin-acl-tree-node-action>
-            <app-admin-acl-tree-node-field *ngSwitchCase="3" [node]="node"></app-admin-acl-tree-node-field>
+        <ng-container [ngSwitch]="node.type">
+            <app-admin-acl-tree-node-role *ngSwitchCase="node_types.ROLE" [node]="node"></app-admin-acl-tree-node-role>
+            <app-admin-acl-tree-node-service *ngSwitchCase="node_types.SERVICE" [node]="node"></app-admin-acl-tree-node-service>
+            <app-admin-acl-tree-node-action *ngSwitchCase="node_types.CRUD_OPERATION" [node]="node"></app-admin-acl-tree-node-action>
+            <app-admin-acl-tree-node-field *ngSwitchCase="node_types.FIELD_ACCESS" [node]="node"></app-admin-acl-tree-node-field>
         </ng-container>
     </ng-template>
 </div>

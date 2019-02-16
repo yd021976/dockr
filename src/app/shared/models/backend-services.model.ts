@@ -1,23 +1,46 @@
+/**
+ * Service data model declaration
+ */
 export interface dataModelProperty {
     type: string;
     allowed: boolean;
     children?: dataModel
 }
-/**
- * Service data model declaration
- */
+
 export interface dataModel {
     [property: string]: dataModelProperty;
 }
 
+
+
 /**
- * The backend service class
+ * Define CRUD operation & field access
+ */
+export enum CRUD_OPERATIONS {
+    CREATE = 'create',
+    UPDATE = 'update',
+    READ = "read",
+    DELETE = "delete"
+}
+export type CrudOperation = CRUD_OPERATIONS
+export interface CrudOperationModel {
+    operation: CrudOperation
+    fields: dataModel
+}
+export interface CrudOperationsModel {
+    [id: string]: CrudOperationModel
+}
+
+
+
+/**
+ * Backend service definition
  */
 export interface BackendServiceModel {
     id: string;
     name: string;
     description: string;
-    dataModel: dataModel;
+    crud_operations: CrudOperationsModel
 }
 
 /**

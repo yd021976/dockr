@@ -1,16 +1,27 @@
 import { RoleModel } from "src/app/shared/models/roles.model";
-import { BackendServiceModel, dataModel } from "src/app/shared/models/backend-services.model";
+import { BackendServiceModel, dataModel, CrudOperationModel } from "src/app/shared/models/backend-services.model";
+
+
+export enum NODE_TYPES {
+    UNKNOWN,
+    ROLE="role",
+    SERVICE="service",
+    CRUD_OPERATION="crud_operation",
+    FIELD_ACCESS="field_access"
+}
+export type NodeData = RoleModel | BackendServiceModel | CrudOperationModel | dataModel 
+export type NodeType = NODE_TYPES
 
 export class AclFlatTreeNode {
-    data: RoleModel | BackendServiceModel | dataModel
+    data: NodeData
     expandable: boolean
     level: number
+    type:NodeType
 }
 
-export type NodeType = 'role' | 'service' | 'dataModel' | ''
 
 export class AclTreeNode {
-    objectData : RoleModel | BackendServiceModel | dataModel
-    children:AclTreeNode[]
-    type: NodeType 
+    data: NodeData
+    children: AclTreeNode[]
+    type: NodeType
 }
