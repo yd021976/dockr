@@ -6,7 +6,7 @@ import { AppError, errorType } from '../../../models/app-error.model';
 import { AppLoggerService } from '../../logger/app-logger/service/app-logger.service';
 import { AppLoggerServiceToken } from '../../logger/app-logger/app-logger-token';
 import * as DATA from './roles.data';
-import { RolesNormalized, RoleModel } from 'src/app/shared/models/roles.model';
+import { RoleEntities, RoleModel } from 'src/app/shared/models/acl/roles.model';
 
 @Injectable({ providedIn: 'root' })
 export class RolesService {

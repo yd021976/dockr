@@ -1,23 +1,20 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AppRoute } from '../../shared/models/app-route.model';
-import { UsersContainer } from './containers/users/users.container';
-import { AclContainer } from './containers/acl/acl.container';
-import { MatTreeModule } from '@angular/material';
+import { AdminComponent } from './containers/admin/admin.component';
+import { AclComponent } from './components/acl/acl.component';
+
 
 const routes: AppRoute[] = [
   {
-    path: 'admin', data: { isMenu: true, title: 'admin', icon: 'fa-wrench' }, children: [
-      { path: 'users', component: UsersContainer, data: { isMenu: true, link: 'admin/users', title: 'Manage Users' } },
-      { path: 'acl', component: AclContainer, data: { isMenu: true, link: 'admin/acl', title: 'Permissions' } }
+    path: 'admin', component: AdminComponent, data: { isMenu: true, title: 'Admin', icon: 'fa-wrench' }, children: [
+      { path: 'acl', component: AclComponent, data: { isMenu: true, link: 'admin/acl', title: 'Manage roles' } }
     ]
   }
 ];
+
 @NgModule({
-  imports: [
-    RouterModule.forChild(routes),
-    MatTreeModule
-  ],
+  imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
 export class AdminRoutingModule { }
