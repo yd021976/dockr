@@ -1,14 +1,18 @@
 import { Action, State, StateContext, Selector } from '@ngxs/store';
-import { RolesStateModel, RoleEntities, RoleModel, RoleEntity } from '../../../models/acl/roles.model';
+import { RolesStateModel } from '../../../models/acl/roles.model';
 import { AppLoggerServiceToken } from '../../../services/logger/app-logger/app-logger-token';
 import { AppLoggerService } from '../../../services/logger/app-logger/service/app-logger.service';
 import { Inject } from '@angular/core';
-import { RolesLoadAllAction, RolesLoadAllSuccessAction, RolesLoadAllErrorAction, RolesUpdateRoleAction, RolesUpdateRoleSuccessAction } from '../../actions/acl/roles.actions';
-import { BackendserviceLoadAllSuccess } from '../../actions/acl/backend-services.actions';
-import { BackendServiceModel } from 'src/app/shared/models/acl/backend-services.model';
+import { RolesLoadAllAction, RolesLoadAllSuccessAction, RolesLoadAllErrorAction, RolesUpdateRoleAction, RolesUpdateRoleSuccessAction, RoleAddServiceSuccessAction } from '../../actions/acl/roles.actions';
 
 @State<RolesStateModel>({
     name: 'roles',
+    defaults: {
+        isLoading: false,
+        isError: false,
+        error: '',
+        entities: {}
+    }
 })
 export class RolesState {
     private readonly loggerName: string = "RolesState";
@@ -64,7 +68,17 @@ export class RolesState {
         //     roles: { ...ctx.getState().roles, [action.role.id]: action.role }
         // })
     }
-
+    @Action(RoleAddServiceSuccessAction)
+    role_add_service_success(ctx: StateContext<RolesStateModel>, action: RoleAddServiceSuccessAction) {
+        var state = ctx.getState()
+        var role = state.entities[action.roleUID]
+        role.services.push(action.serviceUID)
+        state.entities[action.roleUID] = role
+        
+        ctx.patchState({
+            entities: { ...state.entities }
+        })
+    }
     @Selector()
     static isLoading(state: RolesStateModel) {
         return state.isLoading;

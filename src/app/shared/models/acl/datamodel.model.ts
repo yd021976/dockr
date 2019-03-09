@@ -9,7 +9,7 @@ export interface BaseDataModelProperty {
 }
 
 export interface DataModelPropertyEntity extends BaseDataModelProperty{
-    children?:DataModelPropertyEntity
+    children?:DataModelPropertyEntities
 }
 
 

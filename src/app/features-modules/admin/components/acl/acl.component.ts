@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { RoleModel } from 'src/app/shared/models/acl/roles.model';
 
 @Component({
   selector: 'app-acl',
@@ -6,7 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./acl.component.scss']
 })
 export class AclComponent implements OnInit {
-
+  
+  
   constructor() { }
 
   ngOnInit() {

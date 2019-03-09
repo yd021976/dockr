@@ -1,6 +1,8 @@
-import { State, Action, StateContext } from "@ngxs/store";
+import { State, Action, StateContext, Selector, createSelector } from "@ngxs/store";
 import { DataModelPropertyEntities, DataModelStateModel } from "src/app/shared/models/acl/datamodel.model";
-import { DataModelsLoadAll, DataModelsLoadAllSuccess, DataModelsLoadAllError } from "../../actions/acl/datamodels.actions";
+import { DataModelsLoadAll, DataModelsLoadAllSuccess, DataModelsLoadAllError, DataModelUpdateSuccess } from "../../actions/acl/datamodels.actions";
+import { ApplicationState } from "../application.state";
+import { ApplicationStateModel } from "src/app/shared/models/application-state.model";
 
 @State<DataModelStateModel>({ name: 'datamodels' })
 export class DataModelsState {
@@ -19,4 +21,20 @@ export class DataModelsState {
 
     @Action(DataModelsLoadAllError)
     datamodels_load_all_error(ctx: StateContext<DataModelStateModel>, action: DataModelsLoadAllError) { }
+
+    @Action(DataModelUpdateSuccess)
+    datamodel_update_success(ctx: StateContext<DataModelStateModel>, action: DataModelUpdateSuccess) {
+        var state = ctx.getState()
+        state.entities[action.field.uid] = action.field
+
+        ctx.patchState({
+            entities: { ...state.entities }
+        })
+    }
+
+    static getEntity(nodeUID: string) {
+        return createSelector([DataModelsState], (state: DataModelStateModel) => {
+            return state.entities[nodeUID]
+        })
+    }
 }

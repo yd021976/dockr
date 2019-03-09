@@ -19,7 +19,7 @@ export class RolesResetAll {
 
 
 /**
- *  Roles entity operations
+ *  Roles entities operations
  */
 export class RolesUpdateRoleAction {
     static readonly type = '[roles] update role';
@@ -56,4 +56,14 @@ export class RolesRemoveRoleSuccessAction {
 export class RolesRemoveRoleErrorAction {
     static readonly type = '[roles] remove error';
     constructor(public error: string) { }
+}
+
+// Role services entities operations
+export class RoleAddServiceAction{
+    static readonly type = '[role] Add service';
+    constructor() { }
+}
+export class RoleAddServiceSuccessAction{
+    static readonly type = '[role] Add service success';
+    constructor(public roleUID:string, public serviceUID:string) { }
 }

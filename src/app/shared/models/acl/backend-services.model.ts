@@ -13,7 +13,7 @@ export interface BackendServiceModel extends BaseBackendServiceModel {
     crud_operations: CrudOperationModel[]
 }
 export interface BackendServiceEntity extends BaseBackendServiceModel {
-    crud_operations: String[]
+    crud_operations: string[]
 }
 /**
  * list of backend services entities

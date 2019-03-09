@@ -13,7 +13,7 @@ export class MenuPanelComponent implements OnInit {
   constructor(private matIconReg: MatIconRegistry) {
     matIconReg.registerFontClassAlias('fontawesome solid', 'fas');
     matIconReg.registerFontClassAlias('fontawesome regular', 'far');
-    matIconReg.setDefaultFontSetClass('far');
+    matIconReg.setDefaultFontSetClass('fas');
   }
 
   ngOnInit() {

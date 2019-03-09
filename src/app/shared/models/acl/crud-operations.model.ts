@@ -23,7 +23,7 @@ export interface CrudOperationModel extends BaseCrudOperationModel {
 }
 // Crud operation entity
 export interface CrudOperationModelEntity extends BaseCrudOperationModel {
-    fields: String[] // Array of fields UUID
+    fields: string[] // Array of fields UUID
 }
 
 // List of crud operations entities

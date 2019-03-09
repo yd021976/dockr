@@ -1,7 +1,7 @@
 import { RolesState } from "./roles.state";
 import { BackendServicesState } from "./backend-services.state";
 import { AclStateModel } from "src/app/shared/models/acl/acl.model";
-import { State, Action, StateContext, Select, Selector } from "@ngxs/store";
+import { State, Action, StateContext, Select, Selector, Store, createSelector } from "@ngxs/store";
 import { CrudOperationsState } from "./crud-operations.state";
 import { DataModelsState } from "./datamodels.state";
 import { Acl_Roles_LoadAll, Acl_Roles_LoadAll_Success, Acl_Roles_LoadAll_Error } from "../../actions/acl/acl.actions";
@@ -12,6 +12,8 @@ import { normalize, schema, Schema, denormalize } from 'normalizr'
 import { DataModelsLoadAllSuccess } from "../../actions/acl/datamodels.actions";
 import { CrudOperations_LoadAll_Success } from "../../actions/acl/crud-operations.actions";
 import { BackendserviceLoadAllSuccess } from "../../actions/acl/backend-services.actions";
+import { Observable } from "rxjs";
+import { NODE_TYPES, AclTreeNode } from "src/app/features-modules/admin/services/acl-flat-tree-node.model";
 
 @State<AclStateModel>({
     name: 'acl',
@@ -52,9 +54,13 @@ export class AclState {
     @Action(Acl_Roles_LoadAll_Error)
     roles_load_all_error(ctx: StateContext<AclState>, action: Acl_Roles_LoadAll_Error) { }
 
+
+    // Return roles object array (denormalized data)
     @Selector()
     static getRoles(state: AclStateModel): RoleModel[] {
         var rolesUid = Object.keys(state.roles.entities)
+        if (rolesUid.length == 0) return []
+
         var objects = denormalize(rolesUid, AclState.mainSchema, {
             roles: state.roles.entities,
             services: state.backendServices.entities,
@@ -62,5 +68,75 @@ export class AclState {
             fields: state.datamodels.entities
         })
         return objects
+    }
+
+    static getTreeNodesData(node: AclTreeNode = null) {
+        return createSelector([AclState], (state: AclStateModel) => {
+            var nodes: AclTreeNode[] = []
+
+            if (node == null) {
+                nodes = Object.keys(state.roles.entities).map((value) => {
+                    var role = state.roles.entities[value]
+                    return {
+                        uid: role.uid,
+                        name: role.name,
+                        type: NODE_TYPES.ROLE
+                    }
+                })
+            } else {
+                nodes = AclState.getTreeNodeChildren(state, node)
+            }
+            return nodes
+        })
+
+    }
+    /**
+     * Get children of a node
+     * @param state 
+     * @param node 
+     */
+    static getTreeNodeChildren(state: AclStateModel, node: AclTreeNode): AclTreeNode[] {
+        var children: AclTreeNode[] = []
+
+        switch (node.type) {
+            case NODE_TYPES.ROLE:
+                var roleServices = state.roles.entities[node.uid].services
+                children = roleServices.map((key) => {
+                    var service = state.backendServices.entities[key]
+                    return {
+                        uid: service.uid,
+                        type: NODE_TYPES.SERVICE,
+                        name: service.name
+                    }
+                })
+                break
+            case NODE_TYPES.SERVICE:
+                var serviceCrudOperations = state.backendServices.entities[node.uid].crud_operations
+                children = serviceCrudOperations.map((key) => {
+                    var crud = state.crudOperations.entities[key]
+                    return {
+                        uid: crud.uid,
+                        name: crud.id,
+                        type: NODE_TYPES.CRUD_OPERATION
+                    }
+                })
+                break
+            case NODE_TYPES.CRUD_OPERATION:
+                var fields = state.crudOperations.entities[node.uid].fields
+                children = fields.map((key) => {
+                    var field = state.datamodels.entities[key]
+                    return {
+                        uid: field.uid,
+                        name: field.id,
+                        type: NODE_TYPES.FIELD_ACCESS
+                    }
+                })
+                break
+            case NODE_TYPES.FIELD_ACCESS:
+                break
+            default:
+                break
+        }
+        return children
     }
 }

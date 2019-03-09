@@ -16,7 +16,7 @@ export interface RoleModel extends baseRoleModel {
 
 // Role entity
 export interface RoleEntity extends baseRoleModel {
-    services: String[]
+    services: string[]
 }
 /**
  * Roles entities
