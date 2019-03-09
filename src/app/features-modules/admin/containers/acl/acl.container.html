@@ -1,0 +1,16 @@
+<div class="contents">
+    <app-admin-acl [nodeTemplateRenderer]="node" [datasource]="sandbox.getTreeDataSource()"
+        [treeControl]="sandbox.getTreeController()">
+    </app-admin-acl>
+    <ng-template #node let-node>
+        <ng-container [ngSwitch]="node.type">
+            <app-admin-acl-tree-node-role *ngSwitchCase="node_types.ROLE" [node]="node"></app-admin-acl-tree-node-role>
+            <app-admin-acl-tree-node-service *ngSwitchCase="node_types.SERVICE" [node]="node">
+            </app-admin-acl-tree-node-service>
+            <app-admin-acl-tree-node-action *ngSwitchCase="node_types.CRUD_OPERATION" [node]="node">
+            </app-admin-acl-tree-node-action>
+            <app-admin-acl-tree-node-field *ngSwitchCase="node_types.FIELD_ACCESS" [node]="node"
+                (allowChange)="onFieldAllowChanged($event)"></app-admin-acl-tree-node-field>
+        </ng-container>
+    </ng-template>
+</div>

@@ -7,13 +7,12 @@ import { DataModelsState } from "./datamodels.state";
 import { Acl_Roles_LoadAll, Acl_Roles_LoadAll_Success, Acl_Roles_LoadAll_Error } from "../../actions/acl/acl.actions";
 import { v4 as uuid } from 'uuid';
 import { RolesLoadAllSuccessAction } from "../../actions/acl/roles.actions";
-import { RoleModel, RoleEntities } from "src/app/shared/models/acl/roles.model";
+import { RoleModel } from "src/app/shared/models/acl/roles.model";
 import { normalize, schema, Schema, denormalize } from 'normalizr'
 import { DataModelsLoadAllSuccess } from "../../actions/acl/datamodels.actions";
 import { CrudOperations_LoadAll_Success } from "../../actions/acl/crud-operations.actions";
 import { BackendserviceLoadAllSuccess } from "../../actions/acl/backend-services.actions";
-import { Observable } from "rxjs";
-import { NODE_TYPES, AclTreeNode } from "src/app/features-modules/admin/services/acl-flat-tree-node.model";
+import { AclTreeNode, NODE_TYPES } from "src/app/shared/models/acl/treenode.model";
 
 @State<AclStateModel>({
     name: 'acl',

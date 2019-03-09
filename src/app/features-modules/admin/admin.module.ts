@@ -6,6 +6,8 @@ import { AdminRoutingModule } from './admin-routing.module';
 import { AdminAclSandboxService } from 'src/app/shared/sandboxes/containers/admin.acl.sandbox.service';
 import { FormsModule } from '@angular/forms';
 import { MatTreeModule, MatIconModule, MatCheckboxModule, MatProgressBarModule } from '@angular/material';
+import { AclContainer } from './containers/acl/acl.container';
+import { UsersContainer } from './containers/users/users.container';
 
 @NgModule({
   imports: [
@@ -17,7 +19,7 @@ import { MatTreeModule, MatIconModule, MatCheckboxModule, MatProgressBarModule }
     MatCheckboxModule,
     MatProgressBarModule
   ],
-  declarations: [AdminComponent, AclComponent],
+  declarations: [AdminComponent, AclComponent, AclContainer, UsersContainer],
   providers: [AdminAclSandboxService]
 })
 export class AdminModule { }
