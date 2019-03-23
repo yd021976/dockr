@@ -1,0 +1,14 @@
+<form>
+    <div fxLayout="column">
+      <mat-form-field>
+        <input matInput placeholder="Name" [disabled]="true" value="{{node.data.name}}" />
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Description" [disabled]="true" value=" " />
+      </mat-form-field>
+    </div>
+    <div>
+      <button mat-button color="primary" (click)="add_service()">Add service</button>
+      <button mat-button color="primary" (click)="remove_role()">Remove role</button>
+    </div>
+</form>

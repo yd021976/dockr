@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { AclFlatTreeNode } from 'src/app/features-modules/admin/services/acl-flat-tree-node.model';
-import { RoleModel } from 'src/app/shared/models/acl/roles.model';
+import { AclTreeNode } from 'src/app/shared/models/acl/treenode.model';
 
 @Component({
   selector: 'app-admin-acl-tree-node-role',
@@ -9,9 +8,9 @@ import { RoleModel } from 'src/app/shared/models/acl/roles.model';
 })
 export class RoleComponent implements OnInit {
   @Input()
-  get node(): AclFlatTreeNode { return this._node }
-  set node(node: AclFlatTreeNode) { this._node = node }
-  public _node: AclFlatTreeNode
+  get node(): AclTreeNode { return this._node }
+  set node(node: AclTreeNode) { this._node = node }
+  public _node: AclTreeNode
 
   constructor() { }
 

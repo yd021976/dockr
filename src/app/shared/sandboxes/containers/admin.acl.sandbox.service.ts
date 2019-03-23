@@ -1,61 +1,131 @@
-import { BaseSandboxService } from "../base-sandbox.service";
-import { NotificationBaseService } from "../../services/notifications/notifications-base.service";
-import { Store } from "@ngxs/store";
 import { Inject } from "@angular/core";
+import { Observable } from "rxjs";
+import { Store } from "@ngxs/store";
+import { v4 as uuid } from 'uuid';
+
+import { AclState } from "../../store/states/acl/acl.state";
+import { AclTreeNode } from "../../models/acl/treenode.model";
+import { Acl_Roles_LoadAll_Success } from "../../store/actions/acl/acl.actions";
 import { AppLoggerService } from "../../services/logger/app-logger/service/app-logger.service";
 import { AppLoggerServiceToken } from "../../services/logger/app-logger/app-logger-token";
-import { RolesService } from "../../services/acl/roles/roles.service";
-import { RolesLoadAllAction, RolesAddRoleSuccessAction, RolesLoadAllSuccessAction, RolesUpdateRoleAction, RolesUpdateRoleSuccessAction, RoleAddServiceSuccessAction } from "../../store/actions/acl/roles.actions";
-import { RolesState } from "../../store/states/acl/roles.state";
-import { Observable } from "rxjs";
-import { RoleEntities, RoleModel } from "../../models/acl/roles.model";
-// import { AclTreeDataService } from "src/app/features-modules/admin/services/acl-tree-data.service";
-// import { AclFlatTreeNode } from "src/app/features-modules/admin/services/acl-flat-tree-node.model";
-import { Acl_Roles_LoadAll_Success } from "../../store/actions/acl/acl.actions";
-import { AclState } from "../../store/states/acl/acl.state";
-import { ServicesAddServiceSuccess } from "../../store/actions/acl/backend-services.actions";
 import { BackendServiceModel } from "../../models/acl/backend-services.model";
-import { v4 as uuid } from 'uuid';
-import { AclTreeNode } from "../../models/acl/treenode.model";
-import { DataModelUpdateSuccess } from "../../store/actions/acl/datamodels.actions";
-import { DataModelPropertyEntity, DataModelStateModel } from "../../models/acl/datamodel.model";
+import { BaseSandboxService } from "../base-sandbox.service";
+import { DataModelUpdateSuccess, DataModelUpdateError } from "../../store/actions/acl/datamodels.actions";
+import { DataModelPropertyEntity, DataModelPropertyEntities } from "../../models/acl/datamodel.model";
 import { DataModelsState } from "../../store/states/acl/datamodels.state";
+import { NotificationBaseService } from "../../services/notifications/notifications-base.service";
+import { RolesService } from "../../services/acl/roles/roles.service";
+import { RoleAddServiceSuccessAction } from "../../store/actions/acl/roles.actions";
+import { RoleModel } from "../../models/acl/roles.model";
+import { ServicesAddServiceSuccess } from "../../store/actions/acl/backend-services.actions";
+import { CrudOperationModelEntity } from "../../models/acl/crud-operations.model";
+import { CrudOperationsState } from "../../store/states/acl/crud-operations.state";
+import { CrudOperations_Update_Success, CrudOperations_Update_Error } from "../../store/actions/acl/crud-operations.actions";
 
 @Inject({ providedIn: 'root' })
 export class AdminAclSandboxService extends BaseSandboxService {
-    // public roles$: Observable<RolesNormalized>
-    public roles$: Observable<RoleModel[]>
     public acltreenodes$: Observable<AclTreeNode[]>
 
     constructor(
         notificationService: NotificationBaseService,
         store: Store,
         @Inject(AppLoggerServiceToken) public logger: AppLoggerService,
-        private rolesService: RolesService,
-        // private treeDataService: AclTreeDataService
-    ) {
+        private rolesService: RolesService) {
         super(notificationService, store, logger);
-        // this.roles$ = this.store.select(RolesState.roles)
-        this.roles$ = this.store.select(AclState.getRoles)
         this.acltreenodes$ = this.store.select(AclState.getTreeNodesData()) // get root nodes
     }
+
+    /**
+     * Load acl data
+     */
+    init() {
+        this.rolesService.find().then((results) => {
+            this.store.dispatch(new Acl_Roles_LoadAll_Success(results))
+        })
+    }
+
+    /********************************************************************************************************
+     * 
+     *                                      Store selectors
+     * 
+     ********************************************************************************************************/
     getTreeNodeChildren(node) {
         return this.store.select(AclState.getTreeNodesData(node))
     }
+
     nodeHasChildren(node) {
         var children = this.store.selectSnapshot(AclState.getTreeNodesData(node))
         if (children.length != 0) return true
         return false
     }
+
+
+    /********************************************************************************************************
+     * 
+     *                                          State actions
+     * 
+     ********************************************************************************************************/
+
+    /**
+     * Update field allowed checkbox
+     * 
+     * @param node 
+     */
     updateFieldNode(node: AclTreeNode) {
         var datamodelEntity: DataModelPropertyEntity
         var selector = DataModelsState.getEntity(node.uid)
-        // datamodelEntity = this.store.selectSnapshot<DataModelPropertyEntity>((state: DataModelStateModel) => {
-        //     return state.entities[node.uid]
-        // })
         datamodelEntity = this.store.selectSnapshot(selector)
-        this.store.dispatch(new DataModelUpdateSuccess(datamodelEntity))
+
+        if (datamodelEntity) {
+            datamodelEntity.allowed = node.checked
+            this.store.dispatch(new DataModelUpdateSuccess(datamodelEntity))
+        } else {
+            // entity not found in store
+            this.store.dispatch(new DataModelUpdateError('Entity not found'))
+
+            // if error occured, we need to reload tree data to update node values
+            // TODO: Check if we need to refresh data when error occured
+        }
     }
+    updateActionChecked(node: AclTreeNode): Promise<boolean> {
+        var actionEntity: CrudOperationModelEntity, fieldEntities: DataModelPropertyEntity[]
+        var actionSelector = CrudOperationsState.getEntity(node.uid), fieldsSelector = CrudOperationsState.getChildren(node.uid)
+        var allPromises: Promise<boolean>[] = []
+
+        actionEntity = this.store.selectSnapshot(actionSelector)
+        fieldEntities = this.store.selectSnapshot(fieldsSelector)
+
+        if (actionEntity) {
+            // Update field entities
+            fieldEntities.forEach((field) => {
+                field.allowed = node.checked
+                // Update state
+                allPromises.push(this.store.dispatch(new DataModelUpdateSuccess(field)).toPromise().then(value => true))
+            })
+            // Update action entity
+            actionEntity.allowed = node.checked
+            allPromises.push(this.store.dispatch(new CrudOperations_Update_Success(actionEntity)).toPromise().then(value => true))
+            Promise.all(allPromises).then(
+                (values: any[]) => {
+                    return true
+                },
+                (error: any) => {
+                    return false
+                })
+        } else {
+            allPromises.push(this.store.dispatch(new CrudOperations_Update_Error('Entity not found')).toPromise().then(value => false))
+        }
+
+        return Promise.all(allPromises).then((results: boolean[]) => {
+            var isError = results.find(value => value == false)
+            return (isError === undefined ? true : false)
+        })
+    }
+    /**
+     * Add a service to an existing role
+     * 
+     * @param roleUid 
+     */
     addServiceToRole(roleUid) {
         // define a fake service
         var service: BackendServiceModel = {
@@ -69,28 +139,6 @@ export class AdminAclSandboxService extends BaseSandboxService {
         this.store.dispatch(new ServicesAddServiceSuccess(service))
         this.store.dispatch(new RoleAddServiceSuccessAction(roleUid, service.uid))
     }
-    init() {
-        // this.treeDataService.source$ = this.roles$
-        // this.store.dispatch(new RolesLoadAllAction())
-        this.rolesService.find().then((results) => {
-            // this.store.dispatch(new RolesLoadAllSuccessAction(results))
-            this.store.dispatch(new Acl_Roles_LoadAll_Success(results))
-        })
-    }
-    // updateField(field: AclFlatTreeNode) {
-    //     var expandednodes = this.treeDataService.treeDatasource._expandedData.value
 
-    //     // Get root "role" node for this field
-    //     var parent: AclFlatTreeNode = field, last_parent: AclFlatTreeNode = null
-    //     do {
-    //         last_parent = parent
-    //         parent = this.treeDataService.getParentOfNode(parent)
-    //     } while (parent != null)
-    //     // Dispatch role update event
-    //     // var role = last_parent.value as RoleModel
-    //     // this.store.dispatch(new RolesUpdateRoleAction(role))
-    //     // this.store.dispatch(new RolesUpdateRoleSuccessAction(role))
-    // }
-    // getTreeController() { return this.treeDataService.treeControl }
-    // getTreeDataSource() { return this.treeDataService.treeDatasource }
+
 }

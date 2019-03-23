@@ -70,7 +70,7 @@ export class AclState {
     }
 
     static getTreeNodesData(node: AclTreeNode = null) {
-        return createSelector([AclState], (state: AclStateModel) => {
+        return createSelector([AclState], (state: AclStateModel): AclTreeNode[] => {
             var nodes: AclTreeNode[] = []
 
             if (node == null) {
@@ -116,6 +116,7 @@ export class AclState {
                     return {
                         uid: crud.uid,
                         name: crud.id,
+                        checked: crud.allowed,
                         type: NODE_TYPES.CRUD_OPERATION
                     }
                 })
@@ -127,6 +128,7 @@ export class AclState {
                     return {
                         uid: field.uid,
                         name: field.id,
+                        checked: field.allowed,
                         type: NODE_TYPES.FIELD_ACCESS
                     }
                 })

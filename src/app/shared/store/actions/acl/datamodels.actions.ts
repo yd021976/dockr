@@ -21,3 +21,7 @@ export class DataModelUpdateSuccess {
     static readonly type = '[DataModel] update success';
     constructor(public field: DataModelPropertyEntity) { }
 }
+export class DataModelUpdateError {
+    static readonly type = '[DataModel] update error';
+    constructor(public error: string) { }
+}

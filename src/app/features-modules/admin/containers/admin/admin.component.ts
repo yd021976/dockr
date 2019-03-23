@@ -25,7 +25,6 @@ export class AdminComponent implements OnInit {
 
   ngOnInit() {
     this.sandbox.init()
-    this.roles = this.sandbox.roles$
     this.sandbox.acltreenodes$.subscribe((nodes) => {
       this.datasource.data = nodes
     })

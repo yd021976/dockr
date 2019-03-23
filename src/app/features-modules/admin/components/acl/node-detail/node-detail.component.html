@@ -1,0 +1,14 @@
+<div class="container">
+  <fieldset fxFlex="1 0 auto">
+    <legend>Selected node details</legend>
+    <div fxLayout="column" *ngIf="node!=null">
+      <ng-container [ngSwitch]="node.data.type">
+        <app-admin-acl-role-detail *ngSwitchCase="node_types.ROLE" [node]="node" (addService)="add_service($event)"
+          (removeRole)="remove_role($event)"></app-admin-acl-role-detail>
+        <app-admin-acl-service-detail *ngSwitchCase="node_types.SERVICE"></app-admin-acl-service-detail>
+        <app-admin-acl-action-detail *ngSwitchCase="node_types.CRUD_OPERATION"></app-admin-acl-action-detail>
+        <app-admin-acl-field-detail *ngSwitchCase="node_types.FIELD_ACCESS"></app-admin-acl-field-detail>
+      </ng-container>
+    </div>
+  </fieldset>
+</div>

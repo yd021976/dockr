@@ -1,1 +1,6 @@
-<div><mat-checkbox [checked]="field.allowed" (change)="allowedChange($event)">{{field.id}}</mat-checkbox></div>
+<div>
+    <mat-checkbox [checked]="_node.checked" (change)="onCheckedChange($event)" (click)="onClick($event)"></mat-checkbox>
+    <div class="label">
+        {{_node.name}}
+    </div>
+</div>

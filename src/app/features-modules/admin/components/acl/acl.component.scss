@@ -1,11 +1,14 @@
 .container {
-    background-color: black;
     height: 100%;
     overflow: hidden;
+}
+
+.tree-wrapper {
     border: 1px solid grey;
 }
 
 .table_header_container {
+    background-color: black;
     overflow-y: scroll;
     >div>div:last-child {
         border-right: 0px;
@@ -19,8 +22,10 @@
 .tree_container {
     background-color: white;
     overflow-y: scroll;
-    div>div:last-child {
-        border-right: 0px;
+    div.column {
+        &:last-child {
+            border-right: 0px;
+        }
     }
 }
 
@@ -32,12 +37,18 @@
     ::-webkit-scrollbar {
         // background-color: white;
     }
-    div>div:last-child {
-        // border-right: 0px;
+    div.column {
+        &:last-child {
+            border-right: 0px;
+        }
     }
 }
 
 .mat-tree-node {
+    min-height: 26px;
+}
+
+.mat-nested-tree-node {
     min-height: 26px;
 }
 
@@ -70,6 +81,15 @@
 }
 
 .column {
-    border-right: 1px grey dotted;
+    border-right: 1px lightgray solid;
     min-height: inherit;
+    &.node:hover{
+        cursor: pointer
+    }
+    &.selected{
+        background-color: aqua
+    }
+}
+.node-renderer {
+    display: inline-block
 }

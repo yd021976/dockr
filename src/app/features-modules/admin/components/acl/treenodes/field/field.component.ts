@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { AclFlatTreeNode } from 'src/app/features-modules/admin/services/acl-flat-tree-node.model';
-// import { dataModelProperty } from 'src/app/shared/models/acl/backend-services.model';
 import { MatCheckboxChange } from '@angular/material';
+import { AclTreeNode } from 'src/app/shared/models/acl/treenode.model';
 
 @Component({
   selector: 'app-admin-acl-tree-node-field',
@@ -10,18 +9,20 @@ import { MatCheckboxChange } from '@angular/material';
 })
 export class FieldComponent implements OnInit {
   @Input()
-  get node(): AclFlatTreeNode { return this._node }
-  set node(node: AclFlatTreeNode) { this._node = node }
-  @Output() allowChange: EventEmitter<AclFlatTreeNode> = new EventEmitter<AclFlatTreeNode>()
+  get node(): AclTreeNode { return this._node }
+  set node(node: AclTreeNode) { this._node = node }
+  @Output() fieldCheckChange: EventEmitter<AclTreeNode> = new EventEmitter<AclTreeNode>()
 
-  public _node: AclFlatTreeNode
+  public _node: AclTreeNode
   constructor() { }
 
   ngOnInit() {
   }
-  public allowedChange(event: MatCheckboxChange) {
+  public onCheckedChange(event: MatCheckboxChange) {
     this._node.checked = event.checked
-    this.allowChange.emit(this._node)
+    this.fieldCheckChange.emit(this._node)
   }
-
+  onClick(event:MouseEvent) {
+    event.stopPropagation() // avoid click event propagate to parent div that select/deselect node
+  }
 }

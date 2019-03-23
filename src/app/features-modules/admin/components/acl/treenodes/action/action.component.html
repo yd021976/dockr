@@ -1,3 +1,4 @@
 <div>
-    <mat-checkbox [checked]="checked" [indeterminate]="indeterminate">{{_node.displayName}}</mat-checkbox>
+    <mat-checkbox [checked]="checked" [indeterminate]="indeterminate" (click)="onClick($event)" (change)="onCheckChange($event)"></mat-checkbox>
+    <div class="label">{{_node.name}}</div>
 </div>
