@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
+
 body {
-  margin:0 0;
+    margin: 0 0;
 }
 
 // @import "material-design-icons/iconfont/material-icons.css";
@@ -32,6 +33,8 @@ $app-default-theme: mat-light-theme($app-default-primary, $app-default-accent);
 @import 'app/shared/components/side-nav/side-nav.component-theme.scss';
 @import 'app/shared/components/side-nav/menu-link/menu-link-component-theme.scss';
 @import 'app/shared/components/side-nav/menu-panel/menu-panel-component-theme.scss';
+@import 'app/features-modules/admin/components/acl/node-actions/node-actions.theme.scss';
+@import 'app/features-modules/admin/components/acl/acl.component.theme.scss';
 @include navbar-component($app-default-theme);
 @include app-component($app-default-theme);
 @include auth-component-login($app-default-theme);
@@ -42,6 +45,8 @@ $app-default-theme: mat-light-theme($app-default-primary, $app-default-accent);
 @include menu-panel-component-structure($app-default-theme);
 @include menu-link-component-colors($app-default-theme);
 @include menu-link-component-structure($app-default-theme);
+@include admin-acl-node-actions-theme($app-default-theme);
+@include acl-component-theme($app-default-theme);
 // alternative theme 2
 $app-theme-2-primary: mat-palette($mat-grey);
 $app-theme-2-accent: mat-palette($mat-orange, A200, A100, A400);
@@ -58,4 +63,6 @@ $app-theme-2-theme: mat-light-theme($app-theme-2-primary, $app-theme-2-accent);
     @include menu-panel-component-structure($app-theme-2-theme);
     @include menu-link-component-colors($app-theme-2-theme);
     @include menu-link-component-structure($app-theme-2-theme);
+    @include admin-acl-node-actions-theme($app-theme-2-theme);
+    @include acl-component-theme($app-theme-2-theme);
 }

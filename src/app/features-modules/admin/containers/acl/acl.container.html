@@ -1,34 +1,27 @@
-<div class="container" fxLayout="column">
-    <div class="toolbar" fxFlex="24px">
-        <mat-toolbar></mat-toolbar>
+<div class="contents" fxLayout="row" fxFlex="1 1 auto">
+    <div fxFlex>
+        <app-admin-acl [nodeTemplateRenderer]="node" [flatDataSource]="datasource" [treecontrol]="treecontroller"
+            [colModel]="colModel" (nodeSelected)="onNodeSelected($event)">
+        </app-admin-acl>
+        <!-- How to render tree nodes -->
+        <ng-template #node let-node>
+            <ng-container [ngSwitch]="node.type">
+                <app-admin-acl-tree-node-role *ngSwitchCase="node_types.ROLE" [node]="node">
+                </app-admin-acl-tree-node-role>
+                <app-admin-acl-tree-node-service *ngSwitchCase="node_types.SERVICE" [node]="node">
+                </app-admin-acl-tree-node-service>
+                <app-admin-acl-tree-node-action *ngSwitchCase="node_types.CRUDOPERATION" [node]="node"
+                    [fields]="sandbox.getTreeNodeChildren(node)" (checkChange)="onActionCheckChange($event)">
+                </app-admin-acl-tree-node-action>
+                <app-admin-acl-tree-node-field *ngSwitchCase="node_types.FIELDACCESS" [node]="node"
+                    (fieldCheckChange)="onFieldCheckChange($event)"></app-admin-acl-tree-node-field>
+            </ng-container>
+        </ng-template>
     </div>
-    <div class="main" fxFlex="1 0 auto">
-        <div class="contents" fxLayout="row" fxFlex="1 1 auto">
-            <div fxFlex>
-                <app-admin-acl [nodeTemplateRenderer]="node" [flatDataSource]="datasource"
-                    [treecontrol]="treecontroller" [colModel]="colModel" (nodeSelected)="onNodeSelected($event)">
-                </app-admin-acl>
-                <!-- How to render tree nodes -->
-                <ng-template #node let-node>
-                    <ng-container [ngSwitch]="node.type">
-                        <app-admin-acl-tree-node-role *ngSwitchCase="node_types.ROLE" [node]="node">
-                        </app-admin-acl-tree-node-role>
-                        <app-admin-acl-tree-node-service *ngSwitchCase="node_types.SERVICE" [node]="node">
-                        </app-admin-acl-tree-node-service>
-                        <app-admin-acl-tree-node-action *ngSwitchCase="node_types.CRUD_OPERATION" [node]="node"
-                            [fields]="sandbox.getTreeNodeChildren(node)" (checkChange)="onActionCheckChange($event)">
-                        </app-admin-acl-tree-node-action>
-                        <app-admin-acl-tree-node-field *ngSwitchCase="node_types.FIELD_ACCESS" [node]="node"
-                            (fieldCheckChange)="onFieldCheckChange($event)"></app-admin-acl-tree-node-field>
-                    </ng-container>
-                </ng-template>
-            </div>
-            <!-- Node detail and actions -->
-            <div fxFlex>
-                <app-acl-node-detail [node]="selectedNode" (removeRole)="remove_role($event)"
-                    (addService)="add_service($event)" (removeService)="remove_service($event)">
-                </app-acl-node-detail>
-            </div>
-        </div>
+
+    <!-- Node actions -->
+    <div fxFlex="200px">
+        <app-admin-acl-node-actions [node]="selectedNode$ | async" [availableServices]="availableRoleService$ | async"></app-admin-acl-node-actions>
     </div>
+    <div fxFlex="1 0 auto"><!--Fake div to fill empty spaces after 'actions'--></div>
 </div>

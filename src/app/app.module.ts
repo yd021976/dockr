@@ -24,6 +24,7 @@ import { AclState } from './shared/store/states/acl/acl.state';
 import { CrudOperationsState } from './shared/store/states/acl/crud-operations.state';
 import { DataModelsState } from './shared/store/states/acl/datamodels.state';
 import { AdminModule } from './features-modules/admin/admin.module';
+import { ServicesState } from './shared/store/states/services.state';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,16 @@ import { AdminModule } from './features-modules/admin/admin.module';
     ContainersModule,
     HomeModule,
     AppLoggerModule.forRoot(),
-    NgxsModule.forRoot([ApplicationState, UserState, TemplatesState, AclState, RolesState, BackendServicesState, CrudOperationsState,DataModelsState]),
+    NgxsModule.forRoot([
+      ApplicationState,
+      UserState,
+      TemplatesState,
+      AclState,
+      RolesState,
+      BackendServicesState,
+      CrudOperationsState, DataModelsState,
+      ServicesState
+    ]),
     NgxPermissionsModule.forRoot(),
     SettingsModule,
     // AdminModule,

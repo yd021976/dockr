@@ -22,7 +22,7 @@
             .mat-expansion-panel-header-title {
                 color: text-color($theme);
             }
-            &.mat-expanded,
+            &.mat-expanded
                 {
                 .mat-expansion-panel-header-title {
                     color: text-color-expanded($theme);

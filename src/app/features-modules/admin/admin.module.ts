@@ -7,7 +7,7 @@ import { AdminComponent } from './containers/admin/admin.component';
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminAclSandboxService } from 'src/app/shared/sandboxes/containers/admin.acl.sandbox.service';
 import { FormsModule } from '@angular/forms';
-import { MatTreeModule, MatIconModule, MatCheckboxModule, MatProgressBarModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatToolbarModule } from '@angular/material';
+import { MatTreeModule, MatIconModule, MatCheckboxModule, MatProgressBarModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatToolbarModule, MatBadgeModule } from '@angular/material';
 import { AclContainer } from './containers/acl/acl.container';
 import { UsersContainer } from './containers/users/users.container';
 import { ActionComponent } from './components/acl/treenodes/action/action.component';
@@ -22,17 +22,18 @@ import { RoleDetailComponent } from './components/acl/node-detail/node-types/rol
 import { ServiceDetailComponent } from './components/acl/node-detail/node-types/service-detail/service-detail.component';
 import { ActionDetailComponent } from './components/acl/node-detail/node-types/action-detail/action-detail.component';
 import { FieldDetailComponent } from './components/acl/node-detail/node-types/field-detail/field-detail.component';
-import { DefaultActionComponent } from './components/acl/node-actions/default-action/default-action.component';
-import { RoleActionComponent } from './components/acl/node-actions/role-action/role-action.component';
-import { ServiceActionComponent } from './components/acl/node-actions/service-action/service-action.component';
-import { CrudActionComponent } from './components/acl/node-actions/crud-action/crud-action.component';
-import { FieldActionComponent } from './components/acl/node-actions/field-action/field-action.component';
+import { DefaultActionComponent } from './components/acl/node-actions/node-types/default-action/default-action.component';
+import { RoleActionComponent } from './components/acl/node-actions/node-types/role-action/role-action.component';
+import { ServiceActionComponent } from './components/acl/node-actions/node-types/service-action/service-action.component';
+import { CrudActionComponent } from './components/acl/node-actions/node-types/crud-action/crud-action.component';
+import { FieldActionComponent } from './components/acl/node-actions/node-types/field-action/field-action.component';
+import { NodeActionsComponent } from './components/acl/node-actions/node-actions.component';
 
 const components = [
   AclContainer, UsersContainer, UsersComponent, AclComponent, ActionComponent, FieldComponent, RoleComponent, ServiceComponent,
   NodeDetailComponent,
   RoleDetailComponent, ServiceDetailComponent, ActionDetailComponent, FieldDetailComponent,
-  DefaultActionComponent,RoleActionComponent,ServiceActionComponent,CrudActionComponent,FieldActionComponent,
+  NodeActionsComponent, DefaultActionComponent, RoleActionComponent, ServiceActionComponent, CrudActionComponent, FieldActionComponent,
   // To delete
   AdminComponent
 ]
@@ -42,6 +43,7 @@ const components = [
     CommonModule,
     BrowserAnimationsModule,
     AdminRoutingModule,
+    MatBadgeModule,
     FormsModule,
     MatTreeModule,
     MatIconModule,

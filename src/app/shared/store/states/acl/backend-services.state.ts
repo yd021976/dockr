@@ -7,7 +7,7 @@ import { BackendserviceLoadAllSuccess, BackendserviceLoadAll, BackendserviceLoad
 import { v4 as uuid } from 'uuid';
 
 @State<BackendServicesStateModel>({
-    name: 'backendServices'
+    name: 'aclServices'
 })
 export class BackendServicesState {
     private readonly loggerName: string = "BackendServicesState";

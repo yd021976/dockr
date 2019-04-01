@@ -1,0 +1,9 @@
+ @mixin action-buttons {
+     .button-label {
+         display: inline-block;
+         margin-left: 12px;
+     }
+     button {
+        display: block;
+    }
+ }

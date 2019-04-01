@@ -9,6 +9,8 @@ import { FlatTreeNode } from '../../services/treeNodes.service';
 import { NODE_TYPES } from '../../../../shared/models/acl/treenode.model';
 import { TreeNodesService } from '../../services/treeNodes.service';
 import { AclTreeColmodel } from 'src/app/shared/models/acl/acl-tree-colmodel.model';
+import { Observable } from 'rxjs';
+import { BackendServiceModel } from 'src/app/shared/models/acl/backend-services.model';
 
 @Component({
   selector: 'app-acl-container',
@@ -20,7 +22,8 @@ export class AclContainer implements OnInit {
   public datasource: MatTreeFlatDataSource<AclTreeNode, FlatTreeNode>
   public colModel: AclTreeColmodel[]
   public node_types = NODE_TYPES
-  public selectedNode: FlatTreeNode = null
+  public selectedNode$: Observable<FlatTreeNode>
+  public availableRoleService$: Observable<any>
 
   constructor(public sandbox: AdminAclSandboxService, public treeService: TreeNodesService) {
     this.colModel = this.setColmodel()
@@ -32,6 +35,10 @@ export class AclContainer implements OnInit {
 
     this.treecontroller = this.treeService.treeControl
     this.datasource = this.treeService.treeFlatDataSource
+
+    this.selectedNode$ = this.sandbox.currentSelectedNode$
+    this.availableRoleService$ = this.sandbox.availableServices$
+    
   }
 
   private setColmodel(): AclTreeColmodel[] {
@@ -72,10 +79,11 @@ export class AclContainer implements OnInit {
   onFieldCheckChange(node: AclTreeNode) {
     this.sandbox.updateFieldNode(node)
   }
-  onActionCheckChange(node:AclTreeNode){
+  onActionCheckChange(node: AclTreeNode) {
     this.sandbox.updateActionChecked(node)
   }
   onNodeSelected(node: FlatTreeNode) {
-    this.selectedNode = node
+    // update state with selected node
+    this.sandbox.selectNode(node)
   }
 }

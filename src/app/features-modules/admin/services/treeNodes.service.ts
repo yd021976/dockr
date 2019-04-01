@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { FlatTreeControl } from "@angular/cdk/tree";
 import { Observable, of as observableOf, Subscription } from 'rxjs';
 import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material";
-import { AdminModule } from "../admin.module";
 
 export class FlatTreeNode<T=any> {
     level: number
@@ -50,6 +49,27 @@ export class TreeNodesService {
         this._dataSource = new MatTreeFlatDataSource<any, FlatTreeNode>(this._treeControl, this._treeFlatenner)
     }
 
+    /**
+     * Get the root node from a given node in the tree. loop in reverse order in the tree until it find the first node tree level (level 0) 
+     * @param node 
+     */
+    public tree_GetRootNodeOf(node: FlatTreeNode): FlatTreeNode {
+        const currentLevel = this.treeControl.getLevel(node)
+
+        if (currentLevel < 1) {
+            return node;
+        }
+
+        const startIndex = this.treeControl.dataNodes.indexOf(node) - 1;
+
+        for (let i = startIndex; i >= 0; i--) {
+            const currentNode = this.treeControl.dataNodes[i];
+
+            if (this.treeControl.getLevel(currentNode) < currentLevel) {
+                return this.tree_GetRootNodeOf(currentNode);
+            }
+        }
+    }
     /**
      * 
      * @param node 

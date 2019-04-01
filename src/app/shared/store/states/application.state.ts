@@ -4,10 +4,11 @@ import { ApplicationStateModel } from '../../models/application-state.model';
 import { UserState } from '../states/user.state';
 import { TemplatesState } from './templates.state';
 import { AclState } from './acl/acl.state';
+import { ServicesState } from './services.state';
 
 @State<ApplicationStateModel>({
     name: 'application',
-    children: [UserState, TemplatesState, AclState]
+    children: [UserState, TemplatesState, AclState, ServicesState]
 })
 export class ApplicationState {
     //

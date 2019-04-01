@@ -1,0 +1,28 @@
+/*
+Import all the tools needed to customize the theme and extract parts of it
+*/
+
+@import '~@angular/material/theming';
+
+@mixin acl-component-theme($theme) {
+    $primary: map-get($theme, primary);
+    $accent: map-get($theme, accent);
+
+    app-admin-acl {
+        .table_header_container {
+            background-color: mat-color($primary, 900);
+        }
+
+        .column {
+            border-color: mat-color($primary, 100);
+
+            &.selected {
+                background-color: mat-color($accent, 50);
+            }
+        }
+
+        .tree-wrapper {
+            border-color: mat-color($primary, 900);
+        }
+    }
+}

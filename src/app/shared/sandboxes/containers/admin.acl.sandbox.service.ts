@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 
 import { AclState } from "../../store/states/acl/acl.state";
 import { AclTreeNode } from "../../models/acl/treenode.model";
-import { Acl_Roles_LoadAll_Success } from "../../store/actions/acl/acl.actions";
+import { Acl_Roles_LoadAll_Success, Acl_Select_node } from "../../store/actions/acl/acl.actions";
 import { AppLoggerService } from "../../services/logger/app-logger/service/app-logger.service";
 import { AppLoggerServiceToken } from "../../services/logger/app-logger/app-logger-token";
 import { BackendServiceModel } from "../../models/acl/backend-services.model";
@@ -21,29 +21,41 @@ import { ServicesAddServiceSuccess } from "../../store/actions/acl/backend-servi
 import { CrudOperationModelEntity } from "../../models/acl/crud-operations.model";
 import { CrudOperationsState } from "../../store/states/acl/crud-operations.state";
 import { CrudOperations_Update_Success, CrudOperations_Update_Error } from "../../store/actions/acl/crud-operations.actions";
+import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
+import { ServicesState } from "../../store/states/services.state";
+import { BackendServicesService } from "../../services/acl/services/backend-services.service";
+import { ServicesLoadAll_Success } from "../../store/actions/services.actions";
 
 @Inject({ providedIn: 'root' })
 export class AdminAclSandboxService extends BaseSandboxService {
     public acltreenodes$: Observable<AclTreeNode[]>
+    public currentSelectedNode$: Observable<FlatTreeNode>
+    public availableServices$: Observable<any>
 
     constructor(
         notificationService: NotificationBaseService,
         store: Store,
         @Inject(AppLoggerServiceToken) public logger: AppLoggerService,
-        private rolesService: RolesService) {
+        private rolesService: RolesService,
+        private backendServices: BackendServicesService) {
         super(notificationService, store, logger);
-        this.acltreenodes$ = this.store.select(AclState.getTreeNodesData()) // get root nodes
+        this.acltreenodes$ = this.store.select(AclState.getTreeNodesData()) // ACL Observable
+        this.currentSelectedNode$ = this.store.select(AclState.currentSelectedNode)
+        this.availableServices$ = this.store.select(AclState.availableRoleServices)
     }
 
     /**
-     * Load acl data
+     * Load ACL's data
      */
     init() {
         this.rolesService.find().then((results) => {
             this.store.dispatch(new Acl_Roles_LoadAll_Success(results))
         })
-    }
 
+        this.backendServices.find().then((results) => {
+            this.store.dispatch(new ServicesLoadAll_Success(results))
+        })
+    }
     /********************************************************************************************************
      * 
      *                                      Store selectors
@@ -66,6 +78,13 @@ export class AdminAclSandboxService extends BaseSandboxService {
      * 
      ********************************************************************************************************/
 
+    /**
+     * 
+     * @param node 
+     */
+    public selectNode(node: FlatTreeNode) {
+        this.store.dispatch(new Acl_Select_node(node))
+    }
     /**
      * Update field allowed checkbox
      * 

@@ -7,10 +7,10 @@ export interface AclTreeNode {
 }
 
 export enum NODE_TYPES {
-    UNKNOWN,
+    UNKNOWN = "",
     ROLE = "role",
     SERVICE = "service",
-    CRUD_OPERATION = "crud_operation",
-    FIELD_ACCESS = "field_access"
+    CRUDOPERATION = "crud_operation",
+    FIELDACCESS = "field_access"
 }
 export type NodeTypes = NODE_TYPES

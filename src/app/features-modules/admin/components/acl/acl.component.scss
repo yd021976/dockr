@@ -4,24 +4,27 @@
 }
 
 .tree-wrapper {
-    border: 1px solid grey;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
 }
 
 .table_header_container {
-    background-color: black;
+    // background-color: black;
     overflow-y: scroll;
+
     >div>div:last-child {
         border-right: 0px;
     }
 }
 
-.table_header_container::-webkit-scrollbar {
-    // background-color: black;
-}
-
 .tree_container {
     background-color: white;
     overflow-y: scroll;
+
     div.column {
         &:last-child {
             border-right: 0px;
@@ -29,14 +32,10 @@
     }
 }
 
-.tree_container_cell {}
-
 .tree_container_filler {
     background-color: white; // overflow-y: scroll;
     overflow-y: scroll;
-    ::-webkit-scrollbar {
-        // background-color: white;
-    }
+
     div.column {
         &:last-child {
             border-right: 0px;
@@ -81,15 +80,15 @@
 }
 
 .column {
-    border-right: 1px lightgray solid;
+    border-right-style: solid;
+    border-right-width: 1px;
     min-height: inherit;
-    &.node:hover{
+
+    &.node:hover {
         cursor: pointer
     }
-    &.selected{
-        background-color: aqua
-    }
 }
+
 .node-renderer {
     display: inline-block
 }
