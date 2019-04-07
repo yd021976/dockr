@@ -35,11 +35,11 @@ export class RolesUpdateRoleErrorAction {
 }
 export class RolesAddRoleAction {
     static readonly type = '[roles] add';
-    constructor(public role: RoleModel) { }
+    constructor(public roleName: string) { }
 }
 export class RolesAddRoleSuccessAction {
     static readonly type = '[roles] add success';
-    constructor(public role: RoleModel) { }
+    constructor(public roleName: string) { }
 }
 export class RolesAddRoleErrorAction {
     static readonly type = '[roles] add error';
@@ -47,11 +47,11 @@ export class RolesAddRoleErrorAction {
 }
 export class RolesRemoveRoleAction {
     static readonly type = '[roles] remove';
-    constructor(public role: RoleModel) { }
+    constructor(public roleUid: string) { }
 }
 export class RolesRemoveRoleSuccessAction {
     static readonly type = '[roles] remove success';
-    constructor(public role: RoleModel) { }
+    constructor(public roleUid: string) { }
 }
 export class RolesRemoveRoleErrorAction {
     static readonly type = '[roles] remove error';

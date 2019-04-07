@@ -3,7 +3,7 @@ import { Observable } from "rxjs";
 import { Store } from "@ngxs/store";
 import { v4 as uuid } from 'uuid';
 
-import { AclState } from "../../store/states/acl/acl.state";
+import { AclState } from "../../store/states/acl/state/acl.state";
 import { AclTreeNode } from "../../models/acl/treenode.model";
 import { Acl_Roles_LoadAll_Success, Acl_Select_node } from "../../store/actions/acl/acl.actions";
 import { AppLoggerService } from "../../services/logger/app-logger/service/app-logger.service";
@@ -15,7 +15,7 @@ import { DataModelPropertyEntity, DataModelPropertyEntities } from "../../models
 import { DataModelsState } from "../../store/states/acl/datamodels.state";
 import { NotificationBaseService } from "../../services/notifications/notifications-base.service";
 import { RolesService } from "../../services/acl/roles/roles.service";
-import { RoleAddServiceSuccessAction } from "../../store/actions/acl/roles.actions";
+import { RoleAddServiceSuccessAction, RolesAddRoleSuccessAction, RolesRemoveRoleSuccessAction } from "../../store/actions/acl/roles.actions";
 import { RoleModel } from "../../models/acl/roles.model";
 import { ServicesAddServiceSuccess } from "../../store/actions/acl/backend-services.actions";
 import { CrudOperationModelEntity } from "../../models/acl/crud-operations.model";
@@ -158,6 +158,11 @@ export class AdminAclSandboxService extends BaseSandboxService {
         this.store.dispatch(new ServicesAddServiceSuccess(service))
         this.store.dispatch(new RoleAddServiceSuccessAction(roleUid, service.uid))
     }
-
+    aclAddRole(roleName: string) { 
+        this.store.dispatch(new RolesAddRoleSuccessAction(roleName))
+    }
+    aclRemoveRole(roleUid:string){
+        this.store.dispatch(new RolesRemoveRoleSuccessAction(roleUid))
+    }
 
 }

@@ -3,7 +3,7 @@ import { State, Selector } from '@ngxs/store';
 import { ApplicationStateModel } from '../../models/application-state.model';
 import { UserState } from '../states/user.state';
 import { TemplatesState } from './templates.state';
-import { AclState } from './acl/acl.state';
+import { AclState } from './acl/state/acl.state';
 import { ServicesState } from './services.state';
 
 @State<ApplicationStateModel>({

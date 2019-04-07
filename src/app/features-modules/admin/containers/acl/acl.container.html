@@ -21,7 +21,11 @@
 
     <!-- Node actions -->
     <div fxFlex="200px">
-        <app-admin-acl-node-actions [node]="selectedNode$ | async" [availableServices]="availableRoleService$ | async"></app-admin-acl-node-actions>
+        <app-admin-acl-node-actions [node]="selectedNode$ | async" [availableServices]="availableRoleService$ | async"
+            (addRole)="add_role($event)" (removeRole)="remove_role($event)" (addService)="add_service($event)"
+            (removeService)="remove_service($event)"></app-admin-acl-node-actions>
     </div>
-    <div fxFlex="1 0 auto"><!--Fake div to fill empty spaces after 'actions'--></div>
+    <div fxFlex="1 0 auto">
+        <!--Fake div to fill empty spaces after 'actions'-->
+    </div>
 </div>

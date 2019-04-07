@@ -1,6 +1,6 @@
 import { BaseTreeControl } from '@angular/cdk/tree';
 import { Component } from '@angular/core';
-import { MatTreeFlatDataSource } from '@angular/material';
+import { MatTreeFlatDataSource, MatDialogRef, MatDialog } from '@angular/material';
 import { OnInit } from '@angular/core';
 
 import { AclTreeNode } from '../../../../shared/models/acl/treenode.model';
@@ -11,6 +11,7 @@ import { TreeNodesService } from '../../services/treeNodes.service';
 import { AclTreeColmodel } from 'src/app/shared/models/acl/acl-tree-colmodel.model';
 import { Observable } from 'rxjs';
 import { BackendServiceModel } from 'src/app/shared/models/acl/backend-services.model';
+import { AddRoleDialogComponent, dialogResult } from '../../components/acl/dialogs/add.role/add.role.dialog.component';
 
 @Component({
   selector: 'app-acl-container',
@@ -25,7 +26,12 @@ export class AclContainer implements OnInit {
   public selectedNode$: Observable<FlatTreeNode>
   public availableRoleService$: Observable<any>
 
-  constructor(public sandbox: AdminAclSandboxService, public treeService: TreeNodesService) {
+  private dialogAddrole: MatDialogRef<AddRoleDialogComponent>
+  private dialogService: MatDialog
+
+  constructor(public sandbox: AdminAclSandboxService, public treeService: TreeNodesService, dialogService: MatDialog) {
+    this.dialogService = dialogService
+
     this.colModel = this.setColmodel()
 
     this.treeService.getChildren = (node: AclTreeNode) => { return this.sandbox.getTreeNodeChildren(node) }
@@ -38,7 +44,7 @@ export class AclContainer implements OnInit {
 
     this.selectedNode$ = this.sandbox.currentSelectedNode$
     this.availableRoleService$ = this.sandbox.availableServices$
-    
+
   }
 
   private setColmodel(): AclTreeColmodel[] {
@@ -68,13 +74,27 @@ export class AclContainer implements OnInit {
     this.sandbox.init()
   }
 
-  remove_role(node: FlatTreeNode) { }
+  add_role(node: FlatTreeNode) {
+    if (!this.dialogAddrole) {
+      this.dialogAddrole = this.dialogService.open(AddRoleDialogComponent, { disableClose: true })
+      this.dialogAddrole.afterClosed().subscribe((data: dialogResult) => {
+        if (!data.cancelled && data.result != '') {
+          this.sandbox.aclAddRole(data.result)
+        }
+        this.dialogAddrole = null // dialog is closed, clear dialog ref object
+      })
+    }
+  }
+  remove_role(node: FlatTreeNode) {
+    this.sandbox.selectNode(null) // deselect any node
+    this.sandbox.aclRemoveRole(node.data['uid'])
+  }
 
-  remove_service(node: FlatTreeNode) { }
 
   add_service(node: FlatTreeNode) {
     this.sandbox.addServiceToRole(node.data.uid)
   }
+  remove_service(node: FlatTreeNode) { }
 
   onFieldCheckChange(node: AclTreeNode) {
     this.sandbox.updateFieldNode(node)

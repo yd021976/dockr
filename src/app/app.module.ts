@@ -20,7 +20,7 @@ import { AppRoutingModule } from './/app-routing.module';
 import { AppLoggerModule } from './shared/services/logger/app-logger/app-logger.module';
 import { RolesState } from './shared/store/states/acl/roles.state';
 import { BackendServicesState } from './shared/store/states/acl/backend-services.state';
-import { AclState } from './shared/store/states/acl/acl.state';
+import { AclState } from './shared/store/states/acl/state/acl.state';
 import { CrudOperationsState } from './shared/store/states/acl/crud-operations.state';
 import { DataModelsState } from './shared/store/states/acl/datamodels.state';
 import { AdminModule } from './features-modules/admin/admin.module';
