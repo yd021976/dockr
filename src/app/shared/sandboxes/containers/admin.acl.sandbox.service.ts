@@ -1,36 +1,33 @@
 import { Inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { Store } from "@ngxs/store";
-import { v4 as uuid } from 'uuid';
-
-import { AclState } from "../../store/states/acl/state/acl.state";
 import { AclTreeNode } from "../../models/acl/treenode.model";
-import { Acl_Roles_LoadAll_Success, Acl_Select_node } from "../../store/actions/acl/acl.actions";
 import { AppLoggerService } from "../../services/logger/app-logger/service/app-logger.service";
 import { AppLoggerServiceToken } from "../../services/logger/app-logger/app-logger-token";
 import { BackendServiceModel } from "../../models/acl/backend-services.model";
 import { BaseSandboxService } from "../base-sandbox.service";
 import { DataModelUpdateSuccess, DataModelUpdateError } from "../../store/actions/acl/datamodels.actions";
-import { DataModelPropertyEntity, DataModelPropertyEntities } from "../../models/acl/datamodel.model";
+import { DataModelPropertyEntity } from "../../models/acl/datamodel.model";
 import { DataModelsState } from "../../store/states/acl/datamodels.state";
 import { NotificationBaseService } from "../../services/notifications/notifications-base.service";
 import { RolesService } from "../../services/acl/roles/roles.service";
-import { RoleAddServiceSuccessAction, RolesAddRoleSuccessAction, RolesRemoveRoleSuccessAction } from "../../store/actions/acl/roles.actions";
-import { RoleModel } from "../../models/acl/roles.model";
-import { ServicesAddServiceSuccess } from "../../store/actions/acl/backend-services.actions";
 import { CrudOperationModelEntity } from "../../models/acl/crud-operations.model";
 import { CrudOperationsState } from "../../store/states/acl/crud-operations.state";
 import { CrudOperations_Update_Success, CrudOperations_Update_Error } from "../../store/actions/acl/crud-operations.actions";
 import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
-import { ServicesState } from "../../store/states/services.state";
 import { BackendServicesService } from "../../services/acl/services/backend-services.service";
-import { ServicesLoadAll_Success } from "../../store/actions/services.actions";
+import { Services_Load_All_Success } from "../../store/actions/services.actions";
+import { Acl2State } from "../../store/states/acl2/acl2.state";
+import { Acl_LoadAll_Success, Acl_node_select } from "../../store/actions/acl2/acl2.actions";
+import { Acl_Role_Add_Service_Success, Acl_Role_Add_Entity_Success, Acl_Role_Remove_Entity_Success } from "../../store/actions/acl2/acl2.role.entity.actions";
+import { RoleModel } from "src/app/shared/models/acl/roles.model";
+
 
 @Inject({ providedIn: 'root' })
 export class AdminAclSandboxService extends BaseSandboxService {
     public acltreenodes$: Observable<AclTreeNode[]>
     public currentSelectedNode$: Observable<FlatTreeNode>
-    public availableServices$: Observable<any>
+    public availableServices$: Observable<BackendServiceModel[]>
 
     constructor(
         notificationService: NotificationBaseService,
@@ -39,9 +36,9 @@ export class AdminAclSandboxService extends BaseSandboxService {
         private rolesService: RolesService,
         private backendServices: BackendServicesService) {
         super(notificationService, store, logger);
-        this.acltreenodes$ = this.store.select(AclState.getTreeNodesData()) // ACL Observable
-        this.currentSelectedNode$ = this.store.select(AclState.currentSelectedNode)
-        this.availableServices$ = this.store.select(AclState.availableRoleServices)
+        this.acltreenodes$ = this.store.select(Acl2State.getTreeNodesData()) // ACL Observable
+        this.currentSelectedNode$ = this.store.select(Acl2State.currentSelectedNode)
+        this.availableServices$ = this.store.select(Acl2State.availableRoleServices)
     }
 
     /**
@@ -49,11 +46,11 @@ export class AdminAclSandboxService extends BaseSandboxService {
      */
     init() {
         this.rolesService.find().then((results) => {
-            this.store.dispatch(new Acl_Roles_LoadAll_Success(results))
+            this.store.dispatch(new Acl_LoadAll_Success(results))
         })
 
         this.backendServices.find().then((results) => {
-            this.store.dispatch(new ServicesLoadAll_Success(results))
+            this.store.dispatch(new Services_Load_All_Success(results))
         })
     }
     /********************************************************************************************************
@@ -62,11 +59,14 @@ export class AdminAclSandboxService extends BaseSandboxService {
      * 
      ********************************************************************************************************/
     getTreeNodeChildren(node) {
-        return this.store.select(AclState.getTreeNodesData(node))
+        return this.store.select(Acl2State.getTreeNodesData(node))
     }
 
     nodeHasChildren(node) {
-        var children = this.store.selectSnapshot(AclState.getTreeNodesData(node))
+        var children = this.store.selectSnapshot(Acl2State.getTreeNodesData(node))
+        if (!children) {
+            let a = 0
+        }
         if (children.length != 0) return true
         return false
     }
@@ -83,7 +83,7 @@ export class AdminAclSandboxService extends BaseSandboxService {
      * @param node 
      */
     public selectNode(node: FlatTreeNode) {
-        this.store.dispatch(new Acl_Select_node(node))
+        this.store.dispatch(new Acl_node_select(node))
     }
     /**
      * Update field allowed checkbox
@@ -145,24 +145,19 @@ export class AdminAclSandboxService extends BaseSandboxService {
      * 
      * @param roleUid 
      */
-    addServiceToRole(roleUid) {
-        // define a fake service
-        var service: BackendServiceModel = {
-            uid: uuid(),
-            crud_operations: [],
-            description: "new service",
-            id: "fake service",
-            name: "fake new service"
+    addServiceToRole(roleUid: string, backendServiceModel: BackendServiceModel) {
+        this.store.dispatch(new Acl_Role_Add_Service_Success(roleUid, backendServiceModel))
+    }
+    aclAddRole(roleName: string) {
+        const roleObject: RoleModel = {
+            name: roleName,
+            id: roleName,
+            services: []
         }
-        // first add create the new service
-        this.store.dispatch(new ServicesAddServiceSuccess(service))
-        this.store.dispatch(new RoleAddServiceSuccessAction(roleUid, service.uid))
+        this.store.dispatch(new Acl_Role_Add_Entity_Success(roleObject))
     }
-    aclAddRole(roleName: string) { 
-        this.store.dispatch(new RolesAddRoleSuccessAction(roleName))
-    }
-    aclRemoveRole(roleUid:string){
-        this.store.dispatch(new RolesRemoveRoleSuccessAction(roleUid))
+    aclRemoveRole(roleUid: string) {
+        this.store.dispatch(new Acl_Role_Remove_Entity_Success(roleUid))
     }
 
 }

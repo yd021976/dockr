@@ -1,4 +1,4 @@
-import { BackendServicesEntities, BackendServiceModel } from "../../../models/acl/backend-services.model";
+import { BackendServicesEntities, BackendServiceModel, BackendServiceEntity } from "../../../models/acl/backend-services.model";
 
 export class BackendserviceLoadAll {
     static readonly type = '[backendservices] load all';
@@ -19,5 +19,5 @@ export class ServicesAddService {
 }
 export class ServicesAddServiceSuccess {
     static readonly type = '[backendservices] add service success';
-    constructor(public service: BackendServiceModel) { }
+    constructor(public service: BackendServiceEntity) { }
 }

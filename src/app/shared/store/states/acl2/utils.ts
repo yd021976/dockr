@@ -1,12 +1,12 @@
 import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
-import { AclStateModel } from "src/app/shared/models/acl/acl.model";
 import { RoleEntity } from "src/app/shared/models/acl/roles.model";
 import { BackendServiceEntity, BackendServiceModel } from "src/app/shared/models/acl/backend-services.model";
 import { CrudOperationModelEntity } from "src/app/shared/models/acl/crud-operations.model";
 import { NODE_TYPES, AclTreeNode } from "src/app/shared/models/acl/treenode.model";
 import { ServicesModel } from "src/app/shared/models/services.model";
+import { Acl2StateModel } from "src/app/shared/models/acl2/acl2.model";
 
-export function node_getRoleEntity(node: FlatTreeNode, state: AclStateModel): RoleEntity {
+export function node_getRoleEntity(node: FlatTreeNode, state: Acl2StateModel): RoleEntity {
     var roleEntity: RoleEntity = null
     var serviceEntity: BackendServiceEntity = null
     var crudEntity: CrudOperationModelEntity = null
@@ -16,7 +16,7 @@ export function node_getRoleEntity(node: FlatTreeNode, state: AclStateModel): Ro
 
     switch (node.data.type) {
         case NODE_TYPES.ROLE:
-            roleEntity = state.roles.entities[node.data.uid]
+            roleEntity = state.entities.roles[node.data.uid]
             break
         case NODE_TYPES.SERVICE:
             roleEntity = this.service_getParent(node.data.uid, state)
@@ -45,12 +45,12 @@ export function node_getRoleEntity(node: FlatTreeNode, state: AclStateModel): Ro
  * @param service_uid 
  * @param state 
  */
-export function service_getParent(service_uid: string, state: AclStateModel): RoleEntity {
+export function service_getParent(service_uid: string, state: Acl2StateModel): RoleEntity {
     var parentEntity: RoleEntity = null
 
-    Object.keys(state.roles.entities).map((uid) => {
-        if (state.roles.entities[uid].services.find((serviceUID) => serviceUID == service_uid)) {
-            parentEntity = state.roles.entities[uid]
+    Object.keys(state.entities.roles.entities).map((uid) => {
+        if (state.entities.roles[uid].services.find((serviceUID) => serviceUID == service_uid)) {
+            parentEntity = state.entities.roles[uid]
         }
     })
     return parentEntity
@@ -61,12 +61,12 @@ export function service_getParent(service_uid: string, state: AclStateModel): Ro
  * @param crud_uid 
  * @param state 
  */
-export function crud_getParent(crud_uid: string, state: AclStateModel): BackendServiceEntity {
+export function crud_getParent(crud_uid: string, state: Acl2StateModel): BackendServiceEntity {
     var serviceEntity: BackendServiceEntity = null
 
-    Object.keys(state.aclServices.entities).map((serviceUID) => {
-        if (state.aclServices.entities[serviceUID].crud_operations.find((crudUID) => crudUID == crud_uid)) {
-            serviceEntity = state.aclServices.entities[serviceUID]
+    Object.keys(state.entities.services).map((serviceUID) => {
+        if (state.entities.services[serviceUID].crud_operations.find((crudUID) => crudUID == crud_uid)) {
+            serviceEntity = state.entities.services[serviceUID]
         }
     })
     return serviceEntity
@@ -77,24 +77,24 @@ export function crud_getParent(crud_uid: string, state: AclStateModel): BackendS
  * @param field_uid 
  * @param state 
  */
-export function field_getParent(field_uid: string, state: AclStateModel): CrudOperationModelEntity {
+export function field_getParent(field_uid: string, state: Acl2StateModel): CrudOperationModelEntity {
     var crudEntity: CrudOperationModelEntity = null
-    Object.keys(state.crudOperations.entities).map((crudUID) => {
-        if (state.crudOperations.entities[crudUID].fields.find((fieldUID) => fieldUID == field_uid)) {
-            crudEntity = state.crudOperations.entities[crudUID]
+    Object.keys(state.entities.actions).map((crudUID) => {
+        if (state.entities.actions[crudUID].fields.find((fieldUID) => fieldUID == field_uid)) {
+            crudEntity = state.entities.actions[crudUID]
         }
     })
     return crudEntity
 }
 
-export function getTreeNodeChildren(state: AclStateModel, node: AclTreeNode): AclTreeNode[] {
+export function getTreeNodeChildren(state: Acl2StateModel, node: AclTreeNode): AclTreeNode[] {
     var children: AclTreeNode[] = []
 
     switch (node.type) {
         case NODE_TYPES.ROLE:
-            var roleServices = state.roles.entities[node.uid].services
+            var roleServices = state.entities.roles[node.uid].services
             children = roleServices.map((key) => {
-                var service = state.aclServices.entities[key]
+                var service = state.entities.services[key]
                 return {
                     uid: service.uid,
                     type: NODE_TYPES.SERVICE,
@@ -103,9 +103,9 @@ export function getTreeNodeChildren(state: AclStateModel, node: AclTreeNode): Ac
             })
             break
         case NODE_TYPES.SERVICE:
-            var serviceCrudOperations = state.aclServices.entities[node.uid].crud_operations
+            var serviceCrudOperations = state.entities.services[node.uid].crud_operations
             children = serviceCrudOperations.map((key) => {
-                var crud = state.crudOperations.entities[key]
+                var crud = state.entities.actions[key]
                 return {
                     uid: crud.uid,
                     name: crud.id,
@@ -115,9 +115,9 @@ export function getTreeNodeChildren(state: AclStateModel, node: AclTreeNode): Ac
             })
             break
         case NODE_TYPES.CRUDOPERATION:
-            var fields = state.crudOperations.entities[node.uid].fields
+            var fields = state.entities.actions[node.uid].fields
             children = fields.map((key) => {
-                var field = state.datamodels.entities[key]
+                var field = state.entities.fields[key]
                 return {
                     uid: field.uid,
                     name: field.id,
@@ -134,17 +134,17 @@ export function getTreeNodeChildren(state: AclStateModel, node: AclTreeNode): Ac
     return children
 }
 
-export function availableRoleServices(aclState: AclStateModel, serviceState: ServicesModel): BackendServiceModel[] {
-    if (aclState.currentSelectedNode_RoleEntity == null) return [] // no node is selected
+export function availableRoleServices(aclState: Acl2StateModel, serviceState: ServicesModel): BackendServiceModel[] {
+    if (aclState.selectedNode == null) return [] // no node is selected
 
-    var currentRoleUid: string = aclState.currentSelectedNode_RoleEntity.uid
+    var currentRoleUid: string = node_getRoleEntity(aclState.selectedNode,aclState).uid
     var availableServices: BackendServiceModel[] = []
     var roleHasServices: string
 
     if (currentRoleUid != '') {
         availableServices = serviceState.services.filter((service) => {
-            roleHasServices = aclState.roles.entities[currentRoleUid].services.find((value) => {
-                if (aclState.aclServices.entities[value].id == service.id) {
+            roleHasServices = aclState.entities.roles[currentRoleUid].services.find((value) => {
+                if (aclState.entities.services[value].id == service.id) {
                     return true
                 }
             })

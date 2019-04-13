@@ -1,6 +1,6 @@
 import { State, Action, StateContext, Selector, createSelector } from "@ngxs/store";
 import { DataModelPropertyEntities, DataModelStateModel } from "src/app/shared/models/acl/datamodel.model";
-import { DataModelsLoadAll, DataModelsLoadAllSuccess, DataModelsLoadAllError, DataModelUpdateSuccess } from "../../actions/acl/datamodels.actions";
+import { DataModelsLoadAll, DataModelsLoadAllSuccess, DataModelsLoadAllError, DataModelUpdateSuccess, DataModel_Add_Fields_Success } from "../../actions/acl/datamodels.actions";
 import { ApplicationState } from "../application.state";
 import { ApplicationStateModel } from "src/app/shared/models/application-state.model";
 
@@ -29,6 +29,14 @@ export class DataModelsState {
 
         ctx.patchState({
             entities: { ...state.entities }
+        })
+    }
+
+    @Action(DataModel_Add_Fields_Success)
+    datamodels_add_fields_success(ctx: StateContext<DataModelStateModel>, action: DataModel_Add_Fields_Success) {
+        const state = ctx.getState()
+        ctx.patchState({
+            entities: { ...state.entities, ...action.fields }
         })
     }
 

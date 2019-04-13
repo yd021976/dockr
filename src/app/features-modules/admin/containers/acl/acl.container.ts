@@ -12,6 +12,7 @@ import { AclTreeColmodel } from 'src/app/shared/models/acl/acl-tree-colmodel.mod
 import { Observable } from 'rxjs';
 import { BackendServiceModel } from 'src/app/shared/models/acl/backend-services.model';
 import { AddRoleDialogComponent, dialogResult } from '../../components/acl/dialogs/add.role/add.role.dialog.component';
+import { AddServiceDialogComponent, AddServiceDialogComponent_dialogResult } from '../../components/acl/dialogs/add.service/add.service.dialog.component';
 
 @Component({
   selector: 'app-acl-container',
@@ -26,7 +27,8 @@ export class AclContainer implements OnInit {
   public selectedNode$: Observable<FlatTreeNode>
   public availableRoleService$: Observable<any>
 
-  private dialogAddrole: MatDialogRef<AddRoleDialogComponent>
+  private dialog_AddRole: MatDialogRef<AddRoleDialogComponent>
+  private dialog_AddService: MatDialogRef<AddServiceDialogComponent>
   private dialogService: MatDialog
 
   constructor(public sandbox: AdminAclSandboxService, public treeService: TreeNodesService, dialogService: MatDialog) {
@@ -75,13 +77,13 @@ export class AclContainer implements OnInit {
   }
 
   add_role(node: FlatTreeNode) {
-    if (!this.dialogAddrole) {
-      this.dialogAddrole = this.dialogService.open(AddRoleDialogComponent, { disableClose: true })
-      this.dialogAddrole.afterClosed().subscribe((data: dialogResult) => {
+    if (!this.dialog_AddRole) {
+      this.dialog_AddRole = this.dialogService.open(AddRoleDialogComponent, { disableClose: true })
+      this.dialog_AddRole.afterClosed().subscribe((data: dialogResult) => {
         if (!data.cancelled && data.result != '') {
           this.sandbox.aclAddRole(data.result)
         }
-        this.dialogAddrole = null // dialog is closed, clear dialog ref object
+        this.dialog_AddRole = null // dialog is closed, clear dialog ref object
       })
     }
   }
@@ -92,7 +94,19 @@ export class AclContainer implements OnInit {
 
 
   add_service(node: FlatTreeNode) {
-    this.sandbox.addServiceToRole(node.data.uid)
+    if (!this.dialog_AddService) {
+      this.dialog_AddService = this.dialogService.open(AddServiceDialogComponent, {
+        data: this.sandbox.availableServices$,
+        disableClose: true
+      })
+      this.dialog_AddService.afterClosed().subscribe((data: AddServiceDialogComponent_dialogResult) => {
+        if (!data.cancelled && data.result != null) {
+
+          this.sandbox.addServiceToRole(node.data.uid, data.result)
+        }
+        this.dialog_AddService = null
+      })
+    }
   }
   remove_service(node: FlatTreeNode) { }
 

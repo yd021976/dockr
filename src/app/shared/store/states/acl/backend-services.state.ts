@@ -34,15 +34,8 @@ export class BackendServicesState {
     backendservices_load_all_error(ctx: StateContext<BackendServicesStateModel>, action: BackendserviceLoadAllError) { }
     @Action(ServicesAddServiceSuccess)
     backendservices_add_service_success(ctx: StateContext<BackendServicesStateModel>, action: ServicesAddServiceSuccess) {
-        var service: BackendServiceEntity = {
-            uid: action.service.uid,
-            crud_operations: [],
-            description: 'test',
-            id: 'new service',
-            name: "new service"
-        }
         var state = ctx.getState()
-        state.entities[service.uid] = service
+        state.entities[action.service.uid] = action.service
         ctx.patchState({
             entities: { ...state.entities }
         })

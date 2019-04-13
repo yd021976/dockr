@@ -18,13 +18,9 @@ import { SettingsModule } from './features-modules/settings/settings.module';
 // import { AdminModule } from './features-modules/admin/admin.module';
 import { AppRoutingModule } from './/app-routing.module';
 import { AppLoggerModule } from './shared/services/logger/app-logger/app-logger.module';
-import { RolesState } from './shared/store/states/acl/roles.state';
-import { BackendServicesState } from './shared/store/states/acl/backend-services.state';
-import { AclState } from './shared/store/states/acl/state/acl.state';
-import { CrudOperationsState } from './shared/store/states/acl/crud-operations.state';
-import { DataModelsState } from './shared/store/states/acl/datamodels.state';
 import { AdminModule } from './features-modules/admin/admin.module';
 import { ServicesState } from './shared/store/states/services.state';
+import { Acl2State } from './shared/store/states/acl2/acl2.state';
 
 @NgModule({
   declarations: [
@@ -42,10 +38,7 @@ import { ServicesState } from './shared/store/states/services.state';
       ApplicationState,
       UserState,
       TemplatesState,
-      AclState,
-      RolesState,
-      BackendServicesState,
-      CrudOperationsState, DataModelsState,
+      Acl2State,
       ServicesState
     ]),
     NgxPermissionsModule.forRoot(),

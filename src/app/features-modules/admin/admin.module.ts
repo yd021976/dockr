@@ -7,7 +7,7 @@ import { AdminComponent } from './containers/admin/admin.component';
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminAclSandboxService } from 'src/app/shared/sandboxes/containers/admin.acl.sandbox.service';
 import { FormsModule } from '@angular/forms';
-import { MatTreeModule, MatIconModule, MatCheckboxModule, MatProgressBarModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatToolbarModule, MatBadgeModule, MatDialogModule } from '@angular/material';
+import { MatTreeModule, MatIconModule, MatCheckboxModule, MatProgressBarModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatToolbarModule, MatBadgeModule, MatDialogModule, MatSelectModule } from '@angular/material';
 import { AclContainer } from './containers/acl/acl.container';
 import { UsersContainer } from './containers/users/users.container';
 import { ActionComponent } from './components/acl/treenodes/action/action.component';
@@ -29,13 +29,14 @@ import { CrudActionComponent } from './components/acl/node-actions/node-types/cr
 import { FieldActionComponent } from './components/acl/node-actions/node-types/field-action/field-action.component';
 import { NodeActionsComponent } from './components/acl/node-actions/node-actions.component';
 import { AddRoleDialogComponent } from './components/acl/dialogs/add.role/add.role.dialog.component';
+import { AddServiceDialogComponent } from './components/acl/dialogs/add.service/add.service.dialog.component';
 
 const components = [
   AclContainer, UsersContainer, UsersComponent, AclComponent, ActionComponent, FieldComponent, RoleComponent, ServiceComponent,
   NodeDetailComponent,
   RoleDetailComponent, ServiceDetailComponent, ActionDetailComponent, FieldDetailComponent,
   NodeActionsComponent, DefaultActionComponent, RoleActionComponent, ServiceActionComponent, CrudActionComponent, FieldActionComponent,
-  AddRoleDialogComponent,
+  AddRoleDialogComponent, AddServiceDialogComponent,
   // To delete
   AdminComponent
 ]
@@ -53,13 +54,14 @@ const components = [
     MatCheckboxModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSelectModule,
     MatProgressBarModule,
     MatToolbarModule,
     MatDialogModule,
     FlexLayoutModule
   ],
   declarations: components,
-  entryComponents: [AddRoleDialogComponent],
+  entryComponents: [AddRoleDialogComponent, AddServiceDialogComponent],
   providers: [AdminAclSandboxService, TreeNodesService]
 })
 export class AdminModule { }

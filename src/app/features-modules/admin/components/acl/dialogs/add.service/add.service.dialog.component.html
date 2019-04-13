@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>Add Service</h2>
+<mat-dialog-content>
+  <form>
+    <mat-form-field class="admin-acl-dialog-add-service">
+      <mat-label>Available services</mat-label>
+      <mat-select [(ngModel)]="dialogData.result" name="select_service">
+        <mat-option *ngFor="let service of availableServices | async" [value]="service">{{service.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="dialogData" (click)="onClose(true)">Cancel</button>
+  <button #submitdialog mat-button [mat-dialog-close]="dialogData" (click)="onClose(false)">Confirm</button>
+</mat-dialog-actions>

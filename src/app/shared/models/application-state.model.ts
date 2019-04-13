@@ -4,6 +4,7 @@ import { RolesStateModel } from "./acl/roles.model";
 import { BackendServicesEntities } from "./acl/backend-services.model";
 import { AclStateModel } from "./acl/acl.model";
 import { ServicesModel } from "./services.model";
+import { Acl2StateModel } from "./acl2/acl2.model";
 
 export class ApplicationStateModel {
     // isProgress:boolean; // Indicates something in progress (login, performing long action ...)
@@ -12,6 +13,6 @@ export class ApplicationStateModel {
     templates: TemplatesModel
     // roles: RolesStateModel
     // backendServices: BackendServicesEntities
-    acl: AclStateModel
+    acl2: Acl2StateModel
     backendServices:ServicesModel
 }

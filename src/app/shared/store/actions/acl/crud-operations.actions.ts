@@ -24,3 +24,8 @@ export class CrudOperations_Update_Error {
     static readonly type = '[CrudOperations] update error';
     constructor(public error: string) { }
 }
+
+export class CrudOperations_Add_Operations_Success {
+    static readonly type = '[CrudOperations] add success';
+    constructor(public operationEntities: CrudOperationsModelEntities) { }
+}

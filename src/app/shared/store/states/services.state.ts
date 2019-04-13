@@ -1,5 +1,5 @@
 import { State, Action, StateContext, Selector } from "@ngxs/store";
-import { ServicesLoadAll_Success } from "../actions/services.actions";
+import { Services_Load_All_Success } from "../actions/services.actions";
 import { ServicesModel } from "../../models/services.model";
 
 /**
@@ -12,8 +12,8 @@ import { ServicesModel } from "../../models/services.model";
     }
 )
 export class ServicesState {
-    @Action(ServicesLoadAll_Success)
-    public services_loadall_success(ctx: StateContext<ServicesModel>, action: ServicesLoadAll_Success) {
+    @Action(Services_Load_All_Success)
+    public services_loadall_success(ctx: StateContext<ServicesModel>, action: Services_Load_All_Success) {
         ctx.patchState({
             isLoading: false,
             isError: false,

@@ -15,7 +15,7 @@
           <div *ngFor="let column of getColmunsBeforeNode(node)" [fxFlex]="column.size" fxFlexFill class="column">
             <div fxFlex FxFlexAlign="center" class="tree_container_cell"></div>
           </div>
-          <div [fxFlex]="colmodel[node.level].size" fxFlexFill class="column node" (click)="selectNode(node)"
+          <div [fxFlex]="colmodel[node.level].size" fxFlexFill class="column node leaf-node" (click)="selectNode(node)"
             [class.selected]="selectedNode==node">
             <div fxFlex fxFlexAlign="center" class="tree_container_cell">
               <button mat-icon-button [disabled]="true"><mat-icon></mat-icon></button>
@@ -33,7 +33,7 @@
           <div [fxFlex]="column.size" fxFlexFill *ngFor="let column of getColmunsBeforeNode(node)" class="column">
             <div fxFlex FxFlexAlign="center" class="tree_container_cell"></div>
           </div>
-          <div [fxFlex]="colmodel[node.level].size" fxFlexFill class="column node" (click)="selectNode(node)"
+          <div [fxFlex]="colmodel[node.level].size" fxFlexFill class="column node expandable-node" (click)="selectNode(node)"
             [class.selected]="selectedNode==node">
             <div fxFlex fxFlexAlign="center" class="tree_container_cell">
               <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
