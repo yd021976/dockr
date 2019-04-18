@@ -33,7 +33,7 @@ export class AdminComponent implements OnInit {
     // this.sandbox.addServiceToRole(this.selectedRole.uid)
   }
   checkedChange(node: AclTreeNode) {
-    this.sandbox.updateFieldNode(node)
+    this.sandbox.field_update_allowed_property(node)
   }
   trackNodeChange(index, item) {
     return item.uid

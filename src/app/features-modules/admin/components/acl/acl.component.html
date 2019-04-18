@@ -10,7 +10,7 @@
     </div>
 
     <div fxFlex="0 1 auto" class="tree_container">
-      <mat-tree [dataSource]="flatDataSource" [treeControl]="treecontrol">
+      <mat-tree [dataSource]="flatDataSource" [treeControl]="treecontrol" #tree>
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle @EnterLeave>
           <div *ngFor="let column of getColmunsBeforeNode(node)" [fxFlex]="column.size" fxFlexFill class="column">
             <div fxFlex FxFlexAlign="center" class="tree_container_cell"></div>
@@ -18,7 +18,9 @@
           <div [fxFlex]="colmodel[node.level].size" fxFlexFill class="column node leaf-node" (click)="selectNode(node)"
             [class.selected]="selectedNode==node">
             <div fxFlex fxFlexAlign="center" class="tree_container_cell">
-              <button mat-icon-button [disabled]="true"><mat-icon></mat-icon></button>
+              <button mat-icon-button [disabled]="true">
+                <mat-icon></mat-icon>
+              </button>
               <div class="node-renderer">
                 <ng-container *ngTemplateOutlet="nodeTemplateRenderer; context:{$implicit:node.data}"></ng-container>
               </div>
@@ -33,10 +35,11 @@
           <div [fxFlex]="column.size" fxFlexFill *ngFor="let column of getColmunsBeforeNode(node)" class="column">
             <div fxFlex FxFlexAlign="center" class="tree_container_cell"></div>
           </div>
-          <div [fxFlex]="colmodel[node.level].size" fxFlexFill class="column node expandable-node" (click)="selectNode(node)"
-            [class.selected]="selectedNode==node">
+          <div [fxFlex]="colmodel[node.level].size" fxFlexFill class="column node expandable-node"
+            (click)="selectNode(node)" [class.selected]="selectedNode==node">
             <div fxFlex fxFlexAlign="center" class="tree_container_cell">
-              <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
+              <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename"
+                [disabled]="node_getDescendants(node)==0" (click)="nodeExpandToggle(node)">
                 <mat-icon class="fa-xs mat-icon-rtl-mirror"
                   [fontIcon]="treecontrol.isExpanded(node) ? 'fa-minus-circle' : 'fa-plus-circle'"></mat-icon>
               </button>

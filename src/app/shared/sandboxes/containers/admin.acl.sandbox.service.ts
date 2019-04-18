@@ -6,9 +6,8 @@ import { AppLoggerService } from "../../services/logger/app-logger/service/app-l
 import { AppLoggerServiceToken } from "../../services/logger/app-logger/app-logger-token";
 import { BackendServiceModel } from "../../models/acl/backend-services.model";
 import { BaseSandboxService } from "../base-sandbox.service";
-import { DataModelUpdateSuccess, DataModelUpdateError } from "../../store/actions/acl/datamodels.actions";
+import { DataModelUpdateSuccess } from "../../store/actions/acl/datamodels.actions";
 import { DataModelPropertyEntity } from "../../models/acl/datamodel.model";
-import { DataModelsState } from "../../store/states/acl/datamodels.state";
 import { NotificationBaseService } from "../../services/notifications/notifications-base.service";
 import { RolesService } from "../../services/acl/roles/roles.service";
 import { CrudOperationModelEntity } from "../../models/acl/crud-operations.model";
@@ -18,9 +17,11 @@ import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.
 import { BackendServicesService } from "../../services/acl/services/backend-services.service";
 import { Services_Load_All_Success } from "../../store/actions/services.actions";
 import { Acl2State } from "../../store/states/acl2/acl2.state";
-import { Acl_LoadAll_Success, Acl_node_select } from "../../store/actions/acl2/acl2.actions";
+import { Acl_LoadAll_Success, Acl_node_select } from "../../store/actions/acl2/acl2.state.actions";
 import { Acl_Role_Add_Service_Success, Acl_Role_Add_Entity_Success, Acl_Role_Remove_Entity_Success } from "../../store/actions/acl2/acl2.role.entity.actions";
 import { RoleModel } from "src/app/shared/models/acl/roles.model";
+import { Acl_Field_Update_Allowed_Success } from "../../store/actions/acl2/acl2.field.entity.action";
+import { Acl_Actions_Update_Allowed_Success } from "../../store/actions/acl2/acl2.action.entity.actions";
 
 
 @Inject({ providedIn: 'root' })
@@ -65,7 +66,7 @@ export class AdminAclSandboxService extends BaseSandboxService {
     nodeHasChildren(node) {
         var children = this.store.selectSnapshot(Acl2State.getTreeNodesData(node))
         if (!children) {
-            let a = 0
+            return false
         }
         if (children.length != 0) return true
         return false
@@ -82,7 +83,7 @@ export class AdminAclSandboxService extends BaseSandboxService {
      * 
      * @param node 
      */
-    public selectNode(node: FlatTreeNode) {
+    public tree_select_node(node: FlatTreeNode) {
         this.store.dispatch(new Acl_node_select(node))
     }
     /**
@@ -90,65 +91,21 @@ export class AdminAclSandboxService extends BaseSandboxService {
      * 
      * @param node 
      */
-    updateFieldNode(node: AclTreeNode) {
-        var datamodelEntity: DataModelPropertyEntity
-        var selector = DataModelsState.getEntity(node.uid)
-        datamodelEntity = this.store.selectSnapshot(selector)
-
-        if (datamodelEntity) {
-            datamodelEntity.allowed = node.checked
-            this.store.dispatch(new DataModelUpdateSuccess(datamodelEntity))
-        } else {
-            // entity not found in store
-            this.store.dispatch(new DataModelUpdateError('Entity not found'))
-
-            // if error occured, we need to reload tree data to update node values
-            // TODO: Check if we need to refresh data when error occured
-        }
+    field_update_allowed_property(node: AclTreeNode) {
+        this.store.dispatch(new Acl_Field_Update_Allowed_Success(node.uid, node.checked))
     }
-    updateActionChecked(node: AclTreeNode): Promise<boolean> {
-        var actionEntity: CrudOperationModelEntity, fieldEntities: DataModelPropertyEntity[]
-        var actionSelector = CrudOperationsState.getEntity(node.uid), fieldsSelector = CrudOperationsState.getChildren(node.uid)
-        var allPromises: Promise<boolean>[] = []
-
-        actionEntity = this.store.selectSnapshot(actionSelector)
-        fieldEntities = this.store.selectSnapshot(fieldsSelector)
-
-        if (actionEntity) {
-            // Update field entities
-            fieldEntities.forEach((field) => {
-                field.allowed = node.checked
-                // Update state
-                allPromises.push(this.store.dispatch(new DataModelUpdateSuccess(field)).toPromise().then(value => true))
-            })
-            // Update action entity
-            actionEntity.allowed = node.checked
-            allPromises.push(this.store.dispatch(new CrudOperations_Update_Success(actionEntity)).toPromise().then(value => true))
-            Promise.all(allPromises).then(
-                (values: any[]) => {
-                    return true
-                },
-                (error: any) => {
-                    return false
-                })
-        } else {
-            allPromises.push(this.store.dispatch(new CrudOperations_Update_Error('Entity not found')).toPromise().then(value => false))
-        }
-
-        return Promise.all(allPromises).then((results: boolean[]) => {
-            var isError = results.find(value => value == false)
-            return (isError === undefined ? true : false)
-        })
+    action_update_allowed_property(node: AclTreeNode) {
+        this.store.dispatch(new Acl_Actions_Update_Allowed_Success(node.uid, node.checked))
     }
     /**
      * Add a service to an existing role
      * 
      * @param roleUid 
      */
-    addServiceToRole(roleUid: string, backendServiceModel: BackendServiceModel) {
+    role_add_service(roleUid: string, backendServiceModel: BackendServiceModel) {
         this.store.dispatch(new Acl_Role_Add_Service_Success(roleUid, backendServiceModel))
     }
-    aclAddRole(roleName: string) {
+    roles_add_entity(roleName: string) {
         const roleObject: RoleModel = {
             name: roleName,
             id: roleName,
@@ -156,7 +113,7 @@ export class AdminAclSandboxService extends BaseSandboxService {
         }
         this.store.dispatch(new Acl_Role_Add_Entity_Success(roleObject))
     }
-    aclRemoveRole(roleUid: string) {
+    roles_remove_entity(roleUid: string) {
         this.store.dispatch(new Acl_Role_Remove_Entity_Success(roleUid))
     }
 

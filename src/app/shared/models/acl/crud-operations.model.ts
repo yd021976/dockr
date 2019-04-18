@@ -1,5 +1,12 @@
 import { DataModelPropertyEntities } from "./datamodel.model";
-
+/**
+ * 
+ */
+export enum ALLOWED_STATES {
+    ALLOWED = "1",
+    FORBIDDEN = "0",
+    INDETERMINATE = "indeterminate"
+}
 /**
  * Define CRUD operation & fields access
  */
@@ -14,7 +21,7 @@ export type CrudOperationTypes = CRUD_OPERATIONS
 interface BaseCrudOperationModel {
     uid?: string
     id: CrudOperationTypes
-    allowed?: boolean // Should be set only if <fields> are empty (no field control access required)
+    allowed?: ALLOWED_STATES // set to true (allowed), false (not allowed) or "intermediate" (Some child fields are allowed but not all)
 }
 
 // Crud operation object

@@ -1,9 +1,11 @@
+import { ALLOWED_STATES } from "./crud-operations.model";
+
 export interface AclTreeNode {
     name: string
     uid: string
     type: NodeTypes
     children?: AclTreeNode[]
-    checked?: boolean
+    checked?: ALLOWED_STATES
 }
 
 export enum NODE_TYPES {

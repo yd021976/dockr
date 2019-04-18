@@ -98,7 +98,6 @@ export class TreeNodesService {
         this._treeControl.dataNodes.forEach((value: FlatTreeNode) => {
             if (value.data[this.nodeEqualityKey] == node[this.nodeEqualityKey]) {
                 flatNode = value // keep same object reference to avoid tree to collapse
-                flatNode.isExpandable = this.nodeHasChildren(node) // update expandable state
                 flatNode.data = node // update node data to update node view
                 flatNode.level = level
             }

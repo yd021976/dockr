@@ -1,3 +1,5 @@
+import { ALLOWED_STATES } from "./crud-operations.model";
+
 /**
  * Service data model declaration
  */
@@ -5,7 +7,7 @@ export interface BaseDataModelProperty {
     uid?:string
     id: string
     type: string
-    allowed: boolean
+    allowed?: ALLOWED_STATES
 }
 
 export interface DataModelPropertyEntity extends BaseDataModelProperty{

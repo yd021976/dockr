@@ -1,14 +1,14 @@
-import { AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { AfterViewInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import { BaseTreeControl } from '@angular/cdk/tree';
 import { Component } from '@angular/core';
 import { Input } from '@angular/core';
-import { MatTreeFlatDataSource } from '@angular/material/tree';
+import { MatTreeFlatDataSource, MatTree } from '@angular/material/tree';
 import { OnInit } from '@angular/core';
 import { TemplateRef } from '@angular/core';
 
 import { FlatTreeNode } from '../../services/treeNodes.service';
 import { AclTreeColmodel } from 'src/app/shared/models/acl/acl-tree-colmodel.model';
-import { trigger, state, style, transition, animate, query } from '@angular/animations';
+import { trigger, style, transition, animate } from '@angular/animations';
 import { SelectionModel } from '@angular/cdk/collections';
 
 
@@ -36,11 +36,15 @@ export class AclComponent implements OnInit, AfterViewInit {
   @Input('treecontrol') treecontrol: BaseTreeControl<any>
   @Input('flatDataSource') flatDataSource: MatTreeFlatDataSource<any, any>
   @Output('nodeSelected') nodeSelected: EventEmitter<FlatTreeNode> = new EventEmitter<FlatTreeNode>()
+  @Output('nodeToggled') nodeToggled: EventEmitter<FlatTreeNode> = new EventEmitter<FlatTreeNode>()
+
+  @ViewChild('tree') matTree: MatTree<any>
 
   private selection: SelectionModel<FlatTreeNode> = new SelectionModel(false, [])
   public selectedNode: FlatTreeNode = null
 
   constructor() {
+
     //IMPORTANT: The selection model don't have multi selection mode, so only 1 item could be added and/or removed. Max 2 events will be emmited
     this.selection.onChange.subscribe((changes) => {
       var selectedNode: FlatTreeNode
@@ -62,11 +66,13 @@ export class AclComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-
   }
 
   ngAfterViewInit() {
 
+  }
+  nodeExpandToggle(node: FlatTreeNode) {
+    this.nodeToggled.emit(node)
   }
   /**
    * Select / Deselect node
@@ -79,10 +85,16 @@ export class AclComponent implements OnInit, AfterViewInit {
       this.selection.select(node)
     }
   }
+  node_ExpandNode(node: FlatTreeNode) {
+    this.treecontrol.expand(node)
+  }
   hasChild = (index: number, node: FlatTreeNode) => {
     return node.isExpandable
   }
-
+  node_getDescendants(node: FlatTreeNode): number {
+    const children = this.treecontrol.getDescendants(node)
+    return children.length
+  }
   getColmunsBeforeNode(node: FlatTreeNode): AclTreeColmodel[] {
     // If first level, there is no columns before node
     if (node.level == 0) return []

@@ -7,13 +7,15 @@ import { RoleModel, RoleEntity } from "src/app/shared/models/acl/roles.model";
 import { normalize, schema, Schema, denormalize } from 'normalizr'
 import { AclTreeNode, NODE_TYPES } from "src/app/shared/models/acl/treenode.model";
 import { BackendServiceEntity } from "src/app/shared/models/acl/backend-services.model";
-import { CrudOperationModelEntity } from "src/app/shared/models/acl/crud-operations.model";
+import { CrudOperationModelEntity, ALLOWED_STATES } from "src/app/shared/models/acl/crud-operations.model";
 import { DataModelPropertyEntity } from "src/app/shared/models/acl/datamodel.model";
 import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
 import { ServicesModel } from "src/app/shared/models/services.model";
-import { Acl_LoadAll, Acl_LoadAll_Success, Acl_LoadAll_Error, Acl_node_select } from "../../actions/acl2/acl2.actions";
+import { Acl_LoadAll, Acl_LoadAll_Success, Acl_LoadAll_Error, Acl_node_select } from "../../actions/acl2/acl2.state.actions";
 import { Acl_Role_Remove_Entity_Success, Acl_Role_Add_Service_Success, Acl_Role_Add_Entity_Success } from "../../actions/acl2/acl2.role.entity.actions";
 import { ServicesState } from "../services.state";
+import { Acl_Field_Update_Allowed_Success } from "../../actions/acl2/acl2.field.entity.action";
+import { Acl_Actions_Update_Allowed_Success } from "../../actions/acl2/acl2.action.entity.actions";
 
 @State<Acl2StateModel>({
     name: 'acl2',
@@ -123,7 +125,7 @@ export class Acl2State {
 
 
     @Action(Acl_Role_Add_Service_Success)
-    role_add_service_success(ctx: StateContext<Acl2StateModel>, action: Acl_Role_Add_Service_Success) {
+    acl_role_add_service_success(ctx: StateContext<Acl2StateModel>, action: Acl_Role_Add_Service_Success) {
         var normalizedEntities = normalize(action.backendServiceModel, Acl2State.serviceSchema)
         const serviceUid = normalizedEntities.result
         var state = ctx.getState()
@@ -141,6 +143,72 @@ export class Acl2State {
             }
         })
         state = ctx.getState()
+    }
+
+    @Action(Acl_Field_Update_Allowed_Success)
+    acl_field_update_entity_success(ctx: StateContext<Acl2StateModel>, action: Acl_Field_Update_Allowed_Success) {
+        const state: Acl2StateModel = ctx.getState()
+        var field_entity: DataModelPropertyEntity = state.entities.fields[action.entity_uid]
+        var parent_action_entity: CrudOperationModelEntity = null
+
+        // Find the parent "action" entity
+        Object.values(state.entities.actions).forEach((action_entity) => {
+            if (action_entity.fields.find((field_uid) => field_uid == action.entity_uid)) {
+                parent_action_entity = action_entity
+            }
+        })
+
+        // Upate field entity
+        field_entity.allowed = action.allowed
+
+        // Update action entity
+        const allowedFields = parent_action_entity.fields.filter((field_uid) => {
+            return state.entities.fields[field_uid].allowed === ALLOWED_STATES.ALLOWED
+        })
+
+        // If all fields for the parent action are "allowed", then ensure action is "allowed"
+        if (allowedFields.length == parent_action_entity.fields.length) {
+            parent_action_entity.allowed = ALLOWED_STATES.ALLOWED
+        }
+        // No field are allowed, action is not allowed
+        else if (allowedFields.length == 0) {
+            parent_action_entity.allowed = ALLOWED_STATES.FORBIDDEN
+        }
+        // Some fields are allowed, but not all -> Action allowed is "intermediate"
+        else {
+            parent_action_entity.allowed = ALLOWED_STATES.INDETERMINATE
+        }
+
+        ctx.patchState({
+            entities: {
+                roles: { ...state.entities.roles },
+                services: { ...state.entities.services },
+                actions: { ...state.entities.actions, [parent_action_entity.uid]: parent_action_entity },
+                fields: { ...state.entities.fields, [action.entity_uid]: field_entity }
+            }
+        })
+    }
+
+    @Action(Acl_Actions_Update_Allowed_Success)
+    acl_action_update_allowed_property_success(ctx: StateContext<Acl2StateModel>, action: Acl_Actions_Update_Allowed_Success) {
+        const state: Acl2StateModel = ctx.getState()
+        var action_entity: CrudOperationModelEntity = state.entities.actions[action.entity_uid]
+
+        // Update action entity
+        action_entity.allowed = action.allowed
+
+        // Update fields entities
+        action_entity.fields.forEach((field_uid) => {
+            state.entities.fields[field_uid].allowed = action.allowed
+        })
+        ctx.patchState({
+            entities: {
+                roles: { ...state.entities.roles },
+                services: { ...state.entities.services },
+                actions: { ...state.entities.actions, [action.entity_uid]: action_entity },
+                fields: { ...state.entities.fields }
+            }
+        })
     }
     /**
      * 
@@ -160,7 +228,7 @@ export class Acl2State {
      * 
      * @param node 
      */
-    static getTreeNodesData(node: AclTreeNode = null) {
+    static getTreeNodesData(node: AclTreeNode = null): (...args: any) => AclTreeNode[] {
         return createSelector([Acl2State], (state: Acl2StateModel): AclTreeNode[] => {
             var nodes: AclTreeNode[] = []
 

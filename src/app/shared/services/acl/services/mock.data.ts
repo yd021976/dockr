@@ -1,5 +1,5 @@
 import { BackendServiceModel, BackendServicesEntities } from "src/app/shared/models/acl/backend-services.model";
-import { CRUD_OPERATIONS } from "src/app/shared/models/acl/crud-operations.model";
+import { CRUD_OPERATIONS, ALLOWED_STATES } from "src/app/shared/models/acl/crud-operations.model";
 
 var DATA: BackendServiceModel[] =
     [
@@ -12,27 +12,25 @@ var DATA: BackendServiceModel[] =
                     {
                         id: CRUD_OPERATIONS.READ,
                         fields: {
-                            "id": { id: "id", type: 'string', allowed: false },
-                            "name": { id: "name", type: 'string', allowed: false },
-                            "zones": { id: "zones", type: 'array', allowed: true }
+                            "id": { id: "id", type: 'string' },
+                            "name": { id: "name", type: 'string' },
+                            "zones": { id: "zones", type: 'array' }
                         }
                     },
                     {
                         id: CRUD_OPERATIONS.CREATE,
-                        allowed: false,
                         fields: {}
                     },
                     {
                         id: CRUD_OPERATIONS.DELETE,
-                        allowed: false,
                         fields: {}
                     },
                     {
                         id: CRUD_OPERATIONS.UPDATE,
                         fields: {
-                            "id": { id: "id", type: 'string', allowed: false },
-                            "name": { id: "name", type: 'string', allowed: false },
-                            "zones": { id: "zones", type: 'array', allowed: true }
+                            "id": { id: "id", type: 'string' },
+                            "name": { id: "name", type: 'string' },
+                            "zones": { id: "zones", type: 'array' }
                         }
                     }
                 ]
@@ -46,27 +44,25 @@ var DATA: BackendServiceModel[] =
                     {
                         id: CRUD_OPERATIONS.READ,
                         fields: {
-                            "id": { id: "id", type: 'string', allowed: false },
-                            "name": { id: "name", type: 'string', allowed: false },
-                            "zones": { id: "zones", type: 'array', allowed: true }
+                            "id": { id: "id", type: 'string' },
+                            "name": { id: "name", type: 'string' },
+                            "zones": { id: "zones", type: 'array' }
                         }
                     },
                     {
                         id: CRUD_OPERATIONS.CREATE,
-                        allowed: false,
                         fields: {}
                     },
                     {
                         id: CRUD_OPERATIONS.DELETE,
-                        allowed: false,
                         fields: {}
                     },
                     {
                         id: CRUD_OPERATIONS.UPDATE,
                         fields: {
-                            "id": { id: "id", type: 'string', allowed: false },
-                            "name": { id: "name", type: 'string', allowed: false },
-                            "zones": { id: "zones", type: 'array', allowed: true }
+                            "id": { id: "id", type: 'string' },
+                            "name": { id: "name", type: 'string' },
+                            "zones": { id: "zones", type: 'array' }
                         }
                     }
                 ]
@@ -80,30 +76,28 @@ var DATA: BackendServiceModel[] =
                     {
                         id: CRUD_OPERATIONS.READ,
                         fields: {
-                            "id": { id: "id", type: 'string', allowed: false },
-                            "name": { id: "name", type: 'string', allowed: false },
-                            "role": { id: "role", type: 'string', allowed: true }
+                            "id": { id: "id", type: 'string' },
+                            "name": { id: "name", type: 'string' },
+                            "role": { id: "role", type: 'string' }
                         }
                     },
                     {
                         id: CRUD_OPERATIONS.CREATE,
-                        allowed: false,
                         fields: {}
                     },
                     {
                         id: CRUD_OPERATIONS.DELETE,
-                        allowed: false,
                         fields: {}
                     },
                     {
                         id: CRUD_OPERATIONS.UPDATE,
                         fields: {
-                            "id": { id: "id", type: 'string', allowed: false },
-                            "name": { id: "name", type: 'string', allowed: false },
-                            "role": { id: "role", type: 'string', allowed: true }
+                            "id": { id: "id", type: 'string' },
+                            "name": { id: "name", type: 'string' },
+                            "role": { id: "role", type: 'string' }
                         }
                     }
                 ]
         }
     ]
-    export default DATA
+export default DATA

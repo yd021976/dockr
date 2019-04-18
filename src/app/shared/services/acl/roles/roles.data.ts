@@ -1,5 +1,5 @@
 import { RoleModel } from "src/app/shared/models/acl/roles.model";
-import { CRUD_OPERATIONS } from "src/app/shared/models/acl/crud-operations.model";
+import { CRUD_OPERATIONS, ALLOWED_STATES } from "src/app/shared/models/acl/crud-operations.model";
 
 var DATA: RoleModel[] =
     [
@@ -16,28 +16,30 @@ var DATA: RoleModel[] =
                             [
                                 {
                                     id: CRUD_OPERATIONS.READ,
+                                    allowed: ALLOWED_STATES.INDETERMINATE,
                                     fields: {
-                                        "id": { id: "id", type: 'string', allowed: false },
-                                        "name": { id: "name", type: 'string', allowed: false },
-                                        "zones": { id: "zones", type: 'array', allowed: true }
+                                        "id": { id: "id", type: 'string', allowed: ALLOWED_STATES.FORBIDDEN },
+                                        "name": { id: "name", type: 'string', allowed: ALLOWED_STATES.FORBIDDEN },
+                                        "zones": { id: "zones", type: 'array', allowed: ALLOWED_STATES.ALLOWED }
                                     }
                                 },
                                 {
                                     id: CRUD_OPERATIONS.CREATE,
-                                    allowed: false,
+                                    allowed: ALLOWED_STATES.FORBIDDEN,
                                     fields: {}
                                 },
                                 {
                                     id: CRUD_OPERATIONS.DELETE,
-                                    allowed: false,
+                                    allowed: ALLOWED_STATES.FORBIDDEN,
                                     fields: {}
                                 },
                                 {
                                     id: CRUD_OPERATIONS.UPDATE,
+                                    allowed: ALLOWED_STATES.INDETERMINATE,
                                     fields: {
-                                        "id": { id: "id", type: 'string', allowed: false },
-                                        "name": { id: "name", type: 'string', allowed: false },
-                                        "zones": { id: "zones", type: 'array', allowed: true }
+                                        "id": { id: "id", type: 'string', allowed: ALLOWED_STATES.FORBIDDEN },
+                                        "name": { id: "name", type: 'string', allowed: ALLOWED_STATES.FORBIDDEN },
+                                        "zones": { id: "zones", type: 'array', allowed: ALLOWED_STATES.ALLOWED }
                                     }
                                 }
                             ]
@@ -50,28 +52,30 @@ var DATA: RoleModel[] =
                             [
                                 {
                                     id: CRUD_OPERATIONS.READ,
+                                    allowed:ALLOWED_STATES.INDETERMINATE,
                                     fields: {
-                                        "id": { id: "id", type: 'string', allowed: false },
-                                        "name": { id: "name", type: 'string', allowed: false },
-                                        "zones": { id: "zones", type: 'array', allowed: true }
+                                        "id": { id: "id", type: 'string', allowed: ALLOWED_STATES.FORBIDDEN },
+                                        "name": { id: "name", type: 'string', allowed: ALLOWED_STATES.FORBIDDEN },
+                                        "zones": { id: "zones", type: 'array', allowed: ALLOWED_STATES.ALLOWED }
                                     }
                                 },
                                 {
                                     id: CRUD_OPERATIONS.CREATE,
-                                    allowed: false,
+                                    allowed: ALLOWED_STATES.FORBIDDEN,
                                     fields: {}
                                 },
                                 {
                                     id: CRUD_OPERATIONS.DELETE,
-                                    allowed: false,
+                                    allowed: ALLOWED_STATES.FORBIDDEN,
                                     fields: {}
                                 },
                                 {
                                     id: CRUD_OPERATIONS.UPDATE,
+                                    allowed:ALLOWED_STATES.INDETERMINATE,
                                     fields: {
-                                        "id": { id: "id", type: 'string', allowed: false },
-                                        "name": { id: "name", type: 'string', allowed: false },
-                                        "zones": { id: "zones", type: 'array', allowed: true }
+                                        "id": { id: "id", type: 'string', allowed: ALLOWED_STATES.FORBIDDEN },
+                                        "name": { id: "name", type: 'string', allowed: ALLOWED_STATES.FORBIDDEN },
+                                        "zones": { id: "zones", type: 'array', allowed: ALLOWED_STATES.ALLOWED }
                                     }
                                 }
                             ]
