@@ -3,7 +3,7 @@
     <div fxFlex="32px" class="table_header_container">
       <div fxLayout="row" fxLayoutAlign="start center" fxFlexFill>
         <div class="mat-header-cell column column_header" [fxFlex]="column.size" fxFlexFill
-          *ngFor="let column of colmodel">
+             *ngFor="let column of colmodel">
           <div fxFlex fxFlexAlign="center">{{column.colName}}</div>
         </div>
       </div>
@@ -11,13 +11,14 @@
 
     <div fxFlex="0 1 auto" class="tree_container">
       <mat-tree [dataSource]="flatDataSource" [treeControl]="treecontrol" #tree>
-        <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle @EnterLeave>
-          <div *ngFor="let column of getColmunsBeforeNode(node)" [fxFlex]="column.size" fxFlexFill class="column">
+        <mat-tree-node *matTreeNodeDef="let node" fxLayout="row" fxLayoutAlign="start stretch" @EnterLeave>
+          <div *ngFor="let column of getColmunsBeforeNode(node)" [fxFlex]="column.size" class="column">
             <div fxFlex FxFlexAlign="center" class="tree_container_cell"></div>
           </div>
-          <div [fxFlex]="colmodel[node.level].size" fxFlexFill class="column node leaf-node" (click)="selectNode(node)"
-            [class.selected]="selectedNode==node">
-            <div fxFlex fxFlexAlign="center" class="tree_container_cell">
+          <div [fxFlex]="node.level>=colmodel.length?colmodel[colmodel.length-1].size:colmodel[node.level].size" fxFlexFill class="column node"
+               (click)="selectNode(node)"
+               [class.selected]="selectedNode==node">
+            <div fxFlex fxFlexAlign="center" class="tree_container_cell" [style.padding-left]="node.level>=colmodel.length?(node.level-(colmodel.length-1))*colOverflowIndent+'px':'0px'">
               <button mat-icon-button [disabled]="true">
                 <mat-icon></mat-icon>
               </button>
@@ -31,24 +32,24 @@
           </div>
         </mat-tree-node>
 
-        <mat-tree-node *matTreeNodeDef="let node;when: hasChild" @EnterLeave>
-          <div [fxFlex]="column.size" fxFlexFill *ngFor="let column of getColmunsBeforeNode(node)" class="column">
+        <mat-tree-node *matTreeNodeDef="let node;when: hasChild" fxLayout="row" fxLayoutAlign="start stretch" @EnterLeave>
+          <div [fxFlex]="column.size" *ngFor="let column of getColmunsBeforeNode(node)" class="column">
             <div fxFlex FxFlexAlign="center" class="tree_container_cell"></div>
           </div>
-          <div [fxFlex]="colmodel[node.level].size" fxFlexFill class="column node expandable-node"
-            (click)="selectNode(node)" [class.selected]="selectedNode==node">
-            <div fxFlex fxFlexAlign="center" class="tree_container_cell">
+          <div [fxFlex]="node.level>=colmodel.length?colmodel[colmodel.length-1].size:colmodel[node.level].size" class="column node expandable-node"
+               (click)="selectNode(node)" [class.selected]="selectedNode==node">
+            <div fxFlex fxFlexAlign="center" class="tree_container_cell" [style.padding-left]="node.level>=colmodel.length?(node.level-(colmodel.length-1))*colOverflowIndent+'px':'0px'">
               <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename"
-                [disabled]="node_getDescendants(node)==0" (click)="nodeExpandToggle(node)">
+                      [disabled]="node_getDescendants(node)==0" (click)="nodeExpandToggle(node)">
                 <mat-icon class="fa-xs mat-icon-rtl-mirror"
-                  [fontIcon]="treecontrol.isExpanded(node) ? 'fa-minus-circle' : 'fa-plus-circle'"></mat-icon>
+                          [fontIcon]="treecontrol.isExpanded(node) ? 'fa-minus-circle' : 'fa-plus-circle'"></mat-icon>
               </button>
               <div class="node-renderer">
                 <ng-container *ngTemplateOutlet="nodeTemplateRenderer; context:{$implicit:node.data}"></ng-container>
               </div>
             </div>
           </div>
-          <div fxFlexFill *ngFor="let column of getColumnsAfterNode(node)" class="column" [fxFlex]="column.size">
+          <div *ngFor="let column of getColumnsAfterNode(node)" class="column" [fxFlex]="column.size">
             <div fxFlex fxFlexAlign="center" class="tree_container_cell"></div>
           </div>
         </mat-tree-node>
@@ -57,7 +58,7 @@
     <div fxFlex="1 0 8px" class="tree_container_filler">
       <div fxLayout="row" fxLayoutAlign="start center" fxFlexFill>
         <div class="mat-header-cell column column_header" *ngFor="let column of colmodel" [fxFlex]="column.size"
-          fxFlexFill>
+             fxFlexFill>
           <div fxFlex fxFlexAlign="center"></div>
         </div>
       </div>

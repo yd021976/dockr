@@ -19,7 +19,7 @@ export class AdminComponent implements OnInit {
   datasource: MatTreeNestedDataSource<AclTreeNode>
 
   constructor(private sandbox: AdminAclSandboxService) {
-    this.treecontroller = new NestedTreeControl<AclTreeNode>(node => this.sandbox.getTreeNodeChildren(node))
+    this.treecontroller = new NestedTreeControl<AclTreeNode>(node => this.sandbox.getTreeNodeChildren$(node))
     this.datasource = new MatTreeNestedDataSource<AclTreeNode>()
   }
 

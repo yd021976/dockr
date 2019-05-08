@@ -1,4 +1,4 @@
-import { DataModelPropertyEntities } from "./datamodel.model";
+import { DataModelPropertyEntities, DataModelPropertyModel } from "./datamodel.model";
 /**
  * 
  */
@@ -26,7 +26,7 @@ interface BaseCrudOperationModel {
 
 // Crud operation object
 export interface CrudOperationModel extends BaseCrudOperationModel {
-    fields: DataModelPropertyEntities
+    fields: DataModelPropertyModel[]
 }
 // Crud operation entity
 export interface CrudOperationModelEntity extends BaseCrudOperationModel {

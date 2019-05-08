@@ -1,32 +1,44 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { MatCheckboxChange } from '@angular/material';
+import { MAT_CHECKBOX_CLICK_ACTION } from '@angular/material';
 import { AclTreeNode } from 'src/app/shared/models/acl/treenode.model';
 import { ALLOWED_STATES } from 'src/app/shared/models/acl/crud-operations.model';
 
-@Component({
+
+@Component( {
   selector: 'app-admin-acl-tree-node-field',
   templateUrl: './field.component.html',
-  styleUrls: ['./field.component.scss']
-})
+  styleUrls: [ './field.component.scss' ],
+  providers: [
+    { provide: MAT_CHECKBOX_CLICK_ACTION, useValue: 'noop' }
+  ]
+} )
 export class FieldComponent implements OnInit {
-  @Input()
-  get node(): AclTreeNode { return this._node }
-  set node(node: AclTreeNode) { this._node = node }
+  @Input( 'node' ) node: AclTreeNode
 
   @Output() fieldCheckChange: EventEmitter<AclTreeNode> = new EventEmitter<AclTreeNode>()
   allowed_states = ALLOWED_STATES
-  public _node: AclTreeNode
-  
-  
-  constructor() { }
 
+  constructor() {
+  }
+
+  /**
+   * 
+   */
   ngOnInit() {
   }
-  public onCheckedChange(event: MatCheckboxChange) {
-    this._node.checked = event.checked == true ? ALLOWED_STATES.ALLOWED : ALLOWED_STATES.FORBIDDEN
-    this.fieldCheckChange.emit(this._node)
-  }
-  onClick(event: MouseEvent) {
+
+
+  /**
+   * 
+   * @param event 
+   */
+  onClick( event: MouseEvent ) {
     event.stopPropagation() // avoid click event propagate to parent div that select/deselect node
+    var node = JSON.parse( JSON.stringify( this.node ) )
+
+    // Just invert check state and emit changes
+    node.checked = ( node.checked == ALLOWED_STATES.ALLOWED ? ALLOWED_STATES.FORBIDDEN : ALLOWED_STATES.ALLOWED )
+    this.fieldCheckChange.emit( node )
   }
+
 }

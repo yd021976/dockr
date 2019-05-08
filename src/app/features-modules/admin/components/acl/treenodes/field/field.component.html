@@ -1,6 +1,7 @@
 <div>
-    <mat-checkbox [checked]="_node.checked===allowed_states.ALLOWED" (change)="onCheckedChange($event)" (click)="onClick($event)"></mat-checkbox>
+    <mat-checkbox [checked]="node.checked===allowed_states.ALLOWED" [indeterminate]="node.checked===allowed_states.INDETERMINATE"
+                  (click)="onClick($event)"></mat-checkbox>
     <div class="label">
-        {{_node.name}}
+        {{node.name}}
     </div>
 </div>

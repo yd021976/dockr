@@ -15,13 +15,13 @@ import { AddRoleDialogComponent, dialogResult } from '../../components/acl/dialo
 import { AddServiceDialogComponent, AddServiceDialogComponent_dialogResult } from '../../components/acl/dialogs/add.service/add.service.dialog.component';
 import { AclComponent } from '../../components/acl/acl.component';
 
-@Component({
+@Component( {
   selector: 'app-acl-container',
   templateUrl: './acl.container.html',
-  styleUrls: ['./acl.container.scss']
-})
+  styleUrls: [ './acl.container.scss' ]
+} )
 export class AclContainer implements OnInit {
-  @ViewChild('AclTree') treeComponent: AclComponent
+  @ViewChild( 'AclTree' ) treeComponent: AclComponent
 
   public treecontroller: BaseTreeControl<FlatTreeNode>
   public datasource: MatTreeFlatDataSource<AclTreeNode, FlatTreeNode>
@@ -34,15 +34,21 @@ export class AclContainer implements OnInit {
   private dialog_AddService: MatDialogRef<AddServiceDialogComponent>
   private dialogService: MatDialog
 
-  constructor(public sandbox: AdminAclSandboxService, public treeService: TreeNodesService, dialogService: MatDialog) {
+  constructor( public sandbox: AdminAclSandboxService, public treeService: TreeNodesService, dialogService: MatDialog ) {
     this.dialogService = dialogService
 
     this.colModel = this.setColmodel()
 
-    this.treeService.getChildren = (node: AclTreeNode) => { return this.sandbox.getTreeNodeChildren(node) }
-    this.treeService.isExpandable = (node: AclTreeNode) => {
-      if (node.type == NODE_TYPES.ROLE) return true // Role node is always expandable has we can't lately update tree node expandable status to show expand button
-      return this.sandbox.nodeHasChildren(node)
+    this.treeService.getChildren = ( node: AclTreeNode ) => {
+      return this.sandbox.getTreeNodeChildren$( node )
+    }
+
+    this.treeService.isExpandable = ( node: AclTreeNode ) => {
+      // Role node is always expandable has we can't lately update tree node expandable status to show expand button
+      if ( node.type == NODE_TYPES.ROLE ) return true
+
+      // In all other cases, return the node children
+      return this.sandbox.nodeHasChildren( node )
     }
     this.treeService.nodeEqualityKey = "uid"
     this.treeService.dataSource$ = this.sandbox.acltreenodes$
@@ -81,50 +87,52 @@ export class AclContainer implements OnInit {
   ngOnInit() {
     this.sandbox.init()
   }
-
-  add_role(node: FlatTreeNode) {
-    if (!this.dialog_AddRole) {
-      this.dialog_AddRole = this.dialogService.open(AddRoleDialogComponent, { disableClose: true })
-      this.dialog_AddRole.afterClosed().subscribe((data: dialogResult) => {
-        if (!data.cancelled && data.result != '') {
-          this.sandbox.roles_add_entity(data.result)
+  
+  add_role( node: FlatTreeNode ) {
+    if ( !this.dialog_AddRole ) {
+      this.dialog_AddRole = this.dialogService.open( AddRoleDialogComponent, { disableClose: true } )
+      this.dialog_AddRole.afterClosed().subscribe( ( data: dialogResult ) => {
+        if ( !data.cancelled && data.result != '' ) {
+          this.sandbox.roles_add_entity( data.result )
         }
         this.dialog_AddRole = null // dialog is closed, clear dialog ref object
-      })
+      } )
     }
   }
-  remove_role(node: FlatTreeNode) {
-    this.sandbox.tree_select_node(null) // deselect any node
-    this.sandbox.roles_remove_entity(node.data['uid'])
+  remove_role( node: FlatTreeNode ) {
+    this.sandbox.tree_select_node( null ) // deselect any node
+    this.sandbox.roles_remove_entity( node.data[ 'uid' ] )
   }
 
 
-  add_service(node: FlatTreeNode) {
-    if (!this.dialog_AddService) {
-      this.dialog_AddService = this.dialogService.open(AddServiceDialogComponent, {
+  add_service( node: FlatTreeNode ) {
+    if ( !this.dialog_AddService ) {
+      this.dialog_AddService = this.dialogService.open( AddServiceDialogComponent, {
         data: this.sandbox.availableServices$,
         disableClose: true
-      })
-      this.dialog_AddService.afterClosed().subscribe((data: AddServiceDialogComponent_dialogResult) => {
-        if (!data.cancelled && data.result != null) {
+      } )
+      this.dialog_AddService.afterClosed().subscribe( ( data: AddServiceDialogComponent_dialogResult ) => {
+        if ( !data.cancelled && data.result != null ) {
 
-          this.sandbox.role_add_service(node.data.uid, data.result)
-          this.treeComponent.node_ExpandNode(node)
+          this.sandbox.role_add_service( node.data.uid, JSON.parse(JSON.stringify(data.result)) ) // Ensure we create a new instance of the service model
+          this.treeComponent.node_ExpandNode( node )
         }
         this.dialog_AddService = null
-      })
+      } )
     }
   }
-  remove_service(node: FlatTreeNode) { }
+  remove_service( node: FlatTreeNode ) {
+    this.sandbox.services_remove_entity( node )
+  }
 
-  onFieldCheckChange(node: AclTreeNode) {
-    this.sandbox.field_update_allowed_property(node)
+  onFieldCheckChange( node: AclTreeNode ) {
+    this.sandbox.field_update_allowed_property( node )
   }
-  onActionCheckChange(node: AclTreeNode) {
-    this.sandbox.action_update_allowed_property(node)
+  onActionCheckChange( node: AclTreeNode ) {
+    this.sandbox.action_update_allowed_property( node )
   }
-  onNodeSelected(node: FlatTreeNode) {
+  onNodeSelected( node: FlatTreeNode ) {
     // update state with selected node
-    this.sandbox.tree_select_node(node)
+    this.sandbox.tree_select_node( node )
   }
 }

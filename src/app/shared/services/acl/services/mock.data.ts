@@ -11,27 +11,27 @@ var DATA: BackendServiceModel[] =
                 [
                     {
                         id: CRUD_OPERATIONS.READ,
-                        fields: {
-                            "id": { id: "id", type: 'string' },
-                            "name": { id: "name", type: 'string' },
-                            "zones": { id: "zones", type: 'array' }
-                        }
+                        fields: [
+                            { id: "id", type: 'string' },
+                            { id: "name", type: 'string' },
+                            { id: "zones", type: 'array' }
+                        ]
                     },
                     {
                         id: CRUD_OPERATIONS.CREATE,
-                        fields: {}
+                        fields: []
                     },
                     {
                         id: CRUD_OPERATIONS.DELETE,
-                        fields: {}
+                        fields: []
                     },
                     {
                         id: CRUD_OPERATIONS.UPDATE,
-                        fields: {
-                            "id": { id: "id", type: 'string' },
-                            "name": { id: "name", type: 'string' },
-                            "zones": { id: "zones", type: 'array' }
-                        }
+                        fields: [
+                            { id: "id", type: 'string' },
+                            { id: "name", type: 'string' },
+                            { id: "zones", type: 'array' }
+                        ]
                     }
                 ]
         },
@@ -43,27 +43,27 @@ var DATA: BackendServiceModel[] =
                 [
                     {
                         id: CRUD_OPERATIONS.READ,
-                        fields: {
-                            "id": { id: "id", type: 'string' },
-                            "name": { id: "name", type: 'string' },
-                            "zones": { id: "zones", type: 'array' }
-                        }
+                        fields: [
+                            { id: "id", type: 'string' },
+                            { id: "name", type: 'string' },
+                            { id: "zones", type: 'array' }
+                        ]
                     },
                     {
                         id: CRUD_OPERATIONS.CREATE,
-                        fields: {}
+                        fields: []
                     },
                     {
                         id: CRUD_OPERATIONS.DELETE,
-                        fields: {}
+                        fields: []
                     },
                     {
                         id: CRUD_OPERATIONS.UPDATE,
-                        fields: {
-                            "id": { id: "id", type: 'string' },
-                            "name": { id: "name", type: 'string' },
-                            "zones": { id: "zones", type: 'array' }
-                        }
+                        fields: [
+                            { id: "id", type: 'string' },
+                            { id: "name", type: 'string' },
+                            { id: "zones", type: 'array' }
+                        ]
                     }
                 ]
         },
@@ -75,27 +75,27 @@ var DATA: BackendServiceModel[] =
                 [
                     {
                         id: CRUD_OPERATIONS.READ,
-                        fields: {
-                            "id": { id: "id", type: 'string' },
-                            "name": { id: "name", type: 'string' },
-                            "role": { id: "role", type: 'string' }
-                        }
+                        fields: [
+                            { id: "id", type: 'string' },
+                            { id: "name", type: 'string' },
+                            { id: "role", type: 'string' }
+                        ]
                     },
                     {
                         id: CRUD_OPERATIONS.CREATE,
-                        fields: {}
+                        fields: []
                     },
                     {
                         id: CRUD_OPERATIONS.DELETE,
-                        fields: {}
+                        fields: []
                     },
                     {
                         id: CRUD_OPERATIONS.UPDATE,
-                        fields: {
-                            "id": { id: "id", type: 'string' },
-                            "name": { id: "name", type: 'string' },
-                            "role": { id: "role", type: 'string' }
-                        }
+                        fields: [
+                            { id: "id", type: 'string' },
+                            { id: "name", type: 'string' },
+                            { id: "role", type: 'string' }
+                        ]
                     }
                 ]
         }

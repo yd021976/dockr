@@ -1,23 +1,25 @@
 import { State } from "@ngxs/store";
 import { Acl2StateModel } from "src/app/shared/models/acl2/acl2.model";
-import * as utils from './utils';
+import { entity_management } from './utils';
 import { Action, StateContext, Selector, createSelector } from "@ngxs/store";
-import { v4 as uuid } from 'uuid';
 import { RoleModel, RoleEntity } from "src/app/shared/models/acl/roles.model";
-import { normalize, schema, Schema, denormalize } from 'normalizr'
+import { normalize, denormalize } from 'normalizr'
 import { AclTreeNode, NODE_TYPES } from "src/app/shared/models/acl/treenode.model";
 import { BackendServiceEntity } from "src/app/shared/models/acl/backend-services.model";
 import { CrudOperationModelEntity, ALLOWED_STATES } from "src/app/shared/models/acl/crud-operations.model";
 import { DataModelPropertyEntity } from "src/app/shared/models/acl/datamodel.model";
 import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
 import { ServicesModel } from "src/app/shared/models/services.model";
-import { Acl_LoadAll, Acl_LoadAll_Success, Acl_LoadAll_Error, Acl_node_select } from "../../actions/acl2/acl2.state.actions";
-import { Acl_Role_Remove_Entity_Success, Acl_Role_Add_Service_Success, Acl_Role_Add_Entity_Success } from "../../actions/acl2/acl2.role.entity.actions";
+import { Acl_Load_All, Acl_Load_All_Success, Acl_Load_All_Error, Acl_Tree_Node_Select } from "../../actions/acl2/acl2.state.actions";
+import { Acl_Role_Remove_Entity_Success, Acl_Role_Add_Service_Success, Acl_Roles_Add_Entity_Success } from "../../actions/acl2/acl2.role.entity.actions";
 import { ServicesState } from "../services.state";
-import { Acl_Field_Update_Allowed_Success } from "../../actions/acl2/acl2.field.entity.action";
-import { Acl_Actions_Update_Allowed_Success } from "../../actions/acl2/acl2.action.entity.actions";
+import { Acl_Field_Update_Allowed_Success, Acl_Field_Update_Allowed } from "../../actions/acl2/acl2.field.entity.action";
+import { Acl_Action_Update_Allowed_Success } from "../../actions/acl2/acl2.action.entity.actions";
+import { Acl_Services_Remove_Entity_Success, Acl_Services_Remove_Entity_Error } from "../../actions/acl2/acl2.service.entity.actions";
+import { NormalizrSchemas } from "./entities-management/normalizer";
+import { produce } from 'immer';
 
-@State<Acl2StateModel>({
+@State<Acl2StateModel>( {
     name: 'acl2',
     defaults: {
         isLoading: false,
@@ -31,86 +33,78 @@ import { Acl_Actions_Update_Allowed_Success } from "../../actions/acl2/acl2.acti
             fields: {}
         }
     }
-})
+} )
 export class Acl2State {
-    static readonly schemaOptions = { idAttribute: 'uid', processStrategy: Acl2State.generateUUID }
     // define entities schemas
-    static readonly fieldsSchema: Schema = new schema.Entity('fields', {}, Acl2State.schemaOptions)
-    static readonly crudOperationsSchema: Schema = new schema.Entity('crud_operations', { fields: [Acl2State.fieldsSchema] }, Acl2State.schemaOptions)
-    static readonly serviceSchema: Schema = new schema.Entity('services', { crud_operations: [Acl2State.crudOperationsSchema] }, Acl2State.schemaOptions)
-    static readonly roleSchema: Schema = new schema.Entity('roles', { services: [Acl2State.serviceSchema] }, Acl2State.schemaOptions)
-    static readonly mainSchema: Schema = new schema.Array(Acl2State.roleSchema)
+    static readonly normalizr_utils: NormalizrSchemas = new NormalizrSchemas()
 
-    public static generateUUID(value) {
-        if (!Object.prototype.hasOwnProperty.call(value, 'uid')) value['uid'] = uuid()
-        return { ...value }
+    constructor() { }
+    @Action( Acl_Load_All )
+    acl_load_all( ctx: StateContext<Acl2StateModel>, action: Acl_Load_All ) {
     }
 
-    @Action(Acl_LoadAll)
-    roles_load_all(ctx: StateContext<Acl2StateModel>, action: Acl_LoadAll) {
-    }
+    @Action( Acl_Load_All_Success )
+    acl_load_all_success( ctx: StateContext<Acl2StateModel>, action: Acl_Load_All_Success ) {
+        // var normalized = normalize( action.roles, Acl2State.mainSchema )
+        var normalized = Acl2State.normalizr_utils.normalize( action.roles, Acl2State.normalizr_utils.mainSchema )
 
-    @Action(Acl_LoadAll_Success)
-    roles_load_all_success(ctx: StateContext<Acl2StateModel>, action: Acl_LoadAll_Success) {
-        var normalized = normalize(action.roles, Acl2State.mainSchema)
-
-        ctx.patchState({
+        ctx.patchState( {
             isLoading: false,
             isError: false,
             error: '',
             entities: {
-                roles: { ...normalized.entities['roles'] },
-                services: { ...normalized.entities['services'] },
-                actions: { ...normalized.entities['crud_operations'] },
-                fields: { ...normalized.entities['fields'] }
+                roles: { ...normalized.entities[ 'roles' ] },
+                services: { ...normalized.entities[ 'services' ] },
+                actions: { ...normalized.entities[ 'crud_operations' ] },
+                fields: { ...normalized.entities[ 'fields' ], ...normalized.entities[ 'children' ] }
             }
-        })
+        } )
     }
     /**
      * 
      * @param ctx 
      * @param action 
      */
-    @Action(Acl_LoadAll_Error)
-    roles_load_all_error(ctx: StateContext<Acl2StateModel>, action: Acl_LoadAll_Error) { }
+    @Action( Acl_Load_All_Error )
+    acl_load_all_error( ctx: StateContext<Acl2StateModel>, action: Acl_Load_All_Error ) { }
 
-    @Action(Acl_Role_Add_Entity_Success)
-    role_add_entity_success(ctx: StateContext<Acl2StateModel>, action: Acl_Role_Add_Entity_Success) {
-        const normalized = normalize([action.roleEntity], Acl2State.mainSchema)
-        const role_entities = normalized.entities['roles'] ? normalized.entities['roles'] : {}
-        const service_entities = normalized.entities['services'] ? normalized.entities['services'] : {}
-        const actions_entities = normalized.entities['crud_operations'] ? normalized.entities['crud_operations'] : {}
-        const fields_entities = normalized.entities['fields'] ? normalized.entities['fields'] : {}
+    @Action( Acl_Roles_Add_Entity_Success )
+    roles_add_entity_success( ctx: StateContext<Acl2StateModel>, action: Acl_Roles_Add_Entity_Success ) {
+        const normalized = normalize( [ action.roleEntity ], Acl2State.normalizr_utils.mainSchema )
+        const role_entities = normalized.entities[ 'roles' ] ? normalized.entities[ 'roles' ] : {}
+        const service_entities = normalized.entities[ 'services' ] ? normalized.entities[ 'services' ] : {}
+        const actions_entities = normalized.entities[ 'crud_operations' ] ? normalized.entities[ 'crud_operations' ] : {}
+        const fields_entities = normalized.entities[ 'fields' ] ? normalized.entities[ 'fields' ] : {}
 
-        ctx.patchState({
+        ctx.patchState( {
             entities: {
                 roles: { ...ctx.getState().entities.roles, ...role_entities },
                 services: { ...ctx.getState().entities.services, ...service_entities },
                 actions: { ...ctx.getState().entities.actions, ...actions_entities },
                 fields: { ...ctx.getState().entities.fields, ...fields_entities }
             }
-        })
+        } )
     }
     /**
      * Remove role entity from state
      * @param ctx 
      * @param action 
      */
-    @Action(Acl_Role_Remove_Entity_Success)
-    role_remove_role_success(ctx: StateContext<Acl2StateModel>, action: Acl_Role_Remove_Entity_Success) {
+    @Action( Acl_Role_Remove_Entity_Success )
+    roles_remove_entity_success( ctx: StateContext<Acl2StateModel>, action: Acl_Role_Remove_Entity_Success ) {
         const state = ctx.getState()
-        state.entities.roles[action.roleUid].services.forEach((serviceUID) => {
-            state.entities.services[serviceUID].crud_operations.forEach((actionUID) => {
-                state.entities.actions[actionUID].fields.forEach((fieldUID) => {
-                    delete state.entities.fields[fieldUID]
-                })
-                delete state.entities.actions[actionUID]
-            })
-            delete state.entities.services[serviceUID]
-        })
-        delete state.entities.roles[action.roleUid]
+        state.entities.roles[ action.roleUid ].services.forEach( ( serviceUID ) => {
+            state.entities.services[ serviceUID ].crud_operations.forEach( ( actionUID ) => {
+                state.entities.actions[ actionUID ].fields.forEach( ( fieldUID ) => {
+                    delete state.entities.fields[ fieldUID ]
+                } )
+                delete state.entities.actions[ actionUID ]
+            } )
+            delete state.entities.services[ serviceUID ]
+        } )
+        delete state.entities.roles[ action.roleUid ]
 
-        ctx.patchState({
+        ctx.patchState( {
             entities: {
                 roles: { ...state.entities.roles },
                 services: { ...state.entities.services },
@@ -118,105 +112,145 @@ export class Acl2State {
                 fields: { ...state.entities.fields }
 
             }
-        })
+        } )
 
     }
 
 
 
-    @Action(Acl_Role_Add_Service_Success)
-    acl_role_add_service_success(ctx: StateContext<Acl2StateModel>, action: Acl_Role_Add_Service_Success) {
-        var normalizedEntities = normalize(action.backendServiceModel, Acl2State.serviceSchema)
+    @Action( Acl_Role_Add_Service_Success )
+    role_add_service_success( ctx: StateContext<Acl2StateModel>, action: Acl_Role_Add_Service_Success ) {
+        var normalizedEntities = normalize( action.backendServiceModel, Acl2State.normalizr_utils.serviceSchema )
         const serviceUid = normalizedEntities.result
         var state = ctx.getState()
 
         // Update role entity
-        var roleEntity = state.entities.roles[action.roleUid]
-        roleEntity.services.push(serviceUid)
+        var roleEntity = state.entities.roles[ action.roleUid ]
+        roleEntity.services.push( serviceUid )
 
-        ctx.patchState({
+        ctx.patchState( {
             entities: {
                 roles: { ...state.entities.roles },
-                services: { ...state.entities.services, ...normalizedEntities.entities['services'] },
-                actions: { ...state.entities.actions, ...normalizedEntities.entities['crud_operations'] },
-                fields: { ...state.entities.fields, ...normalizedEntities.entities['fields'] }
+                services: { ...state.entities.services, ...normalizedEntities.entities[ 'services' ] },
+                actions: { ...state.entities.actions, ...normalizedEntities.entities[ 'crud_operations' ] },
+                fields: { ...state.entities.fields, ...normalizedEntities.entities[ 'fields' ], ...normalizedEntities.entities[ 'children' ] }
             }
-        })
+        } )
         state = ctx.getState()
     }
 
-    @Action(Acl_Field_Update_Allowed_Success)
-    acl_field_update_entity_success(ctx: StateContext<Acl2StateModel>, action: Acl_Field_Update_Allowed_Success) {
-        const state: Acl2StateModel = ctx.getState()
-        var field_entity: DataModelPropertyEntity = state.entities.fields[action.entity_uid]
-        var parent_action_entity: CrudOperationModelEntity = null
 
-        // Find the parent "action" entity
-        Object.values(state.entities.actions).forEach((action_entity) => {
-            if (action_entity.fields.find((field_uid) => field_uid == action.entity_uid)) {
-                parent_action_entity = action_entity
-            }
-        })
+    @Action( Acl_Field_Update_Allowed )
+    field_update_property_allowed( ctx: StateContext<Acl2StateModel>, action: Acl_Field_Update_Allowed_Success ) {
+        // ctx.patchState( { isLoading: true } )
+    }
+    /**
+     * Update field "allowed" property and update parent fields and action entities
+     * @param ctx 
+     * @param action 
+     */
+    @Action( Acl_Field_Update_Allowed_Success )
+    field_update_property_allowed_success( ctx: StateContext<Acl2StateModel>, action: Acl_Field_Update_Allowed_Success ) {
+        // ctx.patchState( { isLoading: false } )
+        // return
+        const state: Acl2StateModel = ctx.getState()
+        var field_entity: DataModelPropertyEntity = state.entities.fields[ action.entity_uid ]
+        var parent_action_entity: CrudOperationModelEntity = null
 
         // Upate field entity
         field_entity.allowed = action.allowed
 
-        // Update action entity
-        const allowedFields = parent_action_entity.fields.filter((field_uid) => {
-            return state.entities.fields[field_uid].allowed === ALLOWED_STATES.ALLOWED
-        })
+        // Get the root field if action uid field is a child. Default is action <uid> property
+        var parent_field_uid: string = ( entity_management.fields.field_get_root_field( action.entity_uid, state.entities.fields ) ).uid
 
-        // If all fields for the parent action are "allowed", then ensure action is "allowed"
-        if (allowedFields.length == parent_action_entity.fields.length) {
+        // Get the parent "action" entity
+        parent_action_entity = entity_management.fields.field_get_parent_action( parent_field_uid, state.entities.actions )
+
+        // Update allowed property for this field and all his descendants/parents allowed property
+        entity_management.fields.field_update_allowed( action.entity_uid, action.allowed, state.entities.fields )
+
+        // Update action entity
+        const allowedFields = parent_action_entity.fields.filter( ( field_uid ) => {
+            return state.entities.fields[ field_uid ].allowed === ALLOWED_STATES.ALLOWED
+        } )
+        const indeterminateFields = parent_action_entity.fields.filter( ( field_uid ) => {
+            return state.entities.fields[ field_uid ].allowed === ALLOWED_STATES.INDETERMINATE
+        } )
+
+        // If all fields for the parent action are "allowed" => Action is "allowed"
+        if ( allowedFields.length == parent_action_entity.fields.length ) {
             parent_action_entity.allowed = ALLOWED_STATES.ALLOWED
         }
-        // No field are allowed, action is not allowed
-        else if (allowedFields.length == 0) {
+        // No field allowed and no field indeterminate => Action is not allowed
+        else if ( allowedFields.length == 0 && indeterminateFields.length == 0 ) {
             parent_action_entity.allowed = ALLOWED_STATES.FORBIDDEN
         }
-        // Some fields are allowed, but not all -> Action allowed is "intermediate"
+        // allowed field state is indeterminate => Action is "intermediate"
         else {
             parent_action_entity.allowed = ALLOWED_STATES.INDETERMINATE
         }
 
-        ctx.patchState({
+        ctx.patchState( {
             entities: {
                 roles: { ...state.entities.roles },
                 services: { ...state.entities.services },
-                actions: { ...state.entities.actions, [parent_action_entity.uid]: parent_action_entity },
-                fields: { ...state.entities.fields, [action.entity_uid]: field_entity }
+                actions: { ...state.entities.actions, [ parent_action_entity.uid ]: parent_action_entity },
+                fields: { ...state.entities.fields, [ action.entity_uid ]: field_entity }
             }
-        })
+        } )
     }
 
-    @Action(Acl_Actions_Update_Allowed_Success)
-    acl_action_update_allowed_property_success(ctx: StateContext<Acl2StateModel>, action: Acl_Actions_Update_Allowed_Success) {
+    @Action( Acl_Action_Update_Allowed_Success )
+    action_update_property_allowed_success( ctx: StateContext<Acl2StateModel>, action: Acl_Action_Update_Allowed_Success ) {
         const state: Acl2StateModel = ctx.getState()
-        var action_entity: CrudOperationModelEntity = state.entities.actions[action.entity_uid]
+        var action_entity: CrudOperationModelEntity = state.entities.actions[ action.entity_uid ]
 
         // Update action entity
         action_entity.allowed = action.allowed
 
         // Update fields entities
-        action_entity.fields.forEach((field_uid) => {
-            state.entities.fields[field_uid].allowed = action.allowed
-        })
-        ctx.patchState({
+        action_entity.fields.forEach( ( field_uid ) => {
+            state.entities.fields[ field_uid ].allowed = action.allowed
+            entity_management.fields.field_update_allowed( field_uid, action.allowed, state.entities.fields )
+        } )
+
+        ctx.patchState( {
             entities: {
                 roles: { ...state.entities.roles },
                 services: { ...state.entities.services },
-                actions: { ...state.entities.actions, [action.entity_uid]: action_entity },
+                actions: { ...state.entities.actions, [ action.entity_uid ]: action_entity },
                 fields: { ...state.entities.fields }
             }
-        })
+        } )
+    }
+
+    @Action( Acl_Services_Remove_Entity_Success )
+    services_remove_entity_success( ctx: StateContext<Acl2StateModel>, action: Acl_Services_Remove_Entity_Success ) {
+        const state: Acl2StateModel = ctx.getState()
+        try {
+            // Remove service entity and all children (actions & fields), then remove service uid reference from role
+            entity_management.services.service_remove_entity( action.service_uid, state.entities.roles, state.entities.services, state.entities.actions, state.entities.fields )
+
+            // Update state
+            ctx.patchState( {
+                entities: {
+                    roles: { ...state.entities.roles },
+                    services: { ...state.entities.services },
+                    actions: { ...state.entities.actions },
+                    fields: { ...state.entities.fields }
+                }
+            } )
+        } catch ( e ) {
+            ctx.dispatch( new Acl_Services_Remove_Entity_Error( e.message ) )
+        }
     }
     /**
      * 
      * @param ctx 
      * @param action 
      */
-    @Action(Acl_node_select)
-    acl_select_node(ctx: StateContext<Acl2StateModel>, action: Acl_node_select) {
+    @Action( Acl_Tree_Node_Select )
+    acl_tree_select_node( ctx: StateContext<Acl2StateModel>, action: Acl_Tree_Node_Select ) {
         ctx.patchState(
             {
                 selectedNode: action.currentNode
@@ -228,24 +262,24 @@ export class Acl2State {
      * 
      * @param node 
      */
-    static getTreeNodesData(node: AclTreeNode = null): (...args: any) => AclTreeNode[] {
-        return createSelector([Acl2State], (state: Acl2StateModel): AclTreeNode[] => {
+    static getTreeNodesData( node: AclTreeNode = null ): ( ...args: any ) => AclTreeNode[] {
+        return createSelector( [ Acl2State ], ( state: Acl2StateModel ): AclTreeNode[] => {
             var nodes: AclTreeNode[] = []
 
-            if (node == null) {
-                nodes = Object.keys(state.entities.roles).map((value) => {
-                    var role = state.entities.roles[value]
+            if ( node == null ) {
+                nodes = Object.keys( state.entities.roles ).map( ( value ) => {
+                    var role = state.entities.roles[ value ]
                     return {
                         uid: role.uid,
                         name: role.name,
                         type: NODE_TYPES.ROLE
                     }
-                })
+                } )
             } else {
-                nodes = Acl2State.getTreeNodeChildren(state, node)
+                nodes = Acl2State.getTreeNodeChildren( state, node )
             }
             return nodes
-        })
+        } )
 
     }
     /**
@@ -253,8 +287,8 @@ export class Acl2State {
      * @param state 
      * @param node 
      */
-    static getTreeNodeChildren(state: Acl2StateModel, node: AclTreeNode): AclTreeNode[] {
-        return utils.getTreeNodeChildren(state, node)
+    static getTreeNodeChildren( state: Acl2StateModel, node: AclTreeNode ): AclTreeNode[] {
+        return entity_management.treenodes.get_treenode_children( state, node )
     }
 
 
@@ -263,8 +297,8 @@ export class Acl2State {
      * @param aclstate 
      */
     @Selector()
-    static currentRoleEntity(aclstate: Acl2StateModel): RoleEntity {
-        return utils.node_getRoleEntity(aclstate.selectedNode, aclstate)
+    static currentRoleEntity( aclstate: Acl2StateModel ): RoleEntity {
+        return entity_management.treenodes.node_get_role_entity( aclstate.selectedNode, aclstate )
     }
 
     /**
@@ -272,9 +306,9 @@ export class Acl2State {
      * @param aclState 
      * @param serviceState 
      */
-    @Selector([ServicesState])
-    static availableRoleServices(aclState: Acl2StateModel, serviceState: ServicesModel) {
-        return utils.availableRoleServices(aclState, serviceState)
+    @Selector( [ ServicesState ] )
+    static availableRoleServices( aclState: Acl2StateModel, serviceState: ServicesModel ) {
+        return entity_management.roles.role_get_available_services( aclState, serviceState )
     }
 
     /**
@@ -282,7 +316,7 @@ export class Acl2State {
      * @param state 
      */
     @Selector()
-    static currentSelectedNode(state: Acl2StateModel): FlatTreeNode {
+    static currentSelectedNode( state: Acl2StateModel ): FlatTreeNode {
         return state.selectedNode
     }
 
@@ -291,35 +325,88 @@ export class Acl2State {
      * @param state 
      */
     @Selector()
-    static currentSelectedNode_UID(state: Acl2StateModel) {
-        return state.selectedNode.data['uid']
+    static currentSelectedNode_UID( state: Acl2StateModel ) {
+        return state.selectedNode.data[ 'uid' ]
     }
-    static currentSelectedNode_Entity(state: Acl2StateModel): RoleEntity | BackendServiceEntity | CrudOperationModelEntity | DataModelPropertyEntity | null {
+    static currentSelectedNode_Entity( state: Acl2StateModel ): RoleEntity | BackendServiceEntity | CrudOperationModelEntity | DataModelPropertyEntity | null {
         var entity: RoleEntity | BackendServiceEntity | CrudOperationModelEntity | DataModelPropertyEntity = null;
-        var nodeuid = state.selectedNode.data['uid']
+        var nodeuid = state.selectedNode.data[ 'uid' ]
         entity =
-            state.entities.roles[nodeuid]
-            || state.entities.services[nodeuid]
-            || state.entities.actions[nodeuid]
-            || state.entities.fields[nodeuid];
+            state.entities.roles[ nodeuid ]
+            || state.entities.services[ nodeuid ]
+            || state.entities.actions[ nodeuid ]
+            || state.entities.fields[ nodeuid ];
 
         return entity
+    }
+
+    static getParent( node: AclTreeNode ): ( ...args: any ) => AclTreeNode {
+        return createSelector( [ Acl2State ], ( state: Acl2StateModel ): AclTreeNode => {
+            var parent: RoleEntity | BackendServiceEntity | CrudOperationModelEntity | DataModelPropertyEntity = null, parent_treeNode: AclTreeNode = null
+
+            switch ( node.type ) {
+                case NODE_TYPES.ROLE:
+                    break
+                case NODE_TYPES.SERVICE:
+                    parent = entity_management.services.service_get_parent( node.uid, state.entities.roles )
+                    parent_treeNode = {
+                        name: parent.id,
+                        type: NODE_TYPES.ROLE,
+                        uid: parent.uid
+                    }
+                    break
+                case NODE_TYPES.CRUDOPERATION:
+                    parent = entity_management.actions.action_get_parent( node.uid, state.entities.services );
+                    parent_treeNode = {
+                        uid: parent.uid,
+                        name: parent.id,
+                        type: NODE_TYPES.SERVICE,
+                    }
+
+                    break
+                // Special case : If field is a child of a field, return the parent field. Else return the parent "action"
+                case NODE_TYPES.FIELDACCESS:
+                    parent = entity_management.fields.field_get_parent_field( node.uid, state.entities.fields )
+
+                    if ( parent == null ) {
+                        // field is not a child of a field, get the "crud operation" parent
+                        parent = entity_management.fields.field_get_parent_action( node.uid, state.entities.actions )
+                        parent_treeNode = {
+                            uid: parent.uid,
+                            name: parent.id,
+                            type: NODE_TYPES.CRUDOPERATION,
+                            checked: parent.allowed
+                        }
+                    } else {
+                        parent_treeNode = {
+                            uid: parent.uid,
+                            name: parent.id,
+                            type: NODE_TYPES.FIELDACCESS,
+                            checked: parent.allowed
+                        }
+                    }
+                    break
+                default:
+                    break
+            }
+            return parent_treeNode
+        } )
     }
     /**
      * Return roles object array (denormalized data)
      * @param state 
      */
     @Selector()
-    static getRoles(state: Acl2StateModel): RoleModel[] {
-        var rolesUid = Object.keys(state.entities.roles)
-        if (rolesUid.length == 0) return []
+    static getRoles( state: Acl2StateModel ): RoleModel[] {
+        var rolesUid = Object.keys( state.entities.roles )
+        if ( rolesUid.length == 0 ) return []
 
-        var objects = denormalize(rolesUid, Acl2State.mainSchema, {
+        var objects = denormalize( rolesUid, Acl2State.normalizr_utils.mainSchema, {
             roles: state.entities.roles,
             services: state.entities.services,
             crud_operations: state.entities.actions,
             fields: state.entities.fields
-        })
+        } )
         return objects
     }
 }

@@ -1,4 +1,4 @@
-import { CrudOperationsModelEntities, CrudOperationModel } from "./crud-operations.model";
+import { CrudOperationModel } from "./crud-operations.model";
 
 /**
  * Backend service definition

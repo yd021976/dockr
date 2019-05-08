@@ -44,11 +44,11 @@
 }
 
 .mat-tree-node {
-    min-height: 26px;
+    min-height: initial;
 }
 
 .mat-nested-tree-node {
-    min-height: 26px;
+    min-height: initial;
 }
 
 .mat-icon-button {
@@ -82,7 +82,7 @@
 .column {
     border-right-style: solid;
     border-right-width: 1px;
-    min-height: inherit;
+    min-height: initial;
 
     &.node:hover {
         cursor: pointer
