@@ -5,8 +5,11 @@ import { CrudOperationModelEntity } from "src/app/shared/models/acl/crud-operati
 import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
 import { Acl2StateModel } from "src/app/shared/models/acl2/acl2.model";
 import { DataModelPropertyEntity } from "src/app/shared/models/acl/datamodel.model";
+import { service_get_parent } from "./services";
+import { action_get_parent } from "./actions";
+import { field_get_root_field, field_get_parent_action } from "./fields";
 
-export function get_treenode_children( state: Acl2StateModel, node: AclTreeNode ): AclTreeNode[] {
+export function node_get_children( state: Acl2StateModel, node: AclTreeNode ): AclTreeNode[] {
     var children: AclTreeNode[] = []
 
     switch ( node.type ) {
@@ -46,7 +49,7 @@ export function get_treenode_children( state: Acl2StateModel, node: AclTreeNode 
             } )
             break
         case NODE_TYPES.FIELDACCESS:
-            var field_children = state.entities.fields[ node.uid ].children || []
+            var field_children = state.entities.fields[ node.uid ].fields || []
             var field_entity: DataModelPropertyEntity
 
             children = Object.values( field_children ).map( entity_uid => {
@@ -64,6 +67,13 @@ export function get_treenode_children( state: Acl2StateModel, node: AclTreeNode 
     }
     return children
 }
+
+/**
+ * Get root "role" type node from any node in the tree
+ * 
+ * @param node The node UID from wich we want to get root "role" node
+ * @param state State entities
+ */
 export function node_get_role_entity( node: FlatTreeNode, state: Acl2StateModel ): RoleEntity {
     var roleEntity: RoleEntity = null
     var serviceEntity: BackendServiceEntity = null
@@ -77,20 +87,27 @@ export function node_get_role_entity( node: FlatTreeNode, state: Acl2StateModel 
             roleEntity = state.entities.roles[ node.data.uid ]
             break
         case NODE_TYPES.SERVICE:
-            roleEntity = this.service_getParent( node.data.uid, state )
+            roleEntity = service_get_parent( node.data.uid, state.entities[ 'roles' ] )
             break
         case NODE_TYPES.CRUDOPERATION:
-            serviceEntity = this.crud_getParent( node.data.uid, state )
+            serviceEntity = action_get_parent( node.data.uid, state.entities[ 'services' ] )
             if ( serviceEntity !== null ) {
-                roleEntity = this.service_getParent( serviceEntity.uid, state )
+                roleEntity = service_get_parent( serviceEntity.uid, state.entities[ 'roles' ] )
             }
             break
         case NODE_TYPES.FIELDACCESS:
-            crudEntity = this.field_getParent( node.data.uid, state )
+            // Get the root field if field is child of another field
+            const field_root = field_get_root_field( node.data.uid, state.entities[ 'fields' ] )
+            
+            // Get parent action entity
+            crudEntity = field_get_parent_action( field_root.uid, state.entities[ 'actions' ] )
+
             if ( crudEntity !== null ) {
-                serviceEntity = this.crud_getParent( crudEntity.uid, state )
+                // Get parent service entity
+                serviceEntity = action_get_parent( crudEntity.uid, state.entities[ 'services' ] )
                 if ( serviceEntity !== null ) {
-                    roleEntity = this.service_getParent( serviceEntity.uid, state )
+                    // Get parent role entity
+                    roleEntity = service_get_parent( serviceEntity.uid, state.entities[ 'roles' ] )
                 }
             }
             break

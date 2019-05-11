@@ -100,7 +100,7 @@ export class AclContainer implements OnInit {
     }
   }
   remove_role( node: FlatTreeNode ) {
-    this.sandbox.tree_select_node( null ) // deselect any node
+    this.sandbox.treenodes_update_select_node( null ) // deselect any node
     this.sandbox.roles_remove_entity( node.data[ 'uid' ] )
   }
 
@@ -133,6 +133,6 @@ export class AclContainer implements OnInit {
   }
   onNodeSelected( node: FlatTreeNode ) {
     // update state with selected node
-    this.sandbox.tree_select_node( node )
+    this.sandbox.treenodes_update_select_node( node )
   }
 }

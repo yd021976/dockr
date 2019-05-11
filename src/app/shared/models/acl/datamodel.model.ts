@@ -11,10 +11,10 @@ export interface BaseDataModelProperty {
 }
 
 export interface DataModelPropertyEntity extends BaseDataModelProperty {
-    children?: string[]
+    fields?: string[]
 }
 export interface DataModelPropertyModel extends BaseDataModelProperty {
-    children?: DataModelPropertyModel[]
+    fields?: DataModelPropertyModel[]
 }
 
 

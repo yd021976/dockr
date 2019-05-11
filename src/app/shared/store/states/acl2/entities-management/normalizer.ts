@@ -8,8 +8,6 @@ export class NormalizrSchemas {
     static instance: NormalizrSchemas = null
     schemaOptions
     // define entities schemas
-    chilrenSchema: Schema
-    childrenArraySchema: Schema
     fieldSchema: Schema
     fieldsSchema: Schema
     crudOperationsSchema: Schema
@@ -25,17 +23,11 @@ export class NormalizrSchemas {
         if ( NormalizrSchemas.instance ) return NormalizrSchemas.instance
 
         this.schemaOptions = { idAttribute: 'uid', processStrategy: this.generateUUID }
-        // define entities schemas
-        this.chilrenSchema = new schema.Entity( 'children', {}, this.schemaOptions )
-        this.childrenArraySchema = new schema.Array( this.chilrenSchema )
-        this.chilrenSchema.define( { 'children': this.childrenArraySchema } )
-
-        this.fieldSchema = new schema.Entity( 'fields', { 'children': [ this.chilrenSchema ] }, this.schemaOptions )
-        var fieldsSchema = new schema.Array( this.fieldSchema )
-        this.fieldSchema.define( { fieldsSchema } )
+        this.fieldSchema = new schema.Entity( 'fields', {}, this.schemaOptions )
+        const fieldsSchema = new schema.Array( this.fieldSchema )
+        this.fieldSchema.define( { fields: fieldsSchema } )
 
         this.crudOperationsSchema = new schema.Entity( 'crud_operations', { 'fields': [ this.fieldSchema ] }, this.schemaOptions )
-        // this.crudOperationsSchema = new schema.Entity( 'crud_operations', {}, this.schemaOptions )
         this.serviceSchema = new schema.Entity( 'services', { 'crud_operations': [ this.crudOperationsSchema ] }, this.schemaOptions )
         this.roleSchema = new schema.Entity( 'roles', { 'services': [ this.serviceSchema ] }, this.schemaOptions )
         this.mainSchema = new schema.Array( this.roleSchema )

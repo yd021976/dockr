@@ -7,7 +7,7 @@ import { normalize, denormalize } from 'normalizr'
 import { AclTreeNode, NODE_TYPES } from "src/app/shared/models/acl/treenode.model";
 import { BackendServiceEntity } from "src/app/shared/models/acl/backend-services.model";
 import { CrudOperationModelEntity, ALLOWED_STATES } from "src/app/shared/models/acl/crud-operations.model";
-import { DataModelPropertyEntity } from "src/app/shared/models/acl/datamodel.model";
+import { DataModelPropertyEntity, DataModelPropertyEntities } from "src/app/shared/models/acl/datamodel.model";
 import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
 import { ServicesModel } from "src/app/shared/models/services.model";
 import { Acl_Load_All, Acl_Load_All_Success, Acl_Load_All_Error, Acl_Tree_Node_Select } from "../../actions/acl2/acl2.state.actions";
@@ -17,7 +17,6 @@ import { Acl_Field_Update_Allowed_Success, Acl_Field_Update_Allowed } from "../.
 import { Acl_Action_Update_Allowed_Success } from "../../actions/acl2/acl2.action.entity.actions";
 import { Acl_Services_Remove_Entity_Success, Acl_Services_Remove_Entity_Error } from "../../actions/acl2/acl2.service.entity.actions";
 import { NormalizrSchemas } from "./entities-management/normalizer";
-import { produce } from 'immer';
 
 @State<Acl2StateModel>( {
     name: 'acl2',
@@ -262,7 +261,7 @@ export class Acl2State {
      * 
      * @param node 
      */
-    static getTreeNodesData( node: AclTreeNode = null ): ( ...args: any ) => AclTreeNode[] {
+    static treenode_getData( node: AclTreeNode = null ): ( ...args: any ) => AclTreeNode[] {
         return createSelector( [ Acl2State ], ( state: Acl2StateModel ): AclTreeNode[] => {
             var nodes: AclTreeNode[] = []
 
@@ -276,7 +275,7 @@ export class Acl2State {
                     }
                 } )
             } else {
-                nodes = Acl2State.getTreeNodeChildren( state, node )
+                nodes = Acl2State.treenode_getChildren( state, node )
             }
             return nodes
         } )
@@ -287,8 +286,8 @@ export class Acl2State {
      * @param state 
      * @param node 
      */
-    static getTreeNodeChildren( state: Acl2StateModel, node: AclTreeNode ): AclTreeNode[] {
-        return entity_management.treenodes.get_treenode_children( state, node )
+    static treenode_getChildren( state: Acl2StateModel, node: AclTreeNode ): AclTreeNode[] {
+        return entity_management.treenodes.node_get_children( state, node )
     }
 
 
@@ -297,8 +296,41 @@ export class Acl2State {
      * @param aclstate 
      */
     @Selector()
-    static currentRoleEntity( aclstate: Acl2StateModel ): RoleEntity {
+    static role_get_entityFromCurrentSelectedNode( aclstate: Acl2StateModel ): RoleEntity {
         return entity_management.treenodes.node_get_role_entity( aclstate.selectedNode, aclstate )
+    }
+
+    /**
+     * Get "role" entity from any node in the tree
+     * 
+     * @param node Node from wich we want the role entity
+     */
+    static treenode_get_rootRoleEntity( node: AclTreeNode ): ( ...args: any[] ) => RoleEntity {
+        return createSelector( [ Acl2State ], ( state: Acl2StateModel ): RoleEntity => {
+            const flatNode: FlatTreeNode = {
+                isExpandable: false,
+                level: 0,
+                data: JSON.parse( JSON.stringify( node ) ) // Ensure new instance of node
+            }
+            return entity_management.treenodes.node_get_role_entity( flatNode, state )
+        } )
+    }
+
+    /**
+     * Convert a role entity into a denormalized state
+     * 
+     * @param role_entity The role entity to denormalize
+     */
+    static role_get_denormalizeEntity( role_entity: RoleEntity ) {
+        return createSelector( [ Acl2State ], ( state: Acl2StateModel ): RoleModel => {
+            const role_model: RoleModel = Acl2State.normalizr_utils.denormalize( role_entity.uid, Acl2State.normalizr_utils.roleSchema, {
+                roles: state.entities.roles,
+                services: state.entities.services,
+                crud_operations: state.entities.actions,
+                fields: state.entities.fields,
+            } )
+            return role_model
+        } )
     }
 
     /**
@@ -307,8 +339,9 @@ export class Acl2State {
      * @param serviceState 
      */
     @Selector( [ ServicesState ] )
-    static availableRoleServices( aclState: Acl2StateModel, serviceState: ServicesModel ) {
-        return entity_management.roles.role_get_available_services( aclState, serviceState )
+    static role_get_availableServices( aclState: Acl2StateModel, serviceState: ServicesModel ) {
+        const role_entity: RoleEntity = entity_management.roles.role_get_entityFromUid( aclState.selectedNode.data.uid, aclState.entities.roles )
+        return entity_management.roles.role_get_available_services( role_entity, aclState.entities.services, serviceState )
     }
 
     /**
@@ -316,31 +349,15 @@ export class Acl2State {
      * @param state 
      */
     @Selector()
-    static currentSelectedNode( state: Acl2StateModel ): FlatTreeNode {
+    static treenodes_get_currentSelectedNode( state: Acl2StateModel ): FlatTreeNode {
         return state.selectedNode
     }
 
     /**
      * 
-     * @param state 
+     * @param node 
      */
-    @Selector()
-    static currentSelectedNode_UID( state: Acl2StateModel ) {
-        return state.selectedNode.data[ 'uid' ]
-    }
-    static currentSelectedNode_Entity( state: Acl2StateModel ): RoleEntity | BackendServiceEntity | CrudOperationModelEntity | DataModelPropertyEntity | null {
-        var entity: RoleEntity | BackendServiceEntity | CrudOperationModelEntity | DataModelPropertyEntity = null;
-        var nodeuid = state.selectedNode.data[ 'uid' ]
-        entity =
-            state.entities.roles[ nodeuid ]
-            || state.entities.services[ nodeuid ]
-            || state.entities.actions[ nodeuid ]
-            || state.entities.fields[ nodeuid ];
-
-        return entity
-    }
-
-    static getParent( node: AclTreeNode ): ( ...args: any ) => AclTreeNode {
+    static treenodes_get_parentNode( node: AclTreeNode ): ( ...args: any ) => AclTreeNode {
         return createSelector( [ Acl2State ], ( state: Acl2StateModel ): AclTreeNode => {
             var parent: RoleEntity | BackendServiceEntity | CrudOperationModelEntity | DataModelPropertyEntity = null, parent_treeNode: AclTreeNode = null
 
@@ -397,7 +414,7 @@ export class Acl2State {
      * @param state 
      */
     @Selector()
-    static getRoles( state: Acl2StateModel ): RoleModel[] {
+    static roles_get_list( state: Acl2StateModel ): RoleModel[] {
         var rolesUid = Object.keys( state.entities.roles )
         if ( rolesUid.length == 0 ) return []
 

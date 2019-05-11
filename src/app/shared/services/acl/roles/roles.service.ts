@@ -8,20 +8,47 @@ import { AppLoggerServiceToken } from '../../logger/app-logger/app-logger-token'
 import * as DATA from './roles.data';
 import { RoleEntities, RoleModel } from 'src/app/shared/models/acl/roles.model';
 
-@Injectable({ providedIn: 'root' })
+@Injectable( { providedIn: 'root' } )
 export class RolesService {
     private readonly loggerName: string = "RolesService";
     protected service: feathers.Service<any>;
 
-    constructor(protected backendApiService: FeathersjsBackendService, @Inject(AppLoggerServiceToken) public loggerService: AppLoggerService) {
-        this.loggerService.createLogger(this.loggerName);
-        this.service = this.backendApiService.service('roles');
+    constructor( protected backendApiService: FeathersjsBackendService, @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerService ) {
+        this.loggerService.createLogger( this.loggerName );
+        this.service = this.backendApiService.service( 'roles' );
     }
 
     //TODO: Get data from server
-    public async find(params?: any): Promise<RoleModel[]> {
-        return new Promise<RoleModel[]>((resolve, reject) => {
-            resolve(DATA.default)
-        });
+    public async find( params?: any ): Promise<RoleModel[]> {
+        return new Promise<RoleModel[]>( ( resolve, reject ) => {
+            resolve( DATA.default )
+        } );
+    }
+
+    /**
+     * Update a Role document in backend. If role ID doesn't exists, this method will create a new one if "force_create" is set to true
+     * The role document represent a full ACL strategy for a unique role ID
+     * 
+     * @param role The role object to store
+     * @param force_create Permit to create a new role if provided one doesn't exist
+     */
+    public async update( role: RoleModel, force_create: boolean = false ) {
+        // First check the role object exists
+        return this.service.get( role.id )
+            .then( () => {
+                return true
+            } )
+            .catch( e => {
+                return false
+            } )
+            .then( ( role_exists: boolean ) => {
+                // Should we create a new role ?
+                if ( force_create && !role_exists ) {
+                    return this.service.create( role )
+                } else {
+                    // If no create forcing, try to update
+                    return this.service.update( role.id, role )
+                }
+            } )
     }
 }

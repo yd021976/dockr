@@ -21,11 +21,11 @@ var DATA: RoleModel[] =
                                         { id: "id", type: 'string', allowed: ALLOWED_STATES.FORBIDDEN },
                                         { id: "name", type: 'string', allowed: ALLOWED_STATES.FORBIDDEN },
                                         {
-                                            id: "zones", type: 'array', allowed: ALLOWED_STATES.ALLOWED, children: [
+                                            id: "zones", type: 'array', allowed: ALLOWED_STATES.ALLOWED, fields: [
                                                 { id: "zoneID", type: "string", allowed: ALLOWED_STATES.ALLOWED },
                                                 { id: "x", type: "number", allowed: ALLOWED_STATES.FORBIDDEN },
                                                 {
-                                                    id: "property_has_children", type: 'array', allowed: ALLOWED_STATES.ALLOWED, children: [
+                                                    id: "property_has_children", type: 'array', allowed: ALLOWED_STATES.ALLOWED, fields: [
                                                         { id: "children1_id", type: "string" }
                                                     ]
                                                 }

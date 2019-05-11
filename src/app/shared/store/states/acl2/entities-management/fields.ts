@@ -3,7 +3,7 @@ import { CrudOperationModelEntity, CrudOperationsModelEntities, ALLOWED_STATES }
 
 
 /**
- * Remove field entity all of its children from state from state.
+ * Remove field entity all of its children from state
  * 
  * @param field_uid 
  * @param field_entities 
@@ -12,8 +12,8 @@ export function field_remove_entity( field_uid: string, field_entities: DataMode
     var field_entity: DataModelPropertyEntity = field_entities[ field_uid ]
 
     // Recursively remove children field if any
-    if ( field_entity[ 'children' ] ) {
-        field_entity.children.forEach( current_field_uid => {
+    if ( field_entity.fields ) {
+        field_entity.fields.forEach( current_field_uid => {
             field_remove_entity( current_field_uid, field_entities )
         } )
     }
@@ -47,7 +47,7 @@ export function field_get_parent_field( field_uid: string, field_entities: DataM
 
     // Check if field is children of a field
     var is_field_child = Object.values( field_entities ).find( field_entity => {
-        if ( field_entity[ 'children' ] && field_entity.children.find( child_uid => child_uid == field_uid ) ) {
+        if ( field_entity.fields && field_entity.fields.find( child_uid => child_uid == field_uid ) ) {
             fieldEntity = field_entity
             return true
         }
@@ -68,10 +68,10 @@ function field_update_descendants( field_uid: string, field_entities: DataModelP
     // When allowed is "indeterminate" we just can't compute descendants allowed property has it means : Some descendants are allowed, some others are forbidden
     if ( field_entity.allowed == ALLOWED_STATES.INDETERMINATE ) return // Do nothing
 
-    if ( !field_entity[ 'children' ] ) return // No children, do nothing
+    if ( !field_entity.fields ) return // No children, do nothing
 
     // The field entity from uid should already have the "allowed" property up to date
-    field_entities[ field_uid ].children.map( child_uid => {
+    field_entities[ field_uid ].fields.map( child_uid => {
         field_entities[ child_uid ].allowed = field_entity.allowed
         // Update children if any
         field_update_descendants( child_uid, field_entities )
@@ -92,22 +92,22 @@ function field_compute_allowed_state( field_uid: string, field_entities: DataMod
     var allowed_state: ALLOWED_STATES = ALLOWED_STATES.INDETERMINATE // Default allowed state is indeterminate
 
     // If field has no children, return field allowed state
-    if ( !field_entity.children ) return field_entity.allowed
+    if ( !field_entity.fields ) return field_entity.allowed
 
     /**
      * If field has descendants, compute field allowed state
      */
-    var allowed_children = [] = field_entity.children.filter( child_uid => {
+    var allowed_children = [] = field_entity.fields.filter( child_uid => {
         return field_entities[ child_uid ].allowed == ALLOWED_STATES.ALLOWED
     } )
-    var indeterminate_children = [] = field_entity.children.filter( child_uid => {
+    var indeterminate_children = [] = field_entity.fields.filter( child_uid => {
         return field_entities[ child_uid ].allowed == ALLOWED_STATES.INDETERMINATE
     } )
     // Compute allowed state
-    if ( allowed_children.length == field_entity.children.length ) allowed_state = ALLOWED_STATES.ALLOWED
+    if ( allowed_children.length == field_entity.fields.length ) allowed_state = ALLOWED_STATES.ALLOWED
     if ( allowed_children.length == 0 && indeterminate_children.length == 0 ) allowed_state = ALLOWED_STATES.FORBIDDEN
     if ( indeterminate_children.length != 0 ) allowed_state = ALLOWED_STATES.INDETERMINATE
-    
+
     return allowed_state
 }
 /**
