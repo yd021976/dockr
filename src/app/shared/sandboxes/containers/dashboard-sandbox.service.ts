@@ -20,48 +20,34 @@ export class DashboardSandbox extends BaseSandboxService {
         protected templatesService: TemplatesService,
         notificationService: NotificationBaseService,
         store: Store,
-        @Inject(AppLoggerServiceToken) public loggerService: AppLoggerService,
+        @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerService,
         protected backend: FeathersjsBackendService,
-        private authService: AuthService) {
+        private authService: AuthService ) {
 
-        super(notificationService, store, loggerService);
-        this.loggerService.createLogger(this.loggerName);
+        super( notificationService, store, loggerService );
+        this.loggerService.createLogger( this.loggerName );
     }
 
 
     public getTemplates(): Promise<any> {
-        this.store.dispatch(new TemplatesLoadAction());
+        this.store.dispatch( new TemplatesLoadAction() );
 
-        return this.authService.checkSessionActive() // Throws error if session has expired (except for anonymous user)
-            .then((active) => {
-                this.templatesService.find()
-                    .then((templates) => {
-                        this.loggerService.debug(this.loggerName, { message: 'getTemplates()', otherParams: ['SUCCESS', templates.data] });
-                        this.store.dispatch(new TemplatesLoadSuccessAction(templates.data));
-                    })
-                    .catch((error) => {
-                        this.loggerService.debug(this.loggerName, { message: 'getTemplates()', otherParams: ['ERROR', error] });
-                        switch (error.name) {
-                            case "notAuthenticated":
-                                this.store.dispatch([new TemplateLoadReset(), new UserLoginErrorAction(error.message)]);
-                                break;
-                            default:
-                                this.store.dispatch(new TemplatesLoadErrorAction(error.message));
-                                break;
-                        }
-                    })
-            })
-            .catch((error) => {
-                switch (error.type) {
-                    case errorType.notAuthenticated:
-                    case errorType.sessionExpired:
+        return this.templatesService.find()
+            .then( ( templates ) => {
+                this.loggerService.debug( this.loggerName, { message: 'getTemplates()', otherParams: [ 'SUCCESS', templates.data ] } );
+                this.store.dispatch( new TemplatesLoadSuccessAction( templates.data ) );
+            } )
+            .catch( ( error ) => {
+                this.loggerService.debug( this.loggerName, { message: 'getTemplates()', otherParams: [ 'ERROR', error ] } );
+                switch ( error.name ) {
+                    case "notAuthenticated":
+                        this.store.dispatch( [ new TemplateLoadReset(), new UserLoginErrorAction( error.message ) ] );
                         break;
                     default:
+                        this.store.dispatch( new TemplatesLoadErrorAction( error.message ) );
                         break;
                 }
-            })
-
-
+            } )
     }
     public isAuth() {
         return this.backend.isAuth();

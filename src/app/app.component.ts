@@ -7,16 +7,17 @@ import { AppSandboxService } from './shared/sandboxes/app/app-sandbox.service';
 
 
 
-@Component({
+@Component( {
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
-})
+  styleUrls: [ './app.component.scss' ]
+} )
 export class AppComponent {
   title = 'dockr';
 
-  constructor(public sandbox: AppSandboxService) {
+  constructor( public sandbox: AppSandboxService ) {
   }
-  ngOnInit() {
+  async ngOnInit() {
+    
   }
 }

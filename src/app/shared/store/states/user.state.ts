@@ -18,38 +18,38 @@ const defaultState: UserModel = {
     "settings": []
 }
 
-@State<UserModel>({
+@State<UserModel>( {
     name: 'user',
     defaults: defaultState
-})
+} )
 export class UserState {
     private readonly loggerName: string = "UserState";
 
-    constructor(@Inject(AppLoggerServiceToken) protected loggerService: AppLoggerService) {
-        this.loggerService.createLogger(this.loggerName);
+    constructor( @Inject( AppLoggerServiceToken ) protected loggerService: AppLoggerService ) {
+        this.loggerService.createLogger( this.loggerName );
     }
-    @Action(actions.UserLoginAction)
-    login(ctx: StateContext<UserModel>) {
-        // When login starts, user must be logged out
-        return ctx.dispatch(new actions.UserLogoutSuccessAction()).subscribe(() => {
-            ctx.patchState({
+    @Action( actions.UserLoginAction )
+    login( ctx: StateContext<UserModel> ) {
+        // When login action starts, user must be logged out
+        return ctx.dispatch( new actions.UserLogoutSuccessAction() ).subscribe( () => {
+            ctx.patchState( {
                 "isProgress": true,
                 "isLoggedIn": false,
                 "isError": false,
                 "error": ''
-            });
-        })
+            } );
+        } )
     }
 
-    @Action(actions.UserLoginSuccessAction)
-    loginSuccess(ctx: StateContext<UserModel>, action: actions.UserLoginSuccessAction) {
+    @Action( actions.UserLoginSuccessAction )
+    loginSuccess( ctx: StateContext<UserModel>, action: actions.UserLoginSuccessAction ) {
         let c = ctx.getState();
-        let isAnonymous: boolean = action.user['anonymous'] ? true : false
-        let nickname: string = action.user['anonymous'] ? '' : action.user['nickname'] ? action.user['nickname'] : action.user['email']
-        let email: string = action.user['anonymous'] ? '' : action.user['email']
-        let isLoggedIn: boolean = action.user['anonymous'] ? false : true
+        let isAnonymous: boolean = action.user == null ? true : false
+        let nickname: string = action.user == null ? '' : action.user[ 'nickname' ] ? action.user[ 'nickname' ] : action.user[ 'email' ]
+        let email: string = action.user == null ? '' : action.user[ 'email' ]
+        let isLoggedIn: boolean = action.user == null ? false : true
 
-        ctx.patchState({
+        ctx.patchState( {
             "nickname": nickname,
             "email": email,
             "isAnonymous": isAnonymous,
@@ -57,34 +57,34 @@ export class UserState {
             "isProgress": false,
             "isError": false,
             "error": ''
-        });
-        this.loggerService.debug(this.loggerName, { message: 'loginSucess', otherParams: [ctx.getState()] });
+        } );
+        this.loggerService.debug( this.loggerName, { message: 'loginSucess', otherParams: [ ctx.getState() ] } );
 
     }
 
-    @Action(actions.UserLoginErrorAction)
-    loginError(ctx: StateContext<UserModel>, action: actions.UserLoginErrorAction) {
-        ctx.patchState({
+    @Action( actions.UserLoginErrorAction )
+    loginError( ctx: StateContext<UserModel>, action: actions.UserLoginErrorAction ) {
+        ctx.patchState( {
             "isProgress": false,
             "isLoggedIn": false,
             "isAnonymous": true,
             "isError": true,
             "error": action.error
-        })
-        this.loggerService.debug(this.loggerName, { message: 'loginError', otherParams: [ctx.getState()] });
+        } )
+        this.loggerService.debug( this.loggerName, { message: 'loginError', otherParams: [ ctx.getState() ] } );
     }
 
-    @Action(actions.UserLogoutAction)
-    logout(ctx: StateContext<UserModel>, action: actions.UserLogoutAction) {
-        ctx.patchState({
+    @Action( actions.UserLogoutAction )
+    logout( ctx: StateContext<UserModel>, action: actions.UserLogoutAction ) {
+        ctx.patchState( {
             "isProgress": true
-        })
-        this.loggerService.debug(this.loggerName, { message: 'logout', otherParams: [ctx.getState()] });
+        } )
+        this.loggerService.debug( this.loggerName, { message: 'logout', otherParams: [ ctx.getState() ] } );
     }
-    @Action(actions.UserLogoutSuccessAction)
-    logoutSuccess(ctx: StateContext<UserModel>, action: actions.UserLogoutSuccessAction) {
+    @Action( actions.UserLogoutSuccessAction )
+    logoutSuccess( ctx: StateContext<UserModel>, action: actions.UserLogoutSuccessAction ) {
         // ctx.setState(defaultState);
-        ctx.patchState({
+        ctx.patchState( {
             "isProgress": false,
             "isAnonymous": true,
             "email": '',
@@ -94,25 +94,25 @@ export class UserState {
             "error": '',
             "isError": false,
             "isLoggedIn": false
-        })
-        this.loggerService.debug(this.loggerName, { message: 'logoutSuccess', otherParams: [ctx.getState()] });
+        } )
+        this.loggerService.debug( this.loggerName, { message: 'logoutSuccess', otherParams: [ ctx.getState() ] } );
     }
-    @Action(actions.UserLogoutErrorAction)
-    logoutError(ctx: StateContext<UserModel>, action: actions.UserLogoutErrorAction) {
-        ctx.patchState({
+    @Action( actions.UserLogoutErrorAction )
+    logoutError( ctx: StateContext<UserModel>, action: actions.UserLogoutErrorAction ) {
+        ctx.patchState( {
             "isProgress": false,
             "isLoggedIn": false,
             "isAnonymous": true,
             "isError": true,
             "error": action.error
-        })
+        } )
     }
 
     /**
      * TODO: Implement correct isLoggedin selector
      */
     @Selector()
-    static isLoggedin(state: UserModel) {
+    static isLoggedin( state: UserModel ) {
         return state.isLoggedIn
     }
 }

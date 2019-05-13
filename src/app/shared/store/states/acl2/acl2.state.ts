@@ -367,7 +367,7 @@ export class Acl2State {
                 case NODE_TYPES.SERVICE:
                     parent = entity_management.services.service_get_parent( node.uid, state.entities.roles )
                     parent_treeNode = {
-                        name: parent.id,
+                        name: parent._id,
                         type: NODE_TYPES.ROLE,
                         uid: parent.uid
                     }

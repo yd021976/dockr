@@ -4,8 +4,8 @@ import { BackendServicesEntities, BackendServiceModel } from "./backend-services
  * Base role model
  */
 interface baseRoleModel {
-    uid?: string // UUID
-    id: string;
+    uid?: string // UUID for local storage
+    _id: string;
     name: string;
 }
 

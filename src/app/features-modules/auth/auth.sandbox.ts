@@ -32,7 +32,7 @@ export class AuthSandbox extends BaseSandboxService {
         this.loggerService.createLogger(this.loggerName);
     }
 
-    public Login(credentials: loginCredentials): Promise<boolean> {
+    public Login(credentials?: loginCredentials): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
             this.doLogin(credentials).then(() => resolve(true)).catch(() => resolve(false));
         });

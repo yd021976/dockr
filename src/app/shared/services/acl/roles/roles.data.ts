@@ -4,7 +4,7 @@ import { CRUD_OPERATIONS, ALLOWED_STATES } from "src/app/shared/models/acl/crud-
 var DATA: RoleModel[] =
     [
         {
-            id: 'role1',
+            _id: 'role1',
             name: 'admin',
             services:
                 [

@@ -18,11 +18,16 @@ export class RolesService {
         this.service = this.backendApiService.service( 'roles' );
     }
 
-    //TODO: Get data from server
+    /**
+     * Get all roles/ACL from server
+     * 
+     * @param params 
+     */
     public async find( params?: any ): Promise<RoleModel[]> {
-        return new Promise<RoleModel[]>( ( resolve, reject ) => {
-            resolve( DATA.default )
-        } );
+        // return new Promise<RoleModel[]>( ( resolve, reject ) => {
+        //     resolve( DATA.default )
+        // } );
+        return this.service.find().then( results => results.data )
     }
 
     /**
@@ -34,7 +39,7 @@ export class RolesService {
      */
     public async update( role: RoleModel, force_create: boolean = false ) {
         // First check the role object exists
-        return this.service.get( role.id )
+        return this.service.get( role._id )
             .then( () => {
                 return true
             } )
@@ -47,7 +52,7 @@ export class RolesService {
                     return this.service.create( role )
                 } else {
                     // If no create forcing, try to update
-                    return this.service.update( role.id, role )
+                    return this.service.update( role._id, role )
                 }
             } )
     }

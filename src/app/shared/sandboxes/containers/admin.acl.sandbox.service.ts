@@ -102,7 +102,7 @@ export class AdminAclSandboxService extends BaseSandboxService {
             const role_entity: RoleEntity = this.store.selectSnapshot( Acl2State.treenode_get_rootRoleEntity( node ) )
             const role_model: RoleModel = this.store.selectSnapshot( Acl2State.role_get_denormalizeEntity( role_entity ) )
 
-            this.rolesService.update( role_model )
+            this.rolesService.update( role_model, true )
                 .then( ( result ) => {
                     this.store.dispatch( new Acl_Field_Update_Allowed_Success( node.uid, node.checked ) )
                 } )
@@ -134,7 +134,7 @@ export class AdminAclSandboxService extends BaseSandboxService {
     roles_add_entity( roleName: string ) {
         const roleObject: RoleModel = {
             name: roleName,
-            id: roleName,
+            _id: roleName,
             services: []
         }
         this.store.dispatch( new Acl_Roles_Add_Entity_Success( roleObject ) )
