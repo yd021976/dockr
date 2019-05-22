@@ -37,7 +37,7 @@ export class RolesService {
      * @param role The role object to store
      * @param force_create Permit to create a new role if provided one doesn't exist
      */
-    public async update( role: RoleModel, force_create: boolean = false ) {
+    public async update( role: RoleModel, force_create: boolean = false ): Promise<any> {
         // First check the role object exists
         return this.service.get( role._id )
             .then( () => {

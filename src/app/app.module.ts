@@ -21,6 +21,9 @@ import { AppLoggerModule } from './shared/services/logger/app-logger/app-logger.
 import { AdminModule } from './features-modules/admin/admin.module';
 import { ServicesState } from './shared/store/states/services.state';
 import { Acl2State } from './shared/store/states/acl2/acl2.state';
+import { SnackBarComponent } from './shared/components/snackbar/snack-bar.component';
+import { MatSnackBarModule } from '@angular/material';
+import { AppErrorsState } from './shared/store/states/errors.state';
 
 /**
  * Factory used by this module token APP_INITIALIZER -> Auth user with local token if one exists and is valid 
@@ -34,6 +37,7 @@ export function authUser( appsandbox: AppSandboxService ) {
 @NgModule( {
   declarations: [
     AppComponent,
+    SnackBarComponent
   ],
   imports: [
     AuthModule,
@@ -43,12 +47,14 @@ export function authUser( appsandbox: AppSandboxService ) {
     ContainersModule,
     HomeModule,
     AppLoggerModule.forRoot(),
+    MatSnackBarModule,
     NgxsModule.forRoot( [
       ApplicationState,
       UserState,
       TemplatesState,
       Acl2State,
-      ServicesState
+      ServicesState,
+      AppErrorsState
     ] ),
     NgxPermissionsModule.forRoot(),
     SettingsModule,
@@ -64,6 +70,7 @@ export function authUser( appsandbox: AppSandboxService ) {
     }
   ],
   exports: [],
+  entryComponents: [ SnackBarComponent ],
   bootstrap: [ AppComponent ]
 } )
 export class AppModule { }

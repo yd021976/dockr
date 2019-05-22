@@ -8,7 +8,7 @@ import { AppLoggerModule } from '../../services/logger/app-logger/app-logger.mod
 import { ApplicationState } from '../../store/states/application.state';
 import { UserState } from '../../store/states/user.state';
 import { TemplatesState } from '../../store/states/templates.state';
-import { UserLoginSuccessAction } from '../../store/actions/user.actions';
+import { User_Action_Login_Success } from '../../store/actions/user.actions';
 
 describe('App-sandbox', () => {
     describe('#Unit-Tests', () => {
@@ -45,7 +45,7 @@ describe('App-sandbox', () => {
                 })
 
                 // Expect that sandbox dispatch the store action correctly
-                expect(store.dispatch).toHaveBeenCalledWith(new UserLoginSuccessAction(authResult))
+                expect(store.dispatch).toHaveBeenCalledWith(new User_Action_Login_Success(authResult))
             }))
 
         it('#2 Should update <isLoggedin$> Observable to true when user is loggin in', inject([AuthService, Store, AppSandboxService],

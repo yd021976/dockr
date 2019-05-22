@@ -26,7 +26,6 @@ export class FeathersjsBackendService extends BackendSocketioService {
   private feathers: feathers.Application = null;
   private currentCounter: number = 0; // For debug purpose ONLY ==> Copy of static "count" property
   static count: number = 0; // Class instances count
-  public authState$: BehaviorSubject<any>
 
   constructor(
     @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerService,

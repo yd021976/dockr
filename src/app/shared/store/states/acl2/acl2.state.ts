@@ -13,7 +13,7 @@ import { ServicesModel } from "src/app/shared/models/services.model";
 import { Acl_Load_All, Acl_Load_All_Success, Acl_Load_All_Error, Acl_Tree_Node_Select } from "../../actions/acl2/acl2.state.actions";
 import { Acl_Role_Remove_Entity_Success, Acl_Role_Add_Service_Success, Acl_Roles_Add_Entity_Success } from "../../actions/acl2/acl2.role.entity.actions";
 import { ServicesState } from "../services.state";
-import { Acl_Field_Update_Allowed_Success, Acl_Field_Update_Allowed } from "../../actions/acl2/acl2.field.entity.action";
+import { Acl_Field_Update_Allowed_Success, Acl_Field_Update_Allowed, Acl_Field_Update_Allowed_Error } from "../../actions/acl2/acl2.field.entity.action";
 import { Acl_Action_Update_Allowed_Success } from "../../actions/acl2/acl2.action.entity.actions";
 import { Acl_Services_Remove_Entity_Success, Acl_Services_Remove_Entity_Error } from "../../actions/acl2/acl2.service.entity.actions";
 import { NormalizrSchemas } from "./entities-management/normalizer";
@@ -30,7 +30,8 @@ import { NormalizrSchemas } from "./entities-management/normalizer";
             services: {},
             actions: {},
             fields: {}
-        }
+        },
+        previous_entities: null
     }
 } )
 export class Acl2State {
@@ -44,7 +45,6 @@ export class Acl2State {
 
     @Action( Acl_Load_All_Success )
     acl_load_all_success( ctx: StateContext<Acl2StateModel>, action: Acl_Load_All_Success ) {
-        // var normalized = normalize( action.roles, Acl2State.mainSchema )
         var normalized = Acl2State.normalizr_utils.normalize( action.roles, Acl2State.normalizr_utils.mainSchema )
 
         ctx.patchState( {
@@ -55,7 +55,7 @@ export class Acl2State {
                 roles: { ...normalized.entities[ 'roles' ] },
                 services: { ...normalized.entities[ 'services' ] },
                 actions: { ...normalized.entities[ 'crud_operations' ] },
-                fields: { ...normalized.entities[ 'fields' ], ...normalized.entities[ 'children' ] }
+                fields: { ...normalized.entities[ 'fields' ] }
             }
         } )
     }
@@ -132,29 +132,25 @@ export class Acl2State {
                 roles: { ...state.entities.roles },
                 services: { ...state.entities.services, ...normalizedEntities.entities[ 'services' ] },
                 actions: { ...state.entities.actions, ...normalizedEntities.entities[ 'crud_operations' ] },
-                fields: { ...state.entities.fields, ...normalizedEntities.entities[ 'fields' ], ...normalizedEntities.entities[ 'children' ] }
+                fields: { ...state.entities.fields, ...normalizedEntities.entities[ 'fields' ] }
             }
         } )
         state = ctx.getState()
     }
 
-
-    @Action( Acl_Field_Update_Allowed )
-    field_update_property_allowed( ctx: StateContext<Acl2StateModel>, action: Acl_Field_Update_Allowed_Success ) {
-        // ctx.patchState( { isLoading: true } )
-    }
     /**
-     * Update field "allowed" property and update parent fields and action entities
+     * 
      * @param ctx 
      * @param action 
      */
-    @Action( Acl_Field_Update_Allowed_Success )
-    field_update_property_allowed_success( ctx: StateContext<Acl2StateModel>, action: Acl_Field_Update_Allowed_Success ) {
-        // ctx.patchState( { isLoading: false } )
-        // return
+    @Action( Acl_Field_Update_Allowed )
+    field_update_property_allowed( ctx: StateContext<Acl2StateModel>, action: Acl_Field_Update_Allowed ) {
         const state: Acl2StateModel = ctx.getState()
         var field_entity: DataModelPropertyEntity = state.entities.fields[ action.entity_uid ]
         var parent_action_entity: CrudOperationModelEntity = null
+
+        // Save current state entities
+        let previous_entities = JSON.parse( JSON.stringify( state.entities ) )
 
         // Upate field entity
         field_entity.allowed = action.allowed
@@ -168,37 +164,53 @@ export class Acl2State {
         // Update allowed property for this field and all his descendants/parents allowed property
         entity_management.fields.field_update_allowed( action.entity_uid, action.allowed, state.entities.fields )
 
-        // Update action entity
-        const allowedFields = parent_action_entity.fields.filter( ( field_uid ) => {
-            return state.entities.fields[ field_uid ].allowed === ALLOWED_STATES.ALLOWED
-        } )
-        const indeterminateFields = parent_action_entity.fields.filter( ( field_uid ) => {
-            return state.entities.fields[ field_uid ].allowed === ALLOWED_STATES.INDETERMINATE
-        } )
-
-        // If all fields for the parent action are "allowed" => Action is "allowed"
-        if ( allowedFields.length == parent_action_entity.fields.length ) {
-            parent_action_entity.allowed = ALLOWED_STATES.ALLOWED
-        }
-        // No field allowed and no field indeterminate => Action is not allowed
-        else if ( allowedFields.length == 0 && indeterminateFields.length == 0 ) {
-            parent_action_entity.allowed = ALLOWED_STATES.FORBIDDEN
-        }
-        // allowed field state is indeterminate => Action is "intermediate"
-        else {
-            parent_action_entity.allowed = ALLOWED_STATES.INDETERMINATE
-        }
+        // Update action allowed state
+        entity_management.actions.action_update_allowed( parent_action_entity.uid, state.entities.actions, state.entities.fields )
 
         ctx.patchState( {
+            isLoading: true,
             entities: {
                 roles: { ...state.entities.roles },
                 services: { ...state.entities.services },
                 actions: { ...state.entities.actions, [ parent_action_entity.uid ]: parent_action_entity },
                 fields: { ...state.entities.fields, [ action.entity_uid ]: field_entity }
-            }
+            },
+            previous_entities: previous_entities
+        } )
+    }
+    /**
+     * Update field "allowed" property and update parent fields and action entities
+     * @param ctx 
+     * @param action 
+     */
+    @Action( Acl_Field_Update_Allowed_Success )
+    field_update_property_allowed_success( ctx: StateContext<Acl2StateModel>, action: Acl_Field_Update_Allowed_Success ) {
+        ctx.patchState( { isLoading: false } )
+    }
+
+    /**
+     * 
+     * @param ctx 
+     * @param action 
+     */
+    @Action( Acl_Field_Update_Allowed_Error )
+    field_update_property_allowed_error( ctx: StateContext<Acl2StateModel>, action: Acl_Field_Update_Allowed_Error ) {
+        let state = ctx.getState()
+        ctx.patchState( {
+            isLoading: false,
+            isError: true,
+            error: action.error,
+            entities: state.previous_entities,
+            previous_entities: null
         } )
     }
 
+
+    /**
+     * 
+     * @param ctx 
+     * @param action 
+     */
     @Action( Acl_Action_Update_Allowed_Success )
     action_update_property_allowed_success( ctx: StateContext<Acl2StateModel>, action: Acl_Action_Update_Allowed_Success ) {
         const state: Acl2StateModel = ctx.getState()

@@ -16,4 +16,5 @@ export class Acl2StateModel {
     error: string
     selectedNode:FlatTreeNode
     entities: Acl2StateEntities
+    previous_entities:Acl2StateEntities // Backup entities before update : Usefull to revert entities when error occured
 }

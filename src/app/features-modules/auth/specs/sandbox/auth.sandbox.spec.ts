@@ -7,7 +7,7 @@ import { UserModel } from 'src/app/shared/models/user.model';
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { AppLoggerModule } from 'src/app/shared/services/logger/app-logger/app-logger.module';
 import { NotificationBaseService } from 'src/app/shared/services/notifications/notifications-base.service';
-import { UserLoginSuccessAction, UserLogoutSuccessAction } from 'src/app/shared/store/actions/user.actions';
+import { User_Action_Login_Success, User_Action_Logout_Success } from 'src/app/shared/store/actions/user.actions';
 import { ApplicationState } from 'src/app/shared/store/states/application.state';
 import { TemplatesState } from 'src/app/shared/store/states/templates.state';
 import { UserState } from 'src/app/shared/store/states/user.state';
@@ -39,7 +39,7 @@ describe('Auth.sandbox', () => {
     it('#1 Should logout user and dispatch store action', inject([AuthSandbox, Store], async (authSandbox: AuthSandbox, store: Store) => {
         spyOn(store, "dispatch").and.callThrough()
         await authSandbox.logout().then((result) => { })
-        expect(store.dispatch).toHaveBeenCalledWith(new UserLogoutSuccessAction())
+        expect(store.dispatch).toHaveBeenCalledWith(new User_Action_Logout_Success())
     }))
     it('#2 Should login user and dispatch store action', inject([AuthSandbox, Store], async (authSandbox: AuthSandbox, store: Store) => {
         let authResult: boolean
@@ -64,7 +64,7 @@ describe('Auth.sandbox', () => {
         expect(authResult).toEqual(true)
         
         let t = (store.dispatch as jasmine.Spy).calls.mostRecent().args[0]
-        expect(t instanceof UserLoginSuccessAction).toBeTruthy()
+        expect(t instanceof User_Action_Login_Success).toBeTruthy()
 
         // Clean subscriptions
         s.forEach((sub) => { sub.unsubscribe() })

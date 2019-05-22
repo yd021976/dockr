@@ -8,11 +8,17 @@ export enum errorType {
 export class AppError {
     public type: errorType;
     public message: string;
+    public name: string
     public source: any;
 
-    constructor(message: string, type: errorType = errorType.unknown, source: any = null) {
+    constructor( message: string, type: errorType = errorType.unknown, name: string, source: any = null ) {
         this.type = type;
         this.message = message;
         this.source = source;
+        this.type = type
     }
+}
+
+export class ApplicationErrorModel {
+    errors: AppError[]
 }

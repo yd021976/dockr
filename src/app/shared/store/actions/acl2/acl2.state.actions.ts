@@ -11,7 +11,7 @@ export class Acl_Load_All_Success {
 }
 export class Acl_Load_All_Error {
     static readonly type = '[acl] load all error';
-    constructor(public error: string) { }
+    constructor(public error: Error) { }
 }
 
 

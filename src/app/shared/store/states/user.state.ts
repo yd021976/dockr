@@ -6,7 +6,7 @@ import { AppLoggerServiceToken } from '../../services/logger/app-logger/app-logg
 import { AppLoggerService } from '../../services/logger/app-logger/service/app-logger.service';
 import { stat } from 'fs';
 
-const defaultState: UserModel = {
+export const default_state_user: UserModel = {
     "nickname": '',
     "email": '',
     "isLoggedIn": false,
@@ -20,7 +20,7 @@ const defaultState: UserModel = {
 
 @State<UserModel>( {
     name: 'user',
-    defaults: defaultState
+    defaults: default_state_user
 } )
 export class UserState {
     private readonly loggerName: string = "UserState";
@@ -28,10 +28,15 @@ export class UserState {
     constructor( @Inject( AppLoggerServiceToken ) protected loggerService: AppLoggerService ) {
         this.loggerService.createLogger( this.loggerName );
     }
-    @Action( actions.UserLoginAction )
+
+    /**
+     * 
+     * @param ctx 
+     */
+    @Action( actions.User_Action_Login )
     login( ctx: StateContext<UserModel> ) {
         // When login action starts, user must be logged out
-        return ctx.dispatch( new actions.UserLogoutSuccessAction() ).subscribe( () => {
+        return ctx.dispatch( new actions.User_Action_Logout_Success() ).subscribe( () => {
             ctx.patchState( {
                 "isProgress": true,
                 "isLoggedIn": false,
@@ -41,8 +46,8 @@ export class UserState {
         } )
     }
 
-    @Action( actions.UserLoginSuccessAction )
-    loginSuccess( ctx: StateContext<UserModel>, action: actions.UserLoginSuccessAction ) {
+    @Action( actions.User_Action_Login_Success )
+    loginSuccess( ctx: StateContext<UserModel>, action: actions.User_Action_Login_Success ) {
         let c = ctx.getState();
         let isAnonymous: boolean = action.user == null ? true : false
         let nickname: string = action.user == null ? '' : action.user[ 'nickname' ] ? action.user[ 'nickname' ] : action.user[ 'email' ]
@@ -62,8 +67,8 @@ export class UserState {
 
     }
 
-    @Action( actions.UserLoginErrorAction )
-    loginError( ctx: StateContext<UserModel>, action: actions.UserLoginErrorAction ) {
+    @Action( actions.User_Action_Login_Error )
+    loginError( ctx: StateContext<UserModel>, action: actions.User_Action_Login_Error ) {
         ctx.patchState( {
             "isProgress": false,
             "isLoggedIn": false,
@@ -74,15 +79,15 @@ export class UserState {
         this.loggerService.debug( this.loggerName, { message: 'loginError', otherParams: [ ctx.getState() ] } );
     }
 
-    @Action( actions.UserLogoutAction )
-    logout( ctx: StateContext<UserModel>, action: actions.UserLogoutAction ) {
+    @Action( actions.User_Action_Logout )
+    logout( ctx: StateContext<UserModel>, action: actions.User_Action_Logout ) {
         ctx.patchState( {
             "isProgress": true
         } )
         this.loggerService.debug( this.loggerName, { message: 'logout', otherParams: [ ctx.getState() ] } );
     }
-    @Action( actions.UserLogoutSuccessAction )
-    logoutSuccess( ctx: StateContext<UserModel>, action: actions.UserLogoutSuccessAction ) {
+    @Action( actions.User_Action_Logout_Success )
+    logoutSuccess( ctx: StateContext<UserModel>, action: actions.User_Action_Logout_Success ) {
         // ctx.setState(defaultState);
         ctx.patchState( {
             "isProgress": false,
@@ -97,8 +102,8 @@ export class UserState {
         } )
         this.loggerService.debug( this.loggerName, { message: 'logoutSuccess', otherParams: [ ctx.getState() ] } );
     }
-    @Action( actions.UserLogoutErrorAction )
-    logoutError( ctx: StateContext<UserModel>, action: actions.UserLogoutErrorAction ) {
+    @Action( actions.User_Action_Logout_Error )
+    logoutError( ctx: StateContext<UserModel>, action: actions.User_Action_Logout_Error ) {
         ctx.patchState( {
             "isProgress": false,
             "isLoggedIn": false,

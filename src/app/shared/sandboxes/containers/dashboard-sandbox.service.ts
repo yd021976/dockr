@@ -5,7 +5,7 @@ import { NotificationBaseService } from '../../services/notifications/notificati
 import { BaseSandboxService } from '../base-sandbox.service';
 import { TemplatesService } from '../../services/templates/templates.service';
 import { TemplatesLoadAction, TemplatesLoadSuccessAction, TemplatesLoadErrorAction, TemplateLoadReset } from '../../store/actions/templates.actions';
-import { UserLoginErrorAction } from '../../store/actions/user.actions';
+import { User_Action_Login_Error } from '../../store/actions/user.actions';
 import { FeathersjsBackendService } from '../../services/backend/socketio/backend-feathers.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { AppError, errorType } from '../../models/app-error.model';
@@ -41,7 +41,7 @@ export class DashboardSandbox extends BaseSandboxService {
                 this.loggerService.debug( this.loggerName, { message: 'getTemplates()', otherParams: [ 'ERROR', error ] } );
                 switch ( error.name ) {
                     case "notAuthenticated":
-                        this.store.dispatch( [ new TemplateLoadReset(), new UserLoginErrorAction( error.message ) ] );
+                        this.store.dispatch( [ new TemplateLoadReset(), new User_Action_Login_Error( error.message ) ] );
                         break;
                     default:
                         this.store.dispatch( new TemplatesLoadErrorAction( error.message ) );
