@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 import { AppRoute } from '../../shared/models/app-route.model';
 import { UsersContainer } from './containers/users/users.container';
 import { AclContainer } from './containers/acl/acl.container';
-import { MatTreeModule } from '@angular/material';
+import { MatTreeModule } from '@angular/material/tree';
 
 const routes: AppRoute[] = [
   {

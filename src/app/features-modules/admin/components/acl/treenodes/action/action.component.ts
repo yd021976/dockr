@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { AclTreeNode } from 'src/app/shared/models/acl/treenode.model';
-import { MatCheckboxChange } from '@angular/material';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import { ALLOWED_STATES } from 'src/app/shared/models/acl/crud-operations.model';
 
 @Component( {

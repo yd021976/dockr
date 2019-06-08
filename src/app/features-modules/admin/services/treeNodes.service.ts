@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { FlatTreeControl } from "@angular/cdk/tree";
 import { Observable, of as observableOf, Subscription } from 'rxjs';
-import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material";
+import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree";
 
 export class FlatTreeNode<T=any> {
     level: number

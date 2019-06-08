@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatExpansionModule, MatBadgeModule, MatIconModule } from '@angular/material';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
 
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './containers/home/home.component';

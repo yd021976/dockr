@@ -1,5 +1,5 @@
 import { Component, Inject, ViewChild, ElementRef } from "@angular/core";
-import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { BackendServiceModel } from "src/app/shared/models/acl/backend-services.model";
 import { Observable } from "rxjs";
 

@@ -1,6 +1,8 @@
 import { TestBed, ComponentFixture, fakeAsync, async, tick } from "@angular/core/testing";
 import { LoginComponent } from "../../components/login/login.component";
-import { MatInputModule, MatFormFieldModule, MatButtonModule } from "@angular/material";
+import { MatButtonModule } from "@angular/material/button";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
 import { FormsModule } from "@angular/forms";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { NO_ERRORS_SCHEMA } from "@angular/core";

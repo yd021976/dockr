@@ -1,6 +1,7 @@
 import { BaseTreeControl } from '@angular/cdk/tree';
 import { Component, ViewChild } from '@angular/core';
-import { MatTreeFlatDataSource, MatDialogRef, MatDialog } from '@angular/material';
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
+import { MatTreeFlatDataSource } from '@angular/material/tree';
 import { OnInit } from '@angular/core';
 
 import { AclTreeNode } from '../../../../shared/models/acl/treenode.model';

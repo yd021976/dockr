@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { AdminAclSandboxService } from 'src/app/shared/sandboxes/containers/admin.acl.sandbox.service';
 import { RoleModel } from 'src/app/shared/models/acl/roles.model';
 import { Observable } from 'rxjs';
-import { MatTreeNestedDataSource } from '@angular/material';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { AclTreeNode } from '../../../../shared/models/acl/treenode.model';
 

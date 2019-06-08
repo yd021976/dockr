@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AppRoute } from 'src/app/shared/models/app-route.model';
-import { MatIconRegistry } from '@angular/material';
+import { MatIconRegistry } from '@angular/material/icon';
 
 @Component({
   selector: 'app-menu-panel',

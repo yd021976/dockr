@@ -22,7 +22,7 @@ import { AdminModule } from './features-modules/admin/admin.module';
 import { ServicesState } from './shared/store/states/services.state';
 import { Acl2State } from './shared/store/states/acl2/acl2.state';
 import { SnackBarComponent } from './shared/components/snackbar/snack-bar.component';
-import { MatSnackBarModule } from '@angular/material';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppErrorsState } from './shared/store/states/errors.state';
 
 /**

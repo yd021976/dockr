@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, NO_ERRORS_SCHEMA, DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { NavBarComponent } from './nav-bar.component';
-import { MatMenuModule } from '@angular/material';
+import { MatMenuModule } from '@angular/material/menu';
 import { ThemeItem } from '../../models/theme-items.model';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 

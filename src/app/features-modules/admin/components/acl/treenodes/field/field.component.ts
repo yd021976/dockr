@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { MAT_CHECKBOX_CLICK_ACTION } from '@angular/material';
+import { MAT_CHECKBOX_CLICK_ACTION } from '@angular/material/checkbox';
 import { AclTreeNode } from 'src/app/shared/models/acl/treenode.model';
 import { ALLOWED_STATES } from 'src/app/shared/models/acl/crud-operations.model';
 

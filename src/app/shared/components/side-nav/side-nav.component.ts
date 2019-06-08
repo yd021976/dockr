@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ViewChild } from '@angular/core';
 
 // App Types
 import { AppRoute } from '../../models/app-route.model';
-import { MatAccordion } from '@angular/material';
+import { MatAccordion } from '@angular/material/expansion';
 
 
 @Component({

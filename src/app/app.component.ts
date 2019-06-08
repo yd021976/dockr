@@ -1,6 +1,6 @@
 import { Component } from '@angular/core'
 import { AppSandboxService } from './shared/sandboxes/app/app-sandbox.service';
-import { MatSnackBarRef, MatSnackBar } from '@angular/material';
+import { MatSnackBarRef, MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarComponent } from './shared/components/snackbar/snack-bar.component';
 import { Observable, Subscription } from 'rxjs';
 
