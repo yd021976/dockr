@@ -7,7 +7,7 @@ import { AppLoggerAdapter } from './logger/app-logger-adapter';
 import { Level } from './service/app-logger-levels.class';
 
 
-function loggerFactory(config: AppLoggerServiceConfig): AppLoggerService {
+export function loggerFactory(config: AppLoggerServiceConfig): AppLoggerService {
   var instance: AppLoggerService = null;
   instance = new AppLoggerService(config);
   return instance;
