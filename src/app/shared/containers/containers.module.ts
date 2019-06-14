@@ -7,7 +7,7 @@ import { ComponentsModule } from '../components';
 import { LayoutContainer } from '../containers/layout/layout.container';
 import { Layout2Container } from '../containers/layout2/layout2.container';
 import { LayoutContainerSandboxService } from '../sandboxes/containers/layout-container-sandbox.service';
-import { FeathersjsBackendService } from '../services/backend/socketio/backend-feathers.service';
+import { FeathersjsBackendService } from '../services/backend_API_Endpoints/socketio/backend-feathers.service';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 export const components = [

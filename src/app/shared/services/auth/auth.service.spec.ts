@@ -1,6 +1,6 @@
 import { AuthService } from './auth.service';
 import { fakeAsync, async, tick, flushMicrotasks } from '@angular/core/testing';
-import { FeathersjsBackendService } from '../backend/socketio/backend-feathers.service';
+import { FeathersjsBackendService } from '../backend_API_Endpoints/socketio/backend-feathers.service';
 import { mock, instance, when, deepEqual, reset, verify, resetCalls } from 'ts-mockito';
 import { NotificationBaseService } from '../notifications/notifications-base.service';
 import { AppLoggerService } from '../logger/app-logger/service/app-logger.service';

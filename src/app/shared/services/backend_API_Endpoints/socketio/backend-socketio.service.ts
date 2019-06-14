@@ -17,11 +17,11 @@ export abstract class BackendSocketioService extends BackendBaseService {
    * Constructor
    * @param config Should be provided by inherited class constructor
    */
-  constructor(public loggerService: AppLoggerService, config?: BackendConfigClass) {
-    super(loggerService, config);
+  constructor( public loggerService: AppLoggerService, config?: BackendConfigClass ) {
+    super( loggerService, config );
     // Init connection state
-    this.connectionState = new BackendServiceConnectionState({ isConnected: false, attemptNumber: 0, connectionError: '', user: null });
-    this.connectionState$ = new BehaviorSubject<BackendServiceConnectionState>(this.connectionState);
+    this.connectionState = new BackendServiceConnectionState( { isConnected: false, attemptNumber: 0, connectionError: '', user: null } );
+    this.connectionState$ = new BehaviorSubject<BackendServiceConnectionState>( this.connectionState );
     this.initSocketClient();
   }
 
@@ -29,13 +29,13 @@ export abstract class BackendSocketioService extends BackendBaseService {
    * Get an instance to a service provided by the backend
    * @param name Service name
    */
-  abstract service(name: string): any
+  abstract service( name: string ): any
 
   /**
    * Authenticate a user
    * @param credentials Credentials required by implemented backend
    */
-  abstract authenticate(credentials?: any): Promise<any>
+  abstract authenticate( credentials?: any ): Promise<any>
 
   /**
    * Logout a user
@@ -51,7 +51,7 @@ export abstract class BackendSocketioService extends BackendBaseService {
    * Init Socket IO
    */
   private initSocketClient(): void {
-    this.socketio = connect(this.config.apiEndPoint);
+    this.socketio = connect( this.config.apiEndPoint );
     this.initSocketClientHandlers();
   }
 
@@ -59,22 +59,22 @@ export abstract class BackendSocketioService extends BackendBaseService {
    * Register socket IO events to update connection state
    */
   private initSocketClientHandlers(): void {
-  this.socketio.on('connect_error', (error) => {
-    this.updateConnectionState({ isConnected: false, connectionError: error, changeReason: stateChangeReason.socketIO_Connection_Error });
-  });
+    this.socketio.on( 'connect_error', ( error ) => {
+      this.updateConnectionState( { isConnected: false, connectionError: error, changeReason: stateChangeReason.socketIO_Connection_Error } );
+    } );
 
-  this.socketio.on('connect_timeout', (error) => {
-    this.updateConnectionState({ isConnected: false, connectionError: error, changeReason: stateChangeReason.socketIO_connection_timeout });
-  });
+    this.socketio.on( 'connect_timeout', ( error ) => {
+      this.updateConnectionState( { isConnected: false, connectionError: error, changeReason: stateChangeReason.socketIO_connection_timeout } );
+    } );
 
-  this.socketio.on('reconnect_attempt', (attempt) => {
-    this.updateConnectionState({ attemptNumber: attempt, changeReason: stateChangeReason.socketIO_Reconnect_Attempt });
-  })
+    this.socketio.on( 'reconnect_attempt', ( attempt ) => {
+      this.updateConnectionState( { attemptNumber: attempt, changeReason: stateChangeReason.socketIO_Reconnect_Attempt } );
+    } )
 
-    this.socketio.on('connect', (status) => {
-    this.updateConnectionState({ isConnected: true, connectionError: '', attemptNumber: 0, changeReason: stateChangeReason.socketIO_Connected });
-  });
-}
+    this.socketio.on( 'connect', ( status ) => {
+      this.updateConnectionState( { isConnected: true, connectionError: '', attemptNumber: 0, changeReason: stateChangeReason.socketIO_Connected } );
+    } );
+  }
 
 
   /**
@@ -82,8 +82,8 @@ export abstract class BackendSocketioService extends BackendBaseService {
    * 
    * @param newState : New state with ONLY new state values to update
    */
-  protected updateConnectionState(newState: BackendServiceConnectionState) {
-  Object.assign(this.connectionState, newState);
-  this.connectionState$.next(this.connectionState);
-}
+  protected updateConnectionState( newState: BackendServiceConnectionState ) {
+    Object.assign( this.connectionState, newState );
+    this.connectionState$.next( this.connectionState );
+  }
 }

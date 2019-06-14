@@ -1,7 +1,7 @@
 import { TemplatesService } from './templates.service';
 import { AppLoggerService } from '../logger/app-logger/service/app-logger.service';
 import { mock, instance, when, deepEqual, reset, verify, resetCalls } from 'ts-mockito';
-import { FeathersjsBackendService } from '../backend/socketio/backend-feathers.service';
+import { FeathersjsBackendService } from '../backend_API_Endpoints/socketio/backend-feathers.service';
 import { fakeAsync, tick } from '@angular/core/testing';
 import feathers, { Service, ServiceMethods } from '@feathersjs/feathers';
 import { AppError } from '../../models/app-error.model';

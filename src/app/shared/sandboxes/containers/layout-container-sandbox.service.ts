@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Store, Select } from '@ngxs/store';
 
 import { ApplicationState } from '../../store/states/application.state';
-import { FeathersjsBackendService } from '../../services/backend/socketio/backend-feathers.service';
+import { FeathersjsBackendService } from '../../services/backend_API_Endpoints/socketio/backend-feathers.service';
 import { NotificationBaseService } from '../../services/notifications/notifications-base.service';
 import { BaseSandboxService } from '../base-sandbox.service';
 import { UserModel } from '../../models/user.model';

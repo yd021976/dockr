@@ -1,28 +1,44 @@
-<div class="contents" fxLayout="row" fxFlex="1 1 auto">
-    <div fxFlex>
-        <app-admin-acl #AclTree [nodeTemplateRenderer]="node" [flatDataSource]="datasource" [treecontrol]="treecontroller" [colModel]="colModel"
-                       (nodeSelected)="onNodeSelected($event)">
-        </app-admin-acl>
-        <!-- How to render tree nodes -->
-        <ng-template #node let-node>
-            <ng-container [ngSwitch]="node.type">
-                <app-admin-acl-tree-node-role *ngSwitchCase="node_types.ROLE" [node]="node"></app-admin-acl-tree-node-role>
-                <app-admin-acl-tree-node-service *ngSwitchCase="node_types.SERVICE" [node]="node"></app-admin-acl-tree-node-service>
-                <app-admin-acl-tree-node-action *ngSwitchCase="node_types.CRUDOPERATION" [node]="node" (checkChange)="onActionCheckChange($event)">
-                </app-admin-acl-tree-node-action>
-                <app-admin-acl-tree-node-field *ngSwitchCase="node_types.FIELDACCESS" [node]="node" (fieldCheckChange)="onFieldCheckChange($event)">
-                </app-admin-acl-tree-node-field>
-            </ng-container>
-        </ng-template>
+<div class="main_layout" fxLayout="column" fxFlex="1 1 auto">
+    <div class="toolbar" fxFlex>
+        <button *ngIf="!lockResource" mat-button color="primary" (click)="lock($event)">
+            <div>
+                <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-unlock"></mat-icon>
+                <div class="button-label">Lock to modify</div>
+            </div>
+        </button>
+        <button *ngIf="lockResource" mat-button color="accent" (click)="unlock($event)">
+            <div>
+                <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-lock"></mat-icon>
+                <div class="button-label">Unlock screen</div>
+            </div>
+        </button>
     </div>
+    <div class="contents" fxFlex fxLayout="row" fxFlex="1 1 auto">
+        <div fxFlex>
+            <app-admin-acl #AclTree [nodeTemplateRenderer]="node" [flatDataSource]="datasource" [treecontrol]="treecontroller" [colModel]="colModel"
+                           (nodeSelected)="onNodeSelected($event)">
+            </app-admin-acl>
+            <!-- How to render tree nodes -->
+            <ng-template #node let-node>
+                <ng-container [ngSwitch]="node.type">
+                    <app-admin-acl-tree-node-role *ngSwitchCase="node_types.ROLE" [node]="node"></app-admin-acl-tree-node-role>
+                    <app-admin-acl-tree-node-service *ngSwitchCase="node_types.SERVICE" [node]="node"></app-admin-acl-tree-node-service>
+                    <app-admin-acl-tree-node-action *ngSwitchCase="node_types.CRUDOPERATION" [node]="node" (checkChange)="onActionCheckChange($event)">
+                    </app-admin-acl-tree-node-action>
+                    <app-admin-acl-tree-node-field *ngSwitchCase="node_types.FIELDACCESS" [node]="node" (fieldCheckChange)="onFieldCheckChange($event)">
+                    </app-admin-acl-tree-node-field>
+                </ng-container>
+            </ng-template>
+        </div>
 
-    <!-- Node actions -->
-    <div fxFlex="200px">
-        <app-admin-acl-node-actions [node]="selectedNode$ | async" [availableServices]="availableRoleService$ | async" (addRole)="add_role($event)"
-                                    (removeRole)="remove_role($event)" (addService)="add_service($event)" (removeService)="remove_service($event)">
-        </app-admin-acl-node-actions>
-    </div>
-    <div fxFlex="1 0 auto">
-        <!--Fake div to fill empty spaces after 'actions'-->
+        <!-- Node actions -->
+        <div fxFlex="200px">
+            <app-admin-acl-node-actions [node]="selectedNode$ | async" [availableServices]="availableRoleService$ | async" (addRole)="add_role($event)"
+                                        (removeRole)="remove_role($event)" (addService)="add_service($event)" (removeService)="remove_service($event)">
+            </app-admin-acl-node-actions>
+        </div>
+        <div fxFlex="1 0 auto">
+            <!--Fake div to fill empty spaces after 'actions'-->
+        </div>
     </div>
 </div>

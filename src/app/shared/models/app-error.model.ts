@@ -11,7 +11,7 @@ export class AppError {
     public name: string
     public source: any;
 
-    constructor( message: string, type: errorType = errorType.unknown, name: string, source: any = null ) {
+    constructor( message: string, type: errorType = errorType.unknown, name: string = '', source: any = null ) {
         this.type = type;
         this.message = message;
         this.source = source;

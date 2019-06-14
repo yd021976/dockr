@@ -49,15 +49,20 @@ export class FeathersjsBackendService extends BackendSocketioService {
         storage: window.localStorage
       } ) );
 
-    this.feathers.on( 'authenticated', ( event ) => {
-      this.loggerService.debug( this.loggerName, { message: 'Authenticated event', otherParams: [ event ] } );
-    } );
-    this.feathers.on( 'logout', ( event ) => {
-      this.loggerService.debug( this.loggerName, { message: 'Logout event', otherParams: [ event ] } );
-    } );
+
+    /**
+     * Event when user logs out
+     */
+    this.feathers.service( 'authentication' ).on( 'logout-user', ( data ) => {
+      this.updateConnectionState( { attemptNumber: 0, changeReason: stateChangeReason.Feathers_Token_Expired } )
+      this.feathers.set( 'user', null )
+    } )
 
     this.feathers.on( 'reauthentication-error', ( event ) => {
-      this.loggerService.debug( this.loggerName, { message: 'reauthentication-error', otherParams: [ event ] } );
+      this.loggerService.debug( this.loggerName, {
+        message: 'reauthentication-error', otherParams: [ event ]
+      } );
+
 
       if ( event[ 'data' ] && event[ 'data' ][ 'name' ] == 'TokenExpiredError' ) {
         // IMPORTANT: We don't clear "user" property here. We need to keep track of last loggedin user, even after auth error or deconnexion

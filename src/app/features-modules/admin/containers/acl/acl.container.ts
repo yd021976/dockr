@@ -22,7 +22,7 @@ import { AclComponent } from '../../components/acl/acl.component';
   styleUrls: [ './acl.container.scss' ]
 } )
 export class AclContainer implements OnInit {
-  @ViewChild( 'AclTree' ) treeComponent: AclComponent
+  @ViewChild( 'AclTree', { static: true } ) treeComponent: AclComponent
 
   public treecontroller: BaseTreeControl<FlatTreeNode>
   public datasource: MatTreeFlatDataSource<AclTreeNode, FlatTreeNode>
@@ -30,6 +30,7 @@ export class AclContainer implements OnInit {
   public node_types = NODE_TYPES
   public selectedNode$: Observable<FlatTreeNode>
   public availableRoleService$: Observable<any>
+  public lockResource: boolean = false // is resource locked
 
   private dialog_AddRole: MatDialogRef<AddRoleDialogComponent>
   private dialog_AddService: MatDialogRef<AddServiceDialogComponent>
@@ -88,7 +89,7 @@ export class AclContainer implements OnInit {
   ngOnInit() {
     this.sandbox.init()
   }
-  
+
   add_role( node: FlatTreeNode ) {
     if ( !this.dialog_AddRole ) {
       this.dialog_AddRole = this.dialogService.open( AddRoleDialogComponent, { disableClose: true } )
@@ -115,7 +116,7 @@ export class AclContainer implements OnInit {
       this.dialog_AddService.afterClosed().subscribe( ( data: AddServiceDialogComponent_dialogResult ) => {
         if ( !data.cancelled && data.result != null ) {
 
-          this.sandbox.role_add_service( node.data.uid, JSON.parse(JSON.stringify(data.result)) ) // Ensure we create a new instance of the service model
+          this.sandbox.role_add_service( node.data.uid, JSON.parse( JSON.stringify( data.result ) ) ) // Ensure we create a new instance of the service model
           this.treeComponent.node_ExpandNode( node )
         }
         this.dialog_AddService = null
@@ -135,5 +136,23 @@ export class AclContainer implements OnInit {
   onNodeSelected( node: FlatTreeNode ) {
     // update state with selected node
     this.sandbox.treenodes_update_select_node( node )
+  }
+
+  lock( event ) {
+    this.sandbox.lockResource( "acl" )
+      .then( locked => {
+        this.lockResource = true
+      } )
+      .catch( err => {
+      } )
+  }
+  unlock( event ) {
+    this.sandbox.releaseResource( "acl" )
+      .then( ( unlocked ) => {
+        this.lockResource = !this.lockResource
+      } )
+      .catch( err => {
+
+      } )
   }
 }

@@ -1,7 +1,7 @@
 import * as feathers from '@feathersjs/feathers';
 import { Injectable, Inject } from "@angular/core";
 
-import { FeathersjsBackendService } from "../../../shared/services/backend/socketio/backend-feathers.service";
+import { FeathersjsBackendService } from "../backend_API_Endpoints/socketio/backend-feathers.service";
 import { AppError, errorType } from '../../models/app-error.model';
 import { AppLoggerService } from '../logger/app-logger/service/app-logger.service';
 import { AppLoggerServiceToken } from '../logger/app-logger/app-logger-token';

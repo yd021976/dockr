@@ -9,7 +9,7 @@ import { AclZoneElementComponent } from '../acl-zone-element/acl-zone-element.co
 export class AclZoneComponent implements OnInit, AfterViewInit {
   @Input('authorizeCheckFunction') checkFunction:Function
   @ContentChildren(AclZoneElementComponent) zones: QueryList<AclZoneElementComponent>
-  @ViewChild('blank') defaultZone: TemplateRef<any>
+  @ViewChild('blank', { static: true }) defaultZone: TemplateRef<any>
   zone: TemplateRef<any>
   private vc: ViewContainerRef
 

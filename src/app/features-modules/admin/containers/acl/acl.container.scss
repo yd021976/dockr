@@ -1,8 +1,16 @@
+@import '../../components/acl/node-actions/common/button.scss';
+@include action-buttons;
+
+.main_layout {
+    display: inline-block;
+}
+
 .contents {
-    position: absolute;
+    // position: absolute;
     height: 100%;
     width: 100%;
 }
-.toolbar {
-    margin-bottom: 8px;
+
+button {
+    padding-left: 0;
 }

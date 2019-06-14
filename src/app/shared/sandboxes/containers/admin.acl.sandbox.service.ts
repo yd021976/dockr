@@ -19,6 +19,7 @@ import { Acl_Field_Update_Allowed_Success, Acl_Field_Update_Allowed, Acl_Field_U
 import { Acl_Action_Update_Allowed_Success, Acl_Action_Update_Allowed } from "../../store/actions/acl2/acl2.action.entity.actions";
 import { Acl_Services_Remove_Entity_Success } from "../../store/actions/acl2/acl2.service.entity.actions";
 import { Application_Event_Error } from "../../store/actions/application.actions";
+import { ResourcesLocksService } from "../../services/resource_locks/resources.locks.service";
 
 
 
@@ -33,7 +34,9 @@ export class AdminAclSandboxService extends BaseSandboxService {
         store: Store,
         @Inject( AppLoggerServiceToken ) public logger: AppLoggerService,
         private rolesService: RolesService,
-        private backendServices: BackendServicesService ) {
+        private backendServices: BackendServicesService,
+        private resourcesLocksService: ResourcesLocksService ) {
+
         super( notificationService, store, logger );
         this.acltreenodes$ = this.store.select( Acl2State.treenode_getData() ) // ACL Observable
         this.currentSelectedNode$ = this.store.select( Acl2State.treenodes_get_currentSelectedNode )
@@ -61,6 +64,38 @@ export class AdminAclSandboxService extends BaseSandboxService {
                 this.store.dispatch( new Application_Event_Error( e ) )
             } )
     }
+
+    /**
+     * Lock a resource for updates
+     * 
+     * @param resource_name 
+     */
+    lockResource( resource_name: string ): Promise<any> {
+        let lock_result: any = null
+
+        return this.resourcesLocksService.lock( resource_name )
+            .then( locked => {
+                return locked
+            } )
+            .catch( err => {
+                if ( err.name != 'lockAlreadyAcquired' )
+                    this.store.dispatch( new Application_Event_Error( err ) )
+                else
+                    return err.data[ 'lockInfos' ] || null
+            } )
+
+    }
+    releaseResource( resource_name: string ): Promise<any> {
+        return this.resourcesLocksService.release( resource_name )
+            .then( released => {
+                return released
+            } )
+            .catch( ( err ) => {
+                this.store.dispatch( new Application_Event_Error( err ) )
+            } )
+
+    }
+
     /********************************************************************************************************
      * 
      *                                      Store selectors

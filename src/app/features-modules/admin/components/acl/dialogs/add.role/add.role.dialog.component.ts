@@ -13,7 +13,7 @@ export type dialogResult = {
 })
 
 export class AddRoleDialogComponent {
-    @ViewChild('submitdialog', { read: ElementRef }) submitdialog: ElementRef
+    @ViewChild('submitdialog', { read: ElementRef, static: true }) submitdialog: ElementRef
 
     public dialogData: dialogResult = { cancelled: false, result: '' }
 

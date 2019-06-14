@@ -40,6 +40,7 @@ import { FieldActionComponent } from './components/acl/node-actions/node-types/f
 import { NodeActionsComponent } from './components/acl/node-actions/node-actions.component';
 import { AddRoleDialogComponent } from './components/acl/dialogs/add.role/add.role.dialog.component';
 import { AddServiceDialogComponent } from './components/acl/dialogs/add.service/add.service.dialog.component';
+import { ResourcesLocksService } from 'src/app/shared/services/resource_locks/resources.locks.service';
 
 const components = [
   AclContainer, UsersContainer, UsersComponent, AclComponent, ActionComponent, FieldComponent, RoleComponent, ServiceComponent,
@@ -72,6 +73,6 @@ const components = [
   ],
   declarations: components,
   entryComponents: [AddRoleDialogComponent, AddServiceDialogComponent],
-  providers: [AdminAclSandboxService, TreeNodesService]
+  providers: [AdminAclSandboxService, TreeNodesService, ResourcesLocksService]
 })
 export class AdminModule { }

@@ -1,7 +1,7 @@
 import { Inject } from '@angular/core';
 import { BackendConfigClass } from '../../models/backend-config.model';
 
-import { AppLoggerServiceToken } from '../../services/logger/app-logger/app-logger-token';
+import { AppLoggerServiceToken } from '../logger/app-logger/app-logger-token';
 
 export abstract class BackendBaseService {
     constructor(@Inject(AppLoggerServiceToken) protected loggerService, protected config: BackendConfigClass = null) {

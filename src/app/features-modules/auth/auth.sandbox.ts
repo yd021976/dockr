@@ -11,6 +11,8 @@ import { BaseSandboxService } from "../../shared/sandboxes/base-sandbox.service"
 import { User_Action_Login, User_Action_Login_Error, User_Action_Login_Success, User_Action_Logout_Success, User_Action_Logout_Error } from "../../shared/store/actions/user.actions";
 import { AppLoggerServiceToken } from "src/app/shared/services/logger/app-logger/app-logger-token";
 import { AppLoggerService } from "src/app/shared/services/logger/app-logger/service/app-logger.service";
+import { ApplicationError_Append_Error } from "src/app/shared/store/actions/application-errors.actions";
+import { AppError, errorType } from "src/app/shared/models/app-error.model";
 
 
 @Injectable()
@@ -19,52 +21,62 @@ export class AuthSandbox extends BaseSandboxService {
     // Keep track of previous server connection state
     private currentIsConnected: boolean = false;
 
-    @Select(ApplicationState.authError) public authError$: Observable<string>;
+    @Select( ApplicationState.authError ) public authError$: Observable<string>;
 
     constructor(
         protected authService: AuthService,
         notificationService: NotificationBaseService,
-        @Inject(AppLoggerServiceToken) public loggerService: AppLoggerService,
+        @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerService,
         store: Store,
         protected router: Router
     ) {
-        super(notificationService, store, loggerService);
-        this.loggerService.createLogger(this.loggerName);
+        super( notificationService, store, loggerService );
+        this.loggerService.createLogger( this.loggerName );
+
+        // get notifications about session expired
+        this.authService.sessionExpired.subscribe( ( state ) => {
+            if ( state == true ) {
+                this.store.dispatch( new ApplicationError_Append_Error( new AppError( 'Session expired', errorType.sessionExpired ) ) )
+
+                // Ensure store is up to date with logout user
+                this.store.dispatch( new User_Action_Logout_Success() )
+            }
+        } )
     }
 
-    public Login(credentials?: loginCredentials): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
-            this.doLogin(credentials).then(() => resolve(true)).catch(() => resolve(false));
-        });
+    public Login( credentials?: loginCredentials ): Promise<boolean> {
+        return new Promise<boolean>( ( resolve, reject ) => {
+            this.doLogin( credentials ).then( () => resolve( true ) ).catch( () => resolve( false ) );
+        } );
     }
-    private doLogin(credentials: loginCredentials) {
-        this.loggerService.debug(this.loggerName, { message: 'login()', otherParams: ['START', credentials] });
-        this.store.dispatch(new User_Action_Login());
+    private doLogin( credentials: loginCredentials ) {
+        this.loggerService.debug( this.loggerName, { message: 'login()', otherParams: [ 'START', credentials ] } );
+        this.store.dispatch( new User_Action_Login() );
 
         // We must logout current user before authenticate again (FeathersJS can't auth if a JWT exist)
-        return this.logout().then(() => {
-            return this.authService.authenticate(credentials)
-                .then((user) => {
-                    this.store.dispatch(new User_Action_Login_Success(user))
-                    this.loggerService.debug(this.loggerName, { message: 'login()', otherParams: ['END', 'OK', user] });
-                })
-                .catch((error) => {
-                    this.store.dispatch(new User_Action_Login_Error(error.message));
-                    this.loggerService.debug(this.loggerName, { message: 'login()', otherParams: ['END', 'ERROR', error] });
+        return this.logout().then( () => {
+            return this.authService.authenticate( credentials )
+                .then( ( user ) => {
+                    this.store.dispatch( new User_Action_Login_Success( user ) )
+                    this.loggerService.debug( this.loggerName, { message: 'login()', otherParams: [ 'END', 'OK', user ] } );
+                } )
+                .catch( ( error ) => {
+                    this.store.dispatch( new User_Action_Login_Error( error.message ) );
+                    this.loggerService.debug( this.loggerName, { message: 'login()', otherParams: [ 'END', 'ERROR', error ] } );
                     throw error;
-                })
-        })
+                } )
+        } )
     }
     public logout(): Promise<void> {
-        this.loggerService.debug(this.loggerName, { message: 'logout()', otherParams: ['START'] });
+        this.loggerService.debug( this.loggerName, { message: 'logout()', otherParams: [ 'START' ] } );
         return this.authService.logout()
-            .then(() => {
-                this.loggerService.debug(this.loggerName, { message: 'logout()', otherParams: ['END', 'OK'] });
-                this.store.dispatch(new User_Action_Logout_Success())
-            })
-            .catch((error) => {
-                this.loggerService.debug(this.loggerName, { message: 'logout()', otherParams: ['END', 'ERROR', error] });
-                this.store.dispatch(new User_Action_Logout_Error(error.message))
-            })
+            .then( () => {
+                this.loggerService.debug( this.loggerName, { message: 'logout()', otherParams: [ 'END', 'OK' ] } );
+                this.store.dispatch( new User_Action_Logout_Success() )
+            } )
+            .catch( ( error ) => {
+                this.loggerService.debug( this.loggerName, { message: 'logout()', otherParams: [ 'END', 'ERROR', error ] } );
+                this.store.dispatch( new User_Action_Logout_Error( error.message ) )
+            } )
     }
 }

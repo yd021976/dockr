@@ -15,7 +15,7 @@ export type AddServiceDialogComponent_dialogResult = {
 })
 
 export class AddServiceDialogComponent {
-    @ViewChild('submitdialog', { read: ElementRef }) submitdialog: ElementRef
+    @ViewChild('submitdialog', { read: ElementRef, static: true }) submitdialog: ElementRef
 
     public dialogData: AddServiceDialogComponent_dialogResult = { cancelled: false, result: '' }
 

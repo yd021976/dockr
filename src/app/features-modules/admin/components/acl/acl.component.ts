@@ -49,7 +49,7 @@ export class AclComponent implements OnInit, AfterViewInit {
   @Output( 'nodeSelected' ) nodeSelected: EventEmitter<FlatTreeNode> = new EventEmitter<FlatTreeNode>()
   @Output( 'nodeToggled' ) nodeToggled: EventEmitter<FlatTreeNode> = new EventEmitter<FlatTreeNode>()
 
-  @ViewChild( 'tree' ) matTree: MatTree<any>
+  @ViewChild('tree', { static: true }) matTree: MatTree<any>
 
 
   private selection: SelectionModel<FlatTreeNode> = new SelectionModel( false, [] )

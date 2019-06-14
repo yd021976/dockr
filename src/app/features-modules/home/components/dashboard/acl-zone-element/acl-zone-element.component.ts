@@ -9,7 +9,7 @@ export class AclZoneElementComponent implements OnInit, AfterViewInit {
   @Input('name') name: string = ""
   @Input('authorize') authorize: any
   @Input('unAuthorize') unAuthorize: any
-  @ViewChild(TemplateRef) tplRef
+  @ViewChild(TemplateRef, { static: true }) tplRef
 
   constructor() { }
 

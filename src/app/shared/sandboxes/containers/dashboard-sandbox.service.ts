@@ -6,7 +6,7 @@ import { BaseSandboxService } from '../base-sandbox.service';
 import { TemplatesService } from '../../services/templates/templates.service';
 import { TemplatesLoadAction, TemplatesLoadSuccessAction, TemplatesLoadErrorAction, TemplateLoadReset } from '../../store/actions/templates.actions';
 import { User_Action_Login_Error } from '../../store/actions/user.actions';
-import { FeathersjsBackendService } from '../../services/backend/socketio/backend-feathers.service';
+import { FeathersjsBackendService } from '../../services/backend_API_Endpoints/socketio/backend-feathers.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { AppError, errorType } from '../../models/app-error.model';
 import { AppLoggerServiceToken } from '../../services/logger/app-logger/app-logger-token';
