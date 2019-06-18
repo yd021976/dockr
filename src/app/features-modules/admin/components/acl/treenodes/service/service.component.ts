@@ -6,18 +6,18 @@ import { trigger, style, transition, animate, query, animateChild } from '@angul
   selector: 'app-admin-acl-tree-node-service',
   templateUrl: './service.component.html',
   styleUrls: [ './service.component.scss' ],
-  animations: [
-    trigger( 'EnterLeave', [
-      transition( ':enter', [
-        style( { 'height': '0px', 'max-height': '0px', 'min-height': '0px' } ),
-        animate( '0.2s 100ms ease-in', style( { 'height': '*', 'max-height': '*', 'min-height': '*' } ) )
-      ] ),
-      transition( ':leave', [
-        animate( '0.2s 100ms ease-out', style( { 'min-height': '0px', height: '0px', 'max-height': '0px' } ) )
-      ] )
-    ] )
-  ],
-  host: { '[@EnterLeave]': '' }
+  // animations: [
+  //   trigger( 'EnterLeave', [
+  //     transition( ':enter', [
+  //       style( { 'height': '0px', 'max-height': '0px', 'min-height': '0px' } ),
+  //       animate( '0.2s 100ms ease-in', style( { 'height': '*', 'max-height': '*', 'min-height': '*' } ) )
+  //     ] ),
+  //     transition( ':leave', [
+  //       animate( '0.2s 100ms ease-out', style( { 'min-height': '0px', height: '0px', 'max-height': '0px' } ) )
+  //     ] )
+  //   ] )
+  // ],
+  // host: { '[@EnterLeave]': '' }
 } )
 export class ServiceComponent implements OnInit {
   @Input()

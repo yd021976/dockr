@@ -30,7 +30,7 @@ export class AclContainer implements OnInit {
   public node_types = NODE_TYPES
   public selectedNode$: Observable<FlatTreeNode>
   public availableRoleService$: Observable<any>
-  public lockResource: boolean = false // is resource locked
+  public aclLocked$: Observable<boolean>
 
   private dialog_AddRole: MatDialogRef<AddRoleDialogComponent>
   private dialog_AddService: MatDialogRef<AddServiceDialogComponent>
@@ -40,6 +40,8 @@ export class AclContainer implements OnInit {
     this.dialogService = dialogService
 
     this.colModel = this.setColmodel()
+
+    this.aclLocked$ = this.sandbox.isAclLocked$()
 
     this.treeService.getChildren = ( node: AclTreeNode ) => {
       return this.sandbox.getTreeNodeChildren$( node )
@@ -139,20 +141,9 @@ export class AclContainer implements OnInit {
   }
 
   lock( event ) {
-    this.sandbox.lockResource( "acl" )
-      .then( locked => {
-        this.lockResource = true
-      } )
-      .catch( err => {
-      } )
+    this.sandbox.lockResource()
   }
   unlock( event ) {
-    this.sandbox.releaseResource( "acl" )
-      .then( ( unlocked ) => {
-        this.lockResource = !this.lockResource
-      } )
-      .catch( err => {
-
-      } )
+    this.sandbox.releaseResource()
   }
 }

@@ -19,6 +19,6 @@ export class AppError {
     }
 }
 
-export class ApplicationErrorModel {
-    errors: AppError[]
+export class ApplicationNotificationsModel {
+    notifications: AppError[]
 }

@@ -1,12 +1,12 @@
 <div class="main_layout" fxLayout="column" fxFlex="1 1 auto">
     <div class="toolbar" fxFlex>
-        <button *ngIf="!lockResource" mat-button color="primary" (click)="lock($event)">
+        <button *ngIf="!(aclLocked$ | async)" mat-button color="primary" (click)="lock($event)">
             <div>
                 <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-unlock"></mat-icon>
                 <div class="button-label">Lock to modify</div>
             </div>
         </button>
-        <button *ngIf="lockResource" mat-button color="accent" (click)="unlock($event)">
+        <button *ngIf="aclLocked$ | async" mat-button color="accent" (click)="unlock($event)">
             <div>
                 <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-lock"></mat-icon>
                 <div class="button-label">Unlock screen</div>

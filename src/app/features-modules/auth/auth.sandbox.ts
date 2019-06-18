@@ -11,7 +11,7 @@ import { BaseSandboxService } from "../../shared/sandboxes/base-sandbox.service"
 import { User_Action_Login, User_Action_Login_Error, User_Action_Login_Success, User_Action_Logout_Success, User_Action_Logout_Error } from "../../shared/store/actions/user.actions";
 import { AppLoggerServiceToken } from "src/app/shared/services/logger/app-logger/app-logger-token";
 import { AppLoggerService } from "src/app/shared/services/logger/app-logger/service/app-logger.service";
-import { ApplicationError_Append_Error } from "src/app/shared/store/actions/application-errors.actions";
+import { ApplicationNotifications_Append_Message } from "src/app/shared/store/actions/application-notifications.actions";
 import { AppError, errorType } from "src/app/shared/models/app-error.model";
 
 
@@ -36,7 +36,7 @@ export class AuthSandbox extends BaseSandboxService {
         // get notifications about session expired
         this.authService.sessionExpired.subscribe( ( state ) => {
             if ( state == true ) {
-                this.store.dispatch( new ApplicationError_Append_Error( new AppError( 'Session expired', errorType.sessionExpired ) ) )
+                this.store.dispatch( new ApplicationNotifications_Append_Message( new AppError( 'Session expired', errorType.sessionExpired ) ) )
 
                 // Ensure store is up to date with logout user
                 this.store.dispatch( new User_Action_Logout_Success() )

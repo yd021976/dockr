@@ -28,14 +28,14 @@ import { SelectionModel } from '@angular/cdk/collections';
         style( { 'min-height': '0px', 'max-height': '0px', 'height': '0px' } ),
         group( [
           query( "@*", animateChild(), { optional: true } ),
-          animate( '0.2s 100ms ease-in', style( { 'max-height': '*', 'min-height': '*', 'height': '*' } ) )
+          animate( '0.3s 50ms ease', style( { 'max-height': '*', 'min-height': '*', 'height': '*' } ) )
         ] )
       ] ),
       transition( ':leave', [
-        style( { 'max-height': '*', 'min-height': '*', 'height': '*' } ),
+        style( { 'min-height': '*' } ),
         group( [
           query( "@*", animateChild(), { optional: true } ),
-          animate( '0.2s 100ms ease-out', style( { 'min-height': '0px', 'max-height': '0px', 'height': '0px' } ) )
+          animate( '0.3s 50ms ease', style( { 'min-height': '0px', 'height': '0px' } ) )
         ] )
       ] )
     ] )
@@ -49,7 +49,7 @@ export class AclComponent implements OnInit, AfterViewInit {
   @Output( 'nodeSelected' ) nodeSelected: EventEmitter<FlatTreeNode> = new EventEmitter<FlatTreeNode>()
   @Output( 'nodeToggled' ) nodeToggled: EventEmitter<FlatTreeNode> = new EventEmitter<FlatTreeNode>()
 
-  @ViewChild('tree', { static: true }) matTree: MatTree<any>
+  @ViewChild( 'tree', { static: true } ) matTree: MatTree<any>
 
 
   private selection: SelectionModel<FlatTreeNode> = new SelectionModel( false, [] )

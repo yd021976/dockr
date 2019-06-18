@@ -3,19 +3,45 @@ import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.
 
 export class Acl_Load_All {
     static readonly type = '[acl] load all';
-    constructor(public roles: RoleModel[]) { }
+    constructor( public roles: RoleModel[] ) { }
 }
 export class Acl_Load_All_Success {
     static readonly type = '[acl] load all success';
-    constructor(public roles: RoleModel[]) { }
+    constructor( public roles: RoleModel[] ) { }
 }
 export class Acl_Load_All_Error {
     static readonly type = '[acl] load all error';
-    constructor(public error: Error) { }
+    constructor( public error: Error ) { }
 }
 
 
 export class Acl_Tree_Node_Select {
     static readonly type = '[acl] select node';
-    constructor(public currentNode: FlatTreeNode) { }
+    constructor( public currentNode: FlatTreeNode ) { }
+}
+
+export class Acl_Lock_Resource {
+    static readonly type = '[acl] Lock resource';
+    constructor() { }
+}
+export class Acl_Lock_Resource_Success {
+    static readonly type = '[acl] Lock resource success';
+    constructor() { }
+}
+export class Acl_Lock_Resource_Error {
+    static readonly type = '[acl] Lock resource error';
+    constructor( public error: Error ) { }
+}
+
+export class Acl_UnLock_Resource {
+    static readonly type = '[acl] Unlock resource';
+    constructor() { }
+}
+export class Acl_UnLock_Resource_Success {
+    static readonly type = '[acl] Unlock resource success';
+    constructor() { }
+}
+export class Acl_UnLock_Resource_Error {
+    static readonly type = '[acl] Unlock resource error';
+    constructor( public error: Error ) { }
 }

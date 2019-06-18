@@ -10,7 +10,7 @@ import { CrudOperationModelEntity, ALLOWED_STATES } from "src/app/shared/models/
 import { DataModelPropertyEntity, DataModelPropertyEntities } from "src/app/shared/models/acl/datamodel.model";
 import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
 import { ServicesModel } from "src/app/shared/models/services.model";
-import { Acl_Load_All, Acl_Load_All_Success, Acl_Load_All_Error, Acl_Tree_Node_Select } from "../../actions/acl2/acl2.state.actions";
+import { Acl_Load_All, Acl_Load_All_Success, Acl_Load_All_Error, Acl_Tree_Node_Select, Acl_Lock_Resource, Acl_Lock_Resource_Success, Acl_Lock_Resource_Error, Acl_UnLock_Resource, Acl_UnLock_Resource_Success, Acl_UnLock_Resource_Error } from "../../actions/acl2/acl2.state.actions";
 import { Acl_Role_Remove_Entity_Success, Acl_Role_Add_Service_Success, Acl_Roles_Add_Entity_Success } from "../../actions/acl2/acl2.role.entity.actions";
 import { ServicesState } from "../services.state";
 import { Acl_Field_Update_Allowed_Success, Acl_Field_Update_Allowed, Acl_Field_Update_Allowed_Error } from "../../actions/acl2/acl2.field.entity.action";
@@ -24,6 +24,7 @@ import { NormalizrSchemas } from "./entities-management/normalizer";
         isLoading: false,
         isError: false,
         error: '',
+        isLocked: false,
         selectedNode: null,
         entities: {
             roles: {},
@@ -269,6 +270,36 @@ export class Acl2State {
         )
     }
 
+
+    @Action( Acl_Lock_Resource )
+    acl_lock_resource( ctx: StateContext<Acl2StateModel>, action: Acl_Lock_Resource ) {
+        ctx.patchState( { isLoading: true } )
+    }
+
+    @Action( Acl_Lock_Resource_Success )
+    acl_lock_resource_success( ctx: StateContext<Acl2StateModel>, action: Acl_Lock_Resource_Success ) {
+        ctx.patchState( { isLocked: true, isError: false, error: '', isLoading: false } )
+    }
+
+    @Action( Acl_Lock_Resource_Error )
+    acl_lock_resource_error( ctx: StateContext<Acl2StateModel>, action: Acl_Lock_Resource_Error ) {
+        ctx.patchState( { isError: true, error: action.error.message, isLoading: false } )
+    }
+
+
+    @Action( Acl_UnLock_Resource )
+    acl_unlock_resource( ctx: StateContext<Acl2StateModel>, action: Acl_UnLock_Resource ) {
+        ctx.patchState( { isLoading: true } )
+    }
+    @Action( Acl_UnLock_Resource_Success )
+    acl_unlock_resource_success( ctx: StateContext<Acl2StateModel>, action: Acl_UnLock_Resource_Success ) {
+        ctx.patchState( { isLocked: false, isError: false, error: '', isLoading: false } )
+    }
+    @Action( Acl_UnLock_Resource_Error )
+    acl_unlock_resource_error( ctx: StateContext<Acl2StateModel>, action: Acl_UnLock_Resource_Error ) {
+        ctx.patchState( { isError: true, error: action.error.message, isLoading: false } )
+    }
+
     /**
      * 
      * @param node 
@@ -437,5 +468,10 @@ export class Acl2State {
             fields: state.entities.fields
         } )
         return objects
+    }
+
+    @Selector()
+    static GetLockState( state: Acl2StateModel ): boolean {
+        return state.isLocked
     }
 }

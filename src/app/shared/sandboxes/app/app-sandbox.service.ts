@@ -9,13 +9,13 @@ import { ApplicationState } from '../../store/states/application.state';
 import { AppLoggerServiceToken } from '../../services/logger/app-logger/app-logger-token';
 import { AppLoggerService } from '../../services/logger/app-logger/service/app-logger.service';
 import { Store, Select } from '@ngxs/store';
-import { AppErrorsState } from '../../store/states/errors.state';
+import { AppNotificationsState } from '../../store/states/application.notifications.state';
 
 @Injectable()
 export class AppSandboxService extends BaseSandboxService {
     private static loginCount: number = 0
     private readonly loggerName: string = "AppSandboxService";
-    @Select( AppErrorsState.errorsList$ ) private errors$: Observable<string[]>
+    @Select( AppNotificationsState.errorsList$ ) private errors$: Observable<string[]>
 
     constructor(
         notificationService: NotificationBaseService,

@@ -14,7 +14,8 @@ export class Acl2StateModel {
     isLoading: boolean
     isError: boolean
     error: string
-    selectedNode:FlatTreeNode
+    isLocked: boolean
+    selectedNode: FlatTreeNode
     entities: Acl2StateEntities
-    previous_entities:Acl2StateEntities // Backup entities before update : Usefull to revert entities when error occured
+    previous_entities: Acl2StateEntities // Backup entities before update : Usefull to revert entities when error occured
 }

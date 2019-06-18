@@ -20,7 +20,7 @@ export class ResourcesLocksService {
     release( resource_name: string ): Promise<any> {
         return this.service.remove( resource_name )
     }
-    list(): Promise<any> {
-        return this.service.find()
+    list( all_owners: boolean = false ): Promise<any> {
+        return this.service.find( { all_owners: all_owners } )
     }
 }
