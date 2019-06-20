@@ -1,15 +1,15 @@
 <div class="main_layout" fxLayout="column" fxFlex="1 1 auto">
     <div class="toolbar" fxFlex>
-        <button *ngIf="!(aclLocked$ | async)" mat-button color="primary" (click)="lock($event)">
+        <button *ngIf="!(aclLocked$ | async)" mat-button color="primary" (click)="lock($event)" [disabled]="!(isLoggedIn$ | async)">
             <div>
                 <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-unlock"></mat-icon>
                 <div class="button-label">Lock to modify</div>
             </div>
         </button>
-        <button *ngIf="aclLocked$ | async" mat-button color="accent" (click)="unlock($event)">
+        <button *ngIf="aclLocked$ | async" mat-button color="accent" (click)="unlock($event)" [disabled]="!(isLoggedIn$ | async)">
             <div>
                 <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-lock"></mat-icon>
-                <div class="button-label">Unlock screen</div>
+                <div class="button-label">Unlock</div>
             </div>
         </button>
     </div>
@@ -21,11 +21,13 @@
             <!-- How to render tree nodes -->
             <ng-template #node let-node>
                 <ng-container [ngSwitch]="node.type">
-                    <app-admin-acl-tree-node-role *ngSwitchCase="node_types.ROLE" [node]="node"></app-admin-acl-tree-node-role>
-                    <app-admin-acl-tree-node-service *ngSwitchCase="node_types.SERVICE" [node]="node"></app-admin-acl-tree-node-service>
-                    <app-admin-acl-tree-node-action *ngSwitchCase="node_types.CRUDOPERATION" [node]="node" (checkChange)="onActionCheckChange($event)">
+                    <app-admin-acl-tree-node-role *ngSwitchCase="node_types.ROLE" [node]="node" [editable]="aclLocked$"></app-admin-acl-tree-node-role>
+                    <app-admin-acl-tree-node-service *ngSwitchCase="node_types.SERVICE" [editable]="aclLocked$" [node]="node"></app-admin-acl-tree-node-service>
+                    <app-admin-acl-tree-node-action *ngSwitchCase="node_types.CRUDOPERATION" [node]="node" [editable]="aclLocked$"
+                                                    (checkChange)="onActionCheckChange($event)">
                     </app-admin-acl-tree-node-action>
-                    <app-admin-acl-tree-node-field *ngSwitchCase="node_types.FIELDACCESS" [node]="node" (fieldCheckChange)="onFieldCheckChange($event)">
+                    <app-admin-acl-tree-node-field *ngSwitchCase="node_types.FIELDACCESS" [editable]="aclLocked$" [node]="node"
+                                                   (checkChange)="onFieldCheckChange($event)">
                     </app-admin-acl-tree-node-field>
                 </ng-container>
             </ng-template>

@@ -18,7 +18,3 @@ export class AppError {
         this.type = type
     }
 }
-
-export class ApplicationNotificationsModel {
-    notifications: AppError[]
-}

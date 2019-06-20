@@ -20,6 +20,7 @@ import { Acl_Action_Update_Allowed_Success, Acl_Action_Update_Allowed } from "..
 import { Acl_Services_Remove_Entity_Success } from "../../store/actions/acl2/acl2.service.entity.actions";
 import { Application_Event_Notification } from "../../store/actions/application.actions";
 import { ResourcesLocksService } from "../../services/resource_locks/resources.locks.service";
+import { ApplicationNotification, ApplicationNotificationType } from "../../models/acl2/application.notifications.model";
 
 
 
@@ -28,6 +29,7 @@ export class AdminAclSandboxService extends BaseSandboxService {
     public acltreenodes$: Observable<AclTreeNode[]>
     public currentSelectedNode$: Observable<FlatTreeNode>
     public availableServices$: Observable<BackendServiceModel[]>
+    public isAclLocked$: Observable<boolean>
 
     constructor(
         notificationService: NotificationBaseService,
@@ -41,6 +43,8 @@ export class AdminAclSandboxService extends BaseSandboxService {
         this.acltreenodes$ = this.store.select( Acl2State.treenode_getData() ) // ACL Observable
         this.currentSelectedNode$ = this.store.select( Acl2State.treenodes_get_currentSelectedNode )
         this.availableServices$ = this.store.select( Acl2State.role_get_availableServices )
+        this.isAclLocked$ = this.store.select( Acl2State.GetLockState )
+
     }
 
     /**
@@ -98,11 +102,11 @@ export class AdminAclSandboxService extends BaseSandboxService {
             } )
             .catch( err => {
                 if ( err.name != 'lockAlreadyAcquired' ) {
-                    this.store.dispatch( new Acl_Lock_Resource_Success() )
-                    this.store.dispatch( new Application_Event_Notification( err ) )
+                    this.store.dispatch( new Acl_Lock_Resource_Error( err ) )
+                    this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, 'AclLockError', ApplicationNotificationType.ERROR ) ) )
                 }
                 else {
-                    this.store.dispatch( new Acl_Lock_Resource_Error( err ) )
+                    this.store.dispatch( new Acl_Lock_Resource_Success() )
                     return err.data[ 'lockInfos' ] || null
                 }
             } )
@@ -147,9 +151,6 @@ export class AdminAclSandboxService extends BaseSandboxService {
     nodeGetParent( node ) {
         var parent = this.store.selectSnapshot( Acl2State.treenodes_get_parentNode( node ) )
         return parent
-    }
-    isAclLocked$(): Observable<boolean> {
-        return this.store.select( Acl2State.GetLockState )
     }
     /********************************************************************************************************
      * 

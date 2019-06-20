@@ -1,11 +1,11 @@
-import { AppError } from "../../models/app-error.model";
+import { ApplicationNotification } from "../../models/acl2/application.notifications.model";
 
 /**
  * Append error to the end of state
  */
 export class ApplicationNotifications_Append_Message {
     static readonly type = "[Application Notifications] Add error action"
-    public constructor( public error: AppError ) { }
+    public constructor( public notification: ApplicationNotification ) { }
 }
 
 /**

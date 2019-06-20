@@ -1,7 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 import { MAT_CHECKBOX_CLICK_ACTION } from '@angular/material/checkbox';
 import { AclTreeNode } from 'src/app/shared/models/acl/treenode.model';
 import { ALLOWED_STATES } from 'src/app/shared/models/acl/crud-operations.model';
+import { Observable } from 'rxjs';
+import { BaseNodeComponent } from '../base.node.component';
 
 
 @Component( {
@@ -12,21 +14,9 @@ import { ALLOWED_STATES } from 'src/app/shared/models/acl/crud-operations.model'
     { provide: MAT_CHECKBOX_CLICK_ACTION, useValue: 'noop' }
   ]
 } )
-export class FieldComponent implements OnInit {
-  @Input( 'node' ) node: AclTreeNode
+export class FieldComponent extends BaseNodeComponent {
 
-  @Output() fieldCheckChange: EventEmitter<AclTreeNode> = new EventEmitter<AclTreeNode>()
   allowed_states = ALLOWED_STATES
-
-  constructor() {
-  }
-
-  /**
-   * 
-   */
-  ngOnInit() {
-  }
-
 
   /**
    * 
@@ -38,7 +28,7 @@ export class FieldComponent implements OnInit {
 
     // Just invert check state and emit changes
     node.checked = ( node.checked == ALLOWED_STATES.ALLOWED ? ALLOWED_STATES.FORBIDDEN : ALLOWED_STATES.ALLOWED )
-    this.fieldCheckChange.emit( node )
+    this.checkChange.emit( node )
   }
 
 }

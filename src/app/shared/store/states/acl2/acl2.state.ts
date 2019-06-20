@@ -283,7 +283,7 @@ export class Acl2State {
 
     @Action( Acl_Lock_Resource_Error )
     acl_lock_resource_error( ctx: StateContext<Acl2StateModel>, action: Acl_Lock_Resource_Error ) {
-        ctx.patchState( { isError: true, error: action.error.message, isLoading: false } )
+        ctx.patchState( { isError: true, error: action.error.message, isLoading: false, isLocked: false } )
     }
 
 

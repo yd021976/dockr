@@ -1,33 +1,30 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
-import { AclTreeNode } from 'src/app/shared/models/acl/treenode.model';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { ALLOWED_STATES } from 'src/app/shared/models/acl/crud-operations.model';
+import { BaseNodeComponent } from '../base.node.component';
 
 @Component( {
   selector: 'app-admin-acl-tree-node-action',
   templateUrl: './action.component.html',
   styleUrls: [ './action.component.scss' ]
 } )
-export class ActionComponent implements OnInit, OnDestroy {
-  @Input()
-  get node(): AclTreeNode { return this._node }
-  set node( node: AclTreeNode ) { this._node = node }
-
+export class ActionComponent extends BaseNodeComponent implements OnInit, OnDestroy {
   allowed_states = ALLOWED_STATES
-  @Output( 'checkChange' ) checkChange: EventEmitter<AclTreeNode> = new EventEmitter<AclTreeNode>()
 
-  public _node: AclTreeNode
-
-  constructor() { }
   ngOnDestroy() { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.editable$.subscribe( state => {
+      let a = 0
+    } )
+  }
 
   onClick( event: MouseEvent ) {
     event.stopPropagation()
   }
   onCheckChange( event: MatCheckboxChange ) {
-    this._node.checked = event.checked == true ? ALLOWED_STATES.ALLOWED : ALLOWED_STATES.FORBIDDEN
-    this.checkChange.emit( this._node )
+    var node = JSON.parse( JSON.stringify( this.node ) )
+    node.checked = event.checked == true ? ALLOWED_STATES.ALLOWED : ALLOWED_STATES.FORBIDDEN
+    this.checkChange.emit( node )
   }
 }

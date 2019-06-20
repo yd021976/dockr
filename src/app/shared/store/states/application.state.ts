@@ -7,9 +7,10 @@ import { ServicesState, default_state_services } from './services.state';
 import { Acl2State } from './acl2/acl2.state';
 import { Application_Event_Notification } from '../actions/application.actions';
 import { User_Action_Logout_Success } from '../actions/user.actions';
-import { AppNotificationsState, default_state_apperrors } from './application.notifications.state';
+import { AppNotificationsState, default_state_application_notifications } from './application.notifications.state';
 import { ApplicationNotifications_Shift_Message, ApplicationNotifications_Append_Message } from '../actions/application-notifications.actions';
 import { AppError, errorType } from '../../models/app-error.model';
+import { ApplicationNotification, ApplicationNotificationType } from '../../models/acl2/application.notifications.model';
 
 @State<ApplicationStateModel>( {
     name: 'application',
@@ -18,7 +19,7 @@ import { AppError, errorType } from '../../models/app-error.model';
         backendServices: default_state_services,
         templates: default_state_templates,
         user: default_state_user,
-        notifications: default_state_apperrors
+        notifications: default_state_application_notifications
     }
 } )
 export class ApplicationState {
@@ -29,9 +30,8 @@ export class ApplicationState {
         /**
          * Default : set error with action payload
          */
-        let type: errorType = action.Notification[ 'type' ] ? action.Notification[ 'type' ] : 'other'
-        // TODO: change notification type to someting else, i.e a new "notification" class
-        let notification = new AppError( action.Notification.message, type, action.Notification.name )
+        let type: ApplicationNotificationType = action.Notification[ 'type' ] ? action.Notification[ 'type' ] : ApplicationNotificationType.INFO
+        let notification = new ApplicationNotification( action.Notification.message, action.Notification.name, type )
 
         /**
          * Special case : If error is 'notAuthenticated', check if user is currently logged in. If so, the error becomes "session expired"

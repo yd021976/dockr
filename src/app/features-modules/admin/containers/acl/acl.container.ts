@@ -31,6 +31,7 @@ export class AclContainer implements OnInit {
   public selectedNode$: Observable<FlatTreeNode>
   public availableRoleService$: Observable<any>
   public aclLocked$: Observable<boolean>
+  public isLoggedIn$: Observable<boolean>
 
   private dialog_AddRole: MatDialogRef<AddRoleDialogComponent>
   private dialog_AddService: MatDialogRef<AddServiceDialogComponent>
@@ -38,10 +39,9 @@ export class AclContainer implements OnInit {
 
   constructor( public sandbox: AdminAclSandboxService, public treeService: TreeNodesService, dialogService: MatDialog ) {
     this.dialogService = dialogService
-
     this.colModel = this.setColmodel()
-
-    this.aclLocked$ = this.sandbox.isAclLocked$()
+    this.aclLocked$ = this.sandbox.isAclLocked$
+    this.isLoggedIn$ = this.sandbox.isLoggedin$
 
     this.treeService.getChildren = ( node: AclTreeNode ) => {
       return this.sandbox.getTreeNodeChildren$( node )
@@ -140,10 +140,18 @@ export class AclContainer implements OnInit {
     this.sandbox.treenodes_update_select_node( node )
   }
 
-  lock( event ) {
+
+  /**
+   * Lock screen to edit data
+   */
+  lock() {
     this.sandbox.lockResource()
   }
-  unlock( event ) {
+
+  /**
+   * Unlock screen
+   */
+  unlock() {
     this.sandbox.releaseResource()
   }
 }

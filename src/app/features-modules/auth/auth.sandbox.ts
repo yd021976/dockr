@@ -13,6 +13,7 @@ import { AppLoggerServiceToken } from "src/app/shared/services/logger/app-logger
 import { AppLoggerService } from "src/app/shared/services/logger/app-logger/service/app-logger.service";
 import { ApplicationNotifications_Append_Message } from "src/app/shared/store/actions/application-notifications.actions";
 import { AppError, errorType } from "src/app/shared/models/app-error.model";
+import { ApplicationNotification, ApplicationNotificationType } from "src/app/shared/models/acl2/application.notifications.model";
 
 
 @Injectable()
@@ -36,7 +37,7 @@ export class AuthSandbox extends BaseSandboxService {
         // get notifications about session expired
         this.authService.sessionExpired.subscribe( ( state ) => {
             if ( state == true ) {
-                this.store.dispatch( new ApplicationNotifications_Append_Message( new AppError( 'Session expired', errorType.sessionExpired ) ) )
+                this.store.dispatch( new ApplicationNotifications_Append_Message( new ApplicationNotification( 'Session expired', 'not authenticated', ApplicationNotificationType.WARNING ) ) )
 
                 // Ensure store is up to date with logout user
                 this.store.dispatch( new User_Action_Logout_Success() )
