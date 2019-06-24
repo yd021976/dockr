@@ -1,13 +1,17 @@
 <div class="container">
   <fieldset fxFlex="1 0 auto" fxLayout="column">
     <legend>Actions</legend>
-    <app-admin-acl-default-action (addRole)="onAddRole()"></app-admin-acl-default-action>
-    <ng-container *ngIf="node!=null">
-      <ng-container [ngSwitch]="node.data.type">
-        <app-admin-acl-role-action *ngSwitchCase="node_types.ROLE" [disabled]="availableServices.length==0" (removeRole)="onRemoveRole()" (addService)="onAddService()"></app-admin-acl-role-action>
-        <app-admin-acl-service-action *ngSwitchCase="node_types.SERVICE" (removeService)="onRemoveService()"></app-admin-acl-service-action>
-        <app-admin-acl-crud-action *ngSwitchCase="node_types.CRUDOPERATION"></app-admin-acl-crud-action>
+    <ng-container *ngIf="editable$ | async">
+      <app-admin-acl-default-action (addRole)="onAddRole()"></app-admin-acl-default-action>
+      <ng-container *ngIf="node!=null">
+        <ng-container [ngSwitch]="node.data.type">
+          <app-admin-acl-role-action *ngSwitchCase="node_types.ROLE" [disabled]="availableServices.length==0" (removeRole)="onRemoveRole()"
+                                     (addService)="onAddService()"></app-admin-acl-role-action>
+          <app-admin-acl-service-action *ngSwitchCase="node_types.SERVICE" (removeService)="onRemoveService()"></app-admin-acl-service-action>
+          <app-admin-acl-crud-action *ngSwitchCase="node_types.CRUDOPERATION"></app-admin-acl-crud-action>
+        </ng-container>
       </ng-container>
     </ng-container>
+
   </fieldset>
 </div>

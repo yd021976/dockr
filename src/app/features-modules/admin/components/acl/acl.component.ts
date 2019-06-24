@@ -10,7 +10,6 @@ import { FlatTreeNode } from '../../services/treeNodes.service';
 import { AclTreeColmodel } from 'src/app/shared/models/acl/acl-tree-colmodel.model';
 import { trigger, style, transition, animate, query, animateChild, group } from '@angular/animations';
 import { SelectionModel } from '@angular/cdk/collections';
-import { Observable } from 'rxjs';
 
 
 @Component( {

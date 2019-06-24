@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Exit ACL editing</h2>
+<mat-dialog-content>
+    You're actually locking ACL data.<br>
+    Do you want to exit without unlocking ACL data ?
+    <br>
+    <br>
+    If you don't unlock data, nobody can edit ACL until you unlock ACL data.
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="false">Cancel</button>
+    <button mat-button [mat-dialog-close]="true">Confirm</button>
+</mat-dialog-actions>

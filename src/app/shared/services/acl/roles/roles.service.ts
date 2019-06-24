@@ -27,7 +27,13 @@ export class RolesService {
         // return new Promise<RoleModel[]>( ( resolve, reject ) => {
         //     resolve( DATA.default )
         // } );
-        return this.service.find().then( results => results.data )
+        return this.service.find()
+            .then( results => {
+                return results.data
+            } )
+            .catch( e => {
+                throw e
+            } )
     }
 
     /**

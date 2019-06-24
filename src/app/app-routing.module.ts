@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { AppRoute } from './shared/models/app-route.model';
 import { RouterModule } from '@angular/router';
+import { AclCanDeactivateGuard } from './features-modules/admin/guards/acl.guard';
 
 
 export const routes: AppRoute[] = [

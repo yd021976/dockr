@@ -14,7 +14,7 @@ import { Acl_Load_All, Acl_Load_All_Success, Acl_Load_All_Error, Acl_Tree_Node_S
 import { Acl_Role_Remove_Entity_Success, Acl_Role_Add_Service_Success, Acl_Roles_Add_Entity_Success } from "../../actions/acl2/acl2.role.entity.actions";
 import { ServicesState } from "../services.state";
 import { Acl_Field_Update_Allowed_Success, Acl_Field_Update_Allowed, Acl_Field_Update_Allowed_Error } from "../../actions/acl2/acl2.field.entity.action";
-import { Acl_Action_Update_Allowed_Success } from "../../actions/acl2/acl2.action.entity.actions";
+import { Acl_Action_Update_Allowed_Success, Acl_Action_Update_Allowed, Acl_Action_Update_Allowed_Error } from "../../actions/acl2/acl2.action.entity.actions";
 import { Acl_Services_Remove_Entity_Success, Acl_Services_Remove_Entity_Error } from "../../actions/acl2/acl2.service.entity.actions";
 import { NormalizrSchemas } from "./entities-management/normalizer";
 
@@ -66,7 +66,19 @@ export class Acl2State {
      * @param action 
      */
     @Action( Acl_Load_All_Error )
-    acl_load_all_error( ctx: StateContext<Acl2StateModel>, action: Acl_Load_All_Error ) { }
+    acl_load_all_error( ctx: StateContext<Acl2StateModel>, action: Acl_Load_All_Error ) {
+        ctx.patchState( {
+            isLoading: false,
+            isError: true,
+            error: action.error.message,
+            entities: {
+                roles: {},
+                services: {},
+                actions: {},
+                fields: {}
+            },
+        } )
+    }
 
     @Action( Acl_Roles_Add_Entity_Success )
     roles_add_entity_success( ctx: StateContext<Acl2StateModel>, action: Acl_Roles_Add_Entity_Success ) {
@@ -186,10 +198,11 @@ export class Acl2State {
      */
     @Action( Acl_Field_Update_Allowed_Success )
     field_update_property_allowed_success( ctx: StateContext<Acl2StateModel>, action: Acl_Field_Update_Allowed_Success ) {
-        ctx.patchState( { isLoading: false } )
+        ctx.patchState( { isLoading: false, isError: false, error: '' } )
     }
 
     /**
+     * Error after updating, roll back entities to previous state
      * 
      * @param ctx 
      * @param action 
@@ -206,16 +219,18 @@ export class Acl2State {
         } )
     }
 
-
     /**
      * 
      * @param ctx 
      * @param action 
      */
-    @Action( Acl_Action_Update_Allowed_Success )
-    action_update_property_allowed_success( ctx: StateContext<Acl2StateModel>, action: Acl_Action_Update_Allowed_Success ) {
+    @Action( Acl_Action_Update_Allowed )
+    action_update_property_allowed( ctx: StateContext<Acl2StateModel>, action: Acl_Action_Update_Allowed ) {
         const state: Acl2StateModel = ctx.getState()
         var action_entity: CrudOperationModelEntity = state.entities.actions[ action.entity_uid ]
+
+        // Save current state entities
+        let previous_entities = JSON.parse( JSON.stringify( state.entities ) )
 
         // Update action entity
         action_entity.allowed = action.allowed
@@ -227,6 +242,10 @@ export class Acl2State {
         } )
 
         ctx.patchState( {
+            isLoading: true,
+            isError: false,
+            error: '',
+            previous_entities: previous_entities,
             entities: {
                 roles: { ...state.entities.roles },
                 services: { ...state.entities.services },
@@ -235,7 +254,36 @@ export class Acl2State {
             }
         } )
     }
+    /**
+     * @param ctx 
+     * @param action 
+     */
+    @Action( Acl_Action_Update_Allowed_Success )
+    action_update_property_allowed_success( ctx: StateContext<Acl2StateModel>, action: Acl_Action_Update_Allowed_Success ) {
+        ctx.patchState( { isLoading: false, isError: false, error: '' } )
+    }
+    /**
+     * 
+     * @param ctx 
+     * @param action 
+     */
+    @Action( Acl_Action_Update_Allowed_Error )
+    action_update_property_allowed_error( ctx: StateContext<Acl2StateModel>, action: Acl_Action_Update_Allowed_Error ) {
+        let state = ctx.getState()
+        ctx.patchState( {
+            isLoading: false,
+            isError: true,
+            error: action.error,
+            entities: state.previous_entities,
+            previous_entities: null
+        } )
+    }
 
+    /**
+     * 
+     * @param ctx 
+     * @param action 
+     */
     @Action( Acl_Services_Remove_Entity_Success )
     services_remove_entity_success( ctx: StateContext<Acl2StateModel>, action: Acl_Services_Remove_Entity_Success ) {
         const state: Acl2StateModel = ctx.getState()

@@ -16,11 +16,12 @@ import { Acl_Load_All_Success, Acl_Tree_Node_Select, Acl_Load_All_Error, Acl_Loc
 import { Acl_Role_Add_Service_Success, Acl_Roles_Add_Entity_Success, Acl_Role_Remove_Entity_Success } from "../../store/actions/acl2/acl2.role.entity.actions";
 import { RoleModel, RoleEntity } from "src/app/shared/models/acl/roles.model";
 import { Acl_Field_Update_Allowed_Success, Acl_Field_Update_Allowed, Acl_Field_Update_Allowed_Error } from "../../store/actions/acl2/acl2.field.entity.action";
-import { Acl_Action_Update_Allowed_Success, Acl_Action_Update_Allowed } from "../../store/actions/acl2/acl2.action.entity.actions";
+import { Acl_Action_Update_Allowed_Success, Acl_Action_Update_Allowed, Acl_Action_Update_Allowed_Error } from "../../store/actions/acl2/acl2.action.entity.actions";
 import { Acl_Services_Remove_Entity_Success } from "../../store/actions/acl2/acl2.service.entity.actions";
 import { Application_Event_Notification } from "../../store/actions/application.actions";
 import { ResourcesLocksService } from "../../services/resource_locks/resources.locks.service";
 import { ApplicationNotification, ApplicationNotificationType } from "../../models/acl2/application.notifications.model";
+import { ApplicationNotifications_Append_Message } from "../../store/actions/application-notifications.actions";
 
 
 
@@ -55,17 +56,17 @@ export class AdminAclSandboxService extends BaseSandboxService {
             .then( ( results ) => {
                 this.store.dispatch( new Acl_Load_All_Success( results ) )
             } )
-            .catch( ( e ) => {
-                this.store.dispatch( new Application_Event_Notification( e ) )
-                this.store.dispatch( new Acl_Load_All_Error( e ) )
+            .catch( ( err ) => {
+                this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, err[ 'name' ], ApplicationNotificationType.ERROR ) ) )
+                this.store.dispatch( new Acl_Load_All_Error( err ) )
             } )
 
         this.backendServices.find()
             .then( ( results ) => {
                 this.store.dispatch( new Services_Load_All_Success( results ) )
             } )
-            .catch( ( e ) => {
-                this.store.dispatch( new Application_Event_Notification( e ) )
+            .catch( ( err ) => {
+                this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, 'LoadRolesError', ApplicationNotificationType.ERROR ) ) )
             } )
         this.resourcesLocksService.list( false )
             .then( locked_resources => {
@@ -80,7 +81,7 @@ export class AdminAclSandboxService extends BaseSandboxService {
                 } )
             } )
             .catch( err => {
-                // Do nothing
+                this.store.dispatch( new Acl_Lock_Resource_Error( err ) )
             } )
     }
 
@@ -98,6 +99,7 @@ export class AdminAclSandboxService extends BaseSandboxService {
         return this.resourcesLocksService.lock( resource_name )
             .then( locked => {
                 this.store.dispatch( new Acl_Lock_Resource_Success() )
+                this.store.dispatch( new ApplicationNotifications_Append_Message( new ApplicationNotification( 'Data are locked. You can modify them.', 'AclLocked', ApplicationNotificationType.INFO ) ) )
                 return locked
             } )
             .catch( err => {
@@ -119,15 +121,23 @@ export class AdminAclSandboxService extends BaseSandboxService {
         return this.resourcesLocksService.release( resource_name )
             .then( released => {
                 this.store.dispatch( new Acl_UnLock_Resource_Success() )
+                this.store.dispatch( new ApplicationNotifications_Append_Message( new ApplicationNotification( 'Data are unlocked. You can\'t modify them.', 'AclRelease', ApplicationNotificationType.INFO ) ) )
                 return released
             } )
             .catch( ( err ) => {
                 this.store.dispatch( new Acl_UnLock_Resource_Error( err ) )
-                this.store.dispatch( new Application_Event_Notification( err ) )
+                this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, 'AclReleaseError', ApplicationNotificationType.ERROR ) ) )
             } )
 
     }
 
+    private StoreAcl( node: AclTreeNode ): Promise<any> {
+        // Get root role model
+        const role_entity: RoleEntity = this.store.selectSnapshot( Acl2State.treenode_get_rootRoleEntity( node ) )
+        const role_model: RoleModel = this.store.selectSnapshot( Acl2State.role_get_denormalizeEntity( role_entity ) )
+
+        return this.rolesService.update( role_model, true )
+    }
     /********************************************************************************************************
      * 
      *                                      Store selectors
@@ -176,24 +186,36 @@ export class AdminAclSandboxService extends BaseSandboxService {
          */
         this.store.dispatch( new Acl_Field_Update_Allowed( node.uid, node.checked ) ).toPromise()
             .then( result => {
-                // Get role/ACL object
-                const role_entity: RoleEntity = this.store.selectSnapshot( Acl2State.treenode_get_rootRoleEntity( node ) )
-                const role_model: RoleModel = this.store.selectSnapshot( Acl2State.role_get_denormalizeEntity( role_entity ) )
-
-                this.rolesService.update( role_model, true )
+                /**
+                 * Store role acl and update store
+                 */
+                this.StoreAcl( node )
                     .then( ( result ) => {
                         this.store.dispatch( new Acl_Field_Update_Allowed_Success( node.uid, node.checked ) )
                     } )
                     .catch( ( error ) => {
                         this.store.dispatch( new Acl_Field_Update_Allowed_Error( error ) )
-                        this.store.dispatch( new Application_Event_Notification( error ) )
+                        this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( error.message, 'AclFieldUpdateBackend', ApplicationNotificationType.ERROR ) ) )
                     } )
             } )
     }
     public action_update_allowed_property( node: AclTreeNode ) {
-        this.store.dispatch( new Acl_Action_Update_Allowed( node.uid, node.checked ) )
-        //TODO: Call backend API to update ACL when "action" is modified
-        this.store.dispatch( new Acl_Action_Update_Allowed_Success( node.uid, node.checked ) )
+        // Update store
+        this.store.dispatch( new Acl_Action_Update_Allowed( node.uid, node.checked ) ).toPromise()
+            .then( result => {
+                this.StoreAcl( node )
+                    .then( ( result ) => {
+                        this.store.dispatch( new Acl_Action_Update_Allowed_Success( node.uid, node.checked ) )
+                    } )
+                    .catch( err => {
+                        this.store.dispatch( new Acl_Action_Update_Allowed_Error( err ) )
+                        this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, 'AclActionUpdateBackend', ApplicationNotificationType.ERROR ) ) )
+                    } )
+            } )
+            .catch( err => {
+                //TODO: Handle error if store update error for action node
+            } )
+
     }
     public services_remove_entity( node: FlatTreeNode ) {
         this.store.dispatch( new Acl_Services_Remove_Entity_Success( node.data[ 'uid' ] ) )

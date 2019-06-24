@@ -41,13 +41,14 @@ import { NodeActionsComponent } from './components/acl/node-actions/node-actions
 import { AddRoleDialogComponent } from './components/acl/dialogs/add.role/add.role.dialog.component';
 import { AddServiceDialogComponent } from './components/acl/dialogs/add.service/add.service.dialog.component';
 import { ResourcesLocksService } from 'src/app/shared/services/resource_locks/resources.locks.service';
+import { CandeactivateAclDialog } from './components/acl/dialogs/can.deactivate.acl/can.deactivate.acl.dialog.component';
 
 const components = [
   AclContainer, UsersContainer, UsersComponent, AclComponent, ActionComponent, FieldComponent, RoleComponent, ServiceComponent,
   NodeDetailComponent,
   RoleDetailComponent, ServiceDetailComponent, ActionDetailComponent, FieldDetailComponent,
   NodeActionsComponent, DefaultActionComponent, RoleActionComponent, ServiceActionComponent, CrudActionComponent, FieldActionComponent,
-  AddRoleDialogComponent, AddServiceDialogComponent,
+  AddRoleDialogComponent, AddServiceDialogComponent,CandeactivateAclDialog,
   // To delete
   AdminComponent
 ]
@@ -72,7 +73,7 @@ const components = [
     FlexLayoutModule
   ],
   declarations: components,
-  entryComponents: [AddRoleDialogComponent, AddServiceDialogComponent],
+  entryComponents: [AddRoleDialogComponent, AddServiceDialogComponent, CandeactivateAclDialog],
   providers: [AdminAclSandboxService, TreeNodesService, ResourcesLocksService]
 })
 export class AdminModule { }

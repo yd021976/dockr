@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
-import { MAT_CHECKBOX_CLICK_ACTION } from '@angular/material/checkbox';
-import { AclTreeNode } from 'src/app/shared/models/acl/treenode.model';
+import { MAT_CHECKBOX_CLICK_ACTION, MatCheckboxChange } from '@angular/material/checkbox';
 import { ALLOWED_STATES } from 'src/app/shared/models/acl/crud-operations.model';
-import { Observable } from 'rxjs';
 import { BaseNodeComponent } from '../base.node.component';
 
 
@@ -11,7 +9,7 @@ import { BaseNodeComponent } from '../base.node.component';
   templateUrl: './field.component.html',
   styleUrls: [ './field.component.scss' ],
   providers: [
-    { provide: MAT_CHECKBOX_CLICK_ACTION, useValue: 'noop' }
+    // { provide: MAT_CHECKBOX_CLICK_ACTION, useValue: 'noop' }
   ]
 } )
 export class FieldComponent extends BaseNodeComponent {
@@ -24,11 +22,10 @@ export class FieldComponent extends BaseNodeComponent {
    */
   onClick( event: MouseEvent ) {
     event.stopPropagation() // avoid click event propagate to parent div that select/deselect node
+  }
+  onCheckChange( event: MatCheckboxChange ) {
     var node = JSON.parse( JSON.stringify( this.node ) )
-
-    // Just invert check state and emit changes
-    node.checked = ( node.checked == ALLOWED_STATES.ALLOWED ? ALLOWED_STATES.FORBIDDEN : ALLOWED_STATES.ALLOWED )
+    node.checked = event.checked == true ? ALLOWED_STATES.ALLOWED : ALLOWED_STATES.FORBIDDEN
     this.checkChange.emit( node )
   }
-
 }

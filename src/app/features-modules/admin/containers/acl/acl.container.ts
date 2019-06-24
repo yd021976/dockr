@@ -1,5 +1,5 @@
 import { BaseTreeControl } from '@angular/cdk/tree';
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnDestroy } from '@angular/core';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { MatTreeFlatDataSource } from '@angular/material/tree';
 import { OnInit } from '@angular/core';
@@ -10,18 +10,19 @@ import { FlatTreeNode } from '../../services/treeNodes.service';
 import { NODE_TYPES } from '../../../../shared/models/acl/treenode.model';
 import { TreeNodesService } from '../../services/treeNodes.service';
 import { AclTreeColmodel } from 'src/app/shared/models/acl/acl-tree-colmodel.model';
-import { Observable } from 'rxjs';
-import { BackendServiceModel } from 'src/app/shared/models/acl/backend-services.model';
+import { Observable, of } from 'rxjs';
+import { map, flatMap, take, switchMap } from 'rxjs/operators'
 import { AddRoleDialogComponent, dialogResult } from '../../components/acl/dialogs/add.role/add.role.dialog.component';
 import { AddServiceDialogComponent, AddServiceDialogComponent_dialogResult } from '../../components/acl/dialogs/add.service/add.service.dialog.component';
 import { AclComponent } from '../../components/acl/acl.component';
+import { CandeactivateAclDialog } from '../../components/acl/dialogs/can.deactivate.acl/can.deactivate.acl.dialog.component';
 
 @Component( {
   selector: 'app-acl-container',
   templateUrl: './acl.container.html',
   styleUrls: [ './acl.container.scss' ]
 } )
-export class AclContainer implements OnInit {
+export class AclContainer implements OnInit, OnDestroy {
   @ViewChild( 'AclTree', { static: true } ) treeComponent: AclComponent
 
   public treecontroller: BaseTreeControl<FlatTreeNode>
@@ -35,6 +36,7 @@ export class AclContainer implements OnInit {
 
   private dialog_AddRole: MatDialogRef<AddRoleDialogComponent>
   private dialog_AddService: MatDialogRef<AddServiceDialogComponent>
+  private dialog_candeactivateAcl: MatDialogRef<CandeactivateAclDialog>
   private dialogService: MatDialog
 
   constructor( public sandbox: AdminAclSandboxService, public treeService: TreeNodesService, dialogService: MatDialog ) {
@@ -65,6 +67,7 @@ export class AclContainer implements OnInit {
 
   }
 
+
   private setColmodel(): AclTreeColmodel[] {
     return [
       {
@@ -86,12 +89,34 @@ export class AclContainer implements OnInit {
     ]
   }
   /**
-   * 
+   * Load data and sets lock/unlock state
    */
   ngOnInit() {
     this.sandbox.init()
   }
 
+  /**
+   *
+   */
+  ngOnDestroy() {
+  }
+
+  /**
+   * 
+   */
+  canDeactivate(): Observable<boolean> {
+    var result = this.aclLocked$.pipe( switchMap( ( locked ) => {
+      if ( locked ) {
+        // ACL data are locked, ask user to confirm exiting without unlock
+        this.dialog_candeactivateAcl = this.dialogService.open( CandeactivateAclDialog, { disableClose: true } )
+        return ( this.dialog_candeactivateAcl.afterClosed().pipe( map( result => result ) ) ) as Observable<boolean>
+      } else {
+        return of( true )
+      }
+    } ) )
+
+    return result
+  }
   add_role( node: FlatTreeNode ) {
     if ( !this.dialog_AddRole ) {
       this.dialog_AddRole = this.dialogService.open( AddRoleDialogComponent, { disableClose: true } )
@@ -142,14 +167,14 @@ export class AclContainer implements OnInit {
 
 
   /**
-   * Lock screen to edit data
+   * Lock ACL data to allow editing
    */
   lock() {
     this.sandbox.lockResource()
   }
 
   /**
-   * Unlock screen
+   * Unlock ACL data
    */
   unlock() {
     this.sandbox.releaseResource()
