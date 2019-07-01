@@ -1,7 +1,7 @@
 import { RoleEntity, RoleEntities } from "src/app/shared/models/acl/roles.model";
 import { action_remove_entity } from './actions'
-import { BackendServicesEntities } from "src/app/shared/models/acl/backend-services.model";
-import { CrudOperationsModelEntities } from "src/app/shared/models/acl/crud-operations.model";
+import { BackendServicesEntities, BackendServiceEntity } from "src/app/shared/models/acl/backend-services.model";
+import { CrudOperationsModelEntities, CrudOperationModelEntity } from "src/app/shared/models/acl/crud-operations.model";
 import { DataModelPropertyEntities } from "src/app/shared/models/acl/datamodel.model";
 import { role_get_service_index } from "./roles";
 /**
@@ -21,7 +21,10 @@ export function service_get_parent( service_uid: string, role_entities: RoleEnti
 }
 
 
-
+export function service_get_entityFromUid( entity_uid: string, service_entities: BackendServicesEntities ):BackendServiceEntity {
+    const service_entity = service_entities[ entity_uid ] || null
+    return service_entity
+}
 /**
  * Remove a service entity from state
  * 
@@ -40,7 +43,7 @@ export function service_remove_entity(
     // IMPORTANT: Throws error if no role is found
     var role_entity = service_get_parent( service_uid, role_entities )
     if ( role_entity === null ) {
-        throw new Error( '[service_remove_entity] Service <' + service_uid + '> belong to no role in state' )
+        throw new Error( '[service_remove_entity] Service <' + service_uid + '> has no associated role in state' )
     }
 
     // get service index in role services list

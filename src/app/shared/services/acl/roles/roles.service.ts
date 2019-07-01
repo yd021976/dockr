@@ -58,8 +58,12 @@ export class RolesService {
                     return this.service.create( role )
                 } else {
                     // If no create forcing, try to update
-                    return this.service.update( role._id, role )
+                    return this.service.patch( role._id, role )
                 }
             } )
+    }
+
+    public async delete( role_id: string ): Promise<any> {
+        return this.service.remove( role_id )
     }
 }

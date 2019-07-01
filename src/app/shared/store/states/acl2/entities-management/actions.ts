@@ -70,3 +70,8 @@ export function action_update_allowed( action_uid: string, action_entities: Crud
         action_entity.allowed = ALLOWED_STATES.INDETERMINATE
     }
 }
+
+export function action_get_entityFromUid( entity_uid: string, action_entities: CrudOperationsModelEntities ): CrudOperationModelEntity {
+    const entity = action_entities[ entity_uid ] || null
+    return entity
+}

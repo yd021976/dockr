@@ -143,7 +143,7 @@ export class AclContainer implements OnInit, OnDestroy {
       this.dialog_AddService.afterClosed().subscribe( ( data: AddServiceDialogComponent_dialogResult ) => {
         if ( !data.cancelled && data.result != null ) {
 
-          this.sandbox.role_add_service( node.data.uid, JSON.parse( JSON.stringify( data.result ) ) ) // Ensure we create a new instance of the service model
+          this.sandbox.role_add_service( node.data, JSON.parse( JSON.stringify( data.result ) ) ) // Ensure we create a new instance of the service model
           this.treeComponent.node_ExpandNode( node )
         }
         this.dialog_AddService = null
@@ -151,7 +151,7 @@ export class AclContainer implements OnInit, OnDestroy {
     }
   }
   remove_service( node: FlatTreeNode ) {
-    this.sandbox.services_remove_entity( node )
+    this.sandbox.services_remove_entity( node.data as AclTreeNode )
   }
 
   onFieldCheckChange( node: AclTreeNode ) {

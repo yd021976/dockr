@@ -153,3 +153,8 @@ export function field_get_root_field( field_uid: string, field_entities: DataMod
     }
     return field_entities[ parent_field_uid ]
 }
+
+export function field_get_entityFromUid( entity_uid: string, field_entities: DataModelPropertyEntities ): DataModelPropertyEntity {
+    const entity: DataModelPropertyEntity = field_entities[ entity_uid ] || null
+    return entity
+}
