@@ -18,13 +18,12 @@ export class DashboardSandbox extends BaseSandboxService {
 
     constructor(
         protected templatesService: TemplatesService,
-        notificationService: NotificationBaseService,
         store: Store,
         @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerService,
         protected backend: FeathersjsBackendService,
         private authService: AuthService ) {
 
-        super( notificationService, store, loggerService );
+        super( store, loggerService );
         this.loggerService.createLogger( this.loggerName );
     }
 

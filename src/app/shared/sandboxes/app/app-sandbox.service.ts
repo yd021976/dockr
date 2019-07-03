@@ -10,26 +10,26 @@ import { AppLoggerServiceToken } from '../../services/logger/app-logger/app-logg
 import { AppLoggerService } from '../../services/logger/app-logger/service/app-logger.service';
 import { Store, Select } from '@ngxs/store';
 import { AppNotificationsState } from '../../store/states/application.notifications.state';
+import { ApplicationNotification } from '../../models/acl2/application.notifications.model';
 
 @Injectable()
 export class AppSandboxService extends BaseSandboxService {
     private static loginCount: number = 0
     private readonly loggerName: string = "AppSandboxService";
-    @Select( AppNotificationsState.errorsList$ ) private errors$: Observable<string[]>
+    @Select( AppNotificationsState.notifications$ ) private notifications: Observable<ApplicationNotification[]>
 
     constructor(
-        notificationService: NotificationBaseService,
         @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerService,
         public authservice: AuthService,
         protected store: Store
     ) {
-        super( notificationService, store, loggerService );
+        super( store, loggerService );
     }
     /**
      * State selectors
      */
-    public getErrors$() {
-        return this.errors$
+    public getNotifications$() {
+        return this.notifications
     }
 
     /**

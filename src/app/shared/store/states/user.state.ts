@@ -7,6 +7,8 @@ import { AppLoggerService } from '../../services/logger/app-logger/service/app-l
 import { stat } from 'fs';
 
 export const default_state_user: UserModel = {
+    "_id": '',
+    "anonymous": false,
     "nickname": '',
     "email": '',
     "isLoggedIn": false,

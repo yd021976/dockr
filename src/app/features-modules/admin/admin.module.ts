@@ -42,18 +42,24 @@ import { AddRoleDialogComponent } from './components/acl/dialogs/add.role/add.ro
 import { AddServiceDialogComponent } from './components/acl/dialogs/add.service/add.service.dialog.component';
 import { ResourcesLocksService } from 'src/app/shared/services/resource_locks/resources.locks.service';
 import { CandeactivateAclDialog } from './components/acl/dialogs/can.deactivate.acl/can.deactivate.acl.dialog.component';
+import { AdminUsersSandboxService } from 'src/app/shared/sandboxes/containers/admin.users.sandbox.service';
+import { ComponentsModule } from 'src/app/shared/components';
+import { RolesListComponent } from './components/users/roles.list/roles.list.component';
+import { UsersListComponent } from './components/users/users.list/users.list.component';
+import { UserDetailsComponent } from './components/users/user.details/user.details.component';
 
 const components = [
   AclContainer, UsersContainer, UsersComponent, AclComponent, ActionComponent, FieldComponent, RoleComponent, ServiceComponent,
+  RolesListComponent, UsersListComponent, UserDetailsComponent,
   NodeDetailComponent,
   RoleDetailComponent, ServiceDetailComponent, ActionDetailComponent, FieldDetailComponent,
   NodeActionsComponent, DefaultActionComponent, RoleActionComponent, ServiceActionComponent, CrudActionComponent, FieldActionComponent,
-  AddRoleDialogComponent, AddServiceDialogComponent,CandeactivateAclDialog,
+  AddRoleDialogComponent, AddServiceDialogComponent, CandeactivateAclDialog,
   // To delete
   AdminComponent
 ]
 
-@NgModule({
+@NgModule( {
   imports: [
     CommonModule,
     BrowserAnimationsModule,
@@ -70,10 +76,11 @@ const components = [
     MatProgressBarModule,
     MatToolbarModule,
     MatDialogModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    ComponentsModule
   ],
   declarations: components,
-  entryComponents: [AddRoleDialogComponent, AddServiceDialogComponent, CandeactivateAclDialog],
-  providers: [AdminAclSandboxService, TreeNodesService, ResourcesLocksService]
-})
+  entryComponents: [ AddRoleDialogComponent, AddServiceDialogComponent, CandeactivateAclDialog ],
+  providers: [ AdminAclSandboxService, AdminUsersSandboxService, TreeNodesService, ResourcesLocksService ]
+} )
 export class AdminModule { }

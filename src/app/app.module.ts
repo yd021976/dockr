@@ -24,6 +24,7 @@ import { Acl2State } from './shared/store/states/acl2/acl2.state';
 import { SnackBarComponent } from './shared/components/snackbar/snack-bar.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppNotificationsState } from './shared/store/states/application.notifications.state';
+import { UsersState } from './shared/store/states/users.state';
 
 /**
  * Factory used by this module token APP_INITIALIZER -> Auth user with local token if one exists and is valid 
@@ -51,6 +52,7 @@ export function authUser( appsandbox: AppSandboxService ) {
     NgxsModule.forRoot( [
       ApplicationState,
       UserState,
+      UsersState,
       TemplatesState,
       Acl2State,
       ServicesState,

@@ -1,4 +1,4 @@
-import { Inject } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Store } from "@ngxs/store";
 import { AclTreeNode, NODE_TYPES } from "../../models/acl/treenode.model";
@@ -6,7 +6,6 @@ import { AppLoggerService } from "../../services/logger/app-logger/service/app-l
 import { AppLoggerServiceToken } from "../../services/logger/app-logger/app-logger-token";
 import { BackendServiceModel } from "../../models/acl/backend-services.model";
 import { BaseSandboxService } from "../base-sandbox.service";
-import { NotificationBaseService } from "../../services/notifications/notifications-base.service";
 import { RolesService } from "../../services/acl/roles/roles.service";
 import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
 import { BackendServicesService } from "../../services/acl/services/backend-services.service";
@@ -26,7 +25,8 @@ import { Acl_Role_Add_Service_Error } from "../../store/actions/acl/acl.actions"
 import { v4 as uuid } from 'uuid';
 
 
-@Inject( { providedIn: 'root' } )
+// @Inject( { providedIn: 'root' } )
+@Injectable()
 export class AdminAclSandboxService extends BaseSandboxService {
     public acltreenodes$: Observable<AclTreeNode[]>
     public currentSelectedNode$: Observable<FlatTreeNode>
@@ -34,14 +34,13 @@ export class AdminAclSandboxService extends BaseSandboxService {
     public isAclLocked$: Observable<boolean>
 
     constructor(
-        notificationService: NotificationBaseService,
         store: Store,
         @Inject( AppLoggerServiceToken ) public logger: AppLoggerService,
         private rolesService: RolesService,
         private backendServices: BackendServicesService,
         private resourcesLocksService: ResourcesLocksService ) {
 
-        super( notificationService, store, logger );
+        super( store, logger )
         this.acltreenodes$ = this.store.select( Acl2State.treenode_getData() ) // ACL Observable
         this.currentSelectedNode$ = this.store.select( Acl2State.treenodes_get_currentSelectedNode )
         this.availableServices$ = this.store.select( Acl2State.role_get_availableServices )

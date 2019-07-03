@@ -5,22 +5,30 @@
 <br>
 
 - <b>Authentication (module & service)</b>
-    * [ ] Refactor and simplify auth mechanism for 1st connection and token expiration
+    * [x] Refactor and simplify auth mechanism for 1st connection and token expiration
 <br>
 
 - <b>Settings module</b>
-    * [ ] Structure module with root container/dumb components (app-outlet) like admin module
+    * [x] Structure module with root container/dumb components (app-outlet) like admin module
 <br>
 
-- <b>To implement</b> (need to be more detailed)
-    * ACL mechanism
-        * [ ] Implement in front end  (services, guards, components ...)
-        * [ ] Finish backend implementation
-    * Front end modules
-        * [ ] Admin users, settings, acl
-        * [ ] Document templates (a lot of work)
-        * [ ] Document module (view, search, edit properties)
-        * [ ] Dashboard
+- <b>Notification system</b>
+    * [ ] Un duplicate notification service and notifications state (Should remove references to the service "NotificationBaseService" and keep state instead) 
+<br>
+
+- <b>ACL mechanism</b> (need to be more detailed)
+    * [ ] Implement ACL control in front end  (services, guards, components ...)
+    * [x] Backend : Implement storage
+    * [ ] Backend : Implement ACL controls
+<br>
+    
+- <b>Front end modules</b>
+    * [ ] Users
+    * [ ] Settings
+    * [x] Acl
+    * [ ] Document templates (a lot of work)
+    * [ ] Document module (view, search, edit properties)
+    * [ ] Dashboard
 <br>
 
 - <b>Unit tests</b>

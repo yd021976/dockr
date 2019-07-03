@@ -5,7 +5,6 @@ import { Store, Select } from '@ngxs/store';
 
 import { ApplicationState } from '../../store/states/application.state';
 import { FeathersjsBackendService } from '../../services/backend_API_Endpoints/socketio/backend-feathers.service';
-import { NotificationBaseService } from '../../services/notifications/notifications-base.service';
 import { BaseSandboxService } from '../base-sandbox.service';
 import { UserModel } from '../../models/user.model';
 import { AppLoggerService } from '../../services/logger/app-logger/service/app-logger.service';
@@ -19,12 +18,11 @@ export class LayoutContainerSandboxService extends BaseSandboxService {
 
     constructor(
         private feathers: FeathersjsBackendService,
-        notificationService: NotificationBaseService,
         @Inject(AppLoggerServiceToken) public loggerService: AppLoggerService,
         store: Store,
         private router: Router
     ) {
-        super(notificationService, store, loggerService);
+        super(store, loggerService);
         this.loggerService.createLogger(this.loggerName);
         this.ApiServiceConnectionState$ = this.feathers.connectionState$;
     }

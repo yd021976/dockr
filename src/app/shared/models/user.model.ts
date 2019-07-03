@@ -1,4 +1,4 @@
-import {FeathersAuthCredentials} from '@feathersjs/authentication-client'
+import { FeathersAuthCredentials } from '@feathersjs/authentication-client'
 
 export interface loginCredentials extends FeathersAuthCredentials {
   strategy: string,
@@ -7,37 +7,40 @@ export interface loginCredentials extends FeathersAuthCredentials {
   requestedUrl?: string
 }
 
-export class UserBackendApiModel {
-  email: string;
-  anonymous: any;
-}
 
-export class UserModel {
-  /**
-   * User nickname
-   * Should be empty for anonymous users
-   */
-  nickname?: string;
+export class UserBackendApiModel {
   /**
    * User email
    * Should be empty for anonymous users
    */
   email?: string;
+  anonymous: any;
+}
+export class UserModelBase extends UserBackendApiModel {
+  _id: string
+  /**
+   * User's roles
+   * TODO: implements "roles" type instead of "any"
+   */
+  roles: string[]
+  /**
+   * User's application settings
+   * TODO: implements "settings" type instead of "any"
+   */
+  settings: any[]
+}
+export class UserModel extends UserModelBase {
+  /**
+   * User nickname
+   * Should be empty for anonymous users
+   */
+  nickname?: string;
+
   /**
    * Anonymous user flag 
    */
   isAnonymous: boolean;
 
-  /**
-   * User's application settings
-   * TODO: implements "settings" type instead of "any"
-   */
-  settings: any;
-  /**
-   * User's roles
-   * TODO: implements "roles" type instead of "any"
-   */
-  roles: any;
   /**
    * Flag if user is loggedin (anonymous or not)
    */
@@ -55,7 +58,18 @@ export class UserModel {
    */
   error: string;
 
-  constructor(user: UserModel) {
-    Object.assign(this, user);
+  constructor( user: UserModel ) {
+    super()
+    Object.assign( this, user );
   }
+}
+
+/**
+ * 
+ */
+export class UsersModel {
+  users: UserModelBase[]
+  isLoading: boolean
+  isError: boolean
+  error: string
 }

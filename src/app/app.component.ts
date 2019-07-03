@@ -1,8 +1,9 @@
-import { Component } from '@angular/core'
+import { Component, OnDestroy } from '@angular/core'
 import { AppSandboxService } from './shared/sandboxes/app/app-sandbox.service';
 import { MatSnackBarRef, MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarComponent } from './shared/components/snackbar/snack-bar.component';
 import { Observable, Subscription } from 'rxjs';
+import { ApplicationNotification } from './shared/models/acl2/application.notifications.model';
 
 
 @Component( {
@@ -10,9 +11,9 @@ import { Observable, Subscription } from 'rxjs';
   templateUrl: './app.component.html',
   styleUrls: [ './app.component.scss' ]
 } )
-export class AppComponent {
+export class AppComponent implements OnDestroy {
   private snackbarRef: MatSnackBarRef<SnackBarComponent> = null
-  private errors$: Observable<string[]>
+  private notifications: Observable<ApplicationNotification[]>
   private error_subscribtion: Subscription
 
   title = 'dockr';
@@ -22,15 +23,15 @@ export class AppComponent {
    * @param sandbox 
    */
   constructor( public sandbox: AppSandboxService, private snackbar: MatSnackBar ) {
-    this.errors$ = this.sandbox.getErrors$()
-    this.error_subscribtion = this.errors$.subscribe( errors => {
-      if ( !errors.length ) return
+    this.notifications = this.sandbox.getNotifications$()
+    this.error_subscribtion = this.notifications.subscribe( (notifications:ApplicationNotification[]) => {
+      if ( !notifications.length ) return
 
       if ( this.snackbarRef ) {
-        this.snackbarRef.instance.errors = errors
+        this.snackbarRef.instance.notifications = notifications
       }
       else {
-        this.snackbarRef = this.snackbar.openFromComponent( SnackBarComponent, { data: errors, verticalPosition: 'top', duration: 5000 } )
+        this.snackbarRef = this.snackbar.openFromComponent( SnackBarComponent, { data: notifications, verticalPosition: 'top', duration: 5000 } )
         this.snackbarRef.afterDismissed().subscribe( () => { this.snackbarRef = null } )
       }
     } )
@@ -41,5 +42,8 @@ export class AppComponent {
    */
   ngOnInit() {
 
+  }
+  ngOnDestroy() {
+    if ( this.error_subscribtion ) this.error_subscribtion.unsubscribe()
   }
 }

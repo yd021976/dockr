@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
+import { ApplicationNotification } from '../../models/acl2/application.notifications.model';
 
 /**
  * component that display application errors 
@@ -12,7 +13,7 @@ import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 } )
 export class SnackBarComponent implements OnInit {
 
-  constructor( @Inject( MAT_SNACK_BAR_DATA ) public errors: string[] ) { }
+  constructor( @Inject( MAT_SNACK_BAR_DATA ) public notifications: ApplicationNotification[] ) { }
 
   ngOnInit() { }
 

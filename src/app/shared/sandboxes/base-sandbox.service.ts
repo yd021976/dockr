@@ -14,5 +14,5 @@ export abstract class BaseSandboxService {
     @Select(ApplicationState.getCurrentUser) public currentUser$:Observable<UserModel>
     @Select(ApplicationState.isProgress) public isProgress$:Observable<boolean>
 
-    constructor(public notificationService: NotificationBaseService, protected store: Store, protected loggerService: any) { }
+    constructor(protected store: Store, protected loggerService: any) { }
 }

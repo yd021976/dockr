@@ -11,14 +11,16 @@ import { AppNotificationsState, default_state_application_notifications } from '
 import { ApplicationNotifications_Shift_Message, ApplicationNotifications_Append_Message } from '../actions/application-notifications.actions';
 import { AppError, errorType } from '../../models/app-error.model';
 import { ApplicationNotification, ApplicationNotificationType } from '../../models/acl2/application.notifications.model';
+import { UsersState, default_state_users } from './users.state';
 
 @State<ApplicationStateModel>( {
     name: 'application',
-    children: [ UserState, TemplatesState, Acl2State, ServicesState, AppNotificationsState ],
+    children: [ UserState, TemplatesState, Acl2State, ServicesState, AppNotificationsState, UsersState ],
     defaults: {
         backendServices: default_state_services,
         templates: default_state_templates,
         user: default_state_user,
+        users: default_state_users,
         notifications: default_state_application_notifications
     }
 } )

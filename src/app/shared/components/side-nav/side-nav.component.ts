@@ -1,8 +1,7 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 // App Types
 import { AppRoute } from '../../models/app-route.model';
-import { MatAccordion } from '@angular/material/expansion';
 
 
 @Component({

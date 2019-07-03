@@ -26,12 +26,11 @@ export class AuthSandbox extends BaseSandboxService {
 
     constructor(
         protected authService: AuthService,
-        notificationService: NotificationBaseService,
         @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerService,
         store: Store,
         protected router: Router
     ) {
-        super( notificationService, store, loggerService );
+        super( store, loggerService );
         this.loggerService.createLogger( this.loggerName );
 
         // get notifications about session expired

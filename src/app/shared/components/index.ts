@@ -17,6 +17,8 @@ import { OutletComponent } from './outlet/outlet.component';
 import { SideNavComponent } from './side-nav/side-nav.component';
 import { MenuPanelComponent } from './side-nav/menu-panel/menu-panel.component';
 import { MenuLinkComponent } from './side-nav/menu-link/menu-link.component';
+import { SearchbarComponent } from './searchbar/searchbar.component';
+import { MatInputModule } from '@angular/material/input';
 
 export const components = [
     BackdropComponent,
@@ -27,11 +29,13 @@ export const components = [
     SideNavComponent,
     MenuPanelComponent,
     MenuLinkComponent,
+    SearchbarComponent,
 ];
 
 @NgModule({
     imports: [
         CommonModule,
+        MatInputModule,
         MatButtonModule,
         MatDialogModule,
         MatExpansionModule,
