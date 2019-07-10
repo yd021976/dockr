@@ -43,6 +43,18 @@ export class Acl2State {
     constructor() { }
     @Action( Acl_Load_All )
     acl_load_all( ctx: StateContext<Acl2StateModel>, action: Acl_Load_All ) {
+        ctx.patchState( {
+            isLoading: true,
+            isError: false,
+            error: '',
+            entities: {
+                roles: {},
+                services: {},
+                actions: {},
+                fields: {}
+            },
+            previous_entities: null,
+        } )
     }
 
     @Action( Acl_Load_All_Success )

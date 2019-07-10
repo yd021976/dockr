@@ -11,7 +11,7 @@ export class DefaultActionComponent implements OnInit {
 
   ngOnInit() {
   }
-  onAddRole($event: MouseEvent) {
+  onAddRole() {
     this.addRole.emit()
   }
 }

@@ -24,3 +24,46 @@
     vertical-align: middle;
     font-size: $root-title-size; // Sets title font size
 }
+
+app-menu-panel {
+
+    // Set panel body with no padding to avoid children to be indented
+    .mat-expansion-panel-body {
+        padding: 0;
+        padding-top: 4px;
+        min-height: 32px;
+
+        /* first level */
+        .mat-expansion-panel {
+            .mat-expansion-panel-header {
+                padding-left: 5px;
+            }
+
+            a {
+                padding-left: 34px;
+            }
+
+            /* second level */
+            .mat-expansion-panel {
+                .mat-expansion-panel-header {
+                    padding-left: 31px;
+                }
+
+                a {
+                    padding-left: 60px;
+                }
+
+                /* third level */
+                .mat-expansion-panel {
+                    .mat-expansion-panel-header {
+                        padding-left: 62px;
+                    }
+
+                    a {
+                        padding-left: 102px;
+                    }
+                }
+            }
+        }
+    }
+}

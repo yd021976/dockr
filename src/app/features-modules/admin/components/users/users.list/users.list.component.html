@@ -1,1 +1,10 @@
-<div>User details</div>
+<div class="container">
+    <fieldset fxFlex="1 0 auto" fxLayout="column">
+        <legend>Users list</legend>
+        <mat-list>
+            <mat-list-item *ngFor="let user of users" (click)="onUserClick(user)" [class.selected]="user==selected_user">
+                <div [class.selected]="user==selected_user">{{user.email}}</div>
+            </mat-list-item>
+        </mat-list>
+    </fieldset>
+</div>

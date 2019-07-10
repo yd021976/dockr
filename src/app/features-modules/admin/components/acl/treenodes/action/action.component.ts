@@ -13,11 +13,7 @@ export class ActionComponent extends BaseNodeComponent implements OnInit, OnDest
 
   ngOnDestroy() { }
 
-  ngOnInit() {
-    this.editable$.subscribe( state => {
-      let a = 0
-    } )
-  }
+  ngOnInit() { }
 
   onClick( event: MouseEvent ) {
     event.stopPropagation()

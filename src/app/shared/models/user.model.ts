@@ -69,6 +69,8 @@ export class UserModel extends UserModelBase {
  */
 export class UsersModel {
   users: UserModelBase[]
+  selected_user: UserModelBase
+  previous_state_users : UserModelBase[]
   isLoading: boolean
   isError: boolean
   error: string

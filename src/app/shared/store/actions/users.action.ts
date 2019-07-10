@@ -44,27 +44,15 @@ export class Users_Select_User {
     constructor( public user: UserModelBase ) { }
 }
 
-export class Users_Add_Role {
-    static readonly type = '[users] add role';
-    constructor( public user: UserModelBase, public role: RoleModel ) { }
+export class Users_Update_User {
+    static readonly type = '[users] update user';
+    constructor() { }
 }
-export class Users_Add_Role_Success {
-    static readonly type = '[users] add role success';
-    constructor( public user: UserModelBase, public role: RoleModel ) { }
+export class Users_Update_User_Success {
+    static readonly type = '[users] update user success';
+    constructor( public user: UserModelBase ) { }
 }
-export class Users_Add_Role_Error {
-    static readonly type = '[users] add role error';
-    constructor( public error: string ) { }
-}
-export class Users_Remove_Role {
-    static readonly type = '[users] remove role';
-    constructor( public user: UserModelBase, public role: RoleModel ) { }
-}
-export class Users_Remove_Role_Success {
-    static readonly type = '[users] remove role success';
-    constructor( public user: UserModelBase, public role: RoleModel ) { }
-}
-export class Users_Remove_Role_Error {
-    static readonly type = '[users] remove role error';
+export class Users_Update_User_Error {
+    static readonly type = '[users] update user error';
     constructor( public error: string ) { }
 }

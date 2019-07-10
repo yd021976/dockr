@@ -3,8 +3,9 @@
         .mat-badge-content {
             width: 10px;
             height: 10px;
-            line-height: 10px;
+            line-height: 8px;
             font-size: 8px;
+            transition: none;
         }
         
         &.mat-badge-before {

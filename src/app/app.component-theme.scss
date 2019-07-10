@@ -1,15 +1,12 @@
 // Import all the tools needed to customize the theme and extract parts of it
 @import '~@angular/material/theming';
+@import './app-theme-globals.scss';
 
 // Define a mixin that accepts a theme and outputs the color styles for the component.
-@mixin app-component($theme) {
-  // Extract whichever individual palettes you need from the theme.
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-
-  // Use mat-color to extract individual colors from a palette as necessary.
-  .sidenav {
-    background-color: mat-color($primary,800);
-    color:white;
-  }
+@mixin app-component-theme($theme) {
+    // Use mat-color to extract individual colors from a palette as necessary.
+    .sidenav {
+        background-color: mat-color(primary-palette($theme), 800);
+        color: white;
+    }
 }

@@ -25,12 +25,12 @@ export class TreeNodesService {
 
     public get dataSource$() { return this._dataSource$ };
     public set dataSource$( dataSource$: Observable<any> ) {
-        if ( this.dataSourceSubscription ) this.dataSourceSubscription.unsubscribe()
+        this.unSubscribeSource() // ensure we unsubscribe previous observable if any
         this._dataSource$ = dataSource$
         this.dataSourceSubscription = this._dataSource$.subscribe( ( nodes ) => {
             this._dataSource.data = nodes
         } )
-    };
+    }
 
     public get treeControl(): FlatTreeControl<FlatTreeNode> { return this._treeControl }
     public get treeFlatDataSource(): MatTreeFlatDataSource<any, FlatTreeNode> { return this._dataSource }
@@ -55,6 +55,12 @@ export class TreeNodesService {
         this._dataSource = new MatTreeFlatDataSource<any, FlatTreeNode>( this._treeControl, this._treeFlatenner )
     }
 
+    /**
+     * 
+     */
+    public unSubscribeSource() {
+        if ( this.dataSourceSubscription ) this.dataSourceSubscription.unsubscribe()
+    }
     /**
      * Get the root node from a given node in the tree. loop in reverse order in the tree until it find the first node tree level (level 0) 
      * @param node 
@@ -105,13 +111,16 @@ export class TreeNodesService {
         var flatNode: FlatTreeNode
 
         // Check if flat node already exists. If so, return tree control flat node and update level property
-        this._treeControl.dataNodes.forEach( ( value: FlatTreeNode ) => {
-            if ( value.data[ this.nodeEqualityKey ] == node[ this.nodeEqualityKey ] ) {
-                flatNode = value // keep same object reference to avoid tree to collapse
-                flatNode.data = node // update node data to update node view
-                flatNode.level = level
-            }
-        } )
+        if ( this._treeControl.dataNodes ) {
+            this._treeControl.dataNodes.forEach( ( value: FlatTreeNode ) => {
+                if ( value.data[ this.nodeEqualityKey ] == node[ this.nodeEqualityKey ] ) {
+                    flatNode = value // keep same object reference to avoid tree to collapse
+                    flatNode.data = node // update node data to update node view
+                    flatNode.level = level
+                }
+            } )
+        }
+
         if ( flatNode ) return flatNode
 
         flatNode = {

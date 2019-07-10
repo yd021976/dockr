@@ -3,8 +3,8 @@ import { AuthSandbox } from '../../auth.sandbox';
 
 @Component({
   selector: 'app-logout-container',
-  templateUrl: './logout.component.html',
-  styleUrls: ['./logout.component.scss']
+  templateUrl: './logout.container.html',
+  styleUrls: ['./logout.container.scss']
 })
 export class LogoutContainer implements OnInit, OnDestroy {
   private readonly loggerName: string = 'LogoutContainer'

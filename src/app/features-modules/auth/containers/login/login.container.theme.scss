@@ -1,0 +1,7 @@
+// Import all the tools needed to customize the theme and extract parts of it
+@import '~@angular/material/theming';
+@import '../../../../../styles/app-theme-globals.scss';
+
+// Define a mixin that accepts a theme and outputs the color styles for the component.
+@mixin auth-container-login-theme($theme) {
+}

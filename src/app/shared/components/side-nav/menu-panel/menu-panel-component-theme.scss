@@ -4,7 +4,7 @@
     Define a mixin that accepts a theme and outputs the color styles for the component.
 */
 
-@mixin menu-panel-component-colors($theme) {
+@mixin menu-panel-component-theme($theme) {
     app-menu-panel {
         .mat-expansion-panel {
             background-color: background-color($theme);
@@ -83,43 +83,7 @@
 */
 
 // TODO: Move menu links indentation to menu-link-component
-@mixin menu-panel-component-structure($theme) {
-    app-menu-panel {
-        // Set panel body with no padding to avoid children to be indented
-        .mat-expansion-panel-body {
-            padding: 0;
-            padding-top: 4px;
-            min-height: 32px;
-            /* first level */
-            .mat-expansion-panel {
-                .mat-expansion-panel-header {
-                    padding-left: 5px;
-                }
-                a {
-                    padding-left: 34px;
-                }
-                /* second level */
-                .mat-expansion-panel {
-                    .mat-expansion-panel-header {
-                        padding-left: 31px;
-                    }
-                    a {
-                        padding-left: 60px;
-                    }
-                    /* third level */
-                    .mat-expansion-panel {
-                        .mat-expansion-panel-header {
-                            padding-left: 62px;
-                        }
-                        a {
-                            padding-left: 102px;
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+
 
 // left border color
 @mixin border-left($border-color) {

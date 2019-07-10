@@ -3,7 +3,7 @@ import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.
 
 export class Acl_Load_All {
     static readonly type = '[acl] load all';
-    constructor( public roles: RoleModel[] ) { }
+    constructor() { }
 }
 export class Acl_Load_All_Success {
     static readonly type = '[acl] load all success';

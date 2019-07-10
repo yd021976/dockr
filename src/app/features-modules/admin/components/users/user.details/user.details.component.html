@@ -1,1 +1,19 @@
-<div>User details</div>
+<div class="container">
+    <fieldset fxFlex="1 0 auto" fxLayout="column">
+        <legend>User details</legend>
+        <div class="user-details-contents" *ngIf="user!=null">
+            <form>
+                <mat-form-field class="user-details-email">
+                    <input matInput placeholder="e-mail" [value]="email" (change)="onUserChange(user)">
+                </mat-form-field>
+                <mat-selection-list (selectionChange)="roleSelectionChange($event)">
+                    <mat-list-option *ngFor="let available_role of available_roles" [selected]="userHasRole(user,available_role)" [value]="available_role.name"
+                                     checkboxPosition="before">
+                        {{available_role.name}}
+                    </mat-list-option>
+
+                </mat-selection-list>
+            </form>
+        </div>
+    </fieldset>
+</div>

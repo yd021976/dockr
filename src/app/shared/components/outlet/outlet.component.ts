@@ -31,7 +31,8 @@ import 'web-animations-js'; // WARNING: Needed in safari for web animations to w
         query(':leave',
           [
             style({ opacity: 1 }),
-            animate('200ms', style({ opacity: 0, position: "fixed" }))
+            // animate('200ms', style({ opacity: 0, position: "fixed" }))
+            animate('200ms', style({ opacity: 0}))
           ],
           { optional: true }
         ),

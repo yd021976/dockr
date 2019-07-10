@@ -1,0 +1,7 @@
+@mixin admin-users-userDetails-theme($theme) {
+    app-admin-user-details {
+        fieldset {
+            border-color: border-light-color($theme)
+        }
+    }
+}

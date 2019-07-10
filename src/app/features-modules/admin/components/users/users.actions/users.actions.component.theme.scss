@@ -1,0 +1,6 @@
+@import '~@angular/material/theming';
+@import '../../../../../../styles/app-theme-globals.scss';
+
+@mixin admin-users-usersActions-theme($theme) {
+    app-admin-users-actions {}
+}

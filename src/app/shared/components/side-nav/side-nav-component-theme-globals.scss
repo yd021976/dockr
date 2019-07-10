@@ -3,6 +3,8 @@ Define side nav global theme variables
 **/
 
 @import '~@angular/material/theming';
+@import '../../../../styles/app-theme-globals.scss';
+
 //
 $root-menu-line-height: 25px;
 $root-icon-size:16px;
@@ -10,33 +12,37 @@ $root-title-size:16px;
 $child-menu-line-height: 20px;
 $child-icon-size:14px;
 $child-title-size:14px;
+
 //
 @function primary($theme) {
-    @return mat-color(map-get($theme, primary), 500);
+    // @return mat-color(map-get($theme, primary), 500);
+    @return primary-color($theme);
 }
 
 @function accent($theme) {
-    @return mat-color(map-get($theme, accent), 500);
+    // @return mat-color(map-get($theme, accent), 500);
+    @return accent-color($theme);
 }
 
 @function background-color($theme) {
-    @return mat-color(map-get($theme, primary), 800);
+    @return mat-color(primary-palette($theme), 800);
 }
 
 @function background-color-expanded($theme) {
-    @return mat-color(map-get($theme, primary), 700);
+    @return mat-color(primary-palette($theme), 700);
 }
 
 @function background-color-hover($theme) {
-    @return mat-color(map-get($theme, primary), 900);
+    // @return mat-color(map-get($theme, primary), 900);
+    @return background-dark-color($theme);
 }
 
 @function text-color($theme) {
-    @return mat-color(map-get($theme, primary), 400);
+    @return mat-color(primary-palette($theme), 400);
 }
 
 @function text-color-expanded($theme) {
-    @return mat-color(map-get($theme, primary), 50);
+    @return mat-color(primary-palette($theme), 50);
 }
 
 @function text-color-hover($theme) {
@@ -44,5 +50,5 @@ $child-title-size:14px;
 }
 
 @function text-color-linkactive($theme) {
-    @return mat-color(map-get($theme, accent), 400);
+    @return mat-color(accent-palette($theme), 400);
 }

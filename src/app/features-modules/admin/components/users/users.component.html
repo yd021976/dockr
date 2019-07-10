@@ -1,14 +1,22 @@
 <div class="container">
-  <div fxLayout="row">
-    <div fxLayout="column" fxFlex="0 1 auto" class="tree-wrapper">
-      <div fxFlex>
-      </div>
-      <div fxFlex>
-        <app-admin-users-list></app-admin-users-list>
-      </div>
+  <div fxLayout="column" fxLayoutGap="24px" fxFlex="1 0 auto">
+    <div fxFlex="0 0 auto">
+      <app-search-bar (searchText)="onSearchChange($event)"></app-search-bar>
     </div>
-    <div fxFlex>
-      <app-admin-user-details></app-admin-user-details>
+    <div fxFlex="1 0 auto">
+      <div fxLayout="row" fxLayoutGap="64px" fxFlex="1 0 auto">
+        <div fxFlex="2 2 300px">
+          <app-admin-users-list [users]="users$ | async" [selected_user]="selected_user$ | async" (user_selected)="onUserSelected($event)">
+          </app-admin-users-list>
+        </div>
+        <div fxFlex="0 1 auto">
+          <app-admin-users-actions [user]="selected_user$ | async" direction="column" (add_user)="onUserAdd()" (remove_user)="onUserRemove()">
+          </app-admin-users-actions>
+        </div>
+        <div fxFlex="3 3 500px">
+          <app-admin-user-details [user]="selected_user$ | async" [available_roles]="available_roles$ | async" (user_changed)="onUserChanged($event)"></app-admin-user-details>
+        </div>
+      </div>
     </div>
   </div>
 </div>

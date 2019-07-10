@@ -17,10 +17,10 @@ export class RoleActionComponent implements OnInit {
   ngOnInit() {
   }
 
-  onAddService(event: MouseEvent) {
+  onAddService() {
     this.addService.emit()
   }
-  onRemoveRole(event: MouseEvent) {
+  onRemoveRole() {
     this.removeRole.emit()
   }
 

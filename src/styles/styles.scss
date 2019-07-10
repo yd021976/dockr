@@ -1,0 +1,36 @@
+/* You can add global styles to this file, and also import other style files */
+
+body {
+    margin: 0 0;
+}
+
+// @import "material-design-icons/iconfont/material-icons.css";
+@import "@angular/material/prebuilt-themes/indigo-pink.css";
+@import './app.themes.scss';
+/* 
+  ********************* 
+  Define main app theme
+  ********************* 
+*/
+
+
+// Plus imports for other components in your app.
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// **Be sure that you only ever include this mixin once!**
+@include mat-core();
+// Define the default theme (same as the example above).
+$app-default-primary: mat-palette($mat-indigo);
+$app-default-accent: mat-palette($mat-pink, A200, A100, A400);
+$app-default-theme: mat-light-theme($app-default-primary, $app-default-accent);
+@include app-theme('app-theme-default',$app-default-theme);
+
+// alternative theme 2
+$app-theme-2-primary: mat-palette($mat-grey);
+$app-theme-2-accent: mat-palette($mat-orange, A200, A100, A400);
+$app-theme-2-theme: mat-light-theme($app-theme-2-primary, $app-theme-2-accent);
+
+/**
+* Second theme
+**/
+@include app-theme('app-theme-2',$app-theme-2-theme);

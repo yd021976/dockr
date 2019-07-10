@@ -6,7 +6,7 @@ import { NgxsModule } from "@ngxs/store";
 import { ApplicationState } from "src/app/shared/store/states/application.state";
 import { UserState } from "src/app/shared/store/states/user.state";
 import { TemplatesState } from "src/app/shared/store/states/templates.state";
-import { LoginContainer } from "../../containers/login/login.component";
+import { LoginContainer } from "../../containers/login/login.container";
 import { Router, ActivatedRoute, Params } from "@angular/router";
 import { loginCredentials } from "src/app/shared/models/user.model";
 import { AppLoggerService } from "src/app/shared/services/logger/app-logger/service/app-logger.service";

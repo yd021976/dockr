@@ -5,7 +5,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 
 import { HomeRoutingModule } from './home-routing.module';
-import { HomeComponent } from './containers/home/home.component';
+import { HomeComponent } from './containers/home/home.container';
 import { DashboardSandbox } from '../../shared/sandboxes/containers/dashboard-sandbox.service';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ComponentsModule } from '../../shared/components';

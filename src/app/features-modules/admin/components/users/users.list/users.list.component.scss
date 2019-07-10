@@ -1,0 +1,20 @@
+.container {
+    height: 100%;
+    overflow: hidden;
+}
+
+.mat-list-base .mat-list-item {
+    height: 24px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+fieldset {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 3px;
+    display: flex;
+    overflow-y: scroll;
+}

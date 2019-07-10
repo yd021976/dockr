@@ -21,7 +21,7 @@ export class UsersService {
                 return ( results.data as Array<any> ).map( ( user => {
                     return {
                         _id: user._id,
-                        email:user.email,
+                        email: user.email,
                         anonymous: false,
                         roles: user.roles || [],
                         settings: user.settings || []
@@ -30,6 +30,12 @@ export class UsersService {
             } )
             .catch( err => {
                 throw err
+            } )
+    }
+    public update( user: UserModelBase, params?: any ): Promise<UserModelBase> {
+        return this.service.patch( user._id, user, params )
+            .then( backendUserResponse => {
+                return backendUserResponse
             } )
     }
 }

@@ -3,8 +3,8 @@ import { DashboardSandbox } from '../../../../shared/sandboxes/containers/dashbo
 
 @Component({
   selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  templateUrl: './home.container.html',
+  styleUrls: ['./home.container.scss']
 })
 export class HomeComponent implements OnInit {
 

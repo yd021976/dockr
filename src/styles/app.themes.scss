@@ -1,0 +1,54 @@
+@import '~@angular/material/theming';
+// Themeable components
+@import '../app/shared/components/nav-bar/nav-bar.component-theme.scss';
+@import '../app/app.component-theme.scss';
+// Auth module
+@import '../app/features-modules/auth/containers/login/login.container.theme.scss';
+@import '../app/features-modules/auth/containers/logout/logout.container.theme.scss';
+@import '../app/features-modules/auth/components/login/login.component.theme.scss';
+@import '../app/features-modules/auth/components/logout/logout.component.theme.scss';
+// Home module
+@import '../app/features-modules/home/containers/home/home.container.theme.scss';
+@import '../app/features-modules/home/components/dashboard/dashboard.component.theme.scss';
+// sidenav component
+@import '../app/shared/components/side-nav/side-nav.component-theme.scss';
+@import '../app/shared/components/side-nav/menu-link/menu-link-component-theme.scss';
+@import '../app/shared/components/side-nav/menu-panel/menu-panel-component-theme.scss';
+
+// Admin module -- ACL
+@import '../app/features-modules/admin/components/acl/node-actions/node-actions.theme.scss';
+@import '../app/features-modules/admin/components/acl/acl.component.theme.scss';
+// Admin module -- Users
+@import '../app/features-modules/admin/containers/users/users.container.theme.scss';
+@import '../app/features-modules/admin/components/users/users.component.theme.scss';
+@import '../app/features-modules/admin/components/users/users.list/users.list.component.theme.scss';
+@import '../app/features-modules/admin/components/users/roles.list/roles.list.component.theme.scss';
+@import '../app/features-modules/admin/components/users/user.details/user.details.component.theme.scss';
+@import '../app/features-modules/admin/components/users/users.actions/users.actions.component.theme.scss';
+
+@mixin app-theme($name, $theme) {
+    .#{$name} {
+        // Include the default theme styles.
+        @include angular-material-theme($theme);
+        @include navbar-component-theme($theme);
+        // Sidenav theming
+        @include sidenav-component-theme($theme);
+        @include menu-panel-component-theme($theme);
+        @include menu-link-component-theme($theme);
+        // Main app comp. theming
+        @include app-component-theme($theme);
+        // Home module
+        @include home-container-theme($theme);
+        @include home-dashboard-component-theme($theme);
+        // Admin module -- ACL
+        @include admin-acl-node-actions-theme($theme);
+        @include admin-acl-component-theme($theme);
+        // Admin module -- Users
+        @include admin-users-userslist-theme($theme);
+        @include admin-users-component-theme($theme);
+        @include admin-users-container-theme($theme);
+        @include admin-users-rolesList-theme($theme);
+        @include admin-users-userDetails-theme($theme);
+        @include admin-users-usersActions-theme($theme);
+    }
+}

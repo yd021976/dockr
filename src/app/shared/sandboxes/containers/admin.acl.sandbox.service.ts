@@ -9,9 +9,9 @@ import { BaseSandboxService } from "../base-sandbox.service";
 import { RolesService } from "../../services/acl/roles/roles.service";
 import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
 import { BackendServicesService } from "../../services/acl/services/backend-services.service";
-import { Services_Load_All_Success } from "../../store/actions/services.actions";
+import { Services_Load_All_Success, Services_Load_All } from "../../store/actions/services.actions";
 import { Acl2State } from "../../store/states/acl2/acl2.state";
-import { Acl_Load_All_Success, Acl_Tree_Node_Select, Acl_Load_All_Error, Acl_Lock_Resource_Success, Acl_Lock_Resource_Error, Acl_UnLock_Resource, Acl_UnLock_Resource_Success, Acl_UnLock_Resource_Error, Acl_Lock_Resource } from "../../store/actions/acl2/acl2.state.actions";
+import { Acl_Load_All_Success, Acl_Tree_Node_Select, Acl_Load_All_Error, Acl_Lock_Resource_Success, Acl_Lock_Resource_Error, Acl_UnLock_Resource, Acl_UnLock_Resource_Success, Acl_UnLock_Resource_Error, Acl_Lock_Resource, Acl_Load_All } from "../../store/actions/acl2/acl2.state.actions";
 import { Acl_Role_Add_Service_Success, Acl_Roles_Add_Entity_Success, Acl_Role_Remove_Entity_Success, Acl_Roles_Add_Entity, Acl_Roles_Add_Entity_Error, Acl_Roles_Remove_Entity, Acl_Roles_Remove_Entity_Error, Acl_Role_Add_Service } from "../../store/actions/acl2/acl2.role.entity.actions";
 import { RoleModel, RoleEntity } from "src/app/shared/models/acl/roles.model";
 import { Acl_Field_Update_Allowed_Success, Acl_Field_Update_Allowed, Acl_Field_Update_Allowed_Error } from "../../store/actions/acl2/acl2.field.entity.action";
@@ -52,6 +52,7 @@ export class AdminAclSandboxService extends BaseSandboxService {
      * Load ACL's data
      */
     init() {
+        this.store.dispatch( new Acl_Load_All() )
         this.rolesService.find()
             .then( ( results ) => {
                 this.store.dispatch( new Acl_Load_All_Success( results ) )
@@ -61,6 +62,7 @@ export class AdminAclSandboxService extends BaseSandboxService {
                 this.store.dispatch( new Acl_Load_All_Error( err ) )
             } )
 
+        this.store.dispatch( new Services_Load_All() )
         this.backendServices.find()
             .then( ( results ) => {
                 this.store.dispatch( new Services_Load_All_Success( results ) )

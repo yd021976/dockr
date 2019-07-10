@@ -15,7 +15,7 @@ import { ThemeItem } from '../../models/theme-items.model';
 
 
 export class Layout2Container implements OnInit, OnDestroy {
-    themes: ThemeItem[] = [{ name: 'Default', class_name: 'default' }, { name: 'Grey/Orange', class_name: 'app-theme-2' }];
+    themes: ThemeItem[] = [{ name: 'Default', class_name: 'app-theme-default' }, { name: 'Grey/Orange', class_name: 'app-theme-2' }];
 
     // @HostBinding('@.disabled')
     @HostBinding('class') componentCssClass; // Binding for theme change
@@ -32,6 +32,8 @@ export class Layout2Container implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        // set default style
+        this.componentCssClass = this.themes[0].class_name
     }
 
     ngOnDestroy() { }

@@ -47,10 +47,12 @@ import { ComponentsModule } from 'src/app/shared/components';
 import { RolesListComponent } from './components/users/roles.list/roles.list.component';
 import { UsersListComponent } from './components/users/users.list/users.list.component';
 import { UserDetailsComponent } from './components/users/user.details/user.details.component';
+import { MatListModule } from '@angular/material/list';
+import { UsersActionsComponent } from './components/users/users.actions/users.actions.component';
 
 const components = [
   AclContainer, UsersContainer, UsersComponent, AclComponent, ActionComponent, FieldComponent, RoleComponent, ServiceComponent,
-  RolesListComponent, UsersListComponent, UserDetailsComponent,
+  RolesListComponent, UsersListComponent, UserDetailsComponent,UsersActionsComponent,
   NodeDetailComponent,
   RoleDetailComponent, ServiceDetailComponent, ActionDetailComponent, FieldDetailComponent,
   NodeActionsComponent, DefaultActionComponent, RoleActionComponent, ServiceActionComponent, CrudActionComponent, FieldActionComponent,
@@ -76,6 +78,7 @@ const components = [
     MatProgressBarModule,
     MatToolbarModule,
     MatDialogModule,
+    MatListModule,
     FlexLayoutModule,
     ComponentsModule
   ],

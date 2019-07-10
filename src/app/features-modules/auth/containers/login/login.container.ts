@@ -8,8 +8,8 @@ import { AuthSandbox } from '../../auth.sandbox';
 
 @Component({
   selector: 'app-login-container',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  templateUrl: './login.container.html',
+  styleUrls: ['./login.container.scss']
 })
 export class LoginContainer implements OnInit, OnDestroy {
 

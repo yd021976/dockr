@@ -2,17 +2,27 @@ import { Injectable, Inject } from "@angular/core";
 import { BaseSandboxService } from "../base-sandbox.service";
 import { AppLoggerServiceToken } from "../../services/logger/app-logger/app-logger-token";
 import { AppLoggerService } from "../../services/logger/app-logger/service/app-logger.service";
-import { Store } from "@ngxs/store";
+import { Store, Select } from "@ngxs/store";
 import { Observable } from "rxjs";
 import { UserModel, UserModelBase } from "../../models/user.model";
 import { UsersService } from "../../services/users.service";
-import { Users_Load_All, Users_Load_All_Success, Users_Load_All_Error } from "../../store/actions/users.action";
+import { Users_Load_All, Users_Load_All_Success, Users_Load_All_Error, Users_Select_User, Users_Update_User, Users_Update_User_Success, Users_Update_User_Error } from "../../store/actions/users.action";
+import { ApplicationNotification, ApplicationNotificationType } from "../../models/acl2/application.notifications.model";
+import { ApplicationNotifications_Append_Message } from "../../store/actions/application-notifications.actions";
+import { UsersState } from "../../store/states/users.state";
+import { Acl2State } from "../../store/states/acl2/acl2.state";
+import { RoleModel } from "../../models/acl/roles.model";
+import { RolesService } from "../../services/acl/roles/roles.service";
+import { Acl_Load_All, Acl_Load_All_Error, Acl_Load_All_Success } from "../../store/actions/acl2/acl2.state.actions";
 
 @Injectable()
 export class AdminUsersSandboxService extends BaseSandboxService {
-    private users$: Observable<UserModelBase[]>
+    @Select( UsersState.users_list ) public users$: Observable<UserModelBase[]>
+    @Select( UsersState.selected_user ) public selected_user$: Observable<UserModelBase>
+    @Select( Acl2State.roles_get_list ) public available_roles$: Observable<RoleModel[]>
 
-    constructor( store: Store, @Inject( AppLoggerServiceToken ) public logger: AppLoggerService, public users_service: UsersService ) {
+
+    constructor( store: Store, @Inject( AppLoggerServiceToken ) public logger: AppLoggerService, public users_service: UsersService, private roles_service: RolesService ) {
         super( store, logger )
     }
 
@@ -24,15 +34,37 @@ export class AdminUsersSandboxService extends BaseSandboxService {
             } )
             .catch( err => {
                 this.store.dispatch( new Users_Load_All_Error( err.message ) )
+                this.store.dispatch( new ApplicationNotifications_Append_Message( new ApplicationNotification( err.message, 'LoadAllUsers', ApplicationNotificationType.ERROR ) ) )
+            } )
+
+        this.store.dispatch( new Acl_Load_All() )
+        this.roles_service.find()
+            .then( ( roles: RoleModel[] ) => {
+                this.store.dispatch( new Acl_Load_All_Success( roles ) )
+            } )
+            .catch( err => {
+                this.store.dispatch( new Acl_Load_All_Error( err.message ) )
             } )
     }
-    public getUsers$() {
-        return this.users$
-    }
 
+    /**
+     * Set a user as selection
+     * @param user 
+     */
+    public select_user( user: UserModelBase ) {
+        this.store.dispatch( new Users_Select_User( user ) )
+    }
     public users_add_user( user: UserModelBase ) { }
     public users_remove_user( user: UserModelBase ) { }
-    public users_update_user( user: UserModelBase ) { }
-    public user_add_role( user: UserModelBase, role: string ) { }
-    public user_remove_role( user: UserModelBase, role: string ) { }
+    public users_update_user( user: UserModelBase ) {
+        this.store.dispatch( new Users_Update_User() )
+        this.users_service.update( user )
+            .then( updatedUser => {
+                this.store.dispatch( new Users_Update_User_Success( updatedUser ) )
+            } )
+            .catch( err => {
+                this.store.dispatch( new Users_Update_User_Error( err.message ) )
+                this.store.dispatch( new ApplicationNotifications_Append_Message( new ApplicationNotification( err.message, 'UpdateUser', ApplicationNotificationType.ERROR ) ) )
+            } )
+    }
 }

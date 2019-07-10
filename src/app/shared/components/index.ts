@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,14 +24,14 @@ export const components = [
     ErrorDialogComponent,
     NavBarComponent,
     OutletComponent,
-    
+
     SideNavComponent,
     MenuPanelComponent,
     MenuLinkComponent,
     SearchbarComponent,
 ];
 
-@NgModule({
+@NgModule( {
     imports: [
         CommonModule,
         MatInputModule,
@@ -46,7 +45,7 @@ export const components = [
         RouterModule
     ],
     declarations: components,
-    entryComponents: [ErrorDialogComponent],
+    entryComponents: [ ErrorDialogComponent ],
     exports: components
-})
+} )
 export class ComponentsModule { }

@@ -57,14 +57,10 @@ export class AclContainer implements OnInit, OnDestroy {
       return this.sandbox.nodeHasChildren( node )
     }
     this.treeService.nodeEqualityKey = "uid"
-    this.treeService.dataSource$ = this.sandbox.acltreenodes$
-
     this.treecontroller = this.treeService.treeControl
     this.datasource = this.treeService.treeFlatDataSource
-
     this.selectedNode$ = this.sandbox.currentSelectedNode$
     this.availableRoleService$ = this.sandbox.availableServices$
-
   }
 
 
@@ -92,6 +88,7 @@ export class AclContainer implements OnInit, OnDestroy {
    * Load data and sets lock/unlock state
    */
   ngOnInit() {
+    this.treeService.dataSource$ = this.sandbox.acltreenodes$ // sets tree service data source
     this.sandbox.init()
   }
 
@@ -99,6 +96,8 @@ export class AclContainer implements OnInit, OnDestroy {
    *
    */
   ngOnDestroy() {
+    // clean tree service subscriptions
+    this.treeService.unSubscribeSource()
   }
 
   /**

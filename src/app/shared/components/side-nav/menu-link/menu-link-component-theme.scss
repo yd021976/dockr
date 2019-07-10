@@ -1,5 +1,5 @@
 @import '../side-nav-component-theme-globals.scss';
-@mixin menu-link-component-colors($theme) {
+@mixin menu-link-component-theme($theme) {
     app-menu-link {
         a:focus {
             outline: none;
@@ -20,11 +20,6 @@
         Hover colors
     */
     app-menu-link {
-        // .mat-expansion-panel a.child-menu-item-link:not(.linkActive) {
-        //     &:hover {
-        //         color: text-color-hover($theme);
-        //     }
-        // }
         a.menu-link-item:not(.linkActive) {
             &:hover {
                 color: text-color-hover($theme);
@@ -32,5 +27,3 @@
         }
     }
 }
-
-@mixin menu-link-component-structure($theme) {}

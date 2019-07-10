@@ -1,12 +1,12 @@
-<button mat-button color="primary" (click)="onRemoveRole($event)">
+<button mat-button color="primary" (click)="onRemoveRole()">
     <div>
-        <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-users" matBadge="-" matBadgeColor="accent"
+        <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-users" matBadge="-" matBadgeColor="primary"
             matBadgePosition="after" matBadgeOverlap="false"></mat-icon>
         <div class="button-label">Remove role</div>
     </div>
 </button>
 
-<button mat-button color="primary" (click)="onAddService($event)" [disabled]="disabled">
+<button mat-button color="primary" (click)="onAddService()" [disabled]="disabled">
     <div>
         <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-project-diagram" matBadge="+" matBadgeColor="primary"
             matBadgePosition="after" matBadgeOverlap="false"></mat-icon>

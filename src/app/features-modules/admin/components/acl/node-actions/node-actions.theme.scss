@@ -1,16 +1,12 @@
 // Import all the tools needed to customize the theme and extract parts of it
 @import '~@angular/material/theming';
+@import '../../../../../../styles/app-theme-globals.scss';
 
 // Define a mixin that accepts a theme and outputs the color styles for the component.
 @mixin admin-acl-node-actions-theme($theme) {
-    // Extract whichever individual palettes you need from the theme.
-    $primary: map-get($theme, primary);
-    $accent: map-get($theme, accent);
-    $warn: map-get($theme, warn);
-
     app-admin-acl-node-actions {
         fieldset {
-            border-color: mat-color($primary, 900);
+            border-color: border-dark-color($theme)
         }
     }
 }

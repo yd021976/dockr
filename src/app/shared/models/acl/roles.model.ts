@@ -14,6 +14,12 @@ export interface RoleModel extends baseRoleModel {
     services: BackendServiceModel[]
 }
 
+/**
+ * Interface for role selection
+ */
+export interface RoleModelSelection extends baseRoleModel {
+    selected: boolean
+}
 // Role entity
 export interface RoleEntity extends baseRoleModel {
     services: string[]
@@ -22,7 +28,7 @@ export interface RoleEntity extends baseRoleModel {
  * Roles entities
  */
 export interface RoleEntities {
-    [id: string]: RoleEntity;
+    [ id: string ]: RoleEntity;
 }
 
 export interface RolesStateModel {

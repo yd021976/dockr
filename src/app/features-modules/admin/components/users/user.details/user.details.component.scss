@@ -1,0 +1,14 @@
+    .container {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    fieldset {
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 3px;
+        overflow-y: scroll;
+    }
+    .user-details-contents {
+        margin-top: 24px;
+    }

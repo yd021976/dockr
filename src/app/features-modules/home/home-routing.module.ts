@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { HomeComponent } from './containers/home/home.component';
+import { HomeComponent } from './containers/home/home.container';
 import { AppRoute } from '../../shared/models/app-route.model';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { TodoComponent } from './components/todo/todo.component';

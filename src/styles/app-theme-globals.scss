@@ -1,0 +1,76 @@
+/**
+*
+*       Globals app theme colors
+*
+**/
+
+
+/**
+* App main palettes
+**/
+@function primary-palette($theme) {
+    @return map-get($theme, primary);
+}
+
+@function accent-palette($theme) {
+    @return map-get($theme, accent);
+}
+
+@function warn-palette($theme) {
+    @return map-get($theme, warn);
+}
+
+/**
+* App main colors
+**/
+@function primary-color($theme) {
+    @return mat-color(primary-palette($theme), 500);
+}
+
+@function accent-color($theme) {
+    @return mat-color(accent-palette($theme), 500);
+}
+
+@function warn-color($theme) {
+    @return mat-color(warn-palette($theme), 500);
+}
+
+/**
+* Items states (selected, hover ...)
+**/
+@function selected-color($theme) {
+    @return mat-color(accent-palette($theme), 50);
+
+}
+
+@function hover-color($theme) {
+    @return mat-color(primary-palette($theme), 50);
+}
+
+/**
+* Background colors
+**/
+@function background-light-color($theme) {}
+
+@function background-medium-color($theme) {}
+
+@function background-dark-color($theme) {
+    @return mat-color(primary-palette($theme), 900);
+}
+
+
+
+/**
+* Borders colors
+**/
+@function border-light-color($theme) {
+    @return mat-color(primary-palette($theme), 100);
+}
+
+@function border-medium-color($theme) {
+    @return primary-color($theme);
+}
+
+@function border-dark-color($theme) {
+    @return mat-color(primary-palette($theme), 900);
+}

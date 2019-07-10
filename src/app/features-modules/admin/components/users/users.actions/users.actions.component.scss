@@ -1,0 +1,32 @@
+.container {}
+
+
+.mat-badge-medium,
+.mat-badge-large,
+.mat-badge-small {
+    .mat-badge-content {
+        width: 12px;
+        height: 12px;
+        line-height: 10px;
+        font-size: 10px;
+        transition: none;
+    }
+
+    &.mat-badge-before {
+        .mat-badge-content {
+            left: -5px;
+        }
+    }
+
+    &.mat-badge-after {
+        .mat-badge-content {
+            right: -8px;
+        }
+    }
+
+    &.mat-badge-above {
+        .mat-badge-content {
+            top: -4px;
+        }
+    }
+}
