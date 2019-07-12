@@ -1,5 +1,5 @@
 <div>
-  <div *ngFor='let notification of notifications'>
-    <div>{{notification.message}}</div>
+  <div *ngFor='let notification of notifications; last as isLast'>
+    <div *ngIf="isLast">{{notification.message}}</div>
   </div>
 </div>

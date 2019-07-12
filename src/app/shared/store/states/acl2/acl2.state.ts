@@ -18,6 +18,7 @@ import { Acl_Action_Update_Allowed_Success, Acl_Action_Update_Allowed, Acl_Actio
 import { Acl_Services_Remove_Entity_Success, Acl_Services_Remove_Entity_Error, Acl_Services_Remove_Entity } from "../../actions/acl2/acl2.service.entity.actions";
 import { NormalizrSchemas } from "./entities-management/normalizer";
 import { AppError, errorType } from "src/app/shared/models/app-error.model";
+import * as _ from 'lodash';
 
 @State<Acl2StateModel>( {
     name: 'acl2',
@@ -100,7 +101,7 @@ export class Acl2State {
         const service_entities = normalized.entities[ 'services' ] ? normalized.entities[ 'services' ] : {}
         const actions_entities = normalized.entities[ 'crud_operations' ] ? normalized.entities[ 'crud_operations' ] : {}
         const fields_entities = normalized.entities[ 'fields' ] ? normalized.entities[ 'fields' ] : {}
-        const previous_entities = ctx.getState().entities
+        const previous_entities = _.cloneDeep( ctx.getState().entities )
 
         ctx.patchState( {
             isLoading: true,
@@ -146,7 +147,7 @@ export class Acl2State {
     @Action( Acl_Roles_Remove_Entity )
     role_remove_entity( ctx: StateContext<Acl2StateModel>, action: Acl_Roles_Remove_Entity ) {
         const state = ctx.getState()
-        const previous_entities: Acl2StateEntities = state.entities
+        const previous_entities: Acl2StateEntities = _.cloneDeep( state.entities )
 
         state.entities.roles[ action.roleUid ].services.forEach( ( serviceUID ) => {
             state.entities.services[ serviceUID ].crud_operations.forEach( ( actionUID ) => {
@@ -207,7 +208,7 @@ export class Acl2State {
         var state = ctx.getState()
 
         // Save current state entities
-        let previous_entities = JSON.parse( JSON.stringify( state.entities ) )
+        let previous_entities = _.cloneDeep( state.entities )
 
         // Update role entity
         var roleEntity = state.entities.roles[ action.roleUid ]
@@ -260,7 +261,7 @@ export class Acl2State {
         var parent_action_entity: CrudOperationModelEntity = null
 
         // Save current state entities
-        let previous_entities = JSON.parse( JSON.stringify( state.entities ) )
+        let previous_entities = _.cloneDeep( state.entities )
 
         // Upate field entity
         field_entity.allowed = action.allowed
@@ -327,7 +328,7 @@ export class Acl2State {
         var action_entity: CrudOperationModelEntity = state.entities.actions[ action.entity_uid ]
 
         // Save current state entities
-        let previous_entities = JSON.parse( JSON.stringify( state.entities ) )
+        let previous_entities = _.cloneDeep( state.entities )
 
         // Update action entity
         action_entity.allowed = action.allowed
@@ -380,7 +381,7 @@ export class Acl2State {
     @Action( Acl_Services_Remove_Entity )
     services_remove_entity( ctx: StateContext<Acl2StateModel>, action: Acl_Services_Remove_Entity ) {
         const state: Acl2StateModel = ctx.getState()
-        const previous_entities_state: Acl2StateEntities = state.entities
+        const previous_entities_state: Acl2StateEntities = _.cloneDeep( state.entities )
 
         try {
             // Remove service entity and all children (actions & fields), then remove service uid reference from role
@@ -411,26 +412,15 @@ export class Acl2State {
     @Action( Acl_Services_Remove_Entity_Success )
     services_remove_entity_success( ctx: StateContext<Acl2StateModel>, action: Acl_Services_Remove_Entity_Success ) {
         const state: Acl2StateModel = ctx.getState()
-        try {
-            // Remove service entity and all children (actions & fields), then remove service uid reference from role
-            entity_management.services.service_remove_entity( action.service_uid, state.entities.roles, state.entities.services, state.entities.actions, state.entities.fields )
 
-            // Update state
-            ctx.patchState( {
-                isLoading: false,
-                isError: false,
-                error: '',
-                previous_entities: null,
-                entities: {
-                    roles: { ...state.entities.roles },
-                    services: { ...state.entities.services },
-                    actions: { ...state.entities.actions },
-                    fields: { ...state.entities.fields }
-                }
-            } )
-        } catch ( e ) {
-            ctx.dispatch( new Acl_Services_Remove_Entity_Error( e.message ) )
-        }
+        // Update state
+        ctx.patchState( {
+            isLoading: false,
+            isError: false,
+            error: '',
+            previous_entities: null
+        } )
+
     }
 
     @Action( Acl_Services_Remove_Entity_Error )

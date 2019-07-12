@@ -50,12 +50,9 @@ export class AclContainer implements OnInit, OnDestroy {
     }
 
     this.treeService.isExpandable = ( node: AclTreeNode ) => {
-      // Role node is always expandable has we can't lately update tree node expandable status to show expand button
-      if ( node.type == NODE_TYPES.ROLE ) return true
-
-      // In all other cases, return the node children
       return this.sandbox.nodeHasChildren( node )
     }
+    this.treeService.column_model = this.colModel
     this.treeService.nodeEqualityKey = "uid"
     this.treecontroller = this.treeService.treeControl
     this.datasource = this.treeService.treeFlatDataSource
@@ -128,8 +125,8 @@ export class AclContainer implements OnInit, OnDestroy {
     }
   }
   remove_role( node: FlatTreeNode ) {
-    this.sandbox.treenodes_update_select_node( null ) // deselect any node
-    this.sandbox.roles_remove_entity( node.data[ 'uid' ] )
+    this.sandbox.treenodes_update_select_node( null ) // deselect the node
+    this.sandbox.roles_remove_entity( node.data as AclTreeNode )
   }
 
 

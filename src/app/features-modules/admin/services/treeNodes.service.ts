@@ -2,17 +2,28 @@ import { Injectable } from "@angular/core";
 import { FlatTreeControl } from "@angular/cdk/tree";
 import { Observable, of as observableOf, Subscription } from 'rxjs';
 import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree";
+import { AclTreeColmodel } from "src/app/shared/models/acl/acl-tree-colmodel.model";
+import * as _ from 'lodash';
+
 /**
  * 
  * Service to manage convert from hierarchical "AclTreeNode" to flat tree node structure
  * 
  */
 
-
+export type treeservice_column_model = {
+    column_model: AclTreeColmodel[], // The colmun model
+    columns_before_node: AclTreeColmodel[], // columns before the node
+    columns_after_node: AclTreeColmodel[], // columns after the node
+    column_size: string,
+    node_padding_left: number, // Node indent : Left padding for node level > # of columns in column model property
+}
 export class FlatTreeNode<T = any> {
     level: number
     isExpandable: boolean
     data: T
+    // Optionnal column model for flat tree node repsented in a column tree
+    column_model?: treeservice_column_model
 }
 
 @Injectable()
@@ -22,6 +33,7 @@ export class TreeNodesService {
     private _treeFlatenner: MatTreeFlattener<any, FlatTreeNode>
     private _dataSource$: Observable<any[]>
     private dataSourceSubscription: Subscription = null
+    private _column_model: AclTreeColmodel[] = null
 
     public get dataSource$() { return this._dataSource$ };
     public set dataSource$( dataSource$: Observable<any> ) {
@@ -30,6 +42,12 @@ export class TreeNodesService {
         this.dataSourceSubscription = this._dataSource$.subscribe( ( nodes ) => {
             this._dataSource.data = nodes
         } )
+    }
+    public set column_model( colModel: AclTreeColmodel[] ) {
+        this._column_model = colModel
+    }
+    public get column_model() {
+        return this._column_model
     }
 
     public get treeControl(): FlatTreeControl<FlatTreeNode> { return this._treeControl }
@@ -114,9 +132,23 @@ export class TreeNodesService {
         if ( this._treeControl.dataNodes ) {
             this._treeControl.dataNodes.forEach( ( value: FlatTreeNode ) => {
                 if ( value.data[ this.nodeEqualityKey ] == node[ this.nodeEqualityKey ] ) {
-                    flatNode = value // keep same object reference to avoid tree to collapse
-                    flatNode.data = node // update node data to update node view
-                    flatNode.level = level
+                    // IMPORTANT: If level or isExpandable properties changed, we need to create a new flatnode instance to reflect changes in tree because of its changes tracking (see below)
+                    // @see mattree source code, file tree.js method "renderNodeChanges"
+                    //
+                    if ( this.isExpandable( node ) != value.isExpandable || level != value.level ) {
+                        flatNode = _.cloneDeep( value ) // Create a brand new instance
+                        flatNode.data = node
+                        flatNode.level = level
+                        flatNode.isExpandable = this.isExpandable( node )
+                        this.compute_column_model(flatNode)
+                    } else {
+                        // Update existing tree control node
+                        flatNode = value // IMPORTANT: keep same object reference to avoid tree to collapse
+                        flatNode.data = node // update node data to update node view
+                        flatNode.level = level
+                        flatNode.isExpandable = this.isExpandable( node )
+                        this.compute_column_model( flatNode ) // update colmun model properties
+                    }
                 }
             } )
         }
@@ -128,6 +160,50 @@ export class TreeNodesService {
             data: node,
             isExpandable: this.isExpandable( node )
         }
+        this.compute_column_model( flatNode )
         return flatNode
+    }
+    /**
+     * Compute & sets column model properties for a node
+     * 
+     * @param node 
+     */
+    private compute_column_model( node: FlatTreeNode ): FlatTreeNode {
+        // check that optional column_model is set
+        if ( this.column_model == null ) return node
+
+        let col_size: string, cols_before: AclTreeColmodel[], cols_after: AclTreeColmodel[], node_indent: number
+        const columns_before = ( node: FlatTreeNode ) => {
+            if ( node.level == 0 ) return []
+            var cols = this.column_model.slice( 0, node.level >= this.column_model.length ? this.column_model.length - 1 : node.level )
+            return cols
+        }
+
+        const columns_after = ( node: FlatTreeNode ) => {
+            // If last level, there is no remaining columns
+            if ( ( node.level + 1 ) >= this.column_model.length ) return []
+
+            var cols = this.column_model.slice( node.level + 1 )
+            return cols
+        }
+
+        // compute properties
+        col_size = node.level >= this.column_model.length ? this.column_model[ this.column_model.length - 1 ].size : this.column_model[ node.level ].size
+        node_indent = node.level >= this.column_model.length ? ( node.level - ( this.column_model.length - 1 ) ) * 25 : 0
+        cols_after = columns_after( node )
+        cols_before = columns_before( node )
+
+        // create column model for node
+        let column_model: treeservice_column_model = {
+            column_model: this.column_model,
+            columns_before_node: cols_before,
+            columns_after_node: cols_after,
+            column_size: col_size,
+            node_padding_left: node_indent
+        }
+
+        // update node property & return modified node
+        node.column_model = column_model
+        return node
     }
 }

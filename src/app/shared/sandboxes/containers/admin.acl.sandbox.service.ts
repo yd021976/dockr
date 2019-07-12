@@ -262,10 +262,17 @@ export class AdminAclSandboxService extends BaseSandboxService {
      * @param service_node 
      */
     public services_remove_entity( service_node: AclTreeNode ) {
+        // Get role object before removing service : We need the UID of the role node
+        const role_node: RoleModel = this.node_get_parentRole( service_node )
+
+        // Remove service from state, then update backend
         this.store.dispatch( new Acl_Services_Remove_Entity( service_node.uid ) ).toPromise()
             .then( () => {
-                this.backendApi_store_role( this.node_get_parentRole( service_node ) )
-                    .then( () => {
+                // get updated role
+                const role_entity = this.store.selectSnapshot( Acl2State.entity_get_fromUid( role_node.uid, NODE_TYPES.ROLE ) )
+                const role_model = this.store.selectSnapshot( Acl2State.role_get_denormalizeEntity( role_entity as RoleEntity ) )
+                this.backendApi_store_role( role_model )
+                    .then( ( result ) => {
                         this.store.dispatch( new Acl_Services_Remove_Entity_Success( service_node.uid ) )
                     } )
                     .catch( err => {
@@ -276,8 +283,6 @@ export class AdminAclSandboxService extends BaseSandboxService {
             .catch( err => {
                 // TODO: Handle error when ACL state error
             } )
-
-        this.store.dispatch( new Acl_Services_Remove_Entity_Success( service_node.uid ) )
     }
 
 
@@ -347,14 +352,12 @@ export class AdminAclSandboxService extends BaseSandboxService {
      * 
      * @param role_uid 
      */
-    public roles_remove_entity( role_uid: string ) {
-        this.store.dispatch( new Acl_Roles_Remove_Entity( role_uid ) ).toPromise()
+    public roles_remove_entity( role: AclTreeNode ) {
+        this.store.dispatch( new Acl_Roles_Remove_Entity( role.uid ) ).toPromise()
             .then( result => {
-                const role_entity = this.store.selectSnapshot( Acl2State.entity_get_fromUid( role_uid, NODE_TYPES.ROLE ) )
-                const role_model: RoleModel = this.store.selectSnapshot( Acl2State.role_get_denormalizeEntity( role_entity as RoleEntity ) )
-                this.backendApi_store_role( role_model )
+                this.rolesService.delete( role.name )
                     .then( result => {
-                        this.store.dispatch( new Acl_Role_Remove_Entity_Success( role_uid ) )
+                        this.store.dispatch( new Acl_Role_Remove_Entity_Success( role.uid ) )
                     } )
                     .catch( err => {
                         this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclRemoveRole', ApplicationNotificationType.ERROR ) ) )

@@ -1,4 +1,4 @@
-import { AfterViewInit, Output, EventEmitter, ViewChild } from '@angular/core';
+import { AfterViewInit, Output, EventEmitter, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { BaseTreeControl } from '@angular/cdk/tree';
 import { Component } from '@angular/core';
 import { Input } from '@angular/core';
@@ -16,6 +16,7 @@ import { SelectionModel } from '@angular/cdk/collections';
   selector: 'app-admin-acl',
   templateUrl: './acl.component.html',
   styleUrls: [ './acl.component.scss' ],
+  changeDetection: ChangeDetectionStrategy.Default,
   animations: [
     trigger( 'animChildren', [
       transition( '*<=>*',
@@ -46,7 +47,7 @@ export class AclComponent implements OnInit, AfterViewInit {
   @Input( 'nodeTemplateRenderer' ) nodeTemplateRenderer: TemplateRef<any>
   @Input( 'treecontrol' ) treecontrol: BaseTreeControl<any>
   @Input( 'flatDataSource' ) flatDataSource: MatTreeFlatDataSource<any, any>
-  
+
   @Output( 'nodeSelected' ) nodeSelected: EventEmitter<FlatTreeNode> = new EventEmitter<FlatTreeNode>()
   @Output( 'nodeToggled' ) nodeToggled: EventEmitter<FlatTreeNode> = new EventEmitter<FlatTreeNode>()
 
@@ -108,19 +109,5 @@ export class AclComponent implements OnInit, AfterViewInit {
   node_getDescendants( node: FlatTreeNode ): number {
     const children = this.treecontrol.getDescendants( node )
     return children.length
-  }
-  getColmunsBeforeNode( node: FlatTreeNode ): AclTreeColmodel[] {
-    // If first level, there is no columns before node
-    if ( node.level == 0 ) return []
-
-    var cols = this.colmodel.slice( 0, node.level >= this.colmodel.length ? this.colmodel.length - 1 : node.level )
-    return cols
-  }
-  getColumnsAfterNode( node: FlatTreeNode ): AclTreeColmodel[] {
-    // If last level, there is no remaining columns
-    if ( ( node.level + 1 ) >= this.colmodel.length ) return []
-
-    var cols = this.colmodel.slice( node.level + 1 )
-    return cols
   }
 }
