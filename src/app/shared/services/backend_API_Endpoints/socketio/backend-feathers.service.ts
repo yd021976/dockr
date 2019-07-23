@@ -53,7 +53,7 @@ export class FeathersjsBackendService extends BackendSocketioService {
     /**
      * Event when user logs out
      */
-    this.feathers.service( 'authentication' ).on( 'logout-user', ( data ) => {
+    this.feathers.service( 'authentication' ).on( 'user-token-expired', ( data ) => {
       this.updateConnectionState( { attemptNumber: 0, changeReason: stateChangeReason.Feathers_Token_Expired } )
       this.feathers.set( 'user', null )
     } )

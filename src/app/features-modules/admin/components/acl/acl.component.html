@@ -11,7 +11,7 @@
 
     <div fxFlex="0 1 auto" class="tree_container">
       <mat-tree [dataSource]="flatDataSource" [treeControl]="treecontrol" #tree>
-        <mat-tree-node #treenode *matTreeNodeDef="let node" fxLayout="row" fxLayoutAlign="start stretch" @EnterLeave>
+        <mat-tree-node #treenode *matTreeNodeDef="let node" fxLayout="row" fxLayoutAlign="start stretch" @EnterLeave class="child-node">
           <div *ngFor="let column of node.column_model.columns_before_node" [fxFlex]="column.size" class="column">
             <div fxFlex FxFlexAlign="center" class="tree_container_cell"></div>
           </div>
@@ -27,12 +27,12 @@
               </div>
             </div>
           </div>
-          <div *ngFor="let column of node.column_model.columns_after_node" [fxFlex]="column.size" fxFlexFill class="column">
+          <div *ngFor="let column of node.column_model.columns_after_node" [fxFlex]="column.size" class="column">
             <div fxFlex fxFlexAlign="center" class="tree_container_cell"></div>
           </div>
         </mat-tree-node>
 
-        <mat-tree-node #treenode *matTreeNodeDef="let node;when: hasChild" fxLayout="row" fxLayoutAlign="start stretch" @EnterLeave>
+        <mat-tree-node #treenode *matTreeNodeDef="let node;when: hasChild" fxLayout="row" fxLayoutAlign="start stretch" @EnterLeave class="parent-node">
           <div [fxFlex]="column.size" *ngFor="let column of node.column_model.columns_before_node" class="column">
             <div fxFlex FxFlexAlign="center" class="tree_container_cell"></div>
           </div>

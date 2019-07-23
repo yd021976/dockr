@@ -15,7 +15,7 @@ import { stateChangeReason } from "../../models/backend-service-connection-state
 export class AuthService {
     private readonly loggerName: string = "[AuthService]";
     public user$: BehaviorSubject<UserBackendApiModel | null>;
-    public sessionExpired: EventEmitter<boolean> = new EventEmitter<boolean>()
+    public sessionExpired: EventEmitter<boolean> = new EventEmitter<boolean>() // Event emitter when feathers publish "user-token-expired" event
 
     constructor(
         @Inject( AppLoggerServiceToken ) protected logger: AppLoggerService,

@@ -29,7 +29,8 @@ export class RolesService {
         // } );
         return this.service.find()
             .then( results => {
-                return results.data
+                // data property exists if results are paginated
+                return results[ 'data' ] ? results.data : results
             } )
             .catch( e => {
                 throw e

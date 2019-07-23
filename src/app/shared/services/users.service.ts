@@ -3,7 +3,7 @@ import * as feathers from '@feathersjs/feathers';
 import { FeathersjsBackendService } from "./backend_API_Endpoints/socketio/backend-feathers.service";
 import { AppLoggerServiceToken } from "./logger/app-logger/app-logger-token";
 import { AppLoggerService } from "./logger/app-logger/service/app-logger.service";
-import { UserModelBase } from "../models/user.model";
+import { UserModelBase, UserBackendApiModel } from "../models/user.model";
 
 @Injectable( { providedIn: 'root' } )
 export class UsersService {
@@ -21,6 +21,7 @@ export class UsersService {
                 return ( results.data as Array<any> ).map( ( user => {
                     return {
                         _id: user._id,
+                        name: user.name,
                         email: user.email,
                         anonymous: false,
                         roles: user.roles || [],
@@ -37,5 +38,13 @@ export class UsersService {
             .then( backendUserResponse => {
                 return backendUserResponse
             } )
+    }
+
+    public create( user: UserBackendApiModel, params?: any ): Promise<UserModelBase> {
+        return this.service.create( user, params ? params : {} )
+    }
+
+    public remove( user: UserModelBase, params?: any ): Promise<UserModelBase> {
+        return this.service.remove( user._id, params ? params : {} )
     }
 }

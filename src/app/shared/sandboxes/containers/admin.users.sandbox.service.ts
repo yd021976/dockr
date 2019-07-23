@@ -6,7 +6,7 @@ import { Store, Select } from "@ngxs/store";
 import { Observable } from "rxjs";
 import { UserModel, UserModelBase } from "../../models/user.model";
 import { UsersService } from "../../services/users.service";
-import { Users_Load_All, Users_Load_All_Success, Users_Load_All_Error, Users_Select_User, Users_Update_User, Users_Update_User_Success, Users_Update_User_Error } from "../../store/actions/users.action";
+import { Users_Load_All, Users_Load_All_Success, Users_Load_All_Error, Users_Select_User, Users_Update_User, Users_Update_User_Success, Users_Update_User_Error, Users_Add, Users_Add_Success, Users_Add_Error, Users_Remove, Users_Remove_Error, Users_Remove_Success } from "../../store/actions/users.action";
 import { ApplicationNotification, ApplicationNotificationType } from "../../models/acl2/application.notifications.model";
 import { ApplicationNotifications_Append_Message } from "../../store/actions/application-notifications.actions";
 import { UsersState } from "../../store/states/users.state";
@@ -54,8 +54,43 @@ export class AdminUsersSandboxService extends BaseSandboxService {
     public select_user( user: UserModelBase ) {
         this.store.dispatch( new Users_Select_User( user ) )
     }
-    public users_add_user( user: UserModelBase ) { }
-    public users_remove_user( user: UserModelBase ) { }
+
+    /**
+     * 
+     * @param user 
+     */
+    public users_add_user( user: UserModelBase ) {
+        this.store.dispatch( new Users_Add( user ) )
+        // Update backend users & update application state
+        this.users_service.create( user )
+            .then( ( created_user: UserModel ) => {
+                this.store.dispatch( new Users_Add_Success( created_user ) )
+            } )
+            .catch( error => {
+                this.store.dispatch( new Users_Add_Error( error.message ) )
+                this.store.dispatch( new ApplicationNotifications_Append_Message( new ApplicationNotification( error.message, 'CreateUser', ApplicationNotificationType.ERROR ) ) )
+            } )
+    }
+
+    /**
+     * 
+     */
+    public users_remove_user( user: UserModelBase ) {
+        this.store.dispatch( new Users_Remove( user ) )
+        this.users_service.remove( user )
+            .then( ( removed_user ) => {
+                this.store.dispatch( new Users_Remove_Success( removed_user ) )
+            } )
+            .catch( ( err ) => {
+                this.store.dispatch( new Users_Remove_Error( err.message ) )
+                this.store.dispatch( new ApplicationNotifications_Append_Message( new ApplicationNotification( err.message, 'RemoveUser', ApplicationNotificationType.ERROR ) ) )
+            } )
+    }
+
+    /**
+     * 
+     * @param user 
+     */
     public users_update_user( user: UserModelBase ) {
         this.store.dispatch( new Users_Update_User() )
         this.users_service.update( user )

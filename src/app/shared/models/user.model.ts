@@ -13,11 +13,12 @@ export class UserBackendApiModel {
    * User email
    * Should be empty for anonymous users
    */
-  email?: string;
-  anonymous: any;
+  name: string
+  email?: string
+  password?: string
 }
 export class UserModelBase extends UserBackendApiModel {
-  _id: string
+  _id?: string
   /**
    * User's roles
    * TODO: implements "roles" type instead of "any"
@@ -39,6 +40,7 @@ export class UserModel extends UserModelBase {
   /**
    * Anonymous user flag 
    */
+  anonymous: any
   isAnonymous: boolean;
 
   /**
@@ -70,7 +72,7 @@ export class UserModel extends UserModelBase {
 export class UsersModel {
   users: UserModelBase[]
   selected_user: UserModelBase
-  previous_state_users : UserModelBase[]
+  previous_state_users: UserModelBase[]
   isLoading: boolean
   isError: boolean
   error: string

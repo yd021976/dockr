@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UserModelBase } from 'src/app/shared/models/user.model';
+import { UserModelBase, UserModel } from 'src/app/shared/models/user.model';
 import { RoleModel } from 'src/app/shared/models/acl/roles.model';
 
 @Component( {
@@ -16,7 +16,7 @@ export class UsersComponent implements OnInit {
   @Output( 'user_selected' ) user_selected: EventEmitter<UserModelBase> = new EventEmitter<UserModelBase>()
   @Output( 'user_changed' ) user_changed: EventEmitter<UserModelBase> = new EventEmitter<UserModelBase>()
   @Output( 'user_add' ) user_add: EventEmitter<null> = new EventEmitter<null>()
-  @Output( 'user_remove' ) user_remove: EventEmitter<null> = new EventEmitter<null>()
+  @Output( 'user_remove' ) user_remove: EventEmitter<UserModelBase> = new EventEmitter<UserModelBase>()
 
   /**
    * 
@@ -30,7 +30,7 @@ export class UsersComponent implements OnInit {
   }
 
   onSearchChange( text ) {
-    let a = 0
+    // TODO: implement search user
   }
   /**
    * User is selected in the users list
@@ -49,8 +49,8 @@ export class UsersComponent implements OnInit {
   onUserChanged( user: UserModelBase ) {
     this.user_changed.emit( user )
   }
-  onUserRemove() {
-    this.user_remove.emit()
+  onUserRemove( user: UserModelBase ) {
+    this.user_remove.emit( user )
   }
   onUserAdd() {
     this.user_add.emit()

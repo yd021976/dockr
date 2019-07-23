@@ -1,19 +1,30 @@
-<div class="container">
-    <fieldset fxFlex="1 0 auto" fxLayout="column">
+<div class="user-details-container">
+    <fieldset class="fieldset-form" fxFlex="1 1 auto" fxLayout="column">
         <legend>User details</legend>
-        <div class="user-details-contents" *ngIf="user!=null">
-            <form>
-                <mat-form-field class="user-details-email">
-                    <input matInput placeholder="e-mail" [value]="email" (change)="onUserChange(user)">
-                </mat-form-field>
-                <mat-selection-list (selectionChange)="roleSelectionChange($event)">
-                    <mat-list-option *ngFor="let available_role of available_roles" [selected]="userHasRole(user,available_role)" [value]="available_role.name"
-                                     checkboxPosition="before">
-                        {{available_role.name}}
-                    </mat-list-option>
-
-                </mat-selection-list>
-            </form>
+        <div class="user-details-form-container">
+                <form *ngIf="user!=null" class="user-details-form">
+                        <div>
+                            <mat-form-field class="user-details-name">
+                                <input matInput placeholder="name" name="name" [(ngModel)]="user.name" (change)="onUserChange(user)">
+                            </mat-form-field>
+                        </div>
+                        <div>
+                            <mat-form-field class="user-details-email">
+                                <input matInput placeholder="e-mail" name="email" [(ngModel)]="user.email" (change)="onUserChange(user)">
+                            </mat-form-field>
+                        </div>
+                        <div class="user-details-roles">
+                            <h3>Roles</h3>
+                            <mat-selection-list (selectionChange)="roleSelectionChange($event)">
+                                <mat-list-option *ngFor="let available_role of available_roles" [selected]="userHasRole(user,available_role)"
+                                                 [value]="available_role.name"
+                                                 checkboxPosition="before">
+                                    {{available_role.name}}
+                                </mat-list-option>
+        
+                            </mat-selection-list>
+                        </div>
+                    </form>
         </div>
     </fieldset>
 </div>

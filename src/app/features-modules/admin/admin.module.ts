@@ -49,6 +49,7 @@ import { UsersListComponent } from './components/users/users.list/users.list.com
 import { UserDetailsComponent } from './components/users/user.details/user.details.component';
 import { MatListModule } from '@angular/material/list';
 import { UsersActionsComponent } from './components/users/users.actions/users.actions.component';
+import { AuthUsersAddUserDialog } from './components/users/dialogs/add.user/add.user.dialog.component';
 
 const components = [
   AclContainer, UsersContainer, UsersComponent, AclComponent, ActionComponent, FieldComponent, RoleComponent, ServiceComponent,
@@ -57,6 +58,7 @@ const components = [
   RoleDetailComponent, ServiceDetailComponent, ActionDetailComponent, FieldDetailComponent,
   NodeActionsComponent, DefaultActionComponent, RoleActionComponent, ServiceActionComponent, CrudActionComponent, FieldActionComponent,
   AddRoleDialogComponent, AddServiceDialogComponent, CandeactivateAclDialog,
+  AuthUsersAddUserDialog,
   // To delete
   AdminComponent
 ]
@@ -83,7 +85,7 @@ const components = [
     ComponentsModule
   ],
   declarations: components,
-  entryComponents: [ AddRoleDialogComponent, AddServiceDialogComponent, CandeactivateAclDialog ],
+  entryComponents: [ AddRoleDialogComponent, AddServiceDialogComponent, CandeactivateAclDialog, AuthUsersAddUserDialog ],
   providers: [ AdminAclSandboxService, AdminUsersSandboxService, TreeNodesService, ResourcesLocksService ]
 } )
 export class AdminModule { }

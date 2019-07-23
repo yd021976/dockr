@@ -1,6 +1,7 @@
 import { State, Action, StateContext, Selector } from "@ngxs/store";
 import { UsersModel, UserModel, UserModelBase } from "../../models/user.model";
-import { Users_Load_All, Users_Load_All_Success, Users_Load_All_Error, Users_Select_User, Users_Update_User, Users_Update_User_Success, Users_Update_User_Error } from "../actions/users.action";
+import { Users_Load_All, Users_Load_All_Success, Users_Load_All_Error, Users_Select_User, Users_Update_User, Users_Update_User_Success, Users_Update_User_Error, Users_Add, Users_Add_Success, Users_Add_Error, Users_Remove, Users_Remove_Success, Users_Remove_Error } from "../actions/users.action";
+import * as _ from 'lodash';
 
 export const default_state_users: UsersModel = {
     users: [],
@@ -23,7 +24,7 @@ export class UsersState {
      */
     @Action( Users_Load_All )
     users_load_all( ctx: StateContext<UsersModel>, action: Users_Load_All ) {
-        const current_users = ctx.getState().users
+        const current_users = _.cloneDeep( ctx.getState().users )
         ctx.patchState( {
             previous_state_users: current_users,
             isLoading: true,
@@ -71,7 +72,7 @@ export class UsersState {
 
     @Action( Users_Update_User )
     users_update_user( ctx: StateContext<UsersModel>, action: Users_Update_User ) {
-        const previous_state_users = ctx.getState().users
+        const previous_state_users = _.cloneDeep( ctx.getState().users )
         ctx.patchState( { isLoading: true, isError: false, error: '', previous_state_users: previous_state_users } )
     }
     @Action( Users_Update_User_Success )
@@ -105,8 +106,102 @@ export class UsersState {
         } )
     }
 
+    @Action( Users_Add )
+    users_add_user( ctx: StateContext<UsersModel>, action: Users_Add ) {
+        const previous_state_users = _.cloneDeep( ctx.getState().users )
 
+        // Add new user and sort by email asc
+        let new_users = [ ..._.cloneDeep( ctx.getState().users ), action.user ]
+        new_users.sort( ( a, b ) => {
+            return a.email < b.email ? -1 : a.email == b.email ? 0 : 1
+        } )
 
+        // Update state
+        ctx.patchState( {
+            isLoading: true,
+            isError: false,
+            error: '',
+            previous_state_users: previous_state_users,
+            users: [ ...new_users ]
+        } )
+
+    }
+    @Action( Users_Add_Success )
+    users_add_user_success( ctx: StateContext<UsersModel>, action: Users_Add_Success ) {
+        let new_users = _.cloneDeep( ctx.getState().users )
+
+        // Update user ID after new user is inserted in backend
+        let user = new_users.find( ( new_user ) => new_user.email == action.user.email )
+        if ( user ) {
+            user._id = action.user._id
+        }
+        else {
+            ctx.dispatch( new Users_Add_Error( new Error( '[Users State] State error while finding user to update' ).message ) )
+            return
+        }
+        ctx.patchState( {
+            isLoading: false,
+            isError: false,
+            error: '',
+            previous_state_users: null,
+            users: [ ...new_users ]
+        } )
+
+    }
+    @Action( Users_Add_Error )
+    users_add_user_error( ctx: StateContext<UsersModel>, action: Users_Add_Error ) {
+        const previous_state_users = ctx.getState().previous_state_users || []
+        ctx.patchState( {
+            isLoading: false,
+            isError: true,
+            error: action.error,
+            users: [ ...previous_state_users ],
+            previous_state_users: null
+        } )
+    }
+
+    @Action( Users_Remove )
+    users_remove_user( ctx: StateContext<UsersModel>, action: Users_Remove ) {
+        const previous_state_users = _.cloneDeep( ctx.getState().users )
+        let users = _.cloneDeep( ctx.getState().users )
+
+        // Remove user from state
+        let new_users = users.filter( ( user ) => user._id != action.user._id )
+
+        // Filter users by "email" asc
+        new_users.sort( ( a, b ) => {
+            return a.email < b.email ? -1 : a.email == b.email ? 0 : 1
+        } )
+
+        ctx.patchState( {
+            isLoading: true,
+            isError: false,
+            error: '',
+            previous_state_users: previous_state_users,
+            users: new_users
+        } )
+    }
+
+    @Action( Users_Remove_Success )
+    users_remove_user_success( ctx: StateContext<UsersModel>, action: Users_Remove_Success ) {
+        ctx.patchState( {
+            isLoading: false,
+            isError: false,
+            error: '',
+            previous_state_users: null
+        } )
+    }
+    @Action( Users_Remove_Error )
+    users_remove_user_error( ctx: StateContext<UsersModel>, action: Users_Remove_Error ) {
+        const previous_state_users = ctx.getState().previous_state_users || []
+        ctx.patchState( {
+            isLoading: false,
+            isError: true,
+            error: action.error,
+            previous_state_users: null,
+            users: previous_state_users
+        } )
+    }
     /**
      * 
      * @param state 

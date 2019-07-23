@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { AdminUsersSandboxService } from 'src/app/shared/sandboxes/containers/admin.users.sandbox.service';
-import { Observable } from 'rxjs';
+import { Observable, concat } from 'rxjs';
 import { UserModelBase } from 'src/app/shared/models/user.model';
 import { RoleModel } from 'src/app/shared/models/acl/roles.model';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { AuthUsersAddUserDialog, auth_users_add_user_dialog_result } from '../../components/users/dialogs/add.user/add.user.dialog.component';
+import { toArray } from 'rxjs/operators';
 
 @Component( {
   selector: 'app-users-container',
@@ -14,7 +17,15 @@ export class UsersContainer implements OnInit {
   public selected_user$: Observable<UserModelBase>
   public available_roles$: Observable<RoleModel[]>
 
-  constructor( public sandbox: AdminUsersSandboxService ) {
+  private dialog_add_user: MatDialogRef<AuthUsersAddUserDialog>
+  private dialog_remove_user
+
+  /**
+   * 
+   * @param sandbox 
+   * @param dialogService 
+   */
+  constructor( public sandbox: AdminUsersSandboxService, private dialogService: MatDialog ) {
     this.users$ = this.sandbox.users$
     this.selected_user$ = this.sandbox.selected_user$
     this.available_roles$ = this.sandbox.available_roles$
@@ -42,11 +53,26 @@ export class UsersContainer implements OnInit {
   /**
    * Remove current selected user
    */
-  onUserRemove() { }
+  onUserRemove( user: UserModelBase ) {
+    this.sandbox.users_remove_user( user )
+  }
 
   /**
    * Add new user
    */
-  onUserAdd() { }
+  onUserAdd() {
+    if ( !this.dialog_add_user ) {
+      // Open the dialog
+      this.dialog_add_user = this.dialogService.open( AuthUsersAddUserDialog, { disableClose: true, data: this.available_roles$ } )
+
+      // Handle dialog close and process results
+      this.dialog_add_user.afterClosed().subscribe( ( ( dialog_result: auth_users_add_user_dialog_result ) => {
+        this.dialog_add_user = null
+        if ( !dialog_result.isCancelled ) {
+          this.sandbox.users_add_user( dialog_result.user )
+        }
+      } ) )
+    }
+  }
 
 }

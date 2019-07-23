@@ -27,8 +27,8 @@ export class UserDetailsComponent implements OnInit {
   /**
    * 
    */
-  @Input( 'available_roles' ) available_roles:RoleModel[]
-  
+  @Input( 'available_roles' ) available_roles: RoleModel[]
+
 
   // Emit event whenever user property change (emit a new user entity because we don't mutate the user input from state)
   @Output( 'user_changed' ) user_changed: EventEmitter<UserModelBase> = new EventEmitter<UserModelBase>()
@@ -59,7 +59,7 @@ export class UserDetailsComponent implements OnInit {
     this.onUserChange( this._user )
   }
 
-  public onUserChange( user: UserModelBase ): void {
+  public onUserChange( user: UserModelBase): void {
     this.user_changed.emit( user )
   }
 
@@ -70,11 +70,4 @@ export class UserDetailsComponent implements OnInit {
     const index = user.roles.findIndex( user_role => user_role == role._id )
     return index == -1 ? false : true
   }
-  /**
-   * 
-   */
-  get email(): string {
-    return this._user.email || ''
-  }
-
 }

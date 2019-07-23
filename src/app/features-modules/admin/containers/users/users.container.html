@@ -1,3 +1,5 @@
-<app-admin-users [users$]="users$" [available_roles]="available_roles$" [selected_user$]="selected_user$" (user_selected)="onUserSelected($event)" (user_add)="onUserAdd()"
-                 (user_remove)="onUserRemove()"
-                 (user_changed)="onUserUpdate($event)"></app-admin-users>
+<div class="users-container-main-layout">
+    <app-admin-users [users$]="users$" [available_roles]="available_roles$" [selected_user$]="selected_user$" (user_selected)="onUserSelected($event)" (user_add)="onUserAdd()"
+                     (user_remove)="onUserRemove($event)"
+                     (user_changed)="onUserUpdate($event)"></app-admin-users>
+</div>

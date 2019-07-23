@@ -9,7 +9,7 @@ import { stat } from 'fs';
 export const default_state_user: UserModel = {
     "_id": '',
     "anonymous": false,
-    "nickname": '',
+    "name": '',
     "email": '',
     "isLoggedIn": false,
     "isAnonymous": true,

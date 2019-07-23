@@ -1,0 +1,40 @@
+<h2 mat-dialog-title>Add user</h2>
+<mat-dialog-content>
+    <div fxLayout="column">
+        <form fxLayout="column">
+            <div fxFlex>
+                <mat-form-field>
+                    <input matInput placeholder="name" [(ngModel)]="dialogData.user.name" (keyup.enter)="onInputEnter()" name="user-name" cdkFocusInitial>
+                </mat-form-field>
+            </div>
+            <div fxFlex>
+                <mat-form-field>
+                    <input matInput placeholder="email" [(ngModel)]="dialogData.user.email" (keyup.enter)="onInputEnter()" name="user-email" cdkFocusInitial>
+                </mat-form-field>
+            </div>
+            <div fxFlex>
+                <mat-form-field fxFlex>
+                    <input matInput type="password" placeholder="Password" [(ngModel)]="dialogData.user.password" (keyup.enter)="onInputEnter()"
+                           name="user-password"
+                           cdkFocusInitial>
+                </mat-form-field>
+            </div>
+        </form>
+        <div fxFlex fxLayout="column">
+            <h3 fxFlex>Roles</h3>
+            <div fxFlex>
+                <mat-selection-list (selectionChange)="onRoleSelection($event)">
+                    <mat-list-option *ngFor="let available_role of dialogData.available_roles | async" [value]="available_role.name"
+                                     checkboxPosition="before">
+                        {{available_role.name}}
+                    </mat-list-option>
+
+                </mat-selection-list>
+            </div>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="dialogData" (click)="oncloseDialog(true)">Cancel</button>
+    <button #submitdialog mat-button [mat-dialog-close]="dialogData" (click)="oncloseDialog(false)">Confirm</button>
+</mat-dialog-actions>
