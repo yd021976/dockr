@@ -15,7 +15,6 @@ import { AppSandboxService } from './shared/sandboxes/app/app-sandbox.service';
 import { UserState } from './shared/store/states/user.state';
 import { TemplatesState } from './shared/store/states/templates.state';
 import { SettingsModule } from './features-modules/settings/settings.module';
-// import { AdminModule } from './features-modules/admin/admin.module';
 import { AppRoutingModule } from './/app-routing.module';
 import { AppLoggerModule } from './shared/services/logger/app-logger/app-logger.module';
 import { AdminModule } from './features-modules/admin/admin.module';
@@ -25,6 +24,10 @@ import { SnackBarComponent } from './shared/components/snackbar/snack-bar.compon
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppNotificationsState } from './shared/store/states/application.notifications.state';
 import { UsersState } from './shared/store/states/users.state';
+import { AuthService } from './shared/services/auth/auth.service';
+import { PermissionsService } from './shared/services/acl/permissions/permissions.service';
+import { PermissionDirective } from './shared/directives/permissions/permission.directive';
+import { DirectivesModule } from './shared/directives/directives.module';
 
 /**
  * Factory used by this module token APP_INITIALIZER -> Auth user with local token if one exists and is valid 
@@ -32,7 +35,7 @@ import { UsersState } from './shared/store/states/users.state';
  * @param appsandbox 
  */
 export function authUser( appsandbox: AppSandboxService ) {
-  return () => appsandbox.login()
+  return () => appsandbox.startUpLogin()
 }
 
 @NgModule( {
@@ -62,13 +65,14 @@ export function authUser( appsandbox: AppSandboxService ) {
     SettingsModule,
     // AdminModule,
     AdminModule,
-    AppRoutingModule
+    AppRoutingModule,
+
   ],
   providers: [
-    AppSandboxService,
+    AppSandboxService, AuthService, PermissionsService,
     // Auth user at startup if a token exists and is valid (not expired)
     {
-      provide: APP_INITIALIZER, useFactory: authUser, deps: [ AppSandboxService ], multi: true
+      provide: APP_INITIALIZER, useFactory: authUser, deps: [ AppSandboxService, AuthService ], multi: true
     }
   ],
   exports: [],

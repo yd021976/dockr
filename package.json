@@ -36,6 +36,7 @@
     "@angular/platform-server": "^8.0.0",
     "@angular/router": "^8.0.0",
     "@casl/ability": "^3.0.2",
+    "@casl/angular": "^2.1.0",
     "@feathersjs/authentication-client": "^1.0.11",
     "@feathersjs/client": "^3.7.8",
     "@feathersjs/feathers": "^3.3.1",

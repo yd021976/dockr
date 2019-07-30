@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AuthSandbox } from '../../auth.sandbox';
+import { AuthSandbox } from '../../../../shared/sandboxes/auth.sandbox';
 
 @Component({
   selector: 'app-logout-container',

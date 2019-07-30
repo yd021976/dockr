@@ -6,7 +6,7 @@ import { ApplicationState } from 'src/app/shared/store/states/application.state'
 import { TemplatesState } from 'src/app/shared/store/states/templates.state';
 import { UserState } from 'src/app/shared/store/states/user.state';
 import { NotificationBaseService } from "src/app/shared/services/notifications/notifications-base.service";
-import { AuthSandbox } from "../../auth.sandbox";
+import { AuthSandbox } from "../../../../shared/sandboxes/auth.sandbox";
 import { AuthService } from "src/app/shared/services/auth/auth.service";
 import { APP_BASE_HREF } from "@angular/common";
 import { LogoutComponent } from "../../components/logout/logout.component";

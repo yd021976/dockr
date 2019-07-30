@@ -1,4 +1,4 @@
-import { UserBackendApiModel } from '../../models/user.model';
+import { UserBackendApiModel, UserModelBase } from '../../models/user.model';
 
 
 export class User_Action_Login {
@@ -7,7 +7,7 @@ export class User_Action_Login {
 }
 export class User_Action_Login_Success {
     static readonly type = '[user] login success';
-    constructor( public user: UserBackendApiModel ) { }
+    constructor( public user: UserModelBase ) { }
 }
 
 export class User_Action_Login_Error {

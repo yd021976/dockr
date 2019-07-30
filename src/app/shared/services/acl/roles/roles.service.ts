@@ -27,7 +27,7 @@ export class RolesService {
         // return new Promise<RoleModel[]>( ( resolve, reject ) => {
         //     resolve( DATA.default )
         // } );
-        return this.service.find()
+        return this.service.find( params ? params : {} )
             .then( results => {
                 // data property exists if results are paginated
                 return results[ 'data' ] ? results.data : results

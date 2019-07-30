@@ -11,7 +11,7 @@ import { User_Action_Login_Success, User_Action_Logout_Success } from 'src/app/s
 import { ApplicationState } from 'src/app/shared/store/states/application.state';
 import { TemplatesState } from 'src/app/shared/store/states/templates.state';
 import { UserState } from 'src/app/shared/store/states/user.state';
-import { AuthSandbox } from '../../auth.sandbox';
+import { AuthSandbox } from '../../../../shared/sandboxes/auth.sandbox';
 
 
 describe('Auth.sandbox', () => {

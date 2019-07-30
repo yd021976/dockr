@@ -1,5 +1,5 @@
 import { mock, instance, when, anything, deepEqual } from "ts-mockito";
-import { AuthSandbox } from "../../auth.sandbox";
+import { AuthSandbox } from "../../../../shared/sandboxes/auth.sandbox";
 import { TestBed, ComponentFixture, fakeAsync, tick, flushMicrotasks, flush, async } from "@angular/core/testing";
 import { NO_ERRORS_SCHEMA, DebugElement } from "@angular/core";
 import { NgxsModule } from "@ngxs/store";

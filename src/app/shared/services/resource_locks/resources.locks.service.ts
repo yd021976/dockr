@@ -4,7 +4,7 @@ import { FeathersjsBackendService } from "../backend_API_Endpoints/socketio/back
 import { AppLoggerServiceToken } from "../logger/app-logger/app-logger-token";
 import { AppLoggerService } from "../logger/app-logger/service/app-logger.service";
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ResourcesLocksService {
     private readonly loggerName: string = "ResourcesLocks";
     protected service: feathers.Service<any>;

@@ -1,5 +1,5 @@
 import { mock, instance, when, anything } from "ts-mockito";
-import { AuthSandbox } from "../../auth.sandbox";
+import { AuthSandbox } from "../../../../shared/sandboxes/auth.sandbox";
 import { TestBed, ComponentFixture } from "@angular/core/testing";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { LogoutContainer } from "../../containers/logout/logout.container";

@@ -4,7 +4,7 @@ import { OnInit, OnDestroy } from '@angular/core';
 
 import { loginCredentials } from '../../../../shared/models/user.model';
 import { Subscription, Observable } from 'rxjs';
-import { AuthSandbox } from '../../auth.sandbox';
+import { AuthSandbox } from '../../../../shared/sandboxes/auth.sandbox';
 
 @Component({
   selector: 'app-login-container',

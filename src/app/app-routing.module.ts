@@ -10,12 +10,13 @@ export const routes: AppRoute[] = [
   { path: '', redirectTo: 'home/dashboard', pathMatch: 'full' }
 ]
 
-@NgModule({
+@NgModule( {
   imports: [
     CommonModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot( routes )
   ],
+  exports: [ RouterModule ],
   declarations: []
-})
+} )
 
 export class AppRoutingModule { }

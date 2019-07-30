@@ -13,19 +13,22 @@ import { TodoComponent } from './components/todo/todo.component';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { AclZoneComponent } from './components/dashboard/acl-zone/acl-zone.component';
 import { AclZoneElementComponent } from './components/dashboard/acl-zone-element/acl-zone-element.component';
+import { PermissionDirective } from 'src/app/shared/directives/permissions/permission.directive';
+import { DirectivesModule } from 'src/app/shared/directives/directives.module';
 
-@NgModule({
+@NgModule( {
   imports: [
     CommonModule,
     ComponentsModule,
     HomeRoutingModule,
     MatExpansionModule,
-    NgxPermissionsModule
+    NgxPermissionsModule,
+    DirectivesModule
   ],
-  declarations: [HomeComponent, DashboardComponent, TodoComponent, AclZoneComponent, AclZoneElementComponent],
+  declarations: [ HomeComponent, DashboardComponent, TodoComponent, AclZoneComponent, AclZoneElementComponent ],
   providers: [
     DashboardSandbox
   ]
-})
+} )
 export class HomeModule {
 }
