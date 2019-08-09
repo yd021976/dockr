@@ -7,12 +7,11 @@ import { NotificationBaseService } from '../services/notifications/notifications
 import { ApplicationState } from "../store/states/application.state";
 import { UserModel } from "../models/user.model";
 
-@Injectable()
 export abstract class BaseSandboxService {
     public ApiServiceConnectionState$: BehaviorSubject<BackendServiceConnectionState>;
-    @Select(ApplicationState.isLoggedin) public isLoggedin$:Observable<boolean>
-    @Select(ApplicationState.getCurrentUser) public currentUser$:Observable<UserModel>
-    @Select(ApplicationState.isProgress) public isProgress$:Observable<boolean>
+    @Select( ApplicationState.isLoggedin ) public isLoggedin$: Observable<boolean>
+    @Select( ApplicationState.getCurrentUser ) public currentUser$: Observable<UserModel>
+    @Select( ApplicationState.isProgress ) public isProgress$: Observable<boolean>
 
-    constructor(protected store: Store, protected loggerService: any) { }
+    constructor( protected store: Store, protected loggerService: any ) { }
 }

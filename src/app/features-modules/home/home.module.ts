@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatBadgeModule } from '@angular/material/badge';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { MatIconModule } from '@angular/material/icon';
 
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './containers/home/home.container';
@@ -11,11 +9,11 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ComponentsModule } from '../../shared/components';
 import { TodoComponent } from './components/todo/todo.component';
 import { NgxPermissionsModule } from 'ngx-permissions';
-import { AclZoneComponent } from './components/dashboard/acl-zone/acl-zone.component';
-import { AclZoneElementComponent } from './components/dashboard/acl-zone-element/acl-zone-element.component';
-import { PermissionDirective } from 'src/app/shared/directives/permissions/permission.directive';
 import { DirectivesModule } from 'src/app/shared/directives/directives.module';
 
+/**
+ * 
+ */
 @NgModule( {
   imports: [
     CommonModule,
@@ -25,7 +23,7 @@ import { DirectivesModule } from 'src/app/shared/directives/directives.module';
     NgxPermissionsModule,
     DirectivesModule
   ],
-  declarations: [ HomeComponent, DashboardComponent, TodoComponent, AclZoneComponent, AclZoneElementComponent ],
+  declarations: [ HomeComponent, DashboardComponent, TodoComponent ],
   providers: [
     DashboardSandbox
   ]

@@ -8,7 +8,7 @@ import { DashboardSandbox } from '../../../../shared/sandboxes/containers/dashbo
 } )
 export class HomeComponent implements OnInit {
 
-  constructor( public sandbox: DashboardSandbox ) { }
+  constructor( ) { }
 
   ngOnInit() { }
 }

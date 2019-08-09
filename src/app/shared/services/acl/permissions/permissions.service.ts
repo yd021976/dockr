@@ -3,18 +3,55 @@ import { Injectable } from '@angular/core';
 import { RoleModel } from 'src/app/shared/models/acl/roles.model';
 import { CrudOperationModel, ALLOWED_STATES } from 'src/app/shared/models/acl/crud-operations.model';
 import { DataModelPropertyModel } from 'src/app/shared/models/acl/datamodel.model';
+import { BehaviorSubject } from 'rxjs';
+
+
+export interface PermissionServiceInterface {
+    ability$: BehaviorSubject<Ability>
+    setAbility( roles: RoleModel[] ): Ability
+    resetAbility(): Ability
+    checkACL( action: string, subject: string, field: string ): boolean
+}
 
 @Injectable( {
     providedIn: 'root'
 } )
-export class PermissionsService {
-    constructor( private ability: Ability ) { }
-    setAbility( roles: RoleModel[] ): Ability {
+export class PermissionsService implements PermissionServiceInterface {
+    // Abilities change observable
+    public ability$: BehaviorSubject<Ability>
+
+    /**
+     * 
+     * @param ability 
+     */
+    constructor( private ability: Ability ) {
+        this.ability$ = new BehaviorSubject<Ability>( this.ability )
+        this.ability.on( 'updated', ( {rules,ability} ) => {
+            this.ability$.next( ability )
+        } )
+    }
+
+    /**
+     * 
+     * @param roles 
+     */
+    public setAbility( roles: RoleModel[] ): Ability {
         let rules = this.buildRulesFromRoles( roles )
         return this.ability.update( rules )
     }
-    resetAbility(): Ability {
+
+    /**
+     * 
+     */
+    public resetAbility(): Ability {
         return this.ability.update( [] )
+    }
+
+    /**
+     * IMPORTANT: We need to declare this function with this form as we could pass this function as reference and loose "this"
+     */
+    public checkACL( action: string, subject: string, field: string ): boolean {
+        return this.ability.can( action, subject, field )
     }
 
     private buildRulesFromRoles( roles: RoleModel[] ): RawRule[] {

@@ -26,7 +26,7 @@ import { AppNotificationsState } from './shared/store/states/application.notific
 import { UsersState } from './shared/store/states/users.state';
 import { AuthService } from './shared/services/auth/auth.service';
 import { PermissionsService } from './shared/services/acl/permissions/permissions.service';
-import { PermissionDirective } from './shared/directives/permissions/permission.directive';
+import { PermissionsDirective } from './shared/directives/permissions/permission.directive';
 import { DirectivesModule } from './shared/directives/directives.module';
 
 /**
@@ -35,7 +35,7 @@ import { DirectivesModule } from './shared/directives/directives.module';
  * @param appsandbox 
  */
 export function authUser( appsandbox: AppSandboxService ) {
-  return () => appsandbox.startUpLogin()
+  return () => Promise.resolve( appsandbox.startUpLogin() )
 }
 
 @NgModule( {

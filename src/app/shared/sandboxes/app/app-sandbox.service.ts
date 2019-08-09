@@ -3,6 +3,7 @@ import { AuthService, AuthenticateEvent, AuthenticateEventTypes } from '../../se
 import { BaseSandboxService } from '../base-sandbox.service';
 import { User_Action_Login_Success, User_Action_Logout_Success, User_Action_Login } from '../../store/actions/user.actions';
 import { Observable } from 'rxjs';
+import { skip } from 'rxjs/operators'
 import { AppLoggerServiceToken } from '../../services/logger/app-logger/app-logger-token';
 import { AppLoggerService } from '../../services/logger/app-logger/service/app-logger.service';
 import { Store, Select } from '@ngxs/store';
@@ -28,10 +29,25 @@ export class AppSandboxService extends BaseSandboxService {
         protected store: Store
     ) {
         super( store, loggerService )
-
+    }
+    /**
+     * State selectors
+     */
+    public getNotifications$() {
+        return this.notifications
+    }
+    private login( user: UserModelBase ):Promise<any> {
+        // Reset permissions and load permissions for new logged in user
+        this.permissionsService.resetAbility()
+        return this.loadPermissions( user )
+    }
+    private logout():Promise<any> {
+        // Reset permissions
+        return Promise.resolve(this.permissionsService.resetAbility())
+    }
+    private authSubscribe() {
         // Subscribe to user login/logout/session expired events
-        this.authservice.user$.subscribe( ( event: AuthenticateEvent ) => {
-
+        this.authservice.user$.pipe( skip( 1 ) ).subscribe( ( event: AuthenticateEvent ) => {
             // IMPORTANT: because LOGIN & LOGOUT are UI actions, assume the "user" store has been updated by the module/component that have done login/logout action
             // ONLY "session expired" is not a UI action and comes from the server when token is expired => We MUST update store state HERE
             switch ( event.event ) {
@@ -55,21 +71,6 @@ export class AppSandboxService extends BaseSandboxService {
         } )
     }
     /**
-     * State selectors
-     */
-    public getNotifications$() {
-        return this.notifications
-    }
-    private login( user: UserModelBase ) {
-        // Reset permissions and load permissions for new logged in user
-        this.permissionsService.resetAbility()
-        this.loadPermissions( user )
-    }
-    private logout() {
-        // Reset permissions
-        this.permissionsService.resetAbility()
-    }
-    /**
      * Login user at app startup
      * 
      * IMPORTANT: should be called only once at application startup
@@ -83,19 +84,26 @@ export class AppSandboxService extends BaseSandboxService {
         return this.authservice.authenticate()
             .then( ( user ) => {
                 this.store.dispatch( new User_Action_Login_Success( user ) )
+                return this.login( user )
             } )
             .catch( ( error ) => {
                 this.store.dispatch( new User_Action_Login_Success( null ) )
+                return this.logout()
             } )
+            .finally(()=>{
+                return this.authSubscribe()
+            })
     }
 
-    private loadPermissions( user: UserModelBase ) {
-        this.roleService.find( { query: { '_id': { '$in': user.roles } } } )
+    private loadPermissions( user: UserModelBase ): Promise<boolean> {
+        return this.roleService.find( { query: { '_id': { '$in': user.roles } } } )
             .then( ( roles: RoleModel[] ) => {
                 this.permissionsService.setAbility( roles )
+                return true
             } )
             .catch( err => {
                 this.store.dispatch( new ApplicationNotifications_Append_Message( new ApplicationNotification( err.message, 'authService-load.roles', ApplicationNotificationType.WARNING ) ) )
+                return false
             } )
     }
 }

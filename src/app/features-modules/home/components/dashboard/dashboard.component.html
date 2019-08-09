@@ -1,4 +1,13 @@
-<div #divtest>
-  <p matBadge="2">Permissions test</p>
+<div>
+  <h3>Permission test : div element -- can read property "name" of "test"</h3>
+  <div app-permissions action="read" subject="test" field="name" not-allowed-behavior="hide">
+    Hello I can view contents
+  </div>
 </div>
-<div [appPermission]="{subject:'dashboard',field:'id',action:'read',notAllowedBehavior:'hidew',permissionController:null}">Hello</div>
+
+<div>
+  <h3>Permission test : input element -- can read property "name" of "test" -- Should be disabled as "read" action is requested</h3>
+  <div><button mat-button (click)="toggle('input')">Toggle read/update</button></div>
+  <input type="text" app-permissions [action]="input_permissions.action" [subject]="input_permissions.subject" [field]="input_permissions.field"
+         [not-allowed-behavior]="input_permissions.notAllowedBehavior" [hide-style]="input_permissions.hideStyle" value="toto">
+</div>

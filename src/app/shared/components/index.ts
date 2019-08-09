@@ -46,6 +46,16 @@ export const components = [
     ],
     declarations: components,
     entryComponents: [ ErrorDialogComponent ],
-    exports: components
+    /**
+     * Exports main app components and usefull angular material modules
+     */
+    exports: [
+        ...components,
+        MatButtonModule,
+        MatInputModule,
+        MatDialogModule,
+        MatIconModule,
+        RouterModule
+    ]
 } )
 export class ComponentsModule { }
