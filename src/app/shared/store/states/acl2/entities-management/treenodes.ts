@@ -3,13 +3,13 @@ import { RoleEntity } from "src/app/shared/models/acl/roles.model";
 import { BackendServiceEntity } from "src/app/shared/models/acl/backend-services.model";
 import { CrudOperationModelEntity } from "src/app/shared/models/acl/crud-operations.model";
 import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
-import { Acl2StateModel } from "src/app/shared/models/acl2/acl2.model";
+import { AclStateUIModel, AclStateEntitiesModel } from "src/app/shared/models/acl2/acl2.model";
 import { DataModelPropertyEntity } from "src/app/shared/models/acl/datamodel.model";
 import { service_get_parent } from "./services";
 import { action_get_parent } from "./actions";
 import { field_get_root_field, field_get_parent_action } from "./fields";
 
-export function node_get_children( state: Acl2StateModel, node: AclTreeNode ): AclTreeNode[] {
+export function node_get_children( state: AclStateEntitiesModel, node: AclTreeNode ): AclTreeNode[] {
     var children: AclTreeNode[] = []
 
     switch ( node.type ) {
@@ -74,7 +74,7 @@ export function node_get_children( state: Acl2StateModel, node: AclTreeNode ): A
  * @param node The node UID from wich we want to get root "role" node
  * @param state State entities
  */
-export function node_get_role_entity( node: FlatTreeNode, state: Acl2StateModel ): RoleEntity {
+export function node_get_role_entity( node: FlatTreeNode, state: AclStateEntitiesModel ): RoleEntity {
     var roleEntity: RoleEntity = null
     var serviceEntity: BackendServiceEntity = null
     var crudEntity: CrudOperationModelEntity = null

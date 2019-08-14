@@ -8,6 +8,5 @@
 <div>
   <h3>Permission test : input element -- can read property "name" of "test" -- Should be disabled as "read" action is requested</h3>
   <div><button mat-button (click)="toggle('input')">Toggle read/update</button></div>
-  <input type="text" app-permissions [action]="input_permissions.action" [subject]="input_permissions.subject" [field]="input_permissions.field"
-         [not-allowed-behavior]="input_permissions.notAllowedBehavior" [hide-style]="input_permissions.hideStyle" value="toto">
+  <input type="text" app-permissions [action]="input_permissions.action" [subject]="input_permissions.subject" [field]="input_permissions.field" value="toto">
 </div>

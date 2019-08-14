@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { NgxsModule } from '@ngxs/store';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { NgxPermissionsModule } from 'ngx-permissions';
 
 
@@ -19,15 +20,15 @@ import { AppRoutingModule } from './/app-routing.module';
 import { AppLoggerModule } from './shared/services/logger/app-logger/app-logger.module';
 import { AdminModule } from './features-modules/admin/admin.module';
 import { ServicesState } from './shared/store/states/services.state';
-import { Acl2State } from './shared/store/states/acl2/acl2.state';
+import { Acl2State } from './shared/store/states/acl2/ui.state/acl2.state';
 import { SnackBarComponent } from './shared/components/snackbar/snack-bar.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppNotificationsState } from './shared/store/states/application.notifications.state';
 import { UsersState } from './shared/store/states/users.state';
 import { AuthService } from './shared/services/auth/auth.service';
 import { PermissionsService } from './shared/services/acl/permissions/permissions.service';
-import { PermissionsDirective } from './shared/directives/permissions/permission.directive';
-import { DirectivesModule } from './shared/directives/directives.module';
+import { Acl2EntitiesState } from './shared/store/states/acl2/entities.state/acl2.entities.state';
+import { ApplicationLocksState } from './shared/store/states/locks/application.locks.state';
 
 /**
  * Factory used by this module token APP_INITIALIZER -> Auth user with local token if one exists and is valid 
@@ -58,10 +59,13 @@ export function authUser( appsandbox: AppSandboxService ) {
       UsersState,
       TemplatesState,
       Acl2State,
+      Acl2EntitiesState,
+      ApplicationLocksState,
       ServicesState,
       AppNotificationsState
     ] ),
     NgxPermissionsModule.forRoot(),
+    NgxsReduxDevtoolsPluginModule.forRoot(),
     SettingsModule,
     // AdminModule,
     AdminModule,

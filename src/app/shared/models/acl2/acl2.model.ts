@@ -1,21 +1,33 @@
-import { RoleEntities, RoleEntity } from "../acl/roles.model";
+import { RoleEntities } from "../acl/roles.model";
 import { BackendServicesEntities } from "../acl/backend-services.model";
 import { CrudOperationsModelEntities } from "../acl/crud-operations.model";
 import { DataModelPropertyEntities } from "../acl/datamodel.model";
 import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
 
-export class Acl2StateEntities {
+/**
+ * Roles entities
+ */
+export class AclEntities {
     roles: RoleEntities
     services: BackendServicesEntities
     actions: CrudOperationsModelEntities
     fields: DataModelPropertyEntities
 }
-export class Acl2StateModel {
+
+/**
+ * State model for "roles" data
+ */
+export class AclStateEntitiesModel {
+    entities: AclEntities
+    previous_entities: AclEntities  // Backup entities before update : Usefull to revert entities when error occured
+}
+
+/**
+ * State model for UI
+ */
+export class AclStateUIModel {
     isLoading: boolean
     isError: boolean
     error: string
-    isLocked: boolean
     selectedNode: FlatTreeNode
-    entities: Acl2StateEntities
-    previous_entities: Acl2StateEntities // Backup entities before update : Usefull to revert entities when error occured
 }

@@ -3,7 +3,7 @@ import { AuthService, AuthenticateEvent, AuthenticateEventTypes } from '../../se
 import { BaseSandboxService } from '../base-sandbox.service';
 import { User_Action_Login_Success, User_Action_Logout_Success, User_Action_Login } from '../../store/actions/user.actions';
 import { Observable } from 'rxjs';
-import { skip } from 'rxjs/operators'
+import { skip, filter, map } from 'rxjs/operators'
 import { AppLoggerServiceToken } from '../../services/logger/app-logger/app-logger-token';
 import { AppLoggerService } from '../../services/logger/app-logger/service/app-logger.service';
 import { Store, Select } from '@ngxs/store';
@@ -14,6 +14,7 @@ import { ApplicationNotifications_Append_Message } from '../../store/actions/app
 import { RolesService } from '../../services/acl/roles/roles.service';
 import { RoleModel } from '../../models/acl/roles.model';
 import { UserModelBase } from '../../models/user.model';
+import { Acl2State } from '../../store/states/acl2/ui.state/acl2.state';
 
 @Injectable()
 export class AppSandboxService extends BaseSandboxService {
@@ -29,6 +30,7 @@ export class AppSandboxService extends BaseSandboxService {
         protected store: Store
     ) {
         super( store, loggerService )
+
     }
     /**
      * State selectors
@@ -36,14 +38,14 @@ export class AppSandboxService extends BaseSandboxService {
     public getNotifications$() {
         return this.notifications
     }
-    private login( user: UserModelBase ):Promise<any> {
+    private login( user: UserModelBase ): Promise<any> {
         // Reset permissions and load permissions for new logged in user
         this.permissionsService.resetAbility()
         return this.loadPermissions( user )
     }
-    private logout():Promise<any> {
+    private logout(): Promise<any> {
         // Reset permissions
-        return Promise.resolve(this.permissionsService.resetAbility())
+        return Promise.resolve( this.permissionsService.resetAbility() )
     }
     private authSubscribe() {
         // Subscribe to user login/logout/session expired events
@@ -90,9 +92,9 @@ export class AppSandboxService extends BaseSandboxService {
                 this.store.dispatch( new User_Action_Login_Success( null ) )
                 return this.logout()
             } )
-            .finally(()=>{
+            .finally( () => {
                 return this.authSubscribe()
-            })
+            } )
     }
 
     private loadPermissions( user: UserModelBase ): Promise<boolean> {

@@ -10,16 +10,16 @@ import { Users_Load_All, Users_Load_All_Success, Users_Load_All_Error, Users_Sel
 import { ApplicationNotification, ApplicationNotificationType } from "../../models/acl2/application.notifications.model";
 import { ApplicationNotifications_Append_Message } from "../../store/actions/application-notifications.actions";
 import { UsersState } from "../../store/states/users.state";
-import { Acl2State } from "../../store/states/acl2/acl2.state";
 import { RoleModel } from "../../models/acl/roles.model";
 import { RolesService } from "../../services/acl/roles/roles.service";
-import { Acl_Load_All, Acl_Load_All_Error, Acl_Load_All_Success } from "../../store/actions/acl2/acl2.state.actions";
+import { AclUIActions } from '../../store/actions/acl2/acl2.state.actions'
+import { AclEntitiesSelectors } from "../../store/states/acl2/selectors/acl2.entities.selectors";
 
 @Injectable()
 export class AdminUsersSandboxService extends BaseSandboxService {
     @Select( UsersState.users_list ) public users$: Observable<UserModelBase[]>
     @Select( UsersState.selected_user ) public selected_user$: Observable<UserModelBase>
-    @Select( Acl2State.roles_get_list ) public available_roles$: Observable<RoleModel[]>
+    @Select( AclEntitiesSelectors.roles_get_list ) public available_roles$: Observable<RoleModel[]>
 
 
     constructor( store: Store, @Inject( AppLoggerServiceToken ) public logger: AppLoggerService, public users_service: UsersService, private roles_service: RolesService ) {
@@ -37,13 +37,13 @@ export class AdminUsersSandboxService extends BaseSandboxService {
                 this.store.dispatch( new ApplicationNotifications_Append_Message( new ApplicationNotification( err.message, 'LoadAllUsers', ApplicationNotificationType.ERROR ) ) )
             } )
 
-        this.store.dispatch( new Acl_Load_All() )
+        this.store.dispatch( new AclUIActions.Roles_Load_All() )
         this.roles_service.find()
             .then( ( roles: RoleModel[] ) => {
-                this.store.dispatch( new Acl_Load_All_Success( roles ) )
+                this.store.dispatch( new AclUIActions.Roles_Load_All_Success( roles ) )
             } )
             .catch( err => {
-                this.store.dispatch( new Acl_Load_All_Error( err.message ) )
+                this.store.dispatch( new AclUIActions.Roles_Load_All_Error( err.message ) )
             } )
     }
 

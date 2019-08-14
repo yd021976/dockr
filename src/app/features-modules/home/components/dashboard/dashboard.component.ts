@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, TemplateRef, Renderer2 } from '@angular/core';
 import { DashboardSandbox } from 'src/app/shared/sandboxes/containers/dashboard-sandbox.service';
-import { AppPermissionDescriptor, actionTypes, BehaviorTypes, HideBehaviors } from 'src/app/shared/directives/permissions/permission.directive';
+import { AppPermissionDescriptor, actionTypes, HideBehaviors } from 'src/app/shared/directives/permissions/permission.directive';
 
 @Component( {
   selector: 'app-dashboard',
@@ -11,10 +11,8 @@ export class DashboardComponent implements OnInit {
   @Input() data; // TODO: set data type for dashboard component
   public input_permissions: AppPermissionDescriptor = {
     action: actionTypes.VIEW,
-    subject: 'test',
+    subject: '*',
     field: 'name',
-    notAllowedBehavior: BehaviorTypes.HIDE,
-    allowedBehavior:BehaviorTypes.SHOW,
     hideStyle: HideBehaviors.HIDDEN
   }
   /**

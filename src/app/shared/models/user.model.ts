@@ -21,7 +21,6 @@ export class UserModelBase extends UserBackendApiModel {
   _id?: string
   /**
    * User's roles
-   * TODO: implements "roles" type instead of "any"
    */
   roles: string[]
   /**

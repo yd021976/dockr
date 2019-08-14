@@ -10,9 +10,8 @@ import { RolesService } from "../../services/acl/roles/roles.service";
 import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
 import { BackendServicesService } from "../../services/acl/services/backend-services.service";
 import { Services_Load_All_Success, Services_Load_All } from "../../store/actions/services.actions";
-import { Acl2State } from "../../store/states/acl2/acl2.state";
-import { Acl_Load_All_Success, Acl_Tree_Node_Select, Acl_Load_All_Error, Acl_Lock_Resource_Success, Acl_Lock_Resource_Error, Acl_UnLock_Resource, Acl_UnLock_Resource_Success, Acl_UnLock_Resource_Error, Acl_Lock_Resource, Acl_Load_All } from "../../store/actions/acl2/acl2.state.actions";
-import { Acl_Role_Add_Service_Success, Acl_Roles_Add_Entity_Success, Acl_Role_Remove_Entity_Success, Acl_Roles_Add_Entity, Acl_Roles_Add_Entity_Error, Acl_Roles_Remove_Entity, Acl_Roles_Remove_Entity_Error, Acl_Role_Add_Service } from "../../store/actions/acl2/acl2.role.entity.actions";
+import { AclUIActions } from '../../store/actions/acl2/acl2.state.actions'
+import { Acl_Role_Add_Service_Success, Acl_Roles_Add_Entity_Success, Acl_Role_Remove_Entity_Success, Acl_Roles_Add_Entity, Acl_Roles_Add_Entity_Error, Acl_Roles_Remove_Entity, Acl_Roles_Remove_Entity_Error, Acl_Role_Add_Service, Acl_Role_Add_Service_Error } from "../../store/actions/acl2/acl2.role.entity.actions";
 import { RoleModel, RoleEntity } from "src/app/shared/models/acl/roles.model";
 import { Acl_Field_Update_Allowed_Success, Acl_Field_Update_Allowed, Acl_Field_Update_Allowed_Error } from "../../store/actions/acl2/acl2.field.entity.action";
 import { Acl_Action_Update_Allowed_Success, Acl_Action_Update_Allowed, Acl_Action_Update_Allowed_Error } from "../../store/actions/acl2/acl2.action.entity.actions";
@@ -21,12 +20,15 @@ import { Application_Event_Notification } from "../../store/actions/application.
 import { ResourcesLocksService } from "../../services/resource_locks/resources.locks.service";
 import { ApplicationNotification, ApplicationNotificationType } from "../../models/acl2/application.notifications.model";
 import { ApplicationNotifications_Append_Message } from "../../store/actions/application-notifications.actions";
-import { Acl_Role_Add_Service_Error } from "../../store/actions/acl/acl.actions";
 import { v4 as uuid } from 'uuid';
+import { map } from "rxjs/operators";
+import { UserModel } from "../../models/user.model";
+import { AclEntitiesSelectors } from "../../store/states/acl2/selectors/acl2.entities.selectors";
+import { ApplicationLocksActions } from "../../store/actions/application.locks.actions";
+import { ApplicationLocksSelectors } from "../../store/states/locks/application.locks.selectors";
 
 
-// @Inject( { providedIn: 'root' } )
-@Injectable()
+@Injectable( { providedIn: 'root' } )
 export class AdminAclSandboxService extends BaseSandboxService {
     public acltreenodes$: Observable<AclTreeNode[]>
     public currentSelectedNode$: Observable<FlatTreeNode>
@@ -41,25 +43,46 @@ export class AdminAclSandboxService extends BaseSandboxService {
         private resourcesLocksService: ResourcesLocksService ) {
 
         super( store, logger )
-        this.acltreenodes$ = this.store.select( Acl2State.treenode_getData() ) // ACL Observable
-        this.currentSelectedNode$ = this.store.select( Acl2State.treenodes_get_currentSelectedNode )
-        this.availableServices$ = this.store.select( Acl2State.role_get_availableServices )
-        this.isAclLocked$ = this.store.select( Acl2State.lock_get_state )
+        this.acltreenodes$ = this.store.select( AclEntitiesSelectors.treenode_getData() ) // ACL Observable
+        this.currentSelectedNode$ = this.store.select( AclEntitiesSelectors.treenodes_get_currentSelectedNode )
+        this.availableServices$ = this.store.select( AclEntitiesSelectors.role_get_availableServices )
+        this.isAclLocked$ = this.store.select( ApplicationLocksSelectors.isLocked( 'acl' ) )
 
+        // When ACL (roles) change, update permission service
+        let roles$ = this.store.select( AclEntitiesSelectors.roles_get_list )
+        roles$
+            .pipe(
+                map( roles => {
+                    return roles.filter( ( role => {
+                        let user: UserModel = this.store.selectSnapshot( state => {
+                            return state.application.user
+                        } )
+                        if ( user ) {
+                            const hasRole: boolean = user.roles.findIndex( ( user_role ) => role._id == user_role ) == -1 ? false : true
+                            return hasRole
+                        }
+                        return false
+                    } ) )
+                } )
+            )
+            .subscribe( roles => {
+                let a = 0
+            } )
     }
 
     /**
      * Load ACL's data
      */
     init() {
-        this.store.dispatch( new Acl_Load_All() )
+        this.store.dispatch( new AclUIActions.Roles_Load_All() )
+
         this.rolesService.find()
             .then( ( results ) => {
-                this.store.dispatch( new Acl_Load_All_Success( results ) )
+                this.store.dispatch( new AclUIActions.Roles_Load_All_Success( results ) )
             } )
             .catch( ( err ) => {
                 this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, err[ 'name' ], ApplicationNotificationType.ERROR ) ) )
-                this.store.dispatch( new Acl_Load_All_Error( err ) )
+                this.store.dispatch( new AclUIActions.Roles_Load_All_Error( err ) )
             } )
 
         this.store.dispatch( new Services_Load_All() )
@@ -74,7 +97,9 @@ export class AdminAclSandboxService extends BaseSandboxService {
         /**
          * look for ACL lock for user
          */
-        this.store.dispatch( new Acl_UnLock_Resource_Success() ) // By default, no lock is acquired
+
+        // By default, no lock is acquired
+        this.store.dispatch( [ new ApplicationLocksActions.remove( { name: 'acl' } ), new AclUIActions.Resource_Lock() ] )
         this.resourcesLocksService.list( false )
             .then( locked_resources => {
                 // Search for existing "acl" lock
@@ -82,13 +107,17 @@ export class AdminAclSandboxService extends BaseSandboxService {
                     if ( resource_id == 'acl' ) {
                         // check resource is locked
                         if ( locked_resources[ resource_id ].lockInfos.state == 'locked' )
-                            // The resource "acl" if already lock, update state
-                            this.store.dispatch( new Acl_Lock_Resource_Success() )
+                            // The resource "acl" is already lock, update state
+                            this.store.dispatch( new ApplicationLocksActions.add( { name: 'acl', isLocked: true } ) )
                     }
                 } )
+                return // progress to next "then" step
+            } )
+            .then( () => {
+                this.store.dispatch( new AclUIActions.Resource_Lock_Success() )
             } )
             .catch( err => {
-                this.store.dispatch( new Acl_Lock_Resource_Error( err ) )
+                this.store.dispatch( new AclUIActions.Resource_Lock_Error( err ) )
             } )
     }
 
@@ -99,21 +128,24 @@ export class AdminAclSandboxService extends BaseSandboxService {
         let lock_result: any = null
         const resource_name: string = "acl"
 
-        this.store.dispatch( new Acl_Lock_Resource() )
+        this.store.dispatch( new AclUIActions.Resource_Lock() )
 
         return this.resourcesLocksService.lock( resource_name )
             .then( locked => {
-                this.store.dispatch( new Acl_Lock_Resource_Success() )
-                this.store.dispatch( new ApplicationNotifications_Append_Message( new ApplicationNotification( 'Data are locked. You can modify them.', 'AclLocked', ApplicationNotificationType.INFO ) ) )
+                this.store.dispatch( [
+                    new AclUIActions.Resource_Lock_Success(),
+                    new ApplicationLocksActions.update( resource_name, { name: resource_name, isLocked: true } ),
+                    new ApplicationNotifications_Append_Message( new ApplicationNotification( 'Data are locked. You can modify them.', 'AclLocked', ApplicationNotificationType.INFO ) )
+                ] )
                 return locked
             } )
             .catch( err => {
                 if ( err.name != 'lockAlreadyAcquired' ) {
-                    this.store.dispatch( new Acl_Lock_Resource_Error( err ) )
+                    this.store.dispatch( new AclUIActions.Resource_Lock_Error( err ) )
                     this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, 'AclLockError', ApplicationNotificationType.ERROR ) ) )
                 }
                 else {
-                    this.store.dispatch( new Acl_Lock_Resource_Success() )
+                    this.store.dispatch( [ new AclUIActions.Resource_Lock_Success(), new ApplicationLocksActions.update( resource_name, { name: resource_name, isLocked: false } ) ] )
                     return err.data[ 'lockInfos' ] || null
                 }
             } )
@@ -125,17 +157,23 @@ export class AdminAclSandboxService extends BaseSandboxService {
      */
     releaseResource(): Promise<any> {
         const resource_name: string = "acl"
-        this.store.dispatch( new Acl_UnLock_Resource() )
+        this.store.dispatch( new AclUIActions.Resource_UnLock() )
 
         return this.resourcesLocksService.release( resource_name )
             .then( released => {
-                this.store.dispatch( new Acl_UnLock_Resource_Success() )
-                this.store.dispatch( new ApplicationNotifications_Append_Message( new ApplicationNotification( 'Data are unlocked. You can\'t modify them.', 'AclRelease', ApplicationNotificationType.INFO ) ) )
+                this.store.dispatch( [
+                    new AclUIActions.Resource_UnLock_Success(),
+                    new ApplicationNotifications_Append_Message( new ApplicationNotification( 'Data are unlocked. You can\'t modify them.', 'AclRelease', ApplicationNotificationType.INFO ) ),
+                    new ApplicationLocksActions.update( resource_name, { name: resource_name, isLocked: false } )
+                ] )
                 return released
             } )
             .catch( ( err ) => {
-                this.store.dispatch( new Acl_UnLock_Resource_Error( err ) )
-                this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, 'AclReleaseError', ApplicationNotificationType.ERROR ) ) )
+                this.store.dispatch( [
+                    new AclUIActions.Resource_UnLock_Error( err ),
+                    new ApplicationLocksActions.update( resource_name, { name: resource_name, isLocked: false } ),
+                    new Application_Event_Notification( new ApplicationNotification( err.message, 'AclReleaseError', ApplicationNotificationType.ERROR ) )
+                ] )
             } )
 
     }
@@ -146,8 +184,8 @@ export class AdminAclSandboxService extends BaseSandboxService {
      * @param node 
      */
     private node_get_parentRole( node: AclTreeNode ): RoleModel {
-        const role_entity: RoleEntity = this.store.selectSnapshot( Acl2State.treenode_get_rootRoleEntity( node ) )
-        const role_model: RoleModel = this.store.selectSnapshot( Acl2State.role_get_denormalizeEntity( role_entity ) )
+        const role_entity: RoleEntity = this.store.selectSnapshot( AclEntitiesSelectors.treenode_get_rootRoleEntity( node ) )
+        const role_model: RoleModel = this.store.selectSnapshot( AclEntitiesSelectors.role_get_denormalizeEntity( role_entity ) )
         if ( !role_model ) throw new Error( '[AdminAclSandboxService] No parent role found for node' )
         return role_model
     }
@@ -166,14 +204,14 @@ export class AdminAclSandboxService extends BaseSandboxService {
      * 
      ********************************************************************************************************/
     getTreeNodeChildren$( node ): Observable<AclTreeNode[]> {
-        return this.store.select( Acl2State.treenode_getData( node ) )
+        return this.store.select( AclEntitiesSelectors.treenode_getData( node ) )
     }
     getTreeNodeChildren( node ): AclTreeNode[] {
-        return this.store.selectSnapshot( Acl2State.treenode_getData( node ) )
+        return this.store.selectSnapshot( AclEntitiesSelectors.treenode_getData( node ) )
     }
 
     nodeHasChildren( node ) {
-        var children = this.store.selectSnapshot( Acl2State.treenode_getData( node ) )
+        var children = this.store.selectSnapshot( AclEntitiesSelectors.treenode_getData( node ) )
         if ( !children ) {
             return false
         }
@@ -181,7 +219,7 @@ export class AdminAclSandboxService extends BaseSandboxService {
         return false
     }
     nodeGetParent( node ) {
-        var parent = this.store.selectSnapshot( Acl2State.treenodes_get_parentNode( node ) )
+        var parent = this.store.selectSnapshot( AclEntitiesSelectors.treenodes_get_parentNode( node ) )
         return parent
     }
     /********************************************************************************************************
@@ -198,7 +236,7 @@ export class AdminAclSandboxService extends BaseSandboxService {
      * @param selected_node 
      */
     public treenodes_update_select_node( selected_node: FlatTreeNode ) {
-        this.store.dispatch( new Acl_Tree_Node_Select( selected_node ) )
+        this.store.dispatch( new AclUIActions.Acl_Tree_Node_Select( selected_node ) )
     }
 
 
@@ -223,8 +261,10 @@ export class AdminAclSandboxService extends BaseSandboxService {
                         this.store.dispatch( new Acl_Field_Update_Allowed_Success( field_node.uid, field_node.checked ) )
                     } )
                     .catch( ( error ) => {
-                        this.store.dispatch( new Acl_Field_Update_Allowed_Error( error ) )
-                        this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( error.message, 'Backend_AclFieldUpdate', ApplicationNotificationType.ERROR ) ) )
+                        this.store.dispatch( [
+                            new Acl_Field_Update_Allowed_Error( error ),
+                            new Application_Event_Notification( new ApplicationNotification( error.message, 'Backend_AclFieldUpdate', ApplicationNotificationType.ERROR ) )
+                        ] )
                     } )
             } )
     }
@@ -245,8 +285,10 @@ export class AdminAclSandboxService extends BaseSandboxService {
                         this.store.dispatch( new Acl_Action_Update_Allowed_Success( action_node.uid, action_node.checked ) )
                     } )
                     .catch( err => {
-                        this.store.dispatch( new Acl_Action_Update_Allowed_Error( err ) )
-                        this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclActionUpdate', ApplicationNotificationType.ERROR ) ) )
+                        this.store.dispatch( [
+                            new Acl_Action_Update_Allowed_Error( err ),
+                            new ApplicationNotification( err.message, 'Backend_AclActionUpdate', ApplicationNotificationType.ERROR )
+                        ] )
                     } )
             } )
             .catch( err => {
@@ -269,15 +311,17 @@ export class AdminAclSandboxService extends BaseSandboxService {
         this.store.dispatch( new Acl_Services_Remove_Entity( service_node.uid ) ).toPromise()
             .then( () => {
                 // get updated role
-                const role_entity = this.store.selectSnapshot( Acl2State.entity_get_fromUid( role_node.uid, NODE_TYPES.ROLE ) )
-                const role_model = this.store.selectSnapshot( Acl2State.role_get_denormalizeEntity( role_entity as RoleEntity ) )
+                const role_entity = this.store.selectSnapshot( AclEntitiesSelectors.entity_get_fromUid( role_node.uid, NODE_TYPES.ROLE ) )
+                const role_model = this.store.selectSnapshot( AclEntitiesSelectors.role_get_denormalizeEntity( role_entity as RoleEntity ) )
                 this.backendApi_store_role( role_model )
                     .then( ( result ) => {
                         this.store.dispatch( new Acl_Services_Remove_Entity_Success( service_node.uid ) )
                     } )
                     .catch( err => {
-                        this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclServiceRemove', ApplicationNotificationType.ERROR ) ) )
-                        this.store.dispatch( new Acl_Services_Remove_Entity_Error( err ) )
+                        this.store.dispatch( [
+                            new Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclServiceRemove', ApplicationNotificationType.ERROR ) ),
+                            new Acl_Services_Remove_Entity_Error( err )
+                        ] )
                     } )
             } )
             .catch( err => {
@@ -298,15 +342,17 @@ export class AdminAclSandboxService extends BaseSandboxService {
         this.store.dispatch( new Acl_Role_Add_Service( role_node.uid, backendServiceModel ) ).toPromise()
             // Store in updated role in backend
             .then( () => {
-                const role_entity = this.store.selectSnapshot( Acl2State.entity_get_fromUid( role_node.uid, NODE_TYPES.ROLE ) )
-                const role_model: RoleModel = this.store.selectSnapshot( Acl2State.role_get_denormalizeEntity( role_entity as RoleEntity ) )
+                const role_entity = this.store.selectSnapshot( AclEntitiesSelectors.entity_get_fromUid( role_node.uid, NODE_TYPES.ROLE ) )
+                const role_model: RoleModel = this.store.selectSnapshot( AclEntitiesSelectors.role_get_denormalizeEntity( role_entity as RoleEntity ) )
                 this.backendApi_store_role( role_model )
                     .then( ( result ) => {
                         this.store.dispatch( new Acl_Role_Add_Service_Success( role_node.uid, backendServiceModel ) )
                     } )
                     .catch( err => {
-                        this.store.dispatch( new Acl_Role_Add_Service_Error( err ) )
-                        this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclRoleAddService', ApplicationNotificationType.ERROR ) ) )
+                        this.store.dispatch( [
+                            new Acl_Role_Add_Service_Error( err ),
+                            new Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclRoleAddService', ApplicationNotificationType.ERROR ) )
+                        ] )
                     } )
             } )
             .catch( err => {
@@ -331,15 +377,17 @@ export class AdminAclSandboxService extends BaseSandboxService {
         }
         this.store.dispatch( new Acl_Roles_Add_Entity( roleObject ) ).toPromise()
             .then( result => {
-                const role_entity = this.store.selectSnapshot( Acl2State.entity_get_fromUid( roleObject.uid, NODE_TYPES.ROLE ) )
-                const role_model: RoleModel = this.store.selectSnapshot( Acl2State.role_get_denormalizeEntity( role_entity as RoleEntity ) )
+                const role_entity = this.store.selectSnapshot( AclEntitiesSelectors.entity_get_fromUid( roleObject.uid, NODE_TYPES.ROLE ) )
+                const role_model: RoleModel = this.store.selectSnapshot( AclEntitiesSelectors.role_get_denormalizeEntity( role_entity as RoleEntity ) )
                 this.backendApi_store_role( role_model )
                     .then( result => {
                         this.store.dispatch( new Acl_Roles_Add_Entity_Success( roleObject ) )
                     } )
                     .catch( err => {
-                        this.store.dispatch( new Acl_Roles_Add_Entity_Error( err ) )
-                        this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclAddRole', ApplicationNotificationType.ERROR ) ) )
+                        this.store.dispatch( [
+                            new Acl_Roles_Add_Entity_Error( err ),
+                            new Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclAddRole', ApplicationNotificationType.ERROR ) )
+                        ] )
                     } )
             } )
             .catch( err => { } )
@@ -360,8 +408,10 @@ export class AdminAclSandboxService extends BaseSandboxService {
                         this.store.dispatch( new Acl_Role_Remove_Entity_Success( role.uid ) )
                     } )
                     .catch( err => {
-                        this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclRemoveRole', ApplicationNotificationType.ERROR ) ) )
-                        this.store.dispatch( new Acl_Roles_Remove_Entity_Error( err ) )
+                        this.store.dispatch( [
+                            new Acl_Roles_Remove_Entity_Error( err ),
+                            new Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclRemoveRole', ApplicationNotificationType.ERROR ) )
+                        ] )
                     } )
             } )
             .catch( err => { } )

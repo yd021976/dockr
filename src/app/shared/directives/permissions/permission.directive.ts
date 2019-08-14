@@ -9,8 +9,6 @@ export interface AppPermissionDescriptor {
   action: actionTypes
   subject: string
   field: string
-  notAllowedBehavior: BehaviorTypes
-  allowedBehavior: BehaviorTypes
   hideStyle: HideBehaviors
 }
 /**
@@ -21,14 +19,6 @@ export enum actionTypes {
   UPDATE = "update",
   CREATE = "create",
   REMOVE = "remove"
-}
-/**
- * view behaviors
- */
-export enum BehaviorTypes {
-  HIDE = "hide",
-  DISABLE = "disable",
-  SHOW = "show"
 }
 
 /**
@@ -48,11 +38,9 @@ export type aclControllerFunc = ( action: string, subject: string, field_path: s
   selector: '[app-permissions]'
 } )
 export class PermissionsDirective implements OnInit, OnChanges {
-  @Input( 'subject' ) subject: string
+  @Input( 'subject' ) subject: string // IMPORTANT: Setting value "*" means "no permission to check" 
   @Input( 'field' ) field: string
   @Input( 'action' ) action: actionTypes
-  @Input( 'not-allowed-behavior' ) notAllowedBehavior: BehaviorTypes = BehaviorTypes.HIDE
-  @Input( 'allowed-behavior' ) AllowedBehavior: BehaviorTypes = BehaviorTypes.SHOW
   @Input( 'hide-style' ) hideStyle: HideBehaviors = HideBehaviors.HIDDEN
 
   private permissionDescriptor: AppPermissionDescriptor = null
@@ -78,8 +66,6 @@ export class PermissionsDirective implements OnInit, OnChanges {
     this.permissionDescriptor.subject = this.subject
     this.permissionDescriptor.field = this.field
     this.permissionDescriptor.hideStyle = this.hideStyle
-    this.permissionDescriptor.notAllowedBehavior = this.notAllowedBehavior
-    this.permissionDescriptor.allowedBehavior = this.AllowedBehavior
   }
 
   /**
@@ -98,23 +84,26 @@ export class PermissionsDirective implements OnInit, OnChanges {
    * 
    */
   private checkPermissions() {
-    let isAllowed: boolean = this.permissions_service.checkACL( this.permissionDescriptor.action, this.permissionDescriptor.subject, this.permissionDescriptor.field )
+    let isAllowed: boolean
+    isAllowed = this.permissionDescriptor.subject == "*" ? true : this.permissions_service.checkACL( this.permissionDescriptor.action, this.permissionDescriptor.subject, this.permissionDescriptor.field )
     isAllowed ? this.permissionAllowed() : this.permissionNotAllowed()
   }
 
   /**
-   * 
+   * Permission allowed : Show HTML element and enable/disable according to requested action 
    */
   private permissionAllowed() {
+    // Show element
+    this.showElement()
+
+    // Enable or disable HTML element depending requested action
     switch ( this.permissionDescriptor.action ) {
       case actionTypes.VIEW:
-        this.showElement()
         this.disableElement()
         break
       case actionTypes.UPDATE:
       case actionTypes.CREATE:
       case actionTypes.REMOVE:
-        this.showElement()
         this.enableElement()
         break
       default:
@@ -126,14 +115,20 @@ export class PermissionsDirective implements OnInit, OnChanges {
    * 
    */
   private permissionNotAllowed() {
-    switch ( this.notAllowedBehavior ) {
-      case BehaviorTypes.HIDE:
+    const canView: boolean = this.permissions_service.checkACL( actionTypes.VIEW, this.permissionDescriptor.subject, this.permissionDescriptor.field )
+    switch ( this.permissionDescriptor.action ) {
+      case actionTypes.VIEW:
+        this.disableElement()
         this.hideElement()
         break
-      case BehaviorTypes.DISABLE:
+      case actionTypes.CREATE:
+      case actionTypes.REMOVE:
+      case actionTypes.UPDATE:
         this.disableElement()
+        canView ? this.showElement() : this.hideElement()
         break
       default:
+        this.disableElement()
         this.hideElement()
         break
     }

@@ -4,7 +4,7 @@ import { ApplicationStateModel } from '../../models/application-state.model';
 import { UserState, default_state_user } from '../states/user.state';
 import { TemplatesState, default_state_templates } from './templates.state';
 import { ServicesState, default_state_services } from './services.state';
-import { Acl2State } from './acl2/acl2.state';
+import { Acl2State } from './acl2/ui.state/acl2.state';
 import { Application_Event_Notification } from '../actions/application.actions';
 import { User_Action_Logout_Success } from '../actions/user.actions';
 import { AppNotificationsState, default_state_application_notifications } from './application.notifications.state';

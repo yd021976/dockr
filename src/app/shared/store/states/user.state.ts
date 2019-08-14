@@ -61,6 +61,7 @@ export class UserState {
             "email": email,
             "isAnonymous": isAnonymous,
             "isLoggedIn": isLoggedIn,
+            "roles": action.user.roles,
             "isProgress": false,
             "isError": false,
             "error": ''
