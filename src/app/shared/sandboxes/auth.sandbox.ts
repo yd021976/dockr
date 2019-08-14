@@ -13,10 +13,10 @@ import { AppLoggerServiceToken } from "src/app/shared/services/logger/app-logger
 import { AppLoggerService } from "src/app/shared/services/logger/app-logger/service/app-logger.service";
 import { ApplicationNotifications_Append_Message } from "src/app/shared/store/actions/application-notifications.actions";
 import { AppError, errorType } from "src/app/shared/models/app-error.model";
-import { ApplicationNotification, ApplicationNotificationType } from "src/app/shared/models/acl2/application.notifications.model";
+import { ApplicationNotification, ApplicationNotificationType } from "src/app/shared/models/application.notifications.model";
 import { PermissionsService } from "src/app/shared/services/acl/permissions/permissions.service";
 import { RolesService } from "src/app/shared/services/acl/roles/roles.service";
-import { RoleModel } from "src/app/shared/models/acl/roles.model";
+import { RoleModel } from "src/app/shared/models/roles.model";
 
 
 @Injectable( { providedIn: 'root' } )

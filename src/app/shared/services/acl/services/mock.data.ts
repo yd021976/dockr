@@ -1,5 +1,5 @@
-import { BackendServiceModel, BackendServicesEntities } from "src/app/shared/models/acl/backend-services.model";
-import { CRUD_OPERATIONS, ALLOWED_STATES } from "src/app/shared/models/acl/crud-operations.model";
+import { BackendServiceModel, BackendServicesEntities } from "src/app/shared/models/backend-services.model";
+import { CRUD_OPERATIONS, ALLOWED_STATES } from "src/app/shared/models/crud-operations.model";
 
 var DATA: BackendServiceModel[] =
     [

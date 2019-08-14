@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { NODE_TYPES } from 'src/app/shared/models/acl/treenode.model';
+import { NODE_TYPES } from '../../../../../shared/models/treenode.model';
 import { FlatTreeNode } from '../../../services/treeNodes.service';
-import { BackendServiceModel } from 'src/app/shared/models/acl/backend-services.model';
+import { BackendServiceModel } from 'src/app/shared/models/backend-services.model';
 import { Observable, of } from 'rxjs';
 
 @Component( {

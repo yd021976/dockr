@@ -3,7 +3,7 @@ import { AppSandboxService } from './shared/sandboxes/app/app-sandbox.service';
 import { MatSnackBarRef, MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarComponent } from './shared/components/snackbar/snack-bar.component';
 import { Observable, Subscription } from 'rxjs';
-import { ApplicationNotification } from './shared/models/acl2/application.notifications.model';
+import { ApplicationNotification } from './shared/models/application.notifications.model';
 
 
 @Component( {

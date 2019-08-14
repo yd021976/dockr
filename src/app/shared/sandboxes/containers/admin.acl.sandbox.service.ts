@@ -1,10 +1,10 @@
 import { Inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Store } from "@ngxs/store";
-import { AclTreeNode, NODE_TYPES } from "../../models/acl/treenode.model";
+import { AclTreeNode, NODE_TYPES } from "../../models/treenode.model";
 import { AppLoggerService } from "../../services/logger/app-logger/service/app-logger.service";
 import { AppLoggerServiceToken } from "../../services/logger/app-logger/app-logger-token";
-import { BackendServiceModel } from "../../models/acl/backend-services.model";
+import { BackendServiceModel } from "../../models/backend-services.model";
 import { BaseSandboxService } from "../base-sandbox.service";
 import { RolesService } from "../../services/acl/roles/roles.service";
 import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
@@ -12,18 +12,18 @@ import { BackendServicesService } from "../../services/acl/services/backend-serv
 import { Services_Load_All_Success, Services_Load_All } from "../../store/actions/services.actions";
 import { AclUIActions } from '../../store/actions/acl2/acl2.state.actions'
 import { Acl_Role_Add_Service_Success, Acl_Roles_Add_Entity_Success, Acl_Role_Remove_Entity_Success, Acl_Roles_Add_Entity, Acl_Roles_Add_Entity_Error, Acl_Roles_Remove_Entity, Acl_Roles_Remove_Entity_Error, Acl_Role_Add_Service, Acl_Role_Add_Service_Error } from "../../store/actions/acl2/acl2.role.entity.actions";
-import { RoleModel, RoleEntity } from "src/app/shared/models/acl/roles.model";
+import { RoleModel, RoleEntity } from "src/app/shared/models/roles.model";
 import { Acl_Field_Update_Allowed_Success, Acl_Field_Update_Allowed, Acl_Field_Update_Allowed_Error } from "../../store/actions/acl2/acl2.field.entity.action";
 import { Acl_Action_Update_Allowed_Success, Acl_Action_Update_Allowed, Acl_Action_Update_Allowed_Error } from "../../store/actions/acl2/acl2.action.entity.actions";
 import { Acl_Services_Remove_Entity_Success, Acl_Services_Remove_Entity, Acl_Services_Remove_Entity_Error } from "../../store/actions/acl2/acl2.service.entity.actions";
 import { Application_Event_Notification } from "../../store/actions/application.actions";
 import { ResourcesLocksService } from "../../services/resource_locks/resources.locks.service";
-import { ApplicationNotification, ApplicationNotificationType } from "../../models/acl2/application.notifications.model";
+import { ApplicationNotification, ApplicationNotificationType } from "../../models/application.notifications.model";
 import { ApplicationNotifications_Append_Message } from "../../store/actions/application-notifications.actions";
 import { v4 as uuid } from 'uuid';
 import { map } from "rxjs/operators";
 import { UserModel } from "../../models/user.model";
-import { AclEntitiesSelectors } from "../../store/states/acl2/selectors/acl2.entities.selectors";
+import { AclEntitiesSelectors } from "../../store/states/acl/selectors/acl2.entities.selectors";
 import { ApplicationLocksActions } from "../../store/actions/application.locks.actions";
 import { ApplicationLocksSelectors } from "../../store/states/locks/application.locks.selectors";
 

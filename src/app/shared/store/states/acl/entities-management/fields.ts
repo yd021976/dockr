@@ -1,5 +1,5 @@
-import { DataModelPropertyEntities, DataModelPropertyEntity } from "src/app/shared/models/acl/datamodel.model";
-import { CrudOperationModelEntity, CrudOperationsModelEntities, ALLOWED_STATES } from "src/app/shared/models/acl/crud-operations.model";
+import { DataModelPropertyEntities, DataModelPropertyEntity } from "src/app/shared/models/datamodel.model";
+import { CrudOperationModelEntity, CrudOperationsModelEntities, ALLOWED_STATES } from "src/app/shared/models/crud-operations.model";
 
 
 /**

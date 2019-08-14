@@ -1,5 +1,5 @@
-import { RoleModel } from "src/app/shared/models/acl/roles.model";
-import { BackendServiceModel } from "src/app/shared/models/acl/backend-services.model";
+import { RoleModel } from "src/app/shared/models/roles.model";
+import { BackendServiceModel } from "src/app/shared/models/backend-services.model";
 
 export class Acl_Roles_Add_Entity{
     static readonly type = '[acl role] Add entity';

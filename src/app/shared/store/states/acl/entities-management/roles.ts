@@ -1,6 +1,6 @@
 import { ServicesModel } from "src/app/shared/models/services.model";
-import { BackendServiceModel, BackendServicesEntities } from "src/app/shared/models/acl/backend-services.model";
-import { RoleEntity, RoleEntities } from "src/app/shared/models/acl/roles.model";
+import { BackendServiceModel, BackendServicesEntities } from "src/app/shared/models/backend-services.model";
+import { RoleEntity, RoleEntities } from "src/app/shared/models/roles.model";
 
 /**
  * 

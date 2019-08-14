@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { BackendServiceModel } from 'src/app/shared/models/acl/backend-services.model';
+import { BackendServiceModel } from 'src/app/shared/models/backend-services.model';
 
 @Component({
   selector: 'app-admin-acl-role-action',

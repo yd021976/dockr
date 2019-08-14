@@ -1,4 +1,4 @@
-import { RoleModel } from "src/app/shared/models/acl/roles.model";
+import { RoleModel } from "src/app/shared/models/roles.model";
 import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
 
 export namespace AclUIActions {

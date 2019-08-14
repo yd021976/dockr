@@ -8,13 +8,13 @@ import { AppLoggerServiceToken } from '../../services/logger/app-logger/app-logg
 import { AppLoggerService } from '../../services/logger/app-logger/service/app-logger.service';
 import { Store, Select } from '@ngxs/store';
 import { AppNotificationsState } from '../../store/states/application.notifications.state';
-import { ApplicationNotification, ApplicationNotificationType } from '../../models/acl2/application.notifications.model';
+import { ApplicationNotification, ApplicationNotificationType } from '../../models/application.notifications.model';
 import { PermissionsService } from '../../services/acl/permissions/permissions.service';
 import { ApplicationNotifications_Append_Message } from '../../store/actions/application-notifications.actions';
 import { RolesService } from '../../services/acl/roles/roles.service';
-import { RoleModel } from '../../models/acl/roles.model';
+import { RoleModel } from '../../models/roles.model';
 import { UserModelBase } from '../../models/user.model';
-import { Acl2State } from '../../store/states/acl2/ui.state/acl2.state';
+import { AclUIState } from '../../store/states/acl/ui.state/acl2.state';
 
 @Injectable()
 export class AppSandboxService extends BaseSandboxService {

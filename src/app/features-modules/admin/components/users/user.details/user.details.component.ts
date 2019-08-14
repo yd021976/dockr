@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { UserModelBase } from 'src/app/shared/models/user.model';
-import { RoleModel, RoleModelSelection } from 'src/app/shared/models/acl/roles.model';
+import { RoleModel, RoleModelSelection } from 'src/app/shared/models/roles.model';
 import { MatSelectionListChange } from '@angular/material/list';
 
 

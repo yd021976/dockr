@@ -1,5 +1,5 @@
-import { RoleModel } from "src/app/shared/models/acl/roles.model";
-import { CRUD_OPERATIONS, ALLOWED_STATES } from "src/app/shared/models/acl/crud-operations.model";
+import { RoleModel } from "src/app/shared/models/roles.model";
+import { CRUD_OPERATIONS, ALLOWED_STATES } from "src/app/shared/models/crud-operations.model";
 
 var DATA: RoleModel[] =
     [

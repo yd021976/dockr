@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AdminUsersSandboxService } from 'src/app/shared/sandboxes/containers/admin.users.sandbox.service';
 import { Observable, concat } from 'rxjs';
 import { UserModelBase } from 'src/app/shared/models/user.model';
-import { RoleModel } from 'src/app/shared/models/acl/roles.model';
+import { RoleModel } from 'src/app/shared/models/roles.model';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AuthUsersAddUserDialog, auth_users_add_user_dialog_result } from '../../components/users/dialogs/add.user/add.user.dialog.component';
 import { toArray } from 'rxjs/operators';

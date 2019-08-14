@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserModelBase, UserModel } from 'src/app/shared/models/user.model';
-import { RoleModel } from 'src/app/shared/models/acl/roles.model';
+import { RoleModel } from 'src/app/shared/models/roles.model';
 
 @Component( {
   selector: 'app-admin-users',

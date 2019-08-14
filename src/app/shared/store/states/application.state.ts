@@ -4,18 +4,18 @@ import { ApplicationStateModel } from '../../models/application-state.model';
 import { UserState, default_state_user } from '../states/user.state';
 import { TemplatesState, default_state_templates } from './templates.state';
 import { ServicesState, default_state_services } from './services.state';
-import { Acl2State } from './acl2/ui.state/acl2.state';
+import { AclUIState } from './acl/ui.state/acl2.state';
 import { Application_Event_Notification } from '../actions/application.actions';
 import { User_Action_Logout_Success } from '../actions/user.actions';
 import { AppNotificationsState, default_state_application_notifications } from './application.notifications.state';
 import { ApplicationNotifications_Shift_Message, ApplicationNotifications_Append_Message } from '../actions/application-notifications.actions';
 import { AppError, errorType } from '../../models/app-error.model';
-import { ApplicationNotification, ApplicationNotificationType } from '../../models/acl2/application.notifications.model';
+import { ApplicationNotification, ApplicationNotificationType } from '../../models/application.notifications.model';
 import { UsersState, default_state_users } from './users.state';
 
 @State<ApplicationStateModel>( {
     name: 'application',
-    children: [ UserState, TemplatesState, Acl2State, ServicesState, AppNotificationsState, UsersState ],
+    children: [ UserState, TemplatesState, AclUIState, ServicesState, AppNotificationsState, UsersState ],
     defaults: {
         backendServices: default_state_services,
         templates: default_state_templates,

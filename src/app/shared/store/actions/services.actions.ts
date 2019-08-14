@@ -1,4 +1,4 @@
-import { BackendServiceModel } from "../../models/acl/backend-services.model";
+import { BackendServiceModel } from "../../models/backend-services.model";
 
 export class Services_Load_All {
     static readonly type = '[services] load all';

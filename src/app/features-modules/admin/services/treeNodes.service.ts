@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { FlatTreeControl } from "@angular/cdk/tree";
 import { Observable, of as observableOf, Subscription } from 'rxjs';
 import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree";
-import { AclTreeColmodel } from "src/app/shared/models/acl/acl-tree-colmodel.model";
+import { AclTreeColmodel } from "src/app/shared/models/acl-tree-colmodel.model";
 import * as _ from 'lodash';
 
 /**

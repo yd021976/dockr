@@ -7,7 +7,7 @@ import { OnInit } from '@angular/core';
 import { TemplateRef } from '@angular/core';
 
 import { FlatTreeNode } from '../../services/treeNodes.service';
-import { AclTreeColmodel } from 'src/app/shared/models/acl/acl-tree-colmodel.model';
+import { AclTreeColmodel } from 'src/app/shared/models/acl-tree-colmodel.model';
 import { trigger, style, transition, animate, query, animateChild, group } from '@angular/animations';
 import { SelectionModel } from '@angular/cdk/collections';
 

@@ -1,7 +1,7 @@
-import { CrudOperationModelEntity, CrudOperationsModelEntities, ALLOWED_STATES } from "src/app/shared/models/acl/crud-operations.model";
-import { DataModelPropertyEntities } from "src/app/shared/models/acl/datamodel.model";
+import { CrudOperationModelEntity, CrudOperationsModelEntities, ALLOWED_STATES } from "src/app/shared/models/crud-operations.model";
+import { DataModelPropertyEntities } from "src/app/shared/models/datamodel.model";
 import { field_remove_entity } from "./fields";
-import { BackendServicesEntities, BackendServiceEntity } from "src/app/shared/models/acl/backend-services.model";
+import { BackendServicesEntities, BackendServiceEntity } from "src/app/shared/models/backend-services.model";
 
 
 /**

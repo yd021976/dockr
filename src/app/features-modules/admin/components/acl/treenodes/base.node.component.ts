@@ -1,5 +1,5 @@
 import { Input, Output, EventEmitter } from '@angular/core';
-import { AclTreeNode } from 'src/app/shared/models/acl/treenode.model';
+import { AclTreeNode } from '../../../../../shared/models/treenode.model';
 import { Observable, of } from 'rxjs';
 
 export class BaseNodeComponent {

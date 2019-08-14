@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, Inject } from "@angular/core";
 import { UserBackendApiModel, UserModelBase } from "src/app/shared/models/user.model";
-import { RoleModel } from "src/app/shared/models/acl/roles.model";
+import { RoleModel } from "src/app/shared/models/roles.model";
 import { MAT_DIALOG_DATA, MatSelectionListChange } from '@angular/material';
 import { Observable, of } from "rxjs";
 

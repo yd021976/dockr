@@ -5,10 +5,10 @@ import { FeathersjsBackendService } from "../../backend_API_Endpoints/socketio/b
 import { AppError, errorType } from '../../../models/app-error.model';
 import { AppLoggerService } from '../../logger/app-logger/service/app-logger.service';
 import { AppLoggerServiceToken } from '../../logger/app-logger/app-logger-token';
-import { BackendServiceModel } from 'src/app/shared/models/acl/backend-services.model';
+import { BackendServiceModel } from 'src/app/shared/models/backend-services.model';
 
 import * as DATA from './mock.data';
-import { CrudOperationModel, CRUD_OPERATIONS } from 'src/app/shared/models/acl/crud-operations.model';
+import { CrudOperationModel, CRUD_OPERATIONS } from 'src/app/shared/models/crud-operations.model';
 
 @Injectable( { providedIn: 'root' } )
 export class BackendServicesService {

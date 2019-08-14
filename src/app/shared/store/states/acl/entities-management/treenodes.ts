@@ -1,10 +1,10 @@
-import { NODE_TYPES, AclTreeNode } from "src/app/shared/models/acl/treenode.model";
-import { RoleEntity } from "src/app/shared/models/acl/roles.model";
-import { BackendServiceEntity } from "src/app/shared/models/acl/backend-services.model";
-import { CrudOperationModelEntity } from "src/app/shared/models/acl/crud-operations.model";
+import { NODE_TYPES, AclTreeNode } from "src/app/shared/models/treenode.model";
+import { RoleEntity } from "src/app/shared/models/roles.model";
+import { BackendServiceEntity } from "src/app/shared/models/backend-services.model";
+import { CrudOperationModelEntity } from "src/app/shared/models/crud-operations.model";
 import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
-import { AclStateUIModel, AclStateEntitiesModel } from "src/app/shared/models/acl2/acl2.model";
-import { DataModelPropertyEntity } from "src/app/shared/models/acl/datamodel.model";
+import { AclStateUIModel, AclStateEntitiesModel } from "src/app/shared/models/acl2.model";
+import { DataModelPropertyEntity } from "src/app/shared/models/datamodel.model";
 import { service_get_parent } from "./services";
 import { action_get_parent } from "./actions";
 import { field_get_root_field, field_get_parent_action } from "./fields";

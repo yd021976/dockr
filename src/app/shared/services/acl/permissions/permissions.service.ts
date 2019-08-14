@@ -1,8 +1,8 @@
 import { Ability, AbilityBuilder, RawRule } from '@casl/ability'
 import { Injectable } from '@angular/core';
-import { RoleModel } from 'src/app/shared/models/acl/roles.model';
-import { CrudOperationModel, ALLOWED_STATES } from 'src/app/shared/models/acl/crud-operations.model';
-import { DataModelPropertyModel } from 'src/app/shared/models/acl/datamodel.model';
+import { RoleModel } from 'src/app/shared/models/roles.model';
+import { CrudOperationModel, ALLOWED_STATES } from 'src/app/shared/models/crud-operations.model';
+import { DataModelPropertyModel } from 'src/app/shared/models/datamodel.model';
 import { BehaviorSubject } from 'rxjs';
 
 

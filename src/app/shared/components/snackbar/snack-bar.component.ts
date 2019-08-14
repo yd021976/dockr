@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
-import { ApplicationNotification } from '../../models/acl2/application.notifications.model';
+import { ApplicationNotification } from '../../models/application.notifications.model';
 
 /**
  * component that display application errors 

@@ -20,14 +20,14 @@ import { AppRoutingModule } from './/app-routing.module';
 import { AppLoggerModule } from './shared/services/logger/app-logger/app-logger.module';
 import { AdminModule } from './features-modules/admin/admin.module';
 import { ServicesState } from './shared/store/states/services.state';
-import { Acl2State } from './shared/store/states/acl2/ui.state/acl2.state';
+import { AclUIState } from './shared/store/states/acl/ui.state/acl2.state';
 import { SnackBarComponent } from './shared/components/snackbar/snack-bar.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppNotificationsState } from './shared/store/states/application.notifications.state';
 import { UsersState } from './shared/store/states/users.state';
 import { AuthService } from './shared/services/auth/auth.service';
 import { PermissionsService } from './shared/services/acl/permissions/permissions.service';
-import { Acl2EntitiesState } from './shared/store/states/acl2/entities.state/acl2.entities.state';
+import { AclEntitiesState } from './shared/store/states/acl/entities.state/acl2.entities.state';
 import { ApplicationLocksState } from './shared/store/states/locks/application.locks.state';
 
 /**
@@ -58,8 +58,8 @@ export function authUser( appsandbox: AppSandboxService ) {
       UserState,
       UsersState,
       TemplatesState,
-      Acl2State,
-      Acl2EntitiesState,
+      AclUIState,
+      AclEntitiesState,
       ApplicationLocksState,
       ServicesState,
       AppNotificationsState

@@ -1,6 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { AclTreeNode } from 'src/app/shared/models/acl/treenode.model';
-import { trigger, style, transition, animate, query, animateChild } from '@angular/animations';
+import { Component } from '@angular/core';
 import { BaseNodeComponent } from '../base.node.component';
 
 @Component( {

@@ -1,18 +1,18 @@
-import { AclTreeNode, NODE_TYPES } from "./node_modules/src/app/shared/models/acl/treenode.model";
+import { AclTreeNode, NODE_TYPES } from "src/app/shared/models/treenode.model";
 import { createSelector, Selector } from "@ngxs/store";
 import { AclEntitiesState } from "../entities.state/acl2.entities.state";
-import { AclStateEntitiesModel, AclStateUIModel, AclEntities } from "./node_modules/src/app/shared/models/acl2/acl2.model";
+import { AclStateEntitiesModel, AclStateUIModel, AclEntities } from "src/app/shared/models/acl2.model";
 import { entity_management } from '../utils';
 import { AclUIState } from "../ui.state/acl2.state";
-import { RoleEntity, RoleModel } from "./node_modules/src/app/shared/models/acl/roles.model";
-import { FlatTreeNode } from "./node_modules/src/app/features-modules/admin/services/treeNodes.service";
+import { RoleEntity, RoleModel } from "src/app/shared/models/roles.model";
+import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
 import { ServicesState } from "../../services.state";
-import { ServicesModel } from "./node_modules/src/app/shared/models/services.model";
-import { BackendServiceEntity } from "./node_modules/src/app/shared/models/acl/backend-services.model";
-import { CrudOperationModelEntity } from "./node_modules/src/app/shared/models/acl/crud-operations.model";
-import { DataModelPropertyEntity } from "./node_modules/src/app/shared/models/acl/datamodel.model";
+import { ServicesModel } from "src/app/shared/models/services.model";
+import { BackendServiceEntity } from "src/app/shared/models/backend-services.model";
+import { CrudOperationModelEntity } from "src/app/shared/models/crud-operations.model";
+import { DataModelPropertyEntity } from "src/app/shared/models/datamodel.model";
 import { denormalize } from "normalizr";
-import { AppError, errorType } from "./node_modules/src/app/shared/models/app-error.model";
+import { AppError, errorType } from "src/app/shared/models/app-error.model";
 
 export class AclEntitiesSelectors {
     /**

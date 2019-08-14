@@ -1,7 +1,7 @@
-import { RoleEntities } from "../acl/roles.model";
-import { BackendServicesEntities } from "../acl/backend-services.model";
-import { CrudOperationsModelEntities } from "../acl/crud-operations.model";
-import { DataModelPropertyEntities } from "../acl/datamodel.model";
+import { RoleEntities } from "./roles.model";
+import { BackendServicesEntities } from "./backend-services.model";
+import { CrudOperationsModelEntities } from "./crud-operations.model";
+import { DataModelPropertyEntities } from "./datamodel.model";
 import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
 
 /**

@@ -1,4 +1,4 @@
-import { ApplicationNotification } from "../../models/acl2/application.notifications.model";
+import { ApplicationNotification } from "../../models/application.notifications.model";
 
 /**
  * Append error to the end of state

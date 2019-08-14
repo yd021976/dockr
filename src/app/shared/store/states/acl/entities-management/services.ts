@@ -1,8 +1,8 @@
-import { RoleEntity, RoleEntities } from "src/app/shared/models/acl/roles.model";
+import { RoleEntity, RoleEntities } from "src/app/shared/models/roles.model";
 import { action_remove_entity } from './actions'
-import { BackendServicesEntities, BackendServiceEntity } from "src/app/shared/models/acl/backend-services.model";
-import { CrudOperationsModelEntities, CrudOperationModelEntity } from "src/app/shared/models/acl/crud-operations.model";
-import { DataModelPropertyEntities } from "src/app/shared/models/acl/datamodel.model";
+import { BackendServicesEntities, BackendServiceEntity } from "src/app/shared/models/backend-services.model";
+import { CrudOperationsModelEntities, CrudOperationModelEntity } from "src/app/shared/models/crud-operations.model";
+import { DataModelPropertyEntities } from "src/app/shared/models/datamodel.model";
 import { role_get_service_index } from "./roles";
 /**
  * Get role entity from service UID

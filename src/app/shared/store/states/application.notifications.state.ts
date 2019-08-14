@@ -1,7 +1,7 @@
 import { State, Action, StateContext, Selector } from "@ngxs/store";
 import { AppError } from "../../models/app-error.model";
 import { ApplicationNotifications_Append_Message, ApplicationNotifications_Shift_Message, ApplicationNotifications_Remove_Message } from "../actions/application-notifications.actions";
-import { ApplicationNotificationsModel, ApplicationNotification } from "../../models/acl2/application.notifications.model";
+import { ApplicationNotificationsModel, ApplicationNotification } from "../../models/application.notifications.model";
 
 export const default_state_application_notifications: ApplicationNotificationsModel = { notifications: [] }
 

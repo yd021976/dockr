@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
-import { RoleModel } from 'src/app/shared/models/acl/roles.model';
+import { RoleModel } from 'src/app/shared/models/roles.model';
 import { UserModelBase } from 'src/app/shared/models/user.model';
 
 @Component( {

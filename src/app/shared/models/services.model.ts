@@ -1,4 +1,4 @@
-import { BackendServiceModel } from "./acl/backend-services.model";
+import { BackendServiceModel } from "./backend-services.model";
 
 export class ServicesModel {
     services:BackendServiceModel[]
