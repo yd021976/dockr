@@ -8,22 +8,18 @@ import { AdminRoutingModule } from './admin-routing.module';
 import { AdminAclSandboxService } from 'src/app/shared/sandboxes/containers/admin.acl.sandbox.service';
 import { FormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
-import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTreeModule } from '@angular/material/tree';
 import { AclContainer } from './containers/acl/acl.container';
 import { UsersContainer } from './containers/users/users.container';
-import { ActionComponent } from './components/acl/treenodes/action/action.component';
-import { FieldComponent } from './components/acl/treenodes/field/field.component';
-import { RoleComponent } from './components/acl/treenodes/role/role.component';
-import { ServiceComponent } from './components/acl/treenodes/service/service.component';
+import { ActionComponent } from './components/acl/node-content-renderer/action/action.component';
+import { FieldComponent } from './components/acl/node-content-renderer/field/field.component';
+import { RoleComponent } from './components/acl/node-content-renderer/role/role.component';
+import { ServiceComponent } from './components/acl/node-content-renderer/service/service.component';
 import { UsersComponent } from './components/users/users.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { TreeNodesService } from './services/treeNodes.service';
@@ -50,6 +46,7 @@ import { UserDetailsComponent } from './components/users/user.details/user.detai
 import { MatListModule } from '@angular/material/list';
 import { UsersActionsComponent } from './components/users/users.actions/users.actions.component';
 import { AuthUsersAddUserDialog } from './components/users/dialogs/add.user/add.user.dialog.component';
+import { TreenodeRendererComponent } from './components/acl/node-treenode-renderer/treenode-renderer/treenode-renderer.component';
 
 const components = [
   AclContainer, UsersContainer, UsersComponent, AclComponent, ActionComponent, FieldComponent, RoleComponent, ServiceComponent,
@@ -59,6 +56,7 @@ const components = [
   NodeActionsComponent, DefaultActionComponent, RoleActionComponent, ServiceActionComponent, CrudActionComponent, FieldActionComponent,
   AddRoleDialogComponent, AddServiceDialogComponent, CandeactivateAclDialog,
   AuthUsersAddUserDialog,
+  TreenodeRendererComponent,
   // To delete
   AdminComponent
 ]

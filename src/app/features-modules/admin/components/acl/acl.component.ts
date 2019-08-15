@@ -67,7 +67,6 @@ export class AclComponent implements OnInit, AfterViewInit {
       // Notify no new node is selected if we have only a removed item and no new selected node
       if ( changes.removed.length != 0 && changes.added.length == 0 ) {
         selectedNode = null
-        this.nodeSelected.emit( null )
       } else {
         // Emit event for the new selected node : There can be only one selected node because selection model has no multple selection enabled
         selectedNode = changes.added[ 0 ]

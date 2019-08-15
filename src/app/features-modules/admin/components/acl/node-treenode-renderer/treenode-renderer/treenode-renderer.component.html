@@ -1,0 +1,18 @@
+<div *ngFor="let column of node.column_model.columns_before_node" [fxFlex]="column.size" class="column">
+  <div fxFlex FxFlexAlign="center" class="tree_container_cell"></div>
+</div>
+<div [fxFlex]="node.column_model.column_size" fxFlexFill class="column node"
+     (click)="nodeSelected(node)"
+     [class.selected]="selectedNode==node">
+  <div fxFlex fxFlexAlign="center" class="tree_container_cell" [style.padding-left]="node.column_model.node_padding_left+'px'">
+    <button mat-icon-button [disabled]="true">
+      <mat-icon></mat-icon>
+    </button>
+    <div class="node-renderer">
+      <ng-container *ngTemplateOutlet="nodeTemplateRenderer; context:{$implicit:node.data}"></ng-container>
+    </div>
+  </div>
+</div>
+<div *ngFor="let column of node.column_model.columns_after_node" [fxFlex]="column.size" class="column">
+  <div fxFlex fxFlexAlign="center" class="tree_container_cell"></div>
+</div>
