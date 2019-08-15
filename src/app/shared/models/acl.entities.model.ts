@@ -1,17 +1,17 @@
-import { RoleEntities } from "./roles.model";
-import { BackendServicesEntities } from "./backend-services.model";
-import { CrudOperationsModelEntities } from "./crud-operations.model";
-import { DataModelPropertyEntities } from "./datamodel.model";
+import { AclRoleEntities } from "./acl.role.model";
+import { AclServicesEntities } from "./acl.services.model";
+import { AclServiceActionModelEntities } from "./acl.service.action.model";
+import { ServiceFieldEntities } from "./acl.service.field.model";
 import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
 
 /**
  * Roles entities
  */
 export class AclEntities {
-    roles: RoleEntities
-    services: BackendServicesEntities
-    actions: CrudOperationsModelEntities
-    fields: DataModelPropertyEntities
+    roles: AclRoleEntities
+    services: AclServicesEntities
+    actions: AclServiceActionModelEntities
+    fields: ServiceFieldEntities
 }
 
 /**

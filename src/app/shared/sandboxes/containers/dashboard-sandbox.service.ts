@@ -1,7 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { Store } from '@ngxs/store';
 
-import { NotificationBaseService } from '../../services/notifications/notifications-base.service';
 import { BaseSandboxService } from '../base-sandbox.service';
 import { AppLoggerServiceToken } from '../../services/logger/app-logger/app-logger-token';
 import { AppLoggerService } from '../../services/logger/app-logger/service/app-logger.service';

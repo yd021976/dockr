@@ -1,13 +1,12 @@
 import { State, Action, StateContext } from "@ngxs/store";
-import { AclStateEntitiesModel, AclEntities } from "src/app/shared/models/acl2.model";
+import { AclStateEntitiesModel, AclEntities } from "src/app/shared/models/acl.entities.model";
 import { NormalizrSchemas } from "../entities-management/normalizer";
-import { AclUIActions } from '../../../actions/acl2/acl2.state.actions'
-import { Acl_Roles_Add_Entity, Acl_Roles_Add_Entity_Success, Acl_Roles_Add_Entity_Error, Acl_Roles_Remove_Entity, Acl_Role_Remove_Entity_Success, Acl_Roles_Remove_Entity_Error, Acl_Role_Add_Service_Success, Acl_Role_Add_Service_Error, Acl_Role_Add_Service } from "../../../actions/acl2/acl2.role.entity.actions";
+import { RolesStateActions } from "../../../actions/acl2/acl2.role.entity.actions"
 import { normalize } from "normalizr";
 import * as _ from 'lodash';
 import { Acl_Field_Update_Allowed, Acl_Field_Update_Allowed_Success, Acl_Field_Update_Allowed_Error } from "../../../actions/acl2/acl2.field.entity.action";
-import { DataModelPropertyEntity } from "src/app/shared/models/datamodel.model";
-import { CrudOperationModelEntity } from "src/app/shared/models/crud-operations.model";
+import { ServiceFieldEntity } from "src/app/shared/models/acl.service.field.model";
+import { AclServiceActionModelEntity } from "src/app/shared/models/acl.service.action.model";
 import { entity_management } from '../utils';
 import { Acl_Action_Update_Allowed, Acl_Action_Update_Allowed_Success, Acl_Action_Update_Allowed_Error } from "../../../actions/acl2/acl2.action.entity.actions";
 import { Acl_Services_Remove_Entity, Acl_Services_Remove_Entity_Error, Acl_Services_Remove_Entity_Success } from "../../../actions/acl2/acl2.service.entity.actions";
@@ -37,8 +36,8 @@ export class AclEntitiesState {
     /**
      * 
      */
-    @Action( AclUIActions.Roles_Load_All )
-    acl_load_all( ctx: StateContext<AclStateEntitiesModel>, action: AclUIActions.Roles_Load_All ) {
+    @Action( RolesStateActions.Load_All )
+    acl_load_all( ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Load_All ) {
         ctx.patchState( {
             entities: {
                 roles: {},
@@ -55,8 +54,8 @@ export class AclEntitiesState {
      * @param ctx 
      * @param action 
      */
-    @Action( AclUIActions.Roles_Load_All_Success )
-    acl_load_all_success( ctx: StateContext<AclStateEntitiesModel>, action: AclUIActions.Roles_Load_All_Success ) {
+    @Action( RolesStateActions.Load_All_Success )
+    acl_load_all_success( ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Load_All_Success ) {
         var normalized = AclEntitiesState.normalizr_utils.normalize( action.roles, AclEntitiesState.normalizr_utils.mainSchema )
 
         ctx.patchState( {
@@ -74,8 +73,8 @@ export class AclEntitiesState {
     * @param ctx 
     * @param action 
     */
-    @Action( AclUIActions.Roles_Load_All_Error )
-    acl_load_all_error( ctx: StateContext<AclStateEntitiesModel>, action: AclUIActions.Roles_Load_All_Error ) {
+    @Action( RolesStateActions.Load_All_Error )
+    acl_load_all_error( ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Load_All_Error ) {
         ctx.patchState( {
             previous_entities: null,
             entities: {
@@ -92,8 +91,8 @@ export class AclEntitiesState {
      *                                                     Role entities -- ADD role entity
      *******************************************************************************************************************************************************************/
 
-    @Action( Acl_Roles_Add_Entity )
-    roles_add_entity( ctx: StateContext<AclStateEntitiesModel>, action: Acl_Roles_Add_Entity ) {
+    @Action( RolesStateActions.Add_Entity )
+    roles_add_entity( ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Add_Entity ) {
         const normalized = normalize( [ action.roleEntity ], AclEntitiesState.normalizr_utils.mainSchema )
         const role_entities = normalized.entities[ 'roles' ] ? normalized.entities[ 'roles' ] : {}
         const service_entities = normalized.entities[ 'services' ] ? normalized.entities[ 'services' ] : {}
@@ -117,8 +116,8 @@ export class AclEntitiesState {
      * @param ctx 
      * @param action 
      */
-    @Action( Acl_Roles_Add_Entity_Success )
-    roles_add_entity_success( ctx: StateContext<AclStateEntitiesModel>, action: Acl_Roles_Add_Entity_Success ) {
+    @Action( RolesStateActions.Add_Entity_Success )
+    roles_add_entity_success( ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Add_Entity_Success ) {
         ctx.patchState( { previous_entities: null } )
     }
 
@@ -127,8 +126,8 @@ export class AclEntitiesState {
      * @param ctx 
      * @param action 
      */
-    @Action( Acl_Roles_Add_Entity_Error )
-    roles_add_entity_error( ctx: StateContext<AclStateEntitiesModel>, action: Acl_Roles_Add_Entity_Error ) {
+    @Action( RolesStateActions.Add_Entity_Error )
+    roles_add_entity_error( ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Add_Entity_Error ) {
         const previous_entities: AclEntities = ctx.getState().previous_entities != null ? ctx.getState().previous_entities : ctx.getState().entities
         ctx.patchState( {
             entities: previous_entities,
@@ -140,8 +139,8 @@ export class AclEntitiesState {
     /*******************************************************************************************************************************************************************
      *                                                  Role entities -- REMOVE role entity
      *******************************************************************************************************************************************************************/
-    @Action( Acl_Roles_Remove_Entity )
-    role_remove_entity( ctx: StateContext<AclStateEntitiesModel>, action: Acl_Roles_Remove_Entity ) {
+    @Action( RolesStateActions.Remove_Entity )
+    role_remove_entity( ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Remove_Entity ) {
         const state = ctx.getState()
         const previous_entities: AclEntities = _.cloneDeep( state.entities )
 
@@ -171,8 +170,8 @@ export class AclEntitiesState {
      * @param ctx 
      * @param action 
      */
-    @Action( Acl_Role_Remove_Entity_Success )
-    roles_remove_entity_success( ctx: StateContext<AclStateEntitiesModel>, action: Acl_Role_Remove_Entity_Success ) {
+    @Action( RolesStateActions.Remove_Entity_Success )
+    roles_remove_entity_success( ctx: StateContext<AclStateEntitiesModel>, action:RolesStateActions.Remove_Entity_Success ) {
         ctx.patchState( {
             previous_entities: null
         } )
@@ -183,8 +182,8 @@ export class AclEntitiesState {
      * @param ctx 
      * @param action 
      */
-    @Action( Acl_Roles_Remove_Entity_Error )
-    roles_remove_entity_error( ctx: StateContext<AclStateEntitiesModel>, action: Acl_Roles_Remove_Entity_Error ) {
+    @Action( RolesStateActions.Remove_Entity_Error )
+    roles_remove_entity_error( ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Remove_Entity_Error ) {
         const previous_entities: AclEntities = ctx.getState().previous_entities != null ? ctx.getState().previous_entities : ctx.getState().entities
         ctx.patchState( {
             entities: previous_entities,
@@ -203,8 +202,8 @@ export class AclEntitiesState {
     * @param ctx 
     * @param action 
     */
-    @Action( Acl_Role_Add_Service )
-    role_add_service( ctx: StateContext<AclStateEntitiesModel>, action: Acl_Role_Add_Service ) {
+    @Action( RolesStateActions.Add_Service )
+    role_add_service( ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Add_Service ) {
         var normalizedEntities = normalize( action.backendServiceModel, AclEntitiesState.normalizr_utils.serviceSchema )
         const serviceUid = normalizedEntities.result
         var state = ctx.getState()
@@ -232,8 +231,8 @@ export class AclEntitiesState {
      * @param ctx 
      * @param action 
      */
-    @Action( Acl_Role_Add_Service_Success )
-    role_add_service_success( ctx: StateContext<AclStateEntitiesModel>, action: Acl_Role_Add_Service_Success ) {
+    @Action( RolesStateActions.Add_Service_Success )
+    role_add_service_success( ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Add_Service_Success ) {
         ctx.patchState( { previous_entities: null } )
     }
 
@@ -242,8 +241,8 @@ export class AclEntitiesState {
      * @param ctx 
      * @param action 
      */
-    @Action( Acl_Role_Add_Service_Error )
-    Acl_Role_Add_Service_Error( ctx: StateContext<AclStateEntitiesModel>, action: Acl_Role_Add_Service_Error ) {
+    @Action( RolesStateActions.Add_Service_Error )
+    Acl_Role_Add_Service_Error( ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Add_Service_Error ) {
         const previous_state = ctx.getState().previous_entities
         ctx.patchState( { entities: previous_state || ctx.getState().entities, previous_entities: null } )
     }
@@ -265,8 +264,8 @@ export class AclEntitiesState {
     @Action( Acl_Field_Update_Allowed )
     field_update_property_allowed( ctx: StateContext<AclStateEntitiesModel>, action: Acl_Field_Update_Allowed ) {
         const state: AclStateEntitiesModel = ctx.getState()
-        var field_entity: DataModelPropertyEntity = state.entities.fields[ action.entity_uid ]
-        var parent_action_entity: CrudOperationModelEntity = null
+        var field_entity: ServiceFieldEntity = state.entities.fields[ action.entity_uid ]
+        var parent_action_entity: AclServiceActionModelEntity = null
 
         // Save current state entities
         let previous_entities = _.cloneDeep( state.entities )
@@ -334,7 +333,7 @@ export class AclEntitiesState {
     @Action( Acl_Action_Update_Allowed )
     action_update_property_allowed( ctx: StateContext<AclStateEntitiesModel>, action: Acl_Action_Update_Allowed ) {
         const state: AclStateEntitiesModel = ctx.getState()
-        var action_entity: CrudOperationModelEntity = state.entities.actions[ action.entity_uid ]
+        var action_entity: AclServiceActionModelEntity = state.entities.actions[ action.entity_uid ]
 
         // Save current state entities
         let previous_entities = _.cloneDeep( state.entities )

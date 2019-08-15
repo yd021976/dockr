@@ -12,7 +12,7 @@ import { ApplicationNotification, ApplicationNotificationType } from '../../mode
 import { PermissionsService } from '../../services/acl/permissions/permissions.service';
 import { ApplicationNotifications_Append_Message } from '../../store/actions/application-notifications.actions';
 import { RolesService } from '../../services/acl/roles/roles.service';
-import { RoleModel } from '../../models/roles.model';
+import { AclRoleModel } from '../../models/acl.role.model';
 import { UserModelBase } from '../../models/user.model';
 import { AclUIState } from '../../store/states/acl/ui.state/acl2.state';
 
@@ -99,7 +99,7 @@ export class AppSandboxService extends BaseSandboxService {
 
     private loadPermissions( user: UserModelBase ): Promise<boolean> {
         return this.roleService.find( { query: { '_id': { '$in': user.roles } } } )
-            .then( ( roles: RoleModel[] ) => {
+            .then( ( roles: AclRoleModel[] ) => {
                 this.permissionsService.setAbility( roles )
                 return true
             } )

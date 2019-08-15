@@ -1,13 +1,13 @@
 import { Component, ViewChild, ElementRef, Inject } from "@angular/core";
 import { UserBackendApiModel, UserModelBase } from "src/app/shared/models/user.model";
-import { RoleModel } from "src/app/shared/models/roles.model";
+import { AclRoleModel } from "src/app/shared/models/acl.role.model";
 import { MAT_DIALOG_DATA, MatSelectionListChange } from '@angular/material';
 import { Observable, of } from "rxjs";
 
 export type auth_users_add_user_dialog_result = {
     isCancelled: boolean,
     user: UserModelBase,
-    available_roles: Observable<RoleModel[]>
+    available_roles: Observable<AclRoleModel[]>
 }
 @Component( {
     selector: 'app-admin-users-add-user-dialog',
@@ -19,7 +19,7 @@ export class AuthUsersAddUserDialog {
 
     public dialogData: auth_users_add_user_dialog_result = { isCancelled: false, user: { name: '', email: '', password: '', roles: [], settings: [] }, available_roles: of( [] ) }
 
-    constructor( @Inject( MAT_DIALOG_DATA ) public available_roles: Observable<RoleModel[]> ) {
+    constructor( @Inject( MAT_DIALOG_DATA ) public available_roles: Observable<AclRoleModel[]> ) {
         this.dialogData.available_roles = available_roles
     }
 

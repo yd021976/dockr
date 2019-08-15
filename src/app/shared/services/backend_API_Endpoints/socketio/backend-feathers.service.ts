@@ -7,9 +7,9 @@ import { Optional } from '@angular/core';
 
 
 import { BackendSocketioService } from './backend-socketio.service';
-import { stateChangeReason } from '../../../models/backend-service-connection-state.model';
+import { BackendStateChangeReasons } from '../../../models/backend.connection.state.model';
 import { BackendConfigToken } from '../backend-config.token';
-import { BackendConfigClass } from '../../../models/backend-config.model';
+import { BackendConfig } from '../../../models/backend.config.model';
 import { loginCredentials } from '../../../models/user.model';
 import { AppLoggerServiceToken } from '../../logger/app-logger/app-logger-token';
 import { AppLoggerService } from '../../logger/app-logger/service/app-logger.service';
@@ -29,7 +29,7 @@ export class FeathersjsBackendService extends BackendSocketioService {
 
   constructor(
     @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerService,
-    @Optional() @Inject( BackendConfigToken ) config: BackendConfigClass ) {
+    @Optional() @Inject( BackendConfigToken ) config: BackendConfig ) {
     super( loggerService, config );
     // Register a new logger name
     this.loggerService.createLogger( this.loggerName );
@@ -54,7 +54,7 @@ export class FeathersjsBackendService extends BackendSocketioService {
      * Event when user logs out
      */
     this.feathers.service( 'authentication' ).on( 'user-token-expired', ( data ) => {
-      this.updateConnectionState( { attemptNumber: 0, changeReason: stateChangeReason.Feathers_Token_Expired } )
+      this.updateConnectionState( { attemptNumber: 0, changeReason: BackendStateChangeReasons.Feathers_Token_Expired } )
       this.feathers.set( 'user', null )
     } )
 
@@ -66,7 +66,7 @@ export class FeathersjsBackendService extends BackendSocketioService {
 
       if ( event[ 'data' ] && event[ 'data' ][ 'name' ] == 'TokenExpiredError' ) {
         // IMPORTANT: We don't clear "user" property here. We need to keep track of last loggedin user, even after auth error or deconnexion
-        this.updateConnectionState( { changeReason: stateChangeReason.Feathers_reauthentication_error } );
+        this.updateConnectionState( { changeReason: BackendStateChangeReasons.Feathers_reauthentication_error } );
       }
     } );
   }
@@ -105,7 +105,7 @@ export class FeathersjsBackendService extends BackendSocketioService {
   public logout(): Promise<any> {
     // Clear current user
     this.feathers.set( 'user', null );
-    this.updateConnectionState( { changeReason: stateChangeReason.Feathers_Logout } );
+    this.updateConnectionState( { changeReason: BackendStateChangeReasons.Feathers_Logout } );
 
     return this.feathers.logout();
   }

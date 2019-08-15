@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { AppRoute } from 'src/app/shared/models/app-route.model';
+import { ApplicationRouteInterface } from 'src/app/shared/models/application.route.model';
 
 @Component({
   selector: 'app-menu-link',
@@ -7,7 +7,7 @@ import { AppRoute } from 'src/app/shared/models/app-route.model';
   styleUrls: ['./menu-link.component.scss']
 })
 export class MenuLinkComponent implements OnInit {
-  @Input() menuItem: AppRoute = {}
+  @Input() menuItem: ApplicationRouteInterface = {}
 
   constructor() { }
 

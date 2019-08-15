@@ -1,7 +1,7 @@
-import { CrudOperationModelEntity, CrudOperationsModelEntities, ALLOWED_STATES } from "src/app/shared/models/crud-operations.model";
-import { DataModelPropertyEntities } from "src/app/shared/models/datamodel.model";
+import { AclServiceActionModelEntity, AclServiceActionModelEntities, ALLOWED_STATES } from "src/app/shared/models/acl.service.action.model";
+import { ServiceFieldEntities } from "src/app/shared/models/acl.service.field.model";
 import { field_remove_entity } from "./fields";
-import { BackendServicesEntities, BackendServiceEntity } from "src/app/shared/models/backend-services.model";
+import { AclServicesEntities, AclServiceEntity } from "src/app/shared/models/acl.services.model";
 
 
 /**
@@ -10,8 +10,8 @@ import { BackendServicesEntities, BackendServiceEntity } from "src/app/shared/mo
  * @param action_entities 
  * @param field_entities 
  */
-export function action_remove_entity( action_uid: string, action_entities: CrudOperationsModelEntities, field_entities: DataModelPropertyEntities ) {
-    var action_entity: CrudOperationModelEntity = action_entities[ action_uid ]
+export function action_remove_entity( action_uid: string, action_entities: AclServiceActionModelEntities, field_entities: ServiceFieldEntities ) {
+    var action_entity: AclServiceActionModelEntity = action_entities[ action_uid ]
     // Remove each field if any
     if ( action_entity[ 'fields' ] ) {
         action_entity.fields.forEach( field_uid => {
@@ -28,8 +28,8 @@ export function action_remove_entity( action_uid: string, action_entities: CrudO
  * @param crud_uid 
  * @param services_entities 
  */
-export function action_get_parent( crud_uid: string, services_entities: BackendServicesEntities ): BackendServiceEntity {
-    var serviceEntity: BackendServiceEntity = null
+export function action_get_parent( crud_uid: string, services_entities: AclServicesEntities ): AclServiceEntity {
+    var serviceEntity: AclServiceEntity = null
 
     Object.keys( services_entities ).map( ( serviceUID ) => {
         if ( services_entities[ serviceUID ].crud_operations.find( ( crudUID ) => crudUID == crud_uid ) ) {
@@ -47,7 +47,7 @@ export function action_get_parent( crud_uid: string, services_entities: BackendS
  * @param action_entities 
  * @param fields_entities 
  */
-export function action_update_allowed( action_uid: string, action_entities: CrudOperationsModelEntities, fields_entities: DataModelPropertyEntities ) {
+export function action_update_allowed( action_uid: string, action_entities: AclServiceActionModelEntities, fields_entities: ServiceFieldEntities ) {
     let action_entity = action_entities[ action_uid ]
     // Update action entity
     const allowedFields = action_entity.fields.filter( ( field_uid ) => {
@@ -71,7 +71,7 @@ export function action_update_allowed( action_uid: string, action_entities: Crud
     }
 }
 
-export function action_get_entityFromUid( entity_uid: string, action_entities: CrudOperationsModelEntities ): CrudOperationModelEntity {
+export function action_get_entityFromUid( entity_uid: string, action_entities: AclServiceActionModelEntities ): AclServiceActionModelEntity {
     const entity = action_entities[ entity_uid ] || null
     return entity
 }

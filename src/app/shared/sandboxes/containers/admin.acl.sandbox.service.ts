@@ -4,15 +4,15 @@ import { Store } from "@ngxs/store";
 import { AclTreeNode, NODE_TYPES } from "../../models/treenode.model";
 import { AppLoggerService } from "../../services/logger/app-logger/service/app-logger.service";
 import { AppLoggerServiceToken } from "../../services/logger/app-logger/app-logger-token";
-import { BackendServiceModel } from "../../models/backend-services.model";
+import { AclServiceModel } from "../../models/acl.services.model";
 import { BaseSandboxService } from "../base-sandbox.service";
 import { RolesService } from "../../services/acl/roles/roles.service";
 import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
 import { BackendServicesService } from "../../services/acl/services/backend-services.service";
 import { Services_Load_All_Success, Services_Load_All } from "../../store/actions/services.actions";
 import { AclUIActions } from '../../store/actions/acl2/acl2.state.actions'
-import { Acl_Role_Add_Service_Success, Acl_Roles_Add_Entity_Success, Acl_Role_Remove_Entity_Success, Acl_Roles_Add_Entity, Acl_Roles_Add_Entity_Error, Acl_Roles_Remove_Entity, Acl_Roles_Remove_Entity_Error, Acl_Role_Add_Service, Acl_Role_Add_Service_Error } from "../../store/actions/acl2/acl2.role.entity.actions";
-import { RoleModel, RoleEntity } from "src/app/shared/models/roles.model";
+import { RolesStateActions } from "../../store/actions/acl2/acl2.role.entity.actions"
+import { AclRoleModel, AclRoleEntity } from "src/app/shared/models/acl.role.model";
 import { Acl_Field_Update_Allowed_Success, Acl_Field_Update_Allowed, Acl_Field_Update_Allowed_Error } from "../../store/actions/acl2/acl2.field.entity.action";
 import { Acl_Action_Update_Allowed_Success, Acl_Action_Update_Allowed, Acl_Action_Update_Allowed_Error } from "../../store/actions/acl2/acl2.action.entity.actions";
 import { Acl_Services_Remove_Entity_Success, Acl_Services_Remove_Entity, Acl_Services_Remove_Entity_Error } from "../../store/actions/acl2/acl2.service.entity.actions";
@@ -23,16 +23,18 @@ import { ApplicationNotifications_Append_Message } from "../../store/actions/app
 import { v4 as uuid } from 'uuid';
 import { map } from "rxjs/operators";
 import { UserModel } from "../../models/user.model";
-import { AclEntitiesSelectors } from "../../store/states/acl/selectors/acl2.entities.selectors";
+import { AclEntitiesSelectors } from "../../store/states/acl/selectors/acl.entities.selectors";
 import { ApplicationLocksActions } from "../../store/actions/application.locks.actions";
 import { ApplicationLocksSelectors } from "../../store/states/locks/application.locks.selectors";
-
+import { AclTreeSelectors } from '../../store/states/acl/selectors/acl.tree.selectors'
+import { AclUISelectors } from "../../store/states/acl/selectors/acl.ui.selectors";
+import { RolesSelectors } from "../../store/states/acl/selectors/roles.selectors";
 
 @Injectable( { providedIn: 'root' } )
 export class AdminAclSandboxService extends BaseSandboxService {
     public acltreenodes$: Observable<AclTreeNode[]>
     public currentSelectedNode$: Observable<FlatTreeNode>
-    public availableServices$: Observable<BackendServiceModel[]>
+    public availableServices$: Observable<AclServiceModel[]>
     public isAclLocked$: Observable<boolean>
 
     constructor(
@@ -43,13 +45,13 @@ export class AdminAclSandboxService extends BaseSandboxService {
         private resourcesLocksService: ResourcesLocksService ) {
 
         super( store, logger )
-        this.acltreenodes$ = this.store.select( AclEntitiesSelectors.treenode_getData() ) // ACL Observable
-        this.currentSelectedNode$ = this.store.select( AclEntitiesSelectors.treenodes_get_currentSelectedNode )
-        this.availableServices$ = this.store.select( AclEntitiesSelectors.role_get_availableServices )
+        this.acltreenodes$ = this.store.select( AclTreeSelectors.treenode_getData() ) // ACL Observable
+        this.currentSelectedNode$ = this.store.select( AclUISelectors.treenodes_get_currentSelectedNode )
+        this.availableServices$ = this.store.select( RolesSelectors.role_get_availableServices )
         this.isAclLocked$ = this.store.select( ApplicationLocksSelectors.isLocked( 'acl' ) )
 
         // When ACL (roles) change, update permission service
-        let roles$ = this.store.select( AclEntitiesSelectors.roles_get_list )
+        let roles$ = this.store.select( RolesSelectors.roles_get_list )
         roles$
             .pipe(
                 map( roles => {
@@ -74,15 +76,15 @@ export class AdminAclSandboxService extends BaseSandboxService {
      * Load ACL's data
      */
     init() {
-        this.store.dispatch( new AclUIActions.Roles_Load_All() )
+        this.store.dispatch( new RolesStateActions.Load_All() )
 
         this.rolesService.find()
             .then( ( results ) => {
-                this.store.dispatch( new AclUIActions.Roles_Load_All_Success( results ) )
+                this.store.dispatch( new RolesStateActions.Load_All_Success( results ) )
             } )
             .catch( ( err ) => {
                 this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, err[ 'name' ], ApplicationNotificationType.ERROR ) ) )
-                this.store.dispatch( new AclUIActions.Roles_Load_All_Error( err ) )
+                this.store.dispatch( new RolesStateActions.Load_All_Error( err ) )
             } )
 
         this.store.dispatch( new Services_Load_All() )
@@ -183,9 +185,9 @@ export class AdminAclSandboxService extends BaseSandboxService {
      * 
      * @param node 
      */
-    private node_get_parentRole( node: AclTreeNode ): RoleModel {
-        const role_entity: RoleEntity = this.store.selectSnapshot( AclEntitiesSelectors.treenode_get_rootRoleEntity( node ) )
-        const role_model: RoleModel = this.store.selectSnapshot( AclEntitiesSelectors.role_get_denormalizeEntity( role_entity ) )
+    private node_get_parentRole( node: AclTreeNode ): AclRoleModel {
+        const role_entity: AclRoleEntity = this.store.selectSnapshot( AclTreeSelectors.treenode_get_rootRoleEntity( node ) )
+        const role_model: AclRoleModel = this.store.selectSnapshot( RolesSelectors.role_get_denormalizeEntity( role_entity ) )
         if ( !role_model ) throw new Error( '[AdminAclSandboxService] No parent role found for node' )
         return role_model
     }
@@ -195,7 +197,7 @@ export class AdminAclSandboxService extends BaseSandboxService {
      * 
      * @param role_model 
      */
-    private backendApi_store_role( role_model: RoleModel ): Promise<any> {
+    private backendApi_store_role( role_model: AclRoleModel ): Promise<any> {
         return this.rolesService.update( role_model, true )
     }
     /********************************************************************************************************
@@ -204,14 +206,14 @@ export class AdminAclSandboxService extends BaseSandboxService {
      * 
      ********************************************************************************************************/
     getTreeNodeChildren$( node ): Observable<AclTreeNode[]> {
-        return this.store.select( AclEntitiesSelectors.treenode_getData( node ) )
+        return this.store.select( AclTreeSelectors.treenode_getData( node ) )
     }
     getTreeNodeChildren( node ): AclTreeNode[] {
-        return this.store.selectSnapshot( AclEntitiesSelectors.treenode_getData( node ) )
+        return this.store.selectSnapshot( AclTreeSelectors.treenode_getData( node ) )
     }
 
     nodeHasChildren( node ) {
-        var children = this.store.selectSnapshot( AclEntitiesSelectors.treenode_getData( node ) )
+        var children = this.store.selectSnapshot( AclTreeSelectors.treenode_getData( node ) )
         if ( !children ) {
             return false
         }
@@ -219,7 +221,7 @@ export class AdminAclSandboxService extends BaseSandboxService {
         return false
     }
     nodeGetParent( node ) {
-        var parent = this.store.selectSnapshot( AclEntitiesSelectors.treenodes_get_parentNode( node ) )
+        var parent = this.store.selectSnapshot( AclTreeSelectors.treenodes_get_parentNode( node ) )
         return parent
     }
     /********************************************************************************************************
@@ -305,14 +307,14 @@ export class AdminAclSandboxService extends BaseSandboxService {
      */
     public services_remove_entity( service_node: AclTreeNode ) {
         // Get role object before removing service : We need the UID of the role node
-        const role_node: RoleModel = this.node_get_parentRole( service_node )
+        const role_node: AclRoleModel = this.node_get_parentRole( service_node )
 
         // Remove service from state, then update backend
         this.store.dispatch( new Acl_Services_Remove_Entity( service_node.uid ) ).toPromise()
             .then( () => {
                 // get updated role
                 const role_entity = this.store.selectSnapshot( AclEntitiesSelectors.entity_get_fromUid( role_node.uid, NODE_TYPES.ROLE ) )
-                const role_model = this.store.selectSnapshot( AclEntitiesSelectors.role_get_denormalizeEntity( role_entity as RoleEntity ) )
+                const role_model = this.store.selectSnapshot( RolesSelectors.role_get_denormalizeEntity( role_entity as AclRoleEntity ) )
                 this.backendApi_store_role( role_model )
                     .then( ( result ) => {
                         this.store.dispatch( new Acl_Services_Remove_Entity_Success( service_node.uid ) )
@@ -337,20 +339,20 @@ export class AdminAclSandboxService extends BaseSandboxService {
      * 
      * @param role_node 
      */
-    public role_add_service( role_node: AclTreeNode, backendServiceModel: BackendServiceModel ) {
+    public role_add_service( role_node: AclTreeNode, backendServiceModel: AclServiceModel ) {
         // Add service entity to role
-        this.store.dispatch( new Acl_Role_Add_Service( role_node.uid, backendServiceModel ) ).toPromise()
+        this.store.dispatch( new RolesStateActions.Add_Service( role_node.uid, backendServiceModel ) ).toPromise()
             // Store in updated role in backend
             .then( () => {
                 const role_entity = this.store.selectSnapshot( AclEntitiesSelectors.entity_get_fromUid( role_node.uid, NODE_TYPES.ROLE ) )
-                const role_model: RoleModel = this.store.selectSnapshot( AclEntitiesSelectors.role_get_denormalizeEntity( role_entity as RoleEntity ) )
+                const role_model: AclRoleModel = this.store.selectSnapshot( RolesSelectors.role_get_denormalizeEntity( role_entity as AclRoleEntity ) )
                 this.backendApi_store_role( role_model )
                     .then( ( result ) => {
-                        this.store.dispatch( new Acl_Role_Add_Service_Success( role_node.uid, backendServiceModel ) )
+                        this.store.dispatch( new RolesStateActions.Add_Service_Success( role_node.uid, backendServiceModel ) )
                     } )
                     .catch( err => {
                         this.store.dispatch( [
-                            new Acl_Role_Add_Service_Error( err ),
+                            new RolesStateActions.Add_Service_Error( err ),
                             new Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclRoleAddService', ApplicationNotificationType.ERROR ) )
                         ] )
                     } )
@@ -369,23 +371,23 @@ export class AdminAclSandboxService extends BaseSandboxService {
      * @param role_name 
      */
     public roles_add_entity( role_name: string ) {
-        const roleObject: RoleModel = {
+        const roleObject: AclRoleModel = {
             uid: uuid(), //IMPORTANT: We set here the UUID of the node because we need to know it later to get role entity and role model
             name: role_name,
             _id: role_name,
             services: [] // As it is a new role, we are sure that there is no attached services
         }
-        this.store.dispatch( new Acl_Roles_Add_Entity( roleObject ) ).toPromise()
+        this.store.dispatch( new RolesStateActions.Add_Entity( roleObject ) ).toPromise()
             .then( result => {
                 const role_entity = this.store.selectSnapshot( AclEntitiesSelectors.entity_get_fromUid( roleObject.uid, NODE_TYPES.ROLE ) )
-                const role_model: RoleModel = this.store.selectSnapshot( AclEntitiesSelectors.role_get_denormalizeEntity( role_entity as RoleEntity ) )
+                const role_model: AclRoleModel = this.store.selectSnapshot( RolesSelectors.role_get_denormalizeEntity( role_entity as AclRoleEntity ) )
                 this.backendApi_store_role( role_model )
                     .then( result => {
-                        this.store.dispatch( new Acl_Roles_Add_Entity_Success( roleObject ) )
+                        this.store.dispatch( new RolesStateActions.Add_Entity_Success( roleObject ) )
                     } )
                     .catch( err => {
                         this.store.dispatch( [
-                            new Acl_Roles_Add_Entity_Error( err ),
+                            new RolesStateActions.Add_Entity_Error( err ),
                             new Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclAddRole', ApplicationNotificationType.ERROR ) )
                         ] )
                     } )
@@ -401,15 +403,15 @@ export class AdminAclSandboxService extends BaseSandboxService {
      * @param role_uid 
      */
     public roles_remove_entity( role: AclTreeNode ) {
-        this.store.dispatch( new Acl_Roles_Remove_Entity( role.uid ) ).toPromise()
+        this.store.dispatch( new RolesStateActions.Remove_Entity( role.uid ) ).toPromise()
             .then( result => {
                 this.rolesService.delete( role.name )
                     .then( result => {
-                        this.store.dispatch( new Acl_Role_Remove_Entity_Success( role.uid ) )
+                        this.store.dispatch( new RolesStateActions.Remove_Entity_Success( role.uid ) )
                     } )
                     .catch( err => {
                         this.store.dispatch( [
-                            new Acl_Roles_Remove_Entity_Error( err ),
+                            new RolesStateActions.Remove_Entity_Error( err ),
                             new Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclRemoveRole', ApplicationNotificationType.ERROR ) )
                         ] )
                     } )

@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { AppRoute } from './shared/models/app-route.model';
+import { ApplicationRouteInterface } from './shared/models/application.route.model';
 import { RouterModule } from '@angular/router';
 import { AclCanDeactivateGuard } from './features-modules/admin/guards/acl.guard';
 
 
-export const routes: AppRoute[] = [
+export const routes: ApplicationRouteInterface[] = [
   { path: '', redirectTo: 'home/dashboard', pathMatch: 'full' }
 ]
 

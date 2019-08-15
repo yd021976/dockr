@@ -1,16 +1,16 @@
-import { RoleEntity, RoleEntities } from "src/app/shared/models/roles.model";
+import { AclRoleEntity, AclRoleEntities } from "src/app/shared/models/acl.role.model";
 import { action_remove_entity } from './actions'
-import { BackendServicesEntities, BackendServiceEntity } from "src/app/shared/models/backend-services.model";
-import { CrudOperationsModelEntities, CrudOperationModelEntity } from "src/app/shared/models/crud-operations.model";
-import { DataModelPropertyEntities } from "src/app/shared/models/datamodel.model";
+import { AclServicesEntities, AclServiceEntity } from "src/app/shared/models/acl.services.model";
+import { AclServiceActionModelEntities, AclServiceActionModelEntity } from "src/app/shared/models/acl.service.action.model";
+import { ServiceFieldEntities } from "src/app/shared/models/acl.service.field.model";
 import { role_get_service_index } from "./roles";
 /**
  * Get role entity from service UID
  * @param service_uid 
  * @param role_entities 
  */
-export function service_get_parent( service_uid: string, role_entities: RoleEntities ): RoleEntity {
-    var parentEntity: RoleEntity = null
+export function service_get_parent( service_uid: string, role_entities: AclRoleEntities ): AclRoleEntity {
+    var parentEntity: AclRoleEntity = null
 
     Object.keys( role_entities ).map( ( uid ) => {
         if ( role_entities[ uid ].services.find( ( serviceUID ) => serviceUID == service_uid ) ) {
@@ -21,7 +21,7 @@ export function service_get_parent( service_uid: string, role_entities: RoleEnti
 }
 
 
-export function service_get_entityFromUid( entity_uid: string, service_entities: BackendServicesEntities ):BackendServiceEntity {
+export function service_get_entityFromUid( entity_uid: string, service_entities: AclServicesEntities ):AclServiceEntity {
     const service_entity = service_entities[ entity_uid ] || null
     return service_entity
 }
@@ -34,10 +34,10 @@ export function service_get_entityFromUid( entity_uid: string, service_entities:
  */
 export function service_remove_entity(
     service_uid: string,
-    role_entities: RoleEntities,
-    service_entities: BackendServicesEntities,
-    action_entities: CrudOperationsModelEntities,
-    field_entities: DataModelPropertyEntities ) {
+    role_entities: AclRoleEntities,
+    service_entities: AclServicesEntities,
+    action_entities: AclServiceActionModelEntities,
+    field_entities: ServiceFieldEntities ) {
 
     // Get role entity this service belong to.
     // IMPORTANT: Throws error if no role is found

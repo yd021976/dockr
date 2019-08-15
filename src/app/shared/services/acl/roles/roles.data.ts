@@ -1,7 +1,7 @@
-import { RoleModel } from "src/app/shared/models/roles.model";
-import { CRUD_OPERATIONS, ALLOWED_STATES } from "src/app/shared/models/crud-operations.model";
+import { AclRoleModel } from "src/app/shared/models/acl.role.model";
+import { ACL_SERVICES_ACTIONS, ALLOWED_STATES } from "src/app/shared/models/acl.service.action.model";
 
-var DATA: RoleModel[] =
+var DATA: AclRoleModel[] =
     [
         {
             _id: 'role1',
@@ -15,7 +15,7 @@ var DATA: RoleModel[] =
                         crud_operations:
                             [
                                 {
-                                    id: CRUD_OPERATIONS.READ,
+                                    id: ACL_SERVICES_ACTIONS.READ,
                                     allowed: ALLOWED_STATES.INDETERMINATE,
                                     fields: [
                                         { id: "id", type: 'string', allowed: ALLOWED_STATES.FORBIDDEN },
@@ -34,17 +34,17 @@ var DATA: RoleModel[] =
                                     ]
                                 },
                                 {
-                                    id: CRUD_OPERATIONS.CREATE,
+                                    id: ACL_SERVICES_ACTIONS.CREATE,
                                     allowed: ALLOWED_STATES.FORBIDDEN,
                                     fields: []
                                 },
                                 {
-                                    id: CRUD_OPERATIONS.DELETE,
+                                    id: ACL_SERVICES_ACTIONS.DELETE,
                                     allowed: ALLOWED_STATES.FORBIDDEN,
                                     fields: []
                                 },
                                 {
-                                    id: CRUD_OPERATIONS.UPDATE,
+                                    id: ACL_SERVICES_ACTIONS.UPDATE,
                                     allowed: ALLOWED_STATES.INDETERMINATE,
                                     fields: [
                                         { id: "id", type: 'string', allowed: ALLOWED_STATES.FORBIDDEN },
@@ -61,7 +61,7 @@ var DATA: RoleModel[] =
                         crud_operations:
                             [
                                 {
-                                    id: CRUD_OPERATIONS.READ,
+                                    id: ACL_SERVICES_ACTIONS.READ,
                                     allowed: ALLOWED_STATES.INDETERMINATE,
                                     fields: [
                                         { id: "id", type: 'string', allowed: ALLOWED_STATES.FORBIDDEN },
@@ -70,17 +70,17 @@ var DATA: RoleModel[] =
                                     ]
                                 },
                                 {
-                                    id: CRUD_OPERATIONS.CREATE,
+                                    id: ACL_SERVICES_ACTIONS.CREATE,
                                     allowed: ALLOWED_STATES.FORBIDDEN,
                                     fields: []
                                 },
                                 {
-                                    id: CRUD_OPERATIONS.DELETE,
+                                    id: ACL_SERVICES_ACTIONS.DELETE,
                                     allowed: ALLOWED_STATES.FORBIDDEN,
                                     fields: []
                                 },
                                 {
-                                    id: CRUD_OPERATIONS.UPDATE,
+                                    id: ACL_SERVICES_ACTIONS.UPDATE,
                                     allowed: ALLOWED_STATES.INDETERMINATE,
                                     fields: [
                                         { id: "id", type: 'string', allowed: ALLOWED_STATES.FORBIDDEN },

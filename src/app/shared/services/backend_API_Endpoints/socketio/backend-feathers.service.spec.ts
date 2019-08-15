@@ -2,7 +2,7 @@ import { AppLoggerService } from '../../logger/app-logger/service/app-logger.ser
 import { fakeAsync, async, tick } from '@angular/core/testing';
 import { mock, instance, when, deepEqual, verify } from 'ts-mockito';
 import { FeathersjsBackendService } from './backend-feathers.service';
-import { BackendConfigClass } from 'src/app/shared/models/backend-config.model';
+import { BackendConfig } from 'src/app/shared/models/backend.config.model';
 import { Server, SocketIO } from 'mock-socket/dist/mock-socket';
 
 describe('Feathers backend service', () => {
@@ -10,7 +10,7 @@ describe('Feathers backend service', () => {
     var mockSocketServer: Server = null
     var feathersBackendService: FeathersjsBackendService = null
     const fakeURL: string = 'http://localhost:3030'
-    var feathersBackendServiceConfig: BackendConfigClass = { apiEndPoint: fakeURL }
+    var feathersBackendServiceConfig: BackendConfig = { apiEndPoint: fakeURL }
 
     // create fake websocket server
     beforeAll(() => {

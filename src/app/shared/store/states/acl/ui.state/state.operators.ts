@@ -1,6 +1,6 @@
 import { StateOperator } from "@ngxs/store";
 import { patch, iif } from '@ngxs/store/operators';
-import { AclStateUIModel } from '../../../../models/acl2.model'
+import { AclStateUIModel } from '../../../../models/acl.entities.model'
 
 export namespace UIStateAclOperators {
     /**

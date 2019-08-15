@@ -1,5 +1,5 @@
 import { UserModelBase } from "../../models/user.model";
-import { RoleModel } from "../../models/roles.model";
+import { AclRoleModel } from "../../models/acl.role.model";
 
 export class Users_Load_All {
     static readonly type = '[users] load all';

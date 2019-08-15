@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { UserModelBase } from 'src/app/shared/models/user.model';
-import { RoleModel, RoleModelSelection } from 'src/app/shared/models/roles.model';
+import { AclRoleModel, AclRoleModelSelection } from 'src/app/shared/models/acl.role.model';
 import { MatSelectionListChange } from '@angular/material/list';
 
 
@@ -27,7 +27,7 @@ export class UserDetailsComponent implements OnInit {
   /**
    * 
    */
-  @Input( 'available_roles' ) available_roles: RoleModel[]
+  @Input( 'available_roles' ) available_roles: AclRoleModel[]
 
 
   // Emit event whenever user property change (emit a new user entity because we don't mutate the user input from state)
@@ -66,7 +66,7 @@ export class UserDetailsComponent implements OnInit {
   /********************************************************
    *            Component template getters
    *******************************************************/
-  public userHasRole( user: UserModelBase, role: RoleModel ) {
+  public userHasRole( user: UserModelBase, role: AclRoleModel ) {
     const index = user.roles.findIndex( user_role => user_role == role._id )
     return index == -1 ? false : true
   }

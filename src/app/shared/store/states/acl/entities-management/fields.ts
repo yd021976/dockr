@@ -1,5 +1,5 @@
-import { DataModelPropertyEntities, DataModelPropertyEntity } from "src/app/shared/models/datamodel.model";
-import { CrudOperationModelEntity, CrudOperationsModelEntities, ALLOWED_STATES } from "src/app/shared/models/crud-operations.model";
+import { ServiceFieldEntities, ServiceFieldEntity } from "src/app/shared/models/acl.service.field.model";
+import { AclServiceActionModelEntity, AclServiceActionModelEntities, ALLOWED_STATES } from "src/app/shared/models/acl.service.action.model";
 
 
 /**
@@ -8,8 +8,8 @@ import { CrudOperationModelEntity, CrudOperationsModelEntities, ALLOWED_STATES }
  * @param field_uid 
  * @param field_entities 
  */
-export function field_remove_entity( field_uid: string, field_entities: DataModelPropertyEntities ) {
-    var field_entity: DataModelPropertyEntity = field_entities[ field_uid ]
+export function field_remove_entity( field_uid: string, field_entities: ServiceFieldEntities ) {
+    var field_entity: ServiceFieldEntity = field_entities[ field_uid ]
 
     // Recursively remove children field if any
     if ( field_entity.fields ) {
@@ -27,8 +27,8 @@ export function field_remove_entity( field_uid: string, field_entities: DataMode
  * @param field_uid 
  * @param field_entities 
  */
-export function field_get_parent_action( field_uid: string, actions_entities: CrudOperationsModelEntities ): CrudOperationModelEntity {
-    var crudEntity: CrudOperationModelEntity = null
+export function field_get_parent_action( field_uid: string, actions_entities: AclServiceActionModelEntities ): AclServiceActionModelEntity {
+    var crudEntity: AclServiceActionModelEntity = null
     Object.keys( actions_entities ).map( ( crudUID ) => {
         if ( actions_entities[ crudUID ].fields.find( ( fieldUID ) => fieldUID == field_uid ) ) {
             crudEntity = actions_entities[ crudUID ]
@@ -42,8 +42,8 @@ export function field_get_parent_action( field_uid: string, actions_entities: Cr
  * @param field_uid 
  * @param field_entities 
  */
-export function field_get_parent_field( field_uid: string, field_entities: DataModelPropertyEntities ): DataModelPropertyEntity {
-    var fieldEntity: DataModelPropertyEntity = null
+export function field_get_parent_field( field_uid: string, field_entities: ServiceFieldEntities ): ServiceFieldEntity {
+    var fieldEntity: ServiceFieldEntity = null
 
     // Check if field is children of a field
     var is_field_child = Object.values( field_entities ).find( field_entity => {
@@ -62,7 +62,7 @@ export function field_get_parent_field( field_uid: string, field_entities: DataM
  * @param allowed Property value to update
  * @param field_entities State containing entities
  */
-function field_update_descendants( field_uid: string, field_entities: DataModelPropertyEntities ) {
+function field_update_descendants( field_uid: string, field_entities: ServiceFieldEntities ) {
     var field_entity = field_entities[ field_uid ]
 
     // When allowed is "indeterminate" we just can't compute descendants allowed property has it means : Some descendants are allowed, some others are forbidden
@@ -87,8 +87,8 @@ function field_update_descendants( field_uid: string, field_entities: DataModelP
  * @param field_uid Filed UID to compute allowed state
  * @param field_entities State containing entities
  */
-function field_compute_allowed_state( field_uid: string, field_entities: DataModelPropertyEntities ): ALLOWED_STATES {
-    var field_entity: DataModelPropertyEntity = field_entities[ field_uid ]
+function field_compute_allowed_state( field_uid: string, field_entities: ServiceFieldEntities ): ALLOWED_STATES {
+    var field_entity: ServiceFieldEntity = field_entities[ field_uid ]
     var allowed_state: ALLOWED_STATES = ALLOWED_STATES.INDETERMINATE // Default allowed state is indeterminate
 
     // If field has no children, return field allowed state
@@ -117,9 +117,9 @@ function field_compute_allowed_state( field_uid: string, field_entities: DataMod
  * @param allowed Property value to update
  * @param field_entities State containing entities
  */
-export function field_update_allowed( field_uid: string, allowed: ALLOWED_STATES, field_entities: DataModelPropertyEntities ) {
-    var field_entity: DataModelPropertyEntity = field_entities[ field_uid ]
-    var parent_field_entity: DataModelPropertyEntity
+export function field_update_allowed( field_uid: string, allowed: ALLOWED_STATES, field_entities: ServiceFieldEntities ) {
+    var field_entity: ServiceFieldEntity = field_entities[ field_uid ]
+    var parent_field_entity: ServiceFieldEntity
     var computed_allowed: ALLOWED_STATES
 
     // Update field entity
@@ -142,8 +142,8 @@ export function field_update_allowed( field_uid: string, allowed: ALLOWED_STATES
  * @param field_uid Field UID
  * @param field_entities State containing entities
  */
-export function field_get_root_field( field_uid: string, field_entities: DataModelPropertyEntities ): DataModelPropertyEntity {
-    var parent_field_entity: DataModelPropertyEntity
+export function field_get_root_field( field_uid: string, field_entities: ServiceFieldEntities ): ServiceFieldEntity {
+    var parent_field_entity: ServiceFieldEntity
     var parent_field_uid: string
 
     parent_field_uid = field_uid
@@ -154,7 +154,7 @@ export function field_get_root_field( field_uid: string, field_entities: DataMod
     return field_entities[ parent_field_uid ]
 }
 
-export function field_get_entityFromUid( entity_uid: string, field_entities: DataModelPropertyEntities ): DataModelPropertyEntity {
-    const entity: DataModelPropertyEntity = field_entities[ entity_uid ] || null
+export function field_get_entityFromUid( entity_uid: string, field_entities: ServiceFieldEntities ): ServiceFieldEntity {
+    const entity: ServiceFieldEntity = field_entities[ entity_uid ] || null
     return entity
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
-import { RoleModel } from 'src/app/shared/models/roles.model';
+import { AclRoleModel } from 'src/app/shared/models/acl.role.model';
 import { UserModelBase } from 'src/app/shared/models/user.model';
 
 @Component( {
@@ -10,7 +10,7 @@ import { UserModelBase } from 'src/app/shared/models/user.model';
 } )
 export class RolesListComponent implements OnInit {
   @Input( 'user' ) user$: Observable<UserModelBase>
-  @Input( 'available_roles' ) available_roles$: Observable<RoleModel[]>
+  @Input( 'available_roles' ) available_roles$: Observable<AclRoleModel[]>
 
   /**
    * 

@@ -1,6 +1,6 @@
 import { Component, Inject, ViewChild, ElementRef } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { BackendServiceModel } from "src/app/shared/models/backend-services.model";
+import { AclServiceModel } from "src/app/shared/models/acl.services.model";
 import { Observable } from "rxjs";
 
 export type AddServiceDialogComponent_dialogResult = {
@@ -21,7 +21,7 @@ export class AddServiceDialogComponent {
 
     constructor(
         public dialogRef: MatDialogRef<AddServiceDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public availableServices:Observable<BackendServiceModel[]>
+        @Inject(MAT_DIALOG_DATA) public availableServices:Observable<AclServiceModel[]>
     ) { }
 
     /**

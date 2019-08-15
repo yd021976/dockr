@@ -4,7 +4,7 @@ import { mock, instance, when, deepEqual, reset, verify, resetCalls } from 'ts-m
 import { FeathersjsBackendService } from '../backend_API_Endpoints/socketio/backend-feathers.service';
 import { fakeAsync, tick } from '@angular/core/testing';
 import feathers, { Service, ServiceMethods } from '@feathersjs/feathers';
-import { AppError } from '../../models/app-error.model';
+import { AppError } from '../../models/application.error.model';
 
 describe('Templates service', () => {
     describe('#Unit tests', () => {

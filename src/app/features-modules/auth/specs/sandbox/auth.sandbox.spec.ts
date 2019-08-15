@@ -6,7 +6,6 @@ import { Subscription } from 'rxjs';
 import { UserModel } from 'src/app/shared/models/user.model';
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { AppLoggerModule } from 'src/app/shared/services/logger/app-logger/app-logger.module';
-import { NotificationBaseService } from 'src/app/shared/services/notifications/notifications-base.service';
 import { User_Action_Login_Success, User_Action_Logout_Success } from 'src/app/shared/store/actions/user.actions';
 import { ApplicationState } from 'src/app/shared/store/states/application.state';
 import { TemplatesState } from 'src/app/shared/store/states/templates.state';
@@ -29,7 +28,6 @@ describe('Auth.sandbox', () => {
                 RouterModule.forRoot([])
             ],
             providers: [
-                NotificationBaseService,
                 AuthSandbox,
                 AuthService,
                 { provide: APP_BASE_HREF, useValue: '/' }

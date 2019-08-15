@@ -2,7 +2,7 @@ import { Component, HostBinding, OnDestroy, OnInit, Input } from '@angular/core'
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
-import { BackendServiceConnectionState } from '../../models/backend-service-connection-state.model';
+import { BackendConnectionState } from '../../models/backend.connection.state.model';
 import { ErrorDialogComponent } from '../../components/error/dialog/error-dialog.component';
 import { LayoutContainerSandboxService } from '../../sandboxes/containers/layout-container-sandbox.service';
 import { ThemeItem } from '../../models/theme-items.model';
@@ -48,7 +48,7 @@ export class LayoutContainer implements OnInit, OnDestroy {
         this.layoutSandbox.navigateLogout();
     }
 
-    onApiServiceConnection_change(connectionStatus: BackendServiceConnectionState) {
+    onApiServiceConnection_change(connectionStatus: BackendConnectionState) {
         switch (connectionStatus.isConnected) {
             // When connection is established, close modal if opened
             case true:

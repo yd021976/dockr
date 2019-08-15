@@ -2,11 +2,11 @@ import * as feathers from '@feathersjs/feathers';
 import { Injectable, Inject } from "@angular/core";
 
 import { FeathersjsBackendService } from "../../backend_API_Endpoints/socketio/backend-feathers.service";
-import { AppError, errorType } from '../../../models/app-error.model';
+import { AppError, errorType } from '../../../models/application.error.model';
 import { AppLoggerService } from '../../logger/app-logger/service/app-logger.service';
 import { AppLoggerServiceToken } from '../../logger/app-logger/app-logger-token';
 import * as DATA from './roles.data';
-import { RoleEntities, RoleModel } from 'src/app/shared/models/roles.model';
+import { AclRoleEntities, AclRoleModel } from 'src/app/shared/models/acl.role.model';
 
 @Injectable( { providedIn: 'root' } )
 export class RolesService {
@@ -23,7 +23,7 @@ export class RolesService {
      * 
      * @param params 
      */
-    public async find( params?: any ): Promise<RoleModel[]> {
+    public async find( params?: any ): Promise<AclRoleModel[]> {
         // return new Promise<RoleModel[]>( ( resolve, reject ) => {
         //     resolve( DATA.default )
         // } );
@@ -44,7 +44,7 @@ export class RolesService {
      * @param role The role object to store
      * @param force_create Permit to create a new role if provided one doesn't exist
      */
-    public async update( role: RoleModel, force_create: boolean = false ): Promise<any> {
+    public async update( role: AclRoleModel, force_create: boolean = false ): Promise<any> {
         // First check the role object exists
         return this.service.get( role._id )
             .then( () => {

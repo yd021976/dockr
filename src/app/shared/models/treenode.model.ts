@@ -1,4 +1,4 @@
-import { ALLOWED_STATES } from "./crud-operations.model";
+import { ALLOWED_STATES } from "./acl.service.action.model";
 
 export interface AclTreeNode {
     name: string

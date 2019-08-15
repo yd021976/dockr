@@ -55,13 +55,14 @@ export class UserState {
         let nickname: string = action.user == null ? '' : action.user[ 'nickname' ] ? action.user[ 'nickname' ] : action.user[ 'email' ]
         let email: string = action.user == null ? '' : action.user[ 'email' ]
         let isLoggedIn: boolean = action.user == null ? false : true
+        let roles: string[] = action.user == null ? [] : action.user.roles
 
         ctx.patchState( {
             "nickname": nickname,
             "email": email,
             "isAnonymous": isAnonymous,
             "isLoggedIn": isLoggedIn,
-            "roles": action.user.roles,
+            "roles": roles,
             "isProgress": false,
             "isError": false,
             "error": ''

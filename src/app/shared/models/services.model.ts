@@ -1,7 +1,7 @@
-import { BackendServiceModel } from "./backend-services.model";
+import { AclServiceModel } from "./acl.services.model";
 
 export class ServicesModel {
-    services:BackendServiceModel[]
+    services:AclServiceModel[]
     isLoading:boolean
     isError:boolean
     error:string

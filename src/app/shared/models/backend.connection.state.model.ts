@@ -1,4 +1,4 @@
-export enum stateChangeReason {
+export enum BackendStateChangeReasons {
     socketIO_Connection_Error,
     socketIO_connection_timeout,
     socketIO_Reconnect_Attempt,
@@ -12,11 +12,11 @@ export enum stateChangeReason {
 /**
  * Connection state class
  */
-export class BackendServiceConnectionState {
+export class BackendConnectionState {
     public isConnected?: boolean;
     public attemptNumber?: number;
     public connectionError?: any;
-    public changeReason?: stateChangeReason;
+    public changeReason?: BackendStateChangeReasons;
 
     constructor(state?: { isConnected?: boolean, attemptNumber?: number, connectionError?: any, user?: any, changeReason?: string }) {
         Object.assign(this, state);

@@ -2,13 +2,13 @@ import * as feathers from '@feathersjs/feathers';
 import { Injectable, Inject } from "@angular/core";
 
 import { FeathersjsBackendService } from "../../backend_API_Endpoints/socketio/backend-feathers.service";
-import { AppError, errorType } from '../../../models/app-error.model';
+import { AppError, errorType } from '../../../models/application.error.model';
 import { AppLoggerService } from '../../logger/app-logger/service/app-logger.service';
 import { AppLoggerServiceToken } from '../../logger/app-logger/app-logger-token';
-import { BackendServiceModel } from 'src/app/shared/models/backend-services.model';
+import { AclServiceModel } from 'src/app/shared/models/acl.services.model';
 
 import * as DATA from './mock.data';
-import { CrudOperationModel, CRUD_OPERATIONS } from 'src/app/shared/models/crud-operations.model';
+import { AclServiceActionModel, ACL_SERVICES_ACTIONS } from 'src/app/shared/models/acl.service.action.model';
 
 @Injectable( { providedIn: 'root' } )
 export class BackendServicesService {
@@ -20,7 +20,7 @@ export class BackendServicesService {
         this.service = this.backendApiService.service( 'service-model' );
     }
 
-    public async find( params?: any ): Promise<BackendServiceModel[]> {
+    public async find( params?: any ): Promise<AclServiceModel[]> {
         /**
          * DEBUG ONLY
          */
@@ -38,9 +38,9 @@ export class BackendServicesService {
                 throw new AppError( error.message, errorType.backendError, error )
             } );
     }
-    private formatBackendServiceModel( services: any[] ): BackendServiceModel[] {
-        var formatedServices: BackendServiceModel[] = []
-        var serviceObject: BackendServiceModel, actions: CrudOperationModel[], actionObject: CrudOperationModel, actionType: CRUD_OPERATIONS, service_fields
+    private formatBackendServiceModel( services: any[] ): AclServiceModel[] {
+        var formatedServices: AclServiceModel[] = []
+        var serviceObject: AclServiceModel, actions: AclServiceActionModel[], actionObject: AclServiceActionModel, actionType: ACL_SERVICES_ACTIONS, service_fields
 
         Object.values( services ).forEach( service => {
             // Build actions
@@ -48,16 +48,16 @@ export class BackendServicesService {
             Object.keys( service.schema.actions || [] ).forEach( action_id => {
                 switch ( action_id ) {
                     case "read":
-                        actionType = CRUD_OPERATIONS.READ
+                        actionType = ACL_SERVICES_ACTIONS.READ
                         break
                     case "create":
-                        actionType = CRUD_OPERATIONS.CREATE
+                        actionType = ACL_SERVICES_ACTIONS.CREATE
                         break
                     case "delete":
-                        actionType = CRUD_OPERATIONS.DELETE
+                        actionType = ACL_SERVICES_ACTIONS.DELETE
                         break
                     case "update":
-                        actionType = CRUD_OPERATIONS.UPDATE
+                        actionType = ACL_SERVICES_ACTIONS.UPDATE
                         break
                     default:
                         this.loggerService.warn( this.loggerName, { message: "Action '" + action_id + "' is not a valid action type", otherParams: [ service ] } )

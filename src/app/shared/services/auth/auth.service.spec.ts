@@ -5,8 +5,8 @@ import { mock, instance, when, deepEqual, reset, verify, resetCalls } from 'ts-m
 import { NotificationBaseService } from '../notifications/notifications-base.service';
 import { AppLoggerService } from '../logger/app-logger/service/app-logger.service';
 import { BehaviorSubject } from 'rxjs';
-import { BackendServiceConnectionState, stateChangeReason } from '../../models/backend-service-connection-state.model';
-import { AppError, errorType } from '../../models/app-error.model';
+import { BackendConnectionState, BackendStateChangeReasons } from '../../models/backend.connection.state.model';
+import { AppError, errorType } from '../../models/application.error.model';
 
 describe('AuthService', () => {
     var authService: AuthService = null // The tested service
@@ -19,8 +19,8 @@ describe('AuthService', () => {
 
     var MockFeathersBackend: FeathersjsBackendService = null
     var MockFeathersBackendInstance: FeathersjsBackendService = null
-    var backendState: BackendServiceConnectionState = null
-    var backendState$: BehaviorSubject<BackendServiceConnectionState> = null
+    var backendState: BackendConnectionState = null
+    var backendState$: BehaviorSubject<BackendConnectionState> = null
 
     const authRequest = { email: 'test', password: 'test', strategy: 'local' }
     const authRequestAnonymous = { strategy: 'anonymous' }
@@ -40,8 +40,8 @@ describe('AuthService', () => {
                 MockLoggerService = mock(AppLoggerService)
                 MockFeathersBackend = mock(FeathersjsBackendService)
 
-                backendState = new BackendServiceConnectionState();
-                backendState$ = new BehaviorSubject<BackendServiceConnectionState>(backendState);
+                backendState = new BackendConnectionState();
+                backendState$ = new BehaviorSubject<BackendConnectionState>(backendState);
 
                 when(MockFeathersBackend.connectionState$).thenReturn(backendState$)
                 // Create auth service instance
@@ -70,7 +70,7 @@ describe('AuthService', () => {
                 when(MockFeathersBackend.isAuth()).thenResolve(false)
 
                 // update behavior subject to trigger auth service login
-                MockFeathersBackendInstance.connectionState$.next({ isConnected: true, connectionError: '', attemptNumber: 0, changeReason: stateChangeReason.socketIO_Connected })
+                MockFeathersBackendInstance.connectionState$.next({ isConnected: true, connectionError: '', attemptNumber: 0, changeReason: BackendStateChangeReasons.socketIO_Connected })
                 tick();
                 verify(MockFeathersBackend.authenticate(deepEqual({ strategy: 'anonymous' }))).once();
             }))
@@ -83,7 +83,7 @@ describe('AuthService', () => {
                 when(MockFeathersBackend.isAuth()).thenResolve(false)
 
                 // update behavior subject to trigger auth service login
-                MockFeathersBackendInstance.connectionState$.next({ isConnected: true, connectionError: '', attemptNumber: 0, changeReason: stateChangeReason.socketIO_Connected })
+                MockFeathersBackendInstance.connectionState$.next({ isConnected: true, connectionError: '', attemptNumber: 0, changeReason: BackendStateChangeReasons.socketIO_Connected })
                 tick();
                 verify(MockFeathersBackend.authenticate(deepEqual({ strategy: 'anonymous' }))).once();
             }))
@@ -102,7 +102,7 @@ describe('AuthService', () => {
                     if (user !== null) isUserAuth = true;
                 })
                 // update behavior subject to trigger auth service login
-                MockFeathersBackendInstance.connectionState$.next({ isConnected: true, connectionError: '', attemptNumber: 0, changeReason: stateChangeReason.socketIO_Connected })
+                MockFeathersBackendInstance.connectionState$.next({ isConnected: true, connectionError: '', attemptNumber: 0, changeReason: BackendStateChangeReasons.socketIO_Connected })
                 tick();
 
                 // Auth service shouldn't had auth user because there is no token from previous auth user
@@ -123,7 +123,7 @@ describe('AuthService', () => {
                     if (user !== null) isUserAuth = true;
                 })
                 // update behavior subject to trigger auth service login
-                MockFeathersBackendInstance.connectionState$.next({ isConnected: true, connectionError: '', attemptNumber: 0, changeReason: stateChangeReason.socketIO_Connected })
+                MockFeathersBackendInstance.connectionState$.next({ isConnected: true, connectionError: '', attemptNumber: 0, changeReason: BackendStateChangeReasons.socketIO_Connected })
                 tick();
 
                 // Auth service shouldn't had auth user because there is no token from previous auth user
@@ -173,9 +173,6 @@ describe('AuthService', () => {
                 // 2 : To return that user is authenticated
                 when(MockFeathersBackend.isAuth()).thenResolve(true);
 
-                authService.checkSessionActive().then((isAuth) => {
-                    checkSessionActive = isAuth;
-                })
                 tick()
                 expect(checkSessionActive).toBe(true);
             }))
@@ -192,12 +189,6 @@ describe('AuthService', () => {
                 // 3 : To simulate anonymous auth with success
                 when(MockFeathersBackend.authenticate(deepEqual({ strategy: 'anonymous' }))).thenResolve({ email: 'test' })
 
-                // then checksessionactive return false and log user as anonymous
-                authService.checkSessionActive().then((isAuth) => {
-                    checkSessionActive = isAuth;
-                })
-                tick()
-                expect(checkSessionActive).toBe(false);
             }))
             it('#10 Should check session active : Throw error when re-auth user as anonymous', fakeAsync(() => {
                 var checkSessionActive = false;
@@ -213,12 +204,7 @@ describe('AuthService', () => {
                 when(MockFeathersBackend.authenticate(deepEqual({ strategy: 'anonymous' })))
                     .thenReject(new AppError('Feathers error', errorType.notAuthenticated, 'Jasmine test'))
 
-                // then checksessionactive throws error as feathers can't auth anonymous user
-                authService.checkSessionActive().catch((error) => {
-                    checkSessionActive = true; // Set to true if error is thrown
-                })
-                tick()
-                expect(checkSessionActive).toBe(true);
+                
             }))
             it('#11 Should check session active : Throw error when last logged in user was not anonymous', fakeAsync(() => {
                 var checkSessionActive = false;
@@ -231,12 +217,6 @@ describe('AuthService', () => {
                 // 2 : To return that user is NOT authenticated
                 when(MockFeathersBackend.isAuth()).thenResolve(false);
 
-                // then checksessionactive throw error as it can't log user again (because not anonymous)
-                authService.checkSessionActive().catch((error) => {
-                    checkSessionActive = true; // Set to true if error is thrown
-                })
-                tick()
-                expect(checkSessionActive).toBe(true);
             }))
         })
         describe('#Unmocked feathersJs service', () => {

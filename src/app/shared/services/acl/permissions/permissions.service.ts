@@ -1,14 +1,14 @@
 import { Ability, AbilityBuilder, RawRule } from '@casl/ability'
 import { Injectable } from '@angular/core';
-import { RoleModel } from 'src/app/shared/models/roles.model';
-import { CrudOperationModel, ALLOWED_STATES } from 'src/app/shared/models/crud-operations.model';
-import { DataModelPropertyModel } from 'src/app/shared/models/datamodel.model';
+import { AclRoleModel } from 'src/app/shared/models/acl.role.model';
+import { AclServiceActionModel, ALLOWED_STATES } from 'src/app/shared/models/acl.service.action.model';
+import { ServiceFieldModel } from 'src/app/shared/models/acl.service.field.model';
 import { BehaviorSubject } from 'rxjs';
 
 
 export interface PermissionServiceInterface {
     ability$: BehaviorSubject<Ability>
-    setAbility( roles: RoleModel[] ): Ability
+    setAbility( roles: AclRoleModel[] ): Ability
     resetAbility(): Ability
     checkACL( action: string, subject: string, field: string ): boolean
 }
@@ -35,7 +35,7 @@ export class PermissionsService implements PermissionServiceInterface {
      * 
      * @param roles 
      */
-    public setAbility( roles: RoleModel[] ): Ability {
+    public setAbility( roles: AclRoleModel[] ): Ability {
         let rules = this.buildRulesFromRoles( roles )
         return this.ability.update( rules )
     }
@@ -54,11 +54,11 @@ export class PermissionsService implements PermissionServiceInterface {
         return this.ability.can( action, subject, field )
     }
 
-    private buildRulesFromRoles( roles: RoleModel[] ): RawRule[] {
+    private buildRulesFromRoles( roles: AclRoleModel[] ): RawRule[] {
         let rawRules = [], tmpRule: RawRule
         let subject: string, action: string, fields: string[]
 
-        roles.forEach( ( role: RoleModel ) => {
+        roles.forEach( ( role: AclRoleModel ) => {
             role.services.forEach( ( service ) => {
                 subject = service.name
 
@@ -86,7 +86,7 @@ export class PermissionsService implements PermissionServiceInterface {
         } )
         return rawRules
     }
-    private getFieldsFromAction( action: CrudOperationModel ): string[] {
+    private getFieldsFromAction( action: AclServiceActionModel ): string[] {
         let fields: string[] = [], tmpFields: string[]
         action.fields.forEach( ( field ) => {
             tmpFields = this.getFields( field )
@@ -100,7 +100,7 @@ export class PermissionsService implements PermissionServiceInterface {
      * @param field 
      * @param current_field_path 
      */
-    private getFields( field: DataModelPropertyModel, current_field_path?: string ): string[] {
+    private getFields( field: ServiceFieldModel, current_field_path?: string ): string[] {
         let fields: string[] = []
         let tmpFields: string[]
 

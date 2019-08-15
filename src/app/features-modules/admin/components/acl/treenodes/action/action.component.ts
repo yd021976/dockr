@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { ALLOWED_STATES } from 'src/app/shared/models/crud-operations.model';
+import { ALLOWED_STATES } from 'src/app/shared/models/acl.service.action.model';
 import { BaseNodeComponent } from '../base.node.component';
 
 @Component( {

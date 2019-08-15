@@ -4,7 +4,7 @@ import { MenuLinkComponent } from './menu-link.component';
 import { NO_ERRORS_SCHEMA, DebugElement, Component } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing'
 import { By } from '@angular/platform-browser';
-import { AppRoute } from 'src/app/shared/models/app-route.model';
+import { ApplicationRouteInterface } from 'src/app/shared/models/application.route.model';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -20,7 +20,7 @@ describe('MenuLinkComponent', () => {
   let component: MenuLinkComponent;
   let fixture: ComponentFixture<MenuLinkComponent>;
 
-  const routes: AppRoute[] = [
+  const routes: ApplicationRouteInterface[] = [
     {
       path: 'test2', component: DummyComponent,
       data: { isMenu: true, link: 'test2', title: 'menu test' }

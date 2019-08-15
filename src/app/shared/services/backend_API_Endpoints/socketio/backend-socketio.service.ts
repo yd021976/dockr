@@ -1,27 +1,27 @@
 import { BehaviorSubject } from 'rxjs';
 import { connect } from 'socket.io-client';
 import { BackendBaseService } from '../backend-base.service';
-import { BackendConfigClass } from '../../../models/backend-config.model';
-import { BackendServiceConnectionState, stateChangeReason } from '../../../models/backend-service-connection-state.model';
+import { BackendConfig } from '../../../models/backend.config.model';
+import { BackendConnectionState, BackendStateChangeReasons } from '../../../models/backend.connection.state.model';
 import { AppLoggerService } from '../../logger/app-logger/service/app-logger.service';
 
 /**
  * Common backend socket IO service base class
  */
 export abstract class BackendSocketioService extends BackendBaseService {
-  protected connectionState: BackendServiceConnectionState;
-  public connectionState$: BehaviorSubject<BackendServiceConnectionState>; // Service connection state observable
+  protected connectionState: BackendConnectionState;
+  public connectionState$: BehaviorSubject<BackendConnectionState>; // Service connection state observable
   protected socketio: SocketIOClient.Socket = null;
 
   /**
    * Constructor
    * @param config Should be provided by inherited class constructor
    */
-  constructor( public loggerService: AppLoggerService, config?: BackendConfigClass ) {
+  constructor( public loggerService: AppLoggerService, config?: BackendConfig ) {
     super( loggerService, config );
     // Init connection state
-    this.connectionState = new BackendServiceConnectionState( { isConnected: false, attemptNumber: 0, connectionError: '', user: null } );
-    this.connectionState$ = new BehaviorSubject<BackendServiceConnectionState>( this.connectionState );
+    this.connectionState = new BackendConnectionState( { isConnected: false, attemptNumber: 0, connectionError: '', user: null } );
+    this.connectionState$ = new BehaviorSubject<BackendConnectionState>( this.connectionState );
     this.initSocketClient();
   }
 
@@ -60,19 +60,19 @@ export abstract class BackendSocketioService extends BackendBaseService {
    */
   private initSocketClientHandlers(): void {
     this.socketio.on( 'connect_error', ( error ) => {
-      this.updateConnectionState( { isConnected: false, connectionError: error, changeReason: stateChangeReason.socketIO_Connection_Error } );
+      this.updateConnectionState( { isConnected: false, connectionError: error, changeReason: BackendStateChangeReasons.socketIO_Connection_Error } );
     } );
 
     this.socketio.on( 'connect_timeout', ( error ) => {
-      this.updateConnectionState( { isConnected: false, connectionError: error, changeReason: stateChangeReason.socketIO_connection_timeout } );
+      this.updateConnectionState( { isConnected: false, connectionError: error, changeReason: BackendStateChangeReasons.socketIO_connection_timeout } );
     } );
 
     this.socketio.on( 'reconnect_attempt', ( attempt ) => {
-      this.updateConnectionState( { attemptNumber: attempt, changeReason: stateChangeReason.socketIO_Reconnect_Attempt } );
+      this.updateConnectionState( { attemptNumber: attempt, changeReason: BackendStateChangeReasons.socketIO_Reconnect_Attempt } );
     } )
 
     this.socketio.on( 'connect', ( status ) => {
-      this.updateConnectionState( { isConnected: true, connectionError: '', attemptNumber: 0, changeReason: stateChangeReason.socketIO_Connected } );
+      this.updateConnectionState( { isConnected: true, connectionError: '', attemptNumber: 0, changeReason: BackendStateChangeReasons.socketIO_Connected } );
     } );
   }
 
@@ -82,7 +82,7 @@ export abstract class BackendSocketioService extends BackendBaseService {
    * 
    * @param newState : New state with ONLY new state values to update
    */
-  protected updateConnectionState( newState: BackendServiceConnectionState ) {
+  protected updateConnectionState( newState: BackendConnectionState ) {
     Object.assign( this.connectionState, newState );
     this.connectionState$.next( this.connectionState );
   }

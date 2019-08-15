@@ -1,4 +1,4 @@
-import { DataModelPropertyEntities, DataModelPropertyModel } from "./datamodel.model";
+import { ServiceFieldEntities, ServiceFieldModel } from "./acl.service.field.model";
 /**
  * 
  */
@@ -10,36 +10,36 @@ export enum ALLOWED_STATES {
 /**
  * Define CRUD operation & fields access
  */
-export enum CRUD_OPERATIONS {
+export enum ACL_SERVICES_ACTIONS {
     CREATE = 'create',
     UPDATE = 'update',
     READ = "read",
     DELETE = "delete"
 }
-export type CrudOperationTypes = CRUD_OPERATIONS
+export type AclServiceActionsTypes = ACL_SERVICES_ACTIONS
 
-interface BaseCrudOperationModel {
+interface BaseAclServiceActionModel {
     uid?: string
-    id: CrudOperationTypes
+    id: AclServiceActionsTypes
     allowed?: ALLOWED_STATES // set to true (allowed), false (not allowed) or "intermediate" (Some child fields are allowed but not all)
 }
 
 // Crud operation object
-export interface CrudOperationModel extends BaseCrudOperationModel {
-    fields: DataModelPropertyModel[]
+export interface AclServiceActionModel extends BaseAclServiceActionModel {
+    fields: ServiceFieldModel[]
 }
 // Crud operation entity
-export interface CrudOperationModelEntity extends BaseCrudOperationModel {
+export interface AclServiceActionModelEntity extends BaseAclServiceActionModel {
     fields: string[] // Array of fields UUID
 }
 
 // List of crud operations entities
-export interface CrudOperationsModelEntities {
-    [id: string]: CrudOperationModelEntity
+export interface AclServiceActionModelEntities {
+    [id: string]: AclServiceActionModelEntity
 }
 
 export interface CrudOperationsStateModel {
-    entities: CrudOperationsModelEntities;
+    entities: AclServiceActionModelEntities;
     isLoading: boolean;
     isError: boolean;
     error: string;

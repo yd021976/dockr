@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { AppRoute } from 'src/app/shared/models/app-route.model';
+import { ApplicationRouteInterface } from 'src/app/shared/models/application.route.model';
 import { Component, NO_ERRORS_SCHEMA, DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { SideNavComponent } from './side-nav.component'
@@ -12,7 +12,7 @@ class DummyComponent {
 }
 
 // Test route config
-const routesConfigs: AppRoute[][] = [
+const routesConfigs: ApplicationRouteInterface[][] = [
     // Test route for test #2
     [
         {

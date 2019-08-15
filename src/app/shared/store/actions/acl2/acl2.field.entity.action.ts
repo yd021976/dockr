@@ -1,4 +1,4 @@
-import { ALLOWED_STATES } from "src/app/shared/models/crud-operations.model";
+import { ALLOWED_STATES } from "src/app/shared/models/acl.service.action.model";
 
 export class Acl_Field_Update_Allowed {
     static readonly type = '[acl field] update allowed property';

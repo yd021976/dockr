@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './containers/home/home.container';
-import { AppRoute } from '../../shared/models/app-route.model';
+import { ApplicationRouteInterface } from '../../shared/models/application.route.model';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { TodoComponent } from './components/todo/todo.component';
 
-const routes: AppRoute[] = [
+const routes: ApplicationRouteInterface[] = [
   {
     path: 'home', component: HomeComponent, data: { isMenu: true, title: 'Home', icon: 'fa-home' }, children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full', data: { isMenu: false ,title:'empty'} },

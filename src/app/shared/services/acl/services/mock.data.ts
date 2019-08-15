@@ -1,7 +1,7 @@
-import { BackendServiceModel, BackendServicesEntities } from "src/app/shared/models/backend-services.model";
-import { CRUD_OPERATIONS, ALLOWED_STATES } from "src/app/shared/models/crud-operations.model";
+import { AclServiceModel, AclServicesEntities } from "src/app/shared/models/acl.services.model";
+import { ACL_SERVICES_ACTIONS, ALLOWED_STATES } from "src/app/shared/models/acl.service.action.model";
 
-var DATA: BackendServiceModel[] =
+var DATA: AclServiceModel[] =
     [
         {
             id: 'templates',
@@ -10,7 +10,7 @@ var DATA: BackendServiceModel[] =
             crud_operations:
                 [
                     {
-                        id: CRUD_OPERATIONS.READ,
+                        id: ACL_SERVICES_ACTIONS.READ,
                         fields: [
                             { id: "id", type: 'string' },
                             { id: "name", type: 'string' },
@@ -18,15 +18,15 @@ var DATA: BackendServiceModel[] =
                         ]
                     },
                     {
-                        id: CRUD_OPERATIONS.CREATE,
+                        id: ACL_SERVICES_ACTIONS.CREATE,
                         fields: []
                     },
                     {
-                        id: CRUD_OPERATIONS.DELETE,
+                        id: ACL_SERVICES_ACTIONS.DELETE,
                         fields: []
                     },
                     {
-                        id: CRUD_OPERATIONS.UPDATE,
+                        id: ACL_SERVICES_ACTIONS.UPDATE,
                         fields: [
                             { id: "id", type: 'string' },
                             { id: "name", type: 'string' },
@@ -42,7 +42,7 @@ var DATA: BackendServiceModel[] =
             crud_operations:
                 [
                     {
-                        id: CRUD_OPERATIONS.READ,
+                        id: ACL_SERVICES_ACTIONS.READ,
                         fields: [
                             { id: "id", type: 'string' },
                             { id: "name", type: 'string' },
@@ -50,15 +50,15 @@ var DATA: BackendServiceModel[] =
                         ]
                     },
                     {
-                        id: CRUD_OPERATIONS.CREATE,
+                        id: ACL_SERVICES_ACTIONS.CREATE,
                         fields: []
                     },
                     {
-                        id: CRUD_OPERATIONS.DELETE,
+                        id: ACL_SERVICES_ACTIONS.DELETE,
                         fields: []
                     },
                     {
-                        id: CRUD_OPERATIONS.UPDATE,
+                        id: ACL_SERVICES_ACTIONS.UPDATE,
                         fields: [
                             { id: "id", type: 'string' },
                             { id: "name", type: 'string' },
@@ -74,7 +74,7 @@ var DATA: BackendServiceModel[] =
             crud_operations:
                 [
                     {
-                        id: CRUD_OPERATIONS.READ,
+                        id: ACL_SERVICES_ACTIONS.READ,
                         fields: [
                             { id: "id", type: 'string' },
                             { id: "name", type: 'string' },
@@ -82,15 +82,15 @@ var DATA: BackendServiceModel[] =
                         ]
                     },
                     {
-                        id: CRUD_OPERATIONS.CREATE,
+                        id: ACL_SERVICES_ACTIONS.CREATE,
                         fields: []
                     },
                     {
-                        id: CRUD_OPERATIONS.DELETE,
+                        id: ACL_SERVICES_ACTIONS.DELETE,
                         fields: []
                     },
                     {
-                        id: CRUD_OPERATIONS.UPDATE,
+                        id: ACL_SERVICES_ACTIONS.UPDATE,
                         fields: [
                             { id: "id", type: 'string' },
                             { id: "name", type: 'string' },

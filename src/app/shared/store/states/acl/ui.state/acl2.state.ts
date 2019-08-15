@@ -1,8 +1,8 @@
 import { State } from "@ngxs/store";
-import { AclStateUIModel } from "src/app/shared/models/acl2.model";
+import { AclStateUIModel } from "src/app/shared/models/acl.entities.model";
 import { Action, StateContext, Selector } from "@ngxs/store";
 import { AclUIActions } from '../../../actions/acl2/acl2.state.actions'
-import { AppError, errorType } from "src/app/shared/models/app-error.model";
+import { AppError, errorType } from "src/app/shared/models/application.error.model";
 import { UIStateAclOperators } from './state.operators'
 import { error_actions, error_actions_types, start_actions, start_actions_types, success_actions, success_actions_types } from './state.action.types.list'
 

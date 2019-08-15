@@ -1,10 +1,10 @@
 import { NODE_TYPES, AclTreeNode } from "src/app/shared/models/treenode.model";
-import { RoleEntity } from "src/app/shared/models/roles.model";
-import { BackendServiceEntity } from "src/app/shared/models/backend-services.model";
-import { CrudOperationModelEntity } from "src/app/shared/models/crud-operations.model";
+import { AclRoleEntity } from "src/app/shared/models/acl.role.model";
+import { AclServiceEntity } from "src/app/shared/models/acl.services.model";
+import { AclServiceActionModelEntity } from "src/app/shared/models/acl.service.action.model";
 import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
-import { AclStateUIModel, AclStateEntitiesModel } from "src/app/shared/models/acl2.model";
-import { DataModelPropertyEntity } from "src/app/shared/models/datamodel.model";
+import { AclStateUIModel, AclStateEntitiesModel } from "src/app/shared/models/acl.entities.model";
+import { ServiceFieldEntity } from "src/app/shared/models/acl.service.field.model";
 import { service_get_parent } from "./services";
 import { action_get_parent } from "./actions";
 import { field_get_root_field, field_get_parent_action } from "./fields";
@@ -50,7 +50,7 @@ export function node_get_children( state: AclStateEntitiesModel, node: AclTreeNo
             break
         case NODE_TYPES.FIELDACCESS:
             var field_children = state.entities.fields[ node.uid ].fields || []
-            var field_entity: DataModelPropertyEntity
+            var field_entity: ServiceFieldEntity
 
             children = Object.values( field_children ).map( entity_uid => {
                 field_entity = state.entities.fields[ entity_uid ]
@@ -74,10 +74,10 @@ export function node_get_children( state: AclStateEntitiesModel, node: AclTreeNo
  * @param node The node UID from wich we want to get root "role" node
  * @param state State entities
  */
-export function node_get_role_entity( node: FlatTreeNode, state: AclStateEntitiesModel ): RoleEntity {
-    var roleEntity: RoleEntity = null
-    var serviceEntity: BackendServiceEntity = null
-    var crudEntity: CrudOperationModelEntity = null
+export function node_get_role_entity( node: FlatTreeNode, state: AclStateEntitiesModel ): AclRoleEntity {
+    var roleEntity: AclRoleEntity = null
+    var serviceEntity: AclServiceEntity = null
+    var crudEntity: AclServiceActionModelEntity = null
 
     // If no node is selected, return null
     if ( node == null ) return null

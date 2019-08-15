@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 // App Types
-import { AppRoute } from '../../models/app-route.model';
+import { ApplicationRouteInterface } from '../../models/application.route.model';
 
 
 @Component({
@@ -13,7 +13,7 @@ export class SideNavComponent implements OnInit {
   // @ViewChild(MatAccordion) accordion:MatAccordion;
 
   // Convert router config to simplified 2 levels array of route items (avoid multiple ng-container loop/if in template)
-  @Input() routerConfig: AppRoute[];
+  @Input() routerConfig: ApplicationRouteInterface[];
 
   constructor() { }
   ngOnInit() { }

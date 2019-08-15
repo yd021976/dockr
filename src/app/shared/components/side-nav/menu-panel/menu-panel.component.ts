@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { AppRoute } from 'src/app/shared/models/app-route.model';
+import { ApplicationRouteInterface } from 'src/app/shared/models/application.route.model';
 import { MatIconRegistry } from '@angular/material/icon';
 
 @Component({
@@ -8,7 +8,7 @@ import { MatIconRegistry } from '@angular/material/icon';
   styleUrls: ['./menu-panel.component.scss']
 })
 export class MenuPanelComponent implements OnInit {
-  @Input() menuItem: AppRoute = {}
+  @Input() menuItem: ApplicationRouteInterface = {}
 
   constructor(private matIconReg: MatIconRegistry) {
     matIconReg.registerFontClassAlias('fontawesome solid', 'fas');

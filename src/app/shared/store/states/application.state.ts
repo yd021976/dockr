@@ -9,7 +9,7 @@ import { Application_Event_Notification } from '../actions/application.actions';
 import { User_Action_Logout_Success } from '../actions/user.actions';
 import { AppNotificationsState, default_state_application_notifications } from './application.notifications.state';
 import { ApplicationNotifications_Shift_Message, ApplicationNotifications_Append_Message } from '../actions/application-notifications.actions';
-import { AppError, errorType } from '../../models/app-error.model';
+import { AppError, errorType } from '../../models/application.error.model';
 import { ApplicationNotification, ApplicationNotificationType } from '../../models/application.notifications.model';
 import { UsersState, default_state_users } from './users.state';
 
