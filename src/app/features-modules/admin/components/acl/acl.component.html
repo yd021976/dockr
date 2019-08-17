@@ -12,46 +12,10 @@
     <div fxFlex="0 1 auto" class="tree_container">
       <mat-tree [dataSource]="flatDataSource" [treeControl]="treecontrol" #tree>
         <mat-tree-node #treenode *matTreeNodeDef="let node" fxLayout="row" fxLayoutAlign="start stretch" @EnterLeave class="child-node">
-          <div *ngFor="let column of node.column_model.columns_before_node" [fxFlex]="column.size" class="column">
-            <div fxFlex FxFlexAlign="center" class="tree_container_cell"></div>
-          </div>
-          <div [fxFlex]="node.column_model.column_size" fxFlexFill class="column node"
-               (click)="selectNode(node)"
-               [class.selected]="selectedNode==node">
-            <div fxFlex fxFlexAlign="center" class="tree_container_cell" [style.padding-left]="node.column_model.node_padding_left+'px'">
-              <button mat-icon-button [disabled]="true">
-                <mat-icon></mat-icon>
-              </button>
-              <div class="node-renderer">
-                <ng-container *ngTemplateOutlet="nodeTemplateRenderer; context:{$implicit:node.data}"></ng-container>
-              </div>
-            </div>
-          </div>
-          <div *ngFor="let column of node.column_model.columns_after_node" [fxFlex]="column.size" class="column">
-            <div fxFlex fxFlexAlign="center" class="tree_container_cell"></div>
-          </div>
-        </mat-tree-node>
-
-        <mat-tree-node #treenode *matTreeNodeDef="let node;when: hasChild" fxLayout="row" fxLayoutAlign="start stretch" @EnterLeave class="parent-node">
-          <div [fxFlex]="column.size" *ngFor="let column of node.column_model.columns_before_node" class="column">
-            <div fxFlex FxFlexAlign="center" class="tree_container_cell"></div>
-          </div>
-          <div [fxFlex]="node.column_model.column_size" class="column node expandable-node"
-               (click)="selectNode(node)" [class.selected]="selectedNode==node">
-            <div fxFlex fxFlexAlign="center" class="tree_container_cell" [style.padding-left]="node.column_model.node_padding_left+'px'">
-              <button mat-icon-button matTreeNodeToggle
-                      [disabled]="node_getDescendants(node)==0" (click)="nodeExpandToggle(node)">
-                <mat-icon class="fa-xs mat-icon-rtl-mirror"
-                          [fontIcon]="treecontrol.isExpanded(node) ? 'fa-minus-circle' : 'fa-plus-circle'"></mat-icon>
-              </button>
-              <div class="node-renderer">
-                <ng-container *ngTemplateOutlet="nodeTemplateRenderer; context:{$implicit:node.data}"></ng-container>
-              </div>
-            </div>
-          </div>
-          <div *ngFor="let column of node.column_model.columns_after_node" class="column" [fxFlex]="column.size">
-            <div fxFlex fxFlexAlign="center" class="tree_container_cell"></div>
-          </div>
+          <app-admin-acl-treenode-renderer [nodeTemplateRenderer]="nodeTemplateRenderer" [node]="node" [selected-node]="selectedNode"
+                                           [expanded]="treecontrol.isExpanded(node)"
+                                           (selectNode)="selectNode(node)">
+          </app-admin-acl-treenode-renderer>
         </mat-tree-node>
       </mat-tree>
     </div>

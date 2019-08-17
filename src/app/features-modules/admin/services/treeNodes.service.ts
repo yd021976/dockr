@@ -22,7 +22,7 @@ export class FlatTreeNode<T = any> {
     level: number
     isExpandable: boolean
     data: T
-    // Optionnal column model for flat tree node repsented in a column tree
+    // Optionnal column model for flat tree node represented in a column tree
     column_model?: treeservice_column_model
 }
 

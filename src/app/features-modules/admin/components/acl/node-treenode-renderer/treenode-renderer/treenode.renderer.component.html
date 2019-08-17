@@ -3,10 +3,11 @@
 </div>
 <div [fxFlex]="node.column_model.column_size" fxFlexFill class="column node"
      (click)="nodeSelected(node)"
-     [class.selected]="selectedNode==node">
+     [class.selected]="isSelected">
   <div fxFlex fxFlexAlign="center" class="tree_container_cell" [style.padding-left]="node.column_model.node_padding_left+'px'">
-    <button mat-icon-button [disabled]="true">
-      <mat-icon></mat-icon>
+    <button mat-icon-button [disabled]="!node.isExpandable" (click)="nodeExpandToggle()" matTreeNodeToggle>
+      <mat-icon class="fa-xs mat-icon-rtl-mirror"
+                [fontIcon]="buttonFontIcon"></mat-icon>
     </button>
     <div class="node-renderer">
       <ng-container *ngTemplateOutlet="nodeTemplateRenderer; context:{$implicit:node.data}"></ng-container>

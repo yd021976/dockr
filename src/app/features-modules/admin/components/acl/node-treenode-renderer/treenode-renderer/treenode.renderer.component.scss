@@ -1,0 +1,29 @@
+.column {
+    border-right-style: solid;
+    border-right-width: 1px;
+    min-height: initial;
+
+    &.node:hover {
+        cursor: pointer
+    }
+}
+
+div.column {
+    &:last-child {
+        border-right: 0px;
+    }
+}
+
+.node-renderer {
+    display: inline-block
+}
+
+.mat-icon-button {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+}
+
+.mat-tree-node {
+    min-height: initial;
+}

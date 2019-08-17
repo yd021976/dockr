@@ -46,7 +46,7 @@ import { UserDetailsComponent } from './components/users/user.details/user.detai
 import { MatListModule } from '@angular/material/list';
 import { UsersActionsComponent } from './components/users/users.actions/users.actions.component';
 import { AuthUsersAddUserDialog } from './components/users/dialogs/add.user/add.user.dialog.component';
-import { TreenodeRendererComponent } from './components/acl/node-treenode-renderer/treenode-renderer/treenode-renderer.component';
+import { TreenodeRendererComponent } from './components/acl/node-treenode-renderer/treenode-renderer/treenode.renderer.component';
 
 const components = [
   AclContainer, UsersContainer, UsersComponent, AclComponent, ActionComponent, FieldComponent, RoleComponent, ServiceComponent,
