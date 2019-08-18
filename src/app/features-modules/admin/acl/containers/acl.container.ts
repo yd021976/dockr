@@ -1,20 +1,21 @@
 import { BaseTreeControl } from '@angular/cdk/tree';
-import { Component, ViewChild, OnDestroy } from '@angular/core';
+import { Component, ViewChild, OnDestroy, Inject } from '@angular/core';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { MatTreeFlatDataSource } from '@angular/material/tree';
 import { OnInit } from '@angular/core';
 
 import { AclTreeNode, FlatTreeNode } from '../../../../shared/models/treenode.model';
-import { AdminAclSandboxService } from 'src/app/shared/sandboxes/containers/admin.acl.sandbox.service';
 import { NODE_TYPES } from '../../../../shared/models/treenode.model';
-import { TreeNodesService } from '../../services/treeNodes.service';
+import { TreeNodesService } from '../services/treeNodes.service';
 import { AclTreeColmodel } from 'src/app/shared/models/acl-tree-colmodel.model';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators'
-import { AddRoleDialogComponent, dialogResult } from '../../components/acl/dialogs/add.role/add.role.dialog.component';
-import { AddServiceDialogComponent, AddServiceDialogComponent_dialogResult } from '../../components/acl/dialogs/add.service/add.service.dialog.component';
-import { AclComponent } from '../../components/acl/acl.component';
-import { CandeactivateAclDialog } from '../../components/acl/dialogs/can.deactivate.acl/can.deactivate.acl.dialog.component';
+import { AddRoleDialogComponent, dialogResult } from '../components/dialogs/add.role/add.role.dialog.component';
+import { AddServiceDialogComponent, AddServiceDialogComponent_dialogResult } from '../components/dialogs/add.service/add.service.dialog.component';
+import { AclComponent } from '../components/acl.component';
+import { CandeactivateAclDialog } from '../components/dialogs/can.deactivate.acl/can.deactivate.acl.dialog.component';
+import { AdminAclSandboxProviderToken } from '../sandboxes/admin.acl.sandbox.token';
+import { AdminAclSandboxInterface } from '../sandboxes/admin.acl.sandbox.interface';
 
 @Component( {
   selector: 'app-acl-container',
@@ -38,7 +39,7 @@ export class AclContainer implements OnInit, OnDestroy {
   private dialog_candeactivateAcl: MatDialogRef<CandeactivateAclDialog>
   private dialogService: MatDialog
 
-  constructor( public sandbox: AdminAclSandboxService, public treeService: TreeNodesService, dialogService: MatDialog ) {
+  constructor( @Inject( AdminAclSandboxProviderToken ) public sandbox: AdminAclSandboxInterface, public treeService: TreeNodesService, dialogService: MatDialog ) {
     this.dialogService = dialogService
     this.colModel = this.setColmodel()
     this.aclLocked$ = this.sandbox.isAclLocked$

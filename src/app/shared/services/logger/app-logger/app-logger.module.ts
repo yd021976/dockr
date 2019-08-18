@@ -1,13 +1,13 @@
 import { NgModule, ModuleWithProviders, InjectionToken, Type } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppLoggerServiceConfig } from './service/app-logger-config.class';
-import { AppLoggerService } from './service/app-logger.service';
+import { AppLoggerService, AppLoggerServiceInterface } from './service/app-logger.service';
 import { AppLoggerConfigToken, AppLoggerServiceToken } from './app-logger-token';
 import { AppLoggerAdapter } from './logger/app-logger-adapter';
 import { Level } from './service/app-logger-levels.class';
 
 
-export function loggerFactory(config: AppLoggerServiceConfig): AppLoggerService {
+export function loggerFactory(config: AppLoggerServiceConfig): AppLoggerServiceInterface {
   var instance: AppLoggerService = null;
   instance = new AppLoggerService(config);
   return instance;

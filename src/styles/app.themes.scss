@@ -16,15 +16,16 @@
 @import '../app/shared/components/side-nav/menu-panel/menu-panel-component-theme.scss';
 
 // Admin module -- ACL
-@import '../app/features-modules/admin/components/acl/node-actions/node-actions.theme.scss';
-@import '../app/features-modules/admin/components/acl/acl.component.theme.scss';
+@import '../app/features-modules/admin//acl/components/node-actions/node-actions.theme.scss';
+@import '../app/features-modules/admin/acl/components/acl.component.theme.scss';
+
 // Admin module -- Users
-@import '../app/features-modules/admin/containers/users/users.container.theme.scss';
-@import '../app/features-modules/admin/components/users/users.component.theme.scss';
-@import '../app/features-modules/admin/components/users/users.list/users.list.component.theme.scss';
-@import '../app/features-modules/admin/components/users/roles.list/roles.list.component.theme.scss';
-@import '../app/features-modules/admin/components/users/user.details/user.details.component.theme.scss';
-@import '../app/features-modules/admin/components/users/users.actions/users.actions.component.theme.scss';
+@import '../app/features-modules/admin/users/containers/users.container.theme.scss';
+@import '../app/features-modules/admin/users/components/users.component.theme.scss';
+@import '../app/features-modules/admin/users/components/users.list/users.list.component.theme.scss';
+@import '../app/features-modules/admin/users/components/roles.list/roles.list.component.theme.scss';
+@import '../app/features-modules/admin/users/components/user.details/user.details.component.theme.scss';
+@import '../app/features-modules/admin/users/components/users.actions/users.actions.component.theme.scss';
 
 @mixin app-theme($name, $theme) {
     .#{$name} {

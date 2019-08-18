@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { AdminUsersSandboxService } from 'src/app/shared/sandboxes/containers/admin.users.sandbox.service';
+import { Component, OnInit, Inject } from '@angular/core';
 import { Observable, concat } from 'rxjs';
 import { UserModelBase } from 'src/app/shared/models/user.model';
 import { AclRoleModel } from 'src/app/shared/models/acl.role.model';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { AuthUsersAddUserDialog, auth_users_add_user_dialog_result } from '../../components/users/dialogs/add.user/add.user.dialog.component';
-import { toArray } from 'rxjs/operators';
+import { AuthUsersAddUserDialog, auth_users_add_user_dialog_result } from '../components/dialogs/add.user/add.user.dialog.component';
+import { AdminUsersSandboxProviderToken } from '../sandboxes/admin.users.sandbox.token';
+import { AdminUsersSandboxInterface } from '../sandboxes/admin.users.sandbox.interface';
 
 @Component( {
   selector: 'app-users-container',
@@ -25,7 +25,7 @@ export class UsersContainer implements OnInit {
    * @param sandbox 
    * @param dialogService 
    */
-  constructor( public sandbox: AdminUsersSandboxService, private dialogService: MatDialog ) {
+  constructor( @Inject(AdminUsersSandboxProviderToken) public sandbox: AdminUsersSandboxInterface, private dialogService: MatDialog ) {
     this.users$ = this.sandbox.users$
     this.selected_user$ = this.sandbox.selected_user$
     this.available_roles$ = this.sandbox.available_roles$

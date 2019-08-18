@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ApplicationRouteInterface } from '../../shared/models/application.route.model';
-import { UsersContainer } from './containers/users/users.container';
-import { AclContainer } from './containers/acl/acl.container';
+import { UsersContainer } from './users/containers/users.container';
+import { AclContainer } from './acl/containers/acl.container';
 import { MatTreeModule } from '@angular/material/tree';
-import { AclCanDeactivateGuard } from './guards/acl.guard';
+import { AclCanDeactivateGuard } from './acl/guards/acl.guard';
 
 const routes: ApplicationRouteInterface[] = [
   {

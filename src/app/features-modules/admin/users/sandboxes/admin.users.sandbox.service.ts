@@ -1,29 +1,30 @@
 import { Injectable, Inject } from "@angular/core";
-import { BaseSandboxService } from "../base-sandbox.service";
-import { AppLoggerServiceToken } from "../../services/logger/app-logger/app-logger-token";
-import { AppLoggerService } from "../../services/logger/app-logger/service/app-logger.service";
+import { BaseSandboxService } from "../../../../shared/sandboxes/base-sandbox.service";
+import { AppLoggerServiceToken } from "../../../../shared/services/logger/app-logger/app-logger-token";
+import { AppLoggerService } from "../../../../shared/services/logger/app-logger/service/app-logger.service";
 import { Store, Select } from "@ngxs/store";
 import { Observable } from "rxjs";
-import { UserModel, UserModelBase } from "../../models/user.model";
-import { UsersService } from "../../services/users.service";
-import { Users_Load_All, Users_Load_All_Success, Users_Load_All_Error, Users_Select_User, Users_Update_User, Users_Update_User_Success, Users_Update_User_Error, Users_Add, Users_Add_Success, Users_Add_Error, Users_Remove, Users_Remove_Error, Users_Remove_Success } from "../../store/actions/users.action";
-import { ApplicationNotification, ApplicationNotificationType } from "../../models/application.notifications.model";
-import { ApplicationNotifications_Append_Message } from "../../store/actions/application-notifications.actions";
-import { UsersState } from "../../store/states/users.state";
-import { AclRoleModel } from "../../models/acl.role.model";
-import { RolesService } from "../../services/acl/roles/roles.service";
-import { RolesStateActions } from "../../store/actions/acl2/acl2.role.entity.actions";
-import { RolesSelectors } from "../../store/states/acl/selectors/roles.selectors";
+import { UserModel, UserModelBase } from "../../../../shared/models/user.model";
+import { UsersService } from "../../../../shared/services/users.service";
+import { Users_Load_All, Users_Load_All_Success, Users_Load_All_Error, Users_Select_User, Users_Update_User, Users_Update_User_Success, Users_Update_User_Error, Users_Add, Users_Add_Success, Users_Add_Error, Users_Remove, Users_Remove_Error, Users_Remove_Success } from "../../../../shared/store/actions/users.action";
+import { ApplicationNotification, ApplicationNotificationType } from "../../../../shared/models/application.notifications.model";
+import { ApplicationNotifications_Append_Message } from "../../../../shared/store/actions/application-notifications.actions";
+import { UsersState } from "../../../../shared/store/states/users.state";
+import { AclRoleModel } from "../../../../shared/models/acl.role.model";
+import { RolesService } from "../../../../shared/services/acl/roles/roles.service";
+import { RolesStateActions } from "../../../../shared/store/actions/acl2/acl2.role.entity.actions";
+import { RolesSelectors } from "../../../../shared/store/states/acl/selectors/roles.selectors";
+import { AdminUsersSandboxInterface } from "./admin.users.sandbox.interface";
 
 @Injectable()
-export class AdminUsersSandboxService extends BaseSandboxService {
+export class AdminUsersSandboxService extends AdminUsersSandboxInterface {
     @Select( UsersState.users_list ) public users$: Observable<UserModelBase[]>
     @Select( UsersState.selected_user ) public selected_user$: Observable<UserModelBase>
     @Select( RolesSelectors.roles_get_list ) public available_roles$: Observable<AclRoleModel[]>
 
 
-    constructor( store: Store, @Inject( AppLoggerServiceToken ) public logger: AppLoggerService, public users_service: UsersService, private roles_service: RolesService ) {
-        super( store, logger )
+    constructor( store: Store, @Inject( AppLoggerServiceToken ) public logger: AppLoggerService, public users_service: UsersService, protected roles_service: RolesService ) {
+        super( store, logger, users_service, roles_service )
     }
 
     public init() {

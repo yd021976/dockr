@@ -1,36 +1,37 @@
 import { Inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Store } from "@ngxs/store";
-import { AclTreeNode, NODE_TYPES, FlatTreeNode } from "../../models/treenode.model";
-import { AppLoggerService } from "../../services/logger/app-logger/service/app-logger.service";
-import { AppLoggerServiceToken } from "../../services/logger/app-logger/app-logger-token";
-import { AclServiceModel } from "../../models/acl.services.model";
-import { BaseSandboxService } from "../base-sandbox.service";
-import { RolesService } from "../../services/acl/roles/roles.service";
-import { BackendServicesService } from "../../services/acl/services/backend-services.service";
-import { Services_Load_All_Success, Services_Load_All } from "../../store/actions/services.actions";
-import { AclUIActions } from '../../store/actions/acl2/acl2.state.actions'
-import { RolesStateActions } from "../../store/actions/acl2/acl2.role.entity.actions"
+import { AclTreeNode, NODE_TYPES, FlatTreeNode } from "../../../../shared/models/treenode.model";
+import { AppLoggerService } from "../../../../shared/services/logger/app-logger/service/app-logger.service";
+import { AppLoggerServiceToken } from "../../../../shared/services/logger/app-logger/app-logger-token";
+import { AclServiceModel } from "../../../../shared/models/acl.services.model";
+import { BaseSandboxService } from "../../../../shared/sandboxes/base-sandbox.service";
+import { RolesService } from "../../../../shared/services/acl/roles/roles.service";
+import { BackendServicesService } from "../../../../shared/services/acl/services/backend-services.service";
+import { Services_Load_All_Success, Services_Load_All } from "../../../../shared/store/actions/services.actions";
+import { AclUIActions } from '../../../../shared/store/actions/acl2/acl2.state.actions'
+import { RolesStateActions } from "../../../../shared/store/actions/acl2/acl2.role.entity.actions"
 import { AclRoleModel, AclRoleEntity } from "src/app/shared/models/acl.role.model";
-import { Acl_Field_Update_Allowed_Success, Acl_Field_Update_Allowed, Acl_Field_Update_Allowed_Error } from "../../store/actions/acl2/acl2.field.entity.action";
-import { Acl_Action_Update_Allowed_Success, Acl_Action_Update_Allowed, Acl_Action_Update_Allowed_Error } from "../../store/actions/acl2/acl2.action.entity.actions";
-import { Acl_Services_Remove_Entity_Success, Acl_Services_Remove_Entity, Acl_Services_Remove_Entity_Error } from "../../store/actions/acl2/acl2.service.entity.actions";
-import { Application_Event_Notification } from "../../store/actions/application.actions";
-import { ResourcesLocksService } from "../../services/resource_locks/resources.locks.service";
-import { ApplicationNotification, ApplicationNotificationType } from "../../models/application.notifications.model";
-import { ApplicationNotifications_Append_Message } from "../../store/actions/application-notifications.actions";
+import { Acl_Field_Update_Allowed_Success, Acl_Field_Update_Allowed, Acl_Field_Update_Allowed_Error } from "../../../../shared/store/actions/acl2/acl2.field.entity.action";
+import { Acl_Action_Update_Allowed_Success, Acl_Action_Update_Allowed, Acl_Action_Update_Allowed_Error } from "../../../../shared/store/actions/acl2/acl2.action.entity.actions";
+import { Acl_Services_Remove_Entity_Success, Acl_Services_Remove_Entity, Acl_Services_Remove_Entity_Error } from "../../../../shared/store/actions/acl2/acl2.service.entity.actions";
+import { Application_Event_Notification } from "../../../../shared/store/actions/application.actions";
+import { ResourcesLocksService } from "../../../../shared/services/resource_locks/resources.locks.service";
+import { ApplicationNotification, ApplicationNotificationType } from "../../../../shared/models/application.notifications.model";
+import { ApplicationNotifications_Append_Message } from "../../../../shared/store/actions/application-notifications.actions";
 import { v4 as uuid } from 'uuid';
 import { map } from "rxjs/operators";
-import { UserModel } from "../../models/user.model";
-import { AclEntitiesSelectors } from "../../store/states/acl/selectors/acl.entities.selectors";
-import { ApplicationLocksActions } from "../../store/actions/application.locks.actions";
-import { ApplicationLocksSelectors } from "../../store/states/locks/application.locks.selectors";
-import { AclTreeSelectors } from '../../store/states/acl/selectors/acl.tree.selectors'
-import { AclUISelectors } from "../../store/states/acl/selectors/acl.ui.selectors";
-import { RolesSelectors } from "../../store/states/acl/selectors/roles.selectors";
+import { UserModel } from "../../../../shared/models/user.model";
+import { AclEntitiesSelectors } from "../../../../shared/store/states/acl/selectors/acl.entities.selectors";
+import { ApplicationLocksActions } from "../../../../shared/store/actions/application.locks.actions";
+import { ApplicationLocksSelectors } from "../../../../shared/store/states/locks/application.locks.selectors";
+import { AclTreeSelectors } from '../../../../shared/store/states/acl/selectors/acl.tree.selectors'
+import { AclUISelectors } from "../../../../shared/store/states/acl/selectors/acl.ui.selectors";
+import { RolesSelectors } from "../../../../shared/store/states/acl/selectors/roles.selectors";
+import { AdminAclSandboxInterface } from "./admin.acl.sandbox.interface";
 
 @Injectable( { providedIn: 'root' } )
-export class AdminAclSandboxService extends BaseSandboxService {
+export class AdminAclSandboxService extends AdminAclSandboxInterface {
     public acltreenodes$: Observable<AclTreeNode[]>
     public currentSelectedNode$: Observable<FlatTreeNode>
     public availableServices$: Observable<AclServiceModel[]>
@@ -39,11 +40,12 @@ export class AdminAclSandboxService extends BaseSandboxService {
     constructor(
         store: Store,
         @Inject( AppLoggerServiceToken ) public logger: AppLoggerService,
-        private rolesService: RolesService,
-        private backendServices: BackendServicesService,
-        private resourcesLocksService: ResourcesLocksService ) {
+        protected rolesService: RolesService,
+        protected backendServices: BackendServicesService,
+        protected resourcesLocksService: ResourcesLocksService ) {
 
-        super( store, logger )
+        super( store, logger, rolesService, backendServices, resourcesLocksService )
+        
         this.acltreenodes$ = this.store.select( AclTreeSelectors.treenode_getData() ) // ACL Observable
         this.currentSelectedNode$ = this.store.select( AclUISelectors.treenodes_get_currentSelectedNode )
         this.availableServices$ = this.store.select( RolesSelectors.role_get_availableServices )
@@ -211,7 +213,7 @@ export class AdminAclSandboxService extends BaseSandboxService {
         return this.store.selectSnapshot( AclTreeSelectors.treenode_getData( node ) )
     }
 
-    nodeHasChildren( node ) {
+    nodeHasChildren( node ): boolean {
         var children = this.store.selectSnapshot( AclTreeSelectors.treenode_getData( node ) )
         if ( !children ) {
             return false
@@ -219,7 +221,7 @@ export class AdminAclSandboxService extends BaseSandboxService {
         if ( children.length != 0 ) return true
         return false
     }
-    nodeGetParent( node ) {
+    nodeGetParent( node ): AclTreeNode {
         var parent = this.store.selectSnapshot( AclTreeSelectors.treenodes_get_parentNode( node ) )
         return parent
     }
