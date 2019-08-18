@@ -1,5 +1,11 @@
 import { ALLOWED_STATES } from "./acl.service.action.model";
 
+export interface FlatTreeNode<T = any> {
+    level: number
+    isExpandable: boolean
+    data: T
+}
+
 export interface AclTreeNode {
     name: string
     uid: string

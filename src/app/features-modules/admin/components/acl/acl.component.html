@@ -12,9 +12,9 @@
     <div fxFlex="0 1 auto" class="tree_container">
       <mat-tree [dataSource]="flatDataSource" [treeControl]="treecontrol" #tree>
         <mat-tree-node #treenode *matTreeNodeDef="let node" fxLayout="row" fxLayoutAlign="start stretch" @EnterLeave class="child-node">
-          <app-admin-acl-treenode-renderer [nodeTemplateRenderer]="nodeTemplateRenderer" [node]="node" [selected-node]="selectedNode"
-                                           [expanded]="treecontrol.isExpanded(node)"
-                                           (selectNode)="selectNode(node)">
+          <app-admin-acl-treenode-renderer [column-model]="colmodel" [node-type-renderer]="nodeTemplateRenderer" [node]="node" [selected-node]="selectedNode"
+                                           [tree-control]="treecontrol"
+                                           (node-selected)="selectNode(node)">
           </app-admin-acl-treenode-renderer>
         </mat-tree-node>
       </mat-tree>

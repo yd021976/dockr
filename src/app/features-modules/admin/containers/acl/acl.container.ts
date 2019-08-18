@@ -4,9 +4,8 @@ import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { MatTreeFlatDataSource } from '@angular/material/tree';
 import { OnInit } from '@angular/core';
 
-import { AclTreeNode } from '../../../../shared/models/treenode.model';
+import { AclTreeNode, FlatTreeNode } from '../../../../shared/models/treenode.model';
 import { AdminAclSandboxService } from 'src/app/shared/sandboxes/containers/admin.acl.sandbox.service';
-import { FlatTreeNode } from '../../services/treeNodes.service';
 import { NODE_TYPES } from '../../../../shared/models/treenode.model';
 import { TreeNodesService } from '../../services/treeNodes.service';
 import { AclTreeColmodel } from 'src/app/shared/models/acl-tree-colmodel.model';
@@ -52,7 +51,6 @@ export class AclContainer implements OnInit, OnDestroy {
     this.treeService.isExpandable = ( node: AclTreeNode ) => {
       return this.sandbox.nodeHasChildren( node )
     }
-    this.treeService.column_model = this.colModel
     this.treeService.nodeEqualityKey = "uid"
     this.treecontroller = this.treeService.treeControl
     this.datasource = this.treeService.treeFlatDataSource
@@ -69,7 +67,7 @@ export class AclContainer implements OnInit, OnDestroy {
       },
       {
         colName: 'Service',
-        size: '250px'
+        size: '150px'
       },
       {
         colName: 'Action',

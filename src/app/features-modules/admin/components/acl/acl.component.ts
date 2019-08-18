@@ -6,17 +6,17 @@ import { MatTreeFlatDataSource, MatTree } from '@angular/material/tree';
 import { OnInit } from '@angular/core';
 import { TemplateRef } from '@angular/core';
 
-import { FlatTreeNode } from '../../services/treeNodes.service';
 import { AclTreeColmodel } from 'src/app/shared/models/acl-tree-colmodel.model';
 import { trigger, style, transition, animate, query, animateChild, group } from '@angular/animations';
 import { SelectionModel } from '@angular/cdk/collections';
+import { FlatTreeNode } from 'src/app/shared/models/treenode.model';
 
 
 @Component( {
   selector: 'app-admin-acl',
   templateUrl: './acl.component.html',
   styleUrls: [ './acl.component.scss' ],
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger( 'animChildren', [
       transition( '*<=>*',
@@ -102,11 +102,13 @@ export class AclComponent implements OnInit, AfterViewInit {
   node_ExpandNode( node: FlatTreeNode ) {
     this.treecontrol.expand( node )
   }
-  hasChild = ( index: number, node: FlatTreeNode ) => {
-    return node.isExpandable
-  }
+
   node_getDescendants( node: FlatTreeNode ): number {
     const children = this.treecontrol.getDescendants( node )
     return children.length
+  }
+  node_isExpanded( node: FlatTreeNode ): boolean {
+    console.log( '[app-admin-acl] node is expanded', node.data.name )
+    return this.treecontrol.isExpanded( node )
   }
 }

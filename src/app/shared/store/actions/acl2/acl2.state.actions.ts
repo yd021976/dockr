@@ -1,4 +1,4 @@
-import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
+import { FlatTreeNode } from "src/app/shared/models/treenode.model";
 
 export namespace AclUIActions {
     

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FlatTreeNode } from 'src/app/features-modules/admin/services/treeNodes.service';
+import { FlatTreeNode } from 'src/app/shared/models/treenode.model';
 
 @Component({
   selector: 'app-admin-acl-role-detail',

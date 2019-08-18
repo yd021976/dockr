@@ -2,7 +2,7 @@ import { AclRoleEntities } from "./acl.role.model";
 import { AclServicesEntities } from "./acl.services.model";
 import { AclServiceActionModelEntities } from "./acl.service.action.model";
 import { ServiceFieldEntities } from "./acl.service.field.model";
-import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
+import { FlatTreeNode } from "./treenode.model";
 
 /**
  * Roles entities

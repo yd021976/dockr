@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FlatTreeNode } from '../../../services/treeNodes.service';
-import { NODE_TYPES } from '../../../../../shared/models/treenode.model';
+import { NODE_TYPES, FlatTreeNode } from '../../../../../shared/models/treenode.model';
 
 @Component( {
   selector: 'app-acl-node-detail',

@@ -1,11 +1,11 @@
 import { AclUIState } from "../ui.state/acl2.state";
 import { AclStateUIModel } from "../../../../models/acl.entities.model";
-import { FlatTreeNode } from "../../../../../features-modules/admin/services/treeNodes.service";
 import { Selector } from "@ngxs/store";
 import { AclEntitiesState } from "../entities.state/acl2.entities.state";
 import { AclStateEntitiesModel } from "src/app/shared/models/acl.entities.model";
 import { entity_management } from '../utils';
 import { AclRoleEntity } from "src/app/shared/models/acl.role.model";
+import { FlatTreeNode } from "src/app/shared/models/treenode.model";
 
 
 /**

@@ -1,9 +1,8 @@
-import { NODE_TYPES, AclTreeNode } from "src/app/shared/models/treenode.model";
+import { NODE_TYPES, AclTreeNode, FlatTreeNode } from "src/app/shared/models/treenode.model";
 import { AclRoleEntity } from "src/app/shared/models/acl.role.model";
 import { AclServiceEntity } from "src/app/shared/models/acl.services.model";
 import { AclServiceActionModelEntity } from "src/app/shared/models/acl.service.action.model";
-import { FlatTreeNode } from "src/app/features-modules/admin/services/treeNodes.service";
-import { AclStateUIModel, AclStateEntitiesModel } from "src/app/shared/models/acl.entities.model";
+import { AclStateEntitiesModel } from "src/app/shared/models/acl.entities.model";
 import { ServiceFieldEntity } from "src/app/shared/models/acl.service.field.model";
 import { service_get_parent } from "./services";
 import { action_get_parent } from "./actions";
