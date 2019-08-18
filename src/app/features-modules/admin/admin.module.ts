@@ -38,7 +38,7 @@ import { AddServiceDialogComponent } from './acl/components/dialogs/add.service/
 import { ResourcesLocksService } from 'src/app/shared/services/resource_locks/resources.locks.service';
 import { CandeactivateAclDialog } from './acl/components/dialogs/can.deactivate.acl/can.deactivate.acl.dialog.component';
 import { AdminUsersSandboxService } from 'src/app/features-modules/admin/users/sandboxes/admin.users.sandbox.service';
-import { ComponentsModule } from 'src/app/shared/components';
+import { ComponentsModule } from 'src/app/shared/components/components.module';
 import { RolesListComponent } from './users/components/roles.list/roles.list.component';
 import { UsersListComponent } from './users/components/users.list/users.list.component';
 import { UserDetailsComponent } from './users/components/user.details/user.details.component';

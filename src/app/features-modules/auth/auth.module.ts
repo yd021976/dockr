@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 
 import { AuthRoutingModule } from './auth-routing.module';
 import { AuthSandbox } from '../../shared/sandboxes/auth.sandbox';
-import { ComponentsModule } from 'src/app/shared/components';
+import { ComponentsModule } from 'src/app/shared/components/components.module';
 import { LoginContainer } from './containers/login/login.container';
 import { LogoutContainer } from './containers/logout/logout.container';
 import { RegisterContainer } from './containers/register/register.component';

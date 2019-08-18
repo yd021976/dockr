@@ -3,11 +3,11 @@ import { NgModule } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterModule } from '@angular/router';
 
-import { ComponentsModule } from '../components';
-import { LayoutContainer } from '../containers/layout/layout.container';
-import { Layout2Container } from '../containers/layout2/layout2.container';
-import { LayoutContainerSandboxService } from '../sandboxes/containers/layout-container-sandbox.service';
-import { FeathersjsBackendService } from '../services/backend_API_Endpoints/socketio/backend-feathers.service';
+import { ComponentsModule } from '../../components/components.module';
+import { LayoutContainer } from './layout/layout.container';
+import { Layout2Container } from './layout2/layout2.container';
+import { LayoutContainerSandboxService } from '../../sandboxes/containers/layout-container-sandbox.service';
+import { FeathersjsBackendService } from '../../services/backend_API_Endpoints/socketio/backend-feathers.service';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 export const components = [
@@ -30,4 +30,4 @@ export const components = [
     declarations: components,
     exports: [...components, RouterModule]
 })
-export class ContainersModule { }
+export class LayoutsModule { }

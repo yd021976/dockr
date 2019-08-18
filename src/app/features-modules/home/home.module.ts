@@ -6,7 +6,7 @@ import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './containers/home/home.container';
 import { DashboardSandbox } from '../../shared/sandboxes/containers/dashboard-sandbox.service';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { ComponentsModule } from '../../shared/components';
+import { ComponentsModule } from '../../shared/components/components.module';
 import { TodoComponent } from './components/todo/todo.component';
 import { NgxPermissionsModule } from 'ngx-permissions';
 import { DirectivesModule } from 'src/app/shared/directives/directives.module';

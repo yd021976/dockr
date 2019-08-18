@@ -9,8 +9,8 @@ import { NgxPermissionsModule } from 'ngx-permissions';
 import { AppComponent } from './app.component';
 import { ApplicationState } from './shared/store/states/application.state';
 import { AuthModule } from './features-modules/auth/auth.module';
-import { ComponentsModule } from './shared/components';
-import { ContainersModule } from './shared/containers/containers.module';
+import { ComponentsModule } from './shared/components/components.module';
+import { LayoutsModule } from './shared/containers/layouts/layouts.module';
 import { HomeModule } from './features-modules/home/home.module';
 import { AppSandboxService } from './shared/sandboxes/app/app-sandbox.service';
 import { UserState } from './shared/store/states/user.state';
@@ -49,7 +49,7 @@ export function authUser( appsandbox: AppSandboxService ) {
     BrowserModule,
     BrowserAnimationsModule,
     ComponentsModule,
-    ContainersModule,
+    LayoutsModule,
     HomeModule,
     AppLoggerModule.forRoot(),
     MatSnackBarModule,

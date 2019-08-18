@@ -5,7 +5,7 @@ import { SettingsRoutingModule } from './settings-routing.module';
 import { ProfileComponent } from './components/profile/profile.component';
 import { SettingsSandboxService } from 'src/app/shared/sandboxes/containers/settings-sandbox.service';
 import { SettingsComponent } from './containers/settings/settings.component';
-import { ComponentsModule } from '../../shared/components/index';
+import { ComponentsModule } from '../../shared/components/components.module';
 
 @NgModule({
   imports: [

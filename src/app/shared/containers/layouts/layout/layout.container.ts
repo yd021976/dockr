@@ -2,10 +2,10 @@ import { Component, HostBinding, OnDestroy, OnInit, Input } from '@angular/core'
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
-import { BackendConnectionState } from '../../models/backend.connection.state.model';
-import { ErrorDialogComponent } from '../../components/error/dialog/error-dialog.component';
-import { LayoutContainerSandboxService } from '../../sandboxes/containers/layout-container-sandbox.service';
-import { ThemeItem } from '../../models/theme-items.model';
+import { BackendConnectionState } from '../../../models/backend.connection.state.model';
+import { ErrorDialogComponent } from '../../../components/error/dialog/error-dialog.component';
+import { LayoutContainerSandboxService } from '../../../sandboxes/containers/layout-container-sandbox.service';
+import { ThemeItem } from '../../../models/theme-items.model';
 
 @Component({
     selector: 'app-layout',
