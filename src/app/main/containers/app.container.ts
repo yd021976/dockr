@@ -1,17 +1,17 @@
 import { Component, OnDestroy } from '@angular/core'
-import { AppSandboxService } from './shared/sandboxes/app/app-sandbox.service';
+import { AppSandboxService } from '../sandboxes/app-sandbox.service';
 import { MatSnackBarRef, MatSnackBar } from '@angular/material/snack-bar';
-import { SnackBarComponent } from './shared/components/snackbar/snack-bar.component';
+import { SnackBarComponent } from '../../shared/components/snackbar/snack-bar.component';
 import { Observable, Subscription } from 'rxjs';
-import { ApplicationNotification } from './shared/models/application.notifications.model';
+import { ApplicationNotification } from '../../shared/models/application.notifications.model';
 
 
 @Component( {
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: [ './app.component.scss' ]
+  selector: 'app-root-container',
+  templateUrl: './app.container.html',
+  styleUrls: [ './app.container.scss' ]
 } )
-export class AppComponent implements OnDestroy {
+export class AppContainer implements OnDestroy {
   private snackbarRef: MatSnackBarRef<SnackBarComponent> = null
   private notifications: Observable<ApplicationNotification[]>
   private error_subscribtion: Subscription

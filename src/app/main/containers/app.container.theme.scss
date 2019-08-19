@@ -3,7 +3,7 @@
 @import './app-theme-globals.scss';
 
 // Define a mixin that accepts a theme and outputs the color styles for the component.
-@mixin app-component-theme($theme) {
+@mixin app-container-theme($theme) {
     // Use mat-color to extract individual colors from a palette as necessary.
     .sidenav {
         background-color: mat-color(primary-palette($theme), 800);

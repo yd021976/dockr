@@ -1,6 +1,7 @@
-import { Component, OnInit, Input, TemplateRef, Renderer2 } from '@angular/core';
-import { DashboardSandbox } from 'src/app/shared/sandboxes/containers/dashboard-sandbox.service';
+import { Component, OnInit, Input, TemplateRef, Renderer2, Inject } from '@angular/core';
 import { AppPermissionDescriptor, actionTypes, HideBehaviors } from 'src/app/shared/directives/permissions/permission.directive';
+import { DashboardSandboxInterface } from '../../sandboxes/dashboard/dashboard.sandbox.interface';
+import { dashboardSandboxProviderToken } from '../../sandboxes/dashboard/dashboard.sandbox.token';
 
 @Component( {
   selector: 'app-dashboard',
@@ -18,7 +19,7 @@ export class DashboardComponent implements OnInit {
   /**
    * 
    */
-  constructor( public sandbox: DashboardSandbox ) {
+  constructor( @Inject(dashboardSandboxProviderToken) public sandbox: DashboardSandboxInterface ) {
 
   }
 

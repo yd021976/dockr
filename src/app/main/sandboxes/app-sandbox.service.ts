@@ -1,20 +1,19 @@
 import { Injectable, Inject } from '@angular/core';
-import { AuthService, AuthenticateEvent, AuthenticateEventTypes } from '../../services/auth/auth.service';
-import { BaseSandboxService } from '../base-sandbox.service';
-import { User_Action_Login_Success, User_Action_Logout_Success, User_Action_Login } from '../../store/actions/user.actions';
+import { AuthService, AuthenticateEvent, AuthenticateEventTypes } from '../../shared/services/auth/auth.service';
+import { BaseSandboxService } from '../../shared/sandboxes/base-sandbox.service';
+import { User_Action_Login_Success, User_Action_Logout_Success, User_Action_Login } from '../../shared/store/actions/user.actions';
 import { Observable } from 'rxjs';
-import { skip, filter, map } from 'rxjs/operators'
-import { AppLoggerServiceToken } from '../../services/logger/app-logger/app-logger-token';
-import { AppLoggerService } from '../../services/logger/app-logger/service/app-logger.service';
+import { skip } from 'rxjs/operators'
+import { AppLoggerServiceToken } from '../../shared/services/logger/app-logger/app-logger-token';
+import { AppLoggerService } from '../../shared/services/logger/app-logger/service/app-logger.service';
 import { Store, Select } from '@ngxs/store';
-import { AppNotificationsState } from '../../store/states/application.notifications.state';
-import { ApplicationNotification, ApplicationNotificationType } from '../../models/application.notifications.model';
-import { PermissionsService } from '../../services/acl/permissions/permissions.service';
-import { ApplicationNotifications_Append_Message } from '../../store/actions/application-notifications.actions';
-import { RolesService } from '../../services/acl/roles/roles.service';
-import { AclRoleModel } from '../../models/acl.role.model';
-import { UserModelBase } from '../../models/user.model';
-import { AclUIState } from '../../store/states/acl/ui.state/acl2.state';
+import { AppNotificationsState } from '../../shared/store/states/application.notifications.state';
+import { ApplicationNotification, ApplicationNotificationType } from '../../shared/models/application.notifications.model';
+import { PermissionsService } from '../../shared/services/acl/permissions/permissions.service';
+import { ApplicationNotifications_Append_Message } from '../../shared/store/actions/application-notifications.actions';
+import { RolesService } from '../../shared/services/acl/roles/roles.service';
+import { AclRoleModel } from '../../shared/models/acl.role.model';
+import { UserModelBase } from '../../shared/models/user.model';
 
 @Injectable()
 export class AppSandboxService extends BaseSandboxService {

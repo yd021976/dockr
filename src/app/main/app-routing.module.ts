@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { ApplicationRouteInterface } from './shared/models/application.route.model';
+import { ApplicationRouteInterface } from '../shared/models/application.route.model';
 import { RouterModule } from '@angular/router';
-import { AclCanDeactivateGuard } from './features-modules/admin/acl/guards/acl.guard';
+import { AclCanDeactivateGuard } from '../features-modules/admin/acl/guards/acl.guard';
 
 
 export const routes: ApplicationRouteInterface[] = [
