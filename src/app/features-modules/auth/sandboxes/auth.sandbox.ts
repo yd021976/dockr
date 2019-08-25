@@ -1,36 +1,27 @@
 import { Injectable, Inject } from "@angular/core";
 import { Observable } from "rxjs";
-import { Router } from "@angular/router";
 import { Store, Select } from "@ngxs/store";
-
-import { ApplicationState } from "../store/states/application.state";
-import { AuthService } from "../services/auth/auth.service";
-import { loginCredentials, UserModelBase, UserBackendApiModel } from "../models/user.model";
-import { BaseSandboxService } from "./base-sandbox.service";
-import { User_Action_Login, User_Action_Login_Error, User_Action_Login_Success, User_Action_Logout_Success, User_Action_Logout_Error } from "../store/actions/user.actions";
-import { AppLoggerServiceToken } from "src/app/shared/services/logger/app-logger/app-logger-token";
-import { AppLoggerService } from "src/app/shared/services/logger/app-logger/service/app-logger.service";
-import { ApplicationNotifications_Append_Message } from "src/app/shared/store/actions/application-notifications.actions";
-import { AppError, errorType } from "src/app/shared/models/application.error.model";
-import { ApplicationNotification, ApplicationNotificationType } from "src/app/shared/models/application.notifications.model";
-import { PermissionsService } from "src/app/shared/services/acl/permissions/permissions.service";
-import { RolesService } from "src/app/shared/services/acl/roles/roles.service";
-import { AclRoleModel } from "src/app/shared/models/acl.role.model";
-
+import { AuthService } from "../../../shared/services/auth/auth.service";
+import { AppLoggerServiceInterface } from "../../../shared/services/logger/app-logger/service/app-logger.service";
+import { AuthSandboxInterface } from "./auth.sandbox.interface";
+import { loginCredentials, UserModelBase } from "../../../shared/models/user.model";
+import { User_Action_Login, User_Action_Login_Success, User_Action_Login_Error, User_Action_Logout_Success, User_Action_Logout_Error } from "../../../shared/store/actions/user.actions";
+import { ApplicationState } from "../../../shared/store/states/application.state";
+import { AppLoggerServiceToken } from "../../../shared/services/logger/app-logger/app-logger-token";
 
 @Injectable( { providedIn: 'root' } )
-export class AuthSandbox extends BaseSandboxService {
-    private readonly loggerName: string = "AuthSandbox";
+export class AuthSandbox extends AuthSandboxInterface {
+    protected readonly loggerName: string = "AuthSandbox";
 
-    @Select( ApplicationState.authError ) public authError$: Observable<string>;
+    @Select( ApplicationState.authError ) public authError$: Observable<string>
 
     constructor(
-        protected authService: AuthService,
-        @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerService,
-        store: Store
+        store: Store,
+        @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerServiceInterface,
+        protected authService: AuthService
     ) {
-        super( store, loggerService );
-        this.loggerService.createLogger( this.loggerName );
+        super( store, loggerService, authService )
+        this.loggerService.createLogger( this.loggerName )
     }
 
     public Login( credentials?: loginCredentials ): Promise<boolean> {
@@ -68,5 +59,7 @@ export class AuthSandbox extends BaseSandboxService {
                 this.store.dispatch( new User_Action_Logout_Error( error.message ) )
             } )
     }
+
+    
 
 }

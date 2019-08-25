@@ -1,4 +1,5 @@
 <div>
-    <mat-checkbox [checked]="_node.checked===allowed_states.ALLOWED" [indeterminate]="_node.checked===allowed_states.INDETERMINATE" [disabled]="!(editable$ | async)" (click)="onClick($event)" (change)="onCheckChange($event)"></mat-checkbox>
+    <mat-checkbox [checked]="checked_state" [indeterminate]="indeterminate_state" [disabled]="!editable"
+                  (click)="onClick($event)" (change)="onCheckChange($event)"></mat-checkbox>
     <div class="label">{{_node.name}}</div>
 </div>

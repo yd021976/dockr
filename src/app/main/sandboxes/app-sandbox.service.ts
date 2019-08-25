@@ -18,7 +18,7 @@ import { UserModelBase } from '../../shared/models/user.model';
 @Injectable()
 export class AppSandboxService extends BaseSandboxService {
     private static loginCount: number = 0
-    private readonly loggerName: string = "AppSandboxService";
+    protected readonly loggerName: string = "AppSandboxService";
     @Select( AppNotificationsState.notifications$ ) private notifications: Observable<ApplicationNotification[]>
 
     constructor(

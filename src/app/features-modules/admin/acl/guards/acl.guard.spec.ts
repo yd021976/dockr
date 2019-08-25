@@ -1,6 +1,6 @@
 import { TestBed, async, inject } from '@angular/core/testing';
 
-import { AclCanDeactivateGuard } from './acl.guard';
+import { AclCanDeactivateGuard } from './acl.can.deactivate.guard';
 
 describe('AclGuard', () => {
   beforeEach(() => {

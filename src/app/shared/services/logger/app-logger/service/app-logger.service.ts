@@ -9,7 +9,7 @@ import { AppLoggerAdapterBase } from './app-logger-adapter-base.class';
 
 export type LoggerMessage = { message: string, otherParams: any[] }
 export interface AppLoggerServiceInterface {
-  createLogger( name: string, loggerConfig: AppLoggerConfig, loggerAdapter?: any ): void
+  createLogger( name: string, loggerConfig?: AppLoggerConfig , loggerAdapter?: any ): void
   debug( adapterInstanceName: string, data: LoggerMessage ): void
   info( adapterInstanceName: string, data: LoggerMessage ): void
   warn( adapterInstanceName: string, data: LoggerMessage ): void

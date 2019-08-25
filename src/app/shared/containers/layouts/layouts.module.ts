@@ -6,28 +6,33 @@ import { RouterModule } from '@angular/router';
 import { ComponentsModule } from '../../components/components.module';
 import { LayoutContainer } from './layout/layout.container';
 import { Layout2Container } from './layout2/layout2.container';
-import { LayoutContainerSandboxService } from '../../sandboxes/containers/layout-container-sandbox.service';
+import { LayoutContainerSandboxService } from './sandboxes/layout.container.sandbox.service';
 import { FeathersjsBackendService } from '../../services/backend_API_Endpoints/socketio/backend-feathers.service';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { LayoutContainerSandboxProviderToken } from './sandboxes/layout.container.sandbox.token';
 
 export const components = [
     LayoutContainer,
     Layout2Container
 ];
 
-@NgModule({
+@NgModule( {
     imports: [
         CommonModule,
         ComponentsModule,
         FlexLayoutModule,
         MatSidenavModule,
-        RouterModule.forRoot([])
+        RouterModule.forRoot( [] )
     ],
     providers: [
         FeathersjsBackendService,
-        LayoutContainerSandboxService,
+        {
+            provide: LayoutContainerSandboxProviderToken,
+            multi: false,
+            useClass: LayoutContainerSandboxService
+        }
     ],
     declarations: components,
-    exports: [...components, RouterModule]
-})
+    exports: [ ...components, RouterModule ]
+} )
 export class LayoutsModule { }

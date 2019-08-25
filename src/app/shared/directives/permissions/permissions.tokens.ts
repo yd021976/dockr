@@ -4,4 +4,4 @@ import { PermissionServiceInterface } from '../../services/acl/permissions/permi
 /**
  * token to provide permission service
  */
-export const permission_service = new InjectionToken<PermissionServiceInterface>( 'permissionsDirectiveService' ) 
+export const PermissionServiceToken = new InjectionToken<PermissionServiceInterface>( 'permissionsDirectiveService' ) 

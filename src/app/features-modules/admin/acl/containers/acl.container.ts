@@ -1,5 +1,5 @@
 import { BaseTreeControl } from '@angular/cdk/tree';
-import { Component, ViewChild, OnDestroy, Inject } from '@angular/core';
+import { Component, ViewChild, OnDestroy, Inject, ChangeDetectorRef, ApplicationRef } from '@angular/core';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { MatTreeFlatDataSource } from '@angular/material/tree';
 import { OnInit } from '@angular/core';
@@ -39,7 +39,11 @@ export class AclContainer implements OnInit, OnDestroy {
   private dialog_candeactivateAcl: MatDialogRef<CandeactivateAclDialog>
   private dialogService: MatDialog
 
-  constructor( @Inject( AdminAclSandboxProviderToken ) public sandbox: AdminAclSandboxInterface, public treeService: TreeNodesService, dialogService: MatDialog ) {
+  constructor(
+    @Inject( AdminAclSandboxProviderToken ) public sandbox: AdminAclSandboxInterface,
+    public treeService: TreeNodesService,
+    dialogService: MatDialog ) {
+
     this.dialogService = dialogService
     this.colModel = this.setColmodel()
     this.aclLocked$ = this.sandbox.isAclLocked$
@@ -58,7 +62,6 @@ export class AclContainer implements OnInit, OnDestroy {
     this.selectedNode$ = this.sandbox.currentSelectedNode$
     this.availableRoleService$ = this.sandbox.availableServices$
   }
-
 
   private setColmodel(): AclTreeColmodel[] {
     return [
@@ -85,7 +88,6 @@ export class AclContainer implements OnInit, OnDestroy {
    */
   ngOnInit() {
     this.treeService.dataSource$ = this.sandbox.acltreenodes$ // sets tree service data source
-    this.sandbox.init()
   }
 
   /**

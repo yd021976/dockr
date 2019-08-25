@@ -1,16 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AuthSandbox } from '../../../../shared/sandboxes/auth.sandbox';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
+import { AuthSandboxProviderToken } from '../../sandboxes/auth.sandbox.token';
+import { AuthSandboxInterface } from '../../sandboxes/auth.sandbox.interface';
 
-@Component({
+@Component( {
   selector: 'app-logout-container',
   templateUrl: './logout.container.html',
-  styleUrls: ['./logout.container.scss']
-})
+  styleUrls: [ './logout.container.scss' ]
+} )
 export class LogoutContainer implements OnInit, OnDestroy {
-  private readonly loggerName: string = 'LogoutContainer'
 
-  constructor(public sandbox: AuthSandbox) {
-    this.sandbox.loggerService.createLogger(this.loggerName)
+  constructor( @Inject( AuthSandboxProviderToken ) public sandbox: AuthSandboxInterface ) {
   }
 
   ngOnInit() { }

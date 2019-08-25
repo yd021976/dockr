@@ -30,7 +30,7 @@ export abstract class AdminAclSandboxInterface extends BaseSandboxService {
     /**
      *               Startup / Init
      */
-    public abstract init(): void
+    protected abstract init(): void
 
 
     /**

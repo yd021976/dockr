@@ -16,7 +16,7 @@ import { FlatTreeNode } from 'src/app/shared/models/treenode.model';
   selector: 'app-admin-acl',
   templateUrl: './acl.component.html',
   styleUrls: [ './acl.component.scss' ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
   animations: [
     trigger( 'animChildren', [
       transition( '*<=>*',

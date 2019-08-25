@@ -7,7 +7,7 @@ import { FlatTreeNode } from 'src/app/shared/models/treenode.model';
   selector: 'app-admin-acl-treenode-renderer',
   templateUrl: './treenode.renderer.component.html',
   styleUrls: [ './treenode.renderer.component.scss' ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 } )
 export class TreenodeRendererComponent implements OnInit, OnChanges {
   @Input( 'node' ) public node: FlatTreeNode
@@ -22,7 +22,7 @@ export class TreenodeRendererComponent implements OnInit, OnChanges {
   public buttonFontIcon: string // icon to display for states : expanded/collapsed or not expandable (spacer)
   public node_column_model: AclNodeColumnModel
 
-  constructor(private changedetectorRef:ChangeDetectorRef) { }
+  constructor() { }
   private checkInputParameters() {
     if ( this.column_model == null || ( this.column_model && this.column_model.length ) == 0 ) throw new Error( '[TreenodeRendererComponent] <column-model> Input is required' )
     if ( !this.node ) throw new Error( '[TreenodeRendererComponent] <node> Input is required' )
@@ -48,8 +48,6 @@ export class TreenodeRendererComponent implements OnInit, OnChanges {
    * 
    */
   public nodeExpandToggle() {
-    this.changedetectorRef.markForCheck()
-
     this.isExpanded = this.treeControl.isExpanded( this.node )
     this.setNodeIcon()
   }

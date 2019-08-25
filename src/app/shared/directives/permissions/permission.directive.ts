@@ -1,5 +1,5 @@
 import { Directive, Input, Renderer2, ElementRef, OnInit, Inject, OnChanges } from '@angular/core';
-import { permission_service } from './permissions.tokens';
+import { PermissionServiceToken } from './permissions.tokens';
 import { PermissionServiceInterface } from '../../services/acl/permissions/permissions.service';
 
 /**
@@ -44,7 +44,7 @@ export class PermissionsDirective implements OnInit, OnChanges {
   @Input( 'hide-style' ) hideStyle: HideBehaviors = HideBehaviors.HIDDEN
 
   private permissionDescriptor: AppPermissionDescriptor = null
-  constructor( private el: ElementRef, private renderer: Renderer2, @Inject( permission_service ) private permissions_service: PermissionServiceInterface ) {
+  constructor( private el: ElementRef, private renderer: Renderer2, @Inject( PermissionServiceToken ) private permissions_service: PermissionServiceInterface ) {
     /**
      * Subscribe to permission service "abilities" changes
      */

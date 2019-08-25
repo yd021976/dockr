@@ -29,9 +29,10 @@ import { AclTreeSelectors } from '../../../../shared/store/states/acl/selectors/
 import { AclUISelectors } from "../../../../shared/store/states/acl/selectors/acl.ui.selectors";
 import { RolesSelectors } from "../../../../shared/store/states/acl/selectors/roles.selectors";
 import { AdminAclSandboxInterface } from "./admin.acl.sandbox.interface";
+import { Resolve } from "@angular/router";
 
 @Injectable( { providedIn: 'root' } )
-export class AdminAclSandboxService extends AdminAclSandboxInterface {
+export class AdminAclSandboxService extends AdminAclSandboxInterface implements Resolve<any> {
     public acltreenodes$: Observable<AclTreeNode[]>
     public currentSelectedNode$: Observable<FlatTreeNode>
     public availableServices$: Observable<AclServiceModel[]>
@@ -45,7 +46,7 @@ export class AdminAclSandboxService extends AdminAclSandboxInterface {
         protected resourcesLocksService: ResourcesLocksService ) {
 
         super( store, logger, rolesService, backendServices, resourcesLocksService )
-        
+
         this.acltreenodes$ = this.store.select( AclTreeSelectors.treenode_getData() ) // ACL Observable
         this.currentSelectedNode$ = this.store.select( AclUISelectors.treenodes_get_currentSelectedNode )
         this.availableServices$ = this.store.select( RolesSelectors.role_get_availableServices )
@@ -74,12 +75,21 @@ export class AdminAclSandboxService extends AdminAclSandboxInterface {
     }
 
     /**
-     * Load ACL's data
+     * Load backend data
+     * 
+     * @param route 
+     * @param state 
      */
-    init() {
-        this.store.dispatch( new RolesStateActions.Load_All() )
+    resolve( route, state ): Promise<any> {
+        return Promise.all( this.init() )
+    }
 
-        this.rolesService.find()
+    /**
+     * Load roles
+     */
+    private initRoles(): Promise<any> {
+        this.store.dispatch( new RolesStateActions.Load_All() )
+        return this.rolesService.find()
             .then( ( results ) => {
                 this.store.dispatch( new RolesStateActions.Load_All_Success( results ) )
             } )
@@ -87,23 +97,27 @@ export class AdminAclSandboxService extends AdminAclSandboxInterface {
                 this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, err[ 'name' ], ApplicationNotificationType.ERROR ) ) )
                 this.store.dispatch( new RolesStateActions.Load_All_Error( err ) )
             } )
-
+    }
+    /**
+     * Load backend available services
+     */
+    private initServices(): Promise<any> {
         this.store.dispatch( new Services_Load_All() )
-        this.backendServices.find()
+        return this.backendServices.find()
             .then( ( results ) => {
                 this.store.dispatch( new Services_Load_All_Success( results ) )
             } )
             .catch( ( err ) => {
                 this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, 'LoadRolesError', ApplicationNotificationType.ERROR ) ) )
             } )
+    }
 
-        /**
-         * look for ACL lock for user
-         */
-
-        // By default, no lock is acquired
+    /**
+     * Init ACL/Roles data lock state
+     */
+    private initLock(): Promise<any> {
         this.store.dispatch( [ new ApplicationLocksActions.remove( { name: 'acl' } ), new AclUIActions.Resource_Lock() ] )
-        this.resourcesLocksService.list( false )
+        return this.resourcesLocksService.list( false )
             .then( locked_resources => {
                 // Search for existing "acl" lock
                 Object.keys( locked_resources ).forEach( ( resource_id ) => {
@@ -122,6 +136,14 @@ export class AdminAclSandboxService extends AdminAclSandboxInterface {
             .catch( err => {
                 this.store.dispatch( new AclUIActions.Resource_Lock_Error( err ) )
             } )
+    }
+    /**
+     * Load ACL's data
+     */
+    protected init(): Promise<any>[] {
+        let promises: Promise<any>[] = []
+        promises.push( this.initRoles(), this.initServices(), this.initLock() )
+        return promises
     }
 
     /**
