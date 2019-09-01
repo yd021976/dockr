@@ -11,18 +11,15 @@ import { AppLoggerServiceToken } from "../../../shared/services/logger/app-logge
 
 @Injectable( { providedIn: 'root' } )
 export class AuthSandbox extends AuthSandboxInterface {
-    protected readonly loggerName: string = "AuthSandbox";
+    protected readonly logger_name: string = "AuthSandbox";
 
     @Select( ApplicationState.authError ) public authError$: Observable<string>
 
-    constructor(
-        store: Store,
-        @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerServiceInterface,
-        protected authService: AuthService
-    ) {
-        super( store, loggerService, authService )
-        this.loggerService.createLogger( this.loggerName )
+    constructor() {
+        super()
+        this.loggerService.createLogger( this.logger_name )
     }
+
 
     public Login( credentials?: loginCredentials ): Promise<boolean> {
         return new Promise<boolean>( ( resolve, reject ) => {
@@ -30,7 +27,7 @@ export class AuthSandbox extends AuthSandboxInterface {
         } );
     }
     private doLogin( credentials: loginCredentials ) {
-        this.loggerService.debug( this.loggerName, { message: 'login()', otherParams: [ 'START', credentials ] } );
+        this.loggerService.debug( this.logger_name, { message: 'login()', otherParams: [ 'START', credentials ] } );
         this.store.dispatch( new User_Action_Login() );
 
         // We must logout current user before authenticate again (FeathersJS can't auth if a JWT exist)
@@ -38,28 +35,28 @@ export class AuthSandbox extends AuthSandboxInterface {
             return this.authService.authenticate( credentials )
                 .then( ( user: UserModelBase ) => {
                     this.store.dispatch( new User_Action_Login_Success( user ) )
-                    this.loggerService.debug( this.loggerName, { message: 'login()', otherParams: [ 'END', 'OK', user ] } );
+                    this.loggerService.debug( this.logger_name, { message: 'login()', otherParams: [ 'END', 'OK', user ] } );
                 } )
                 .catch( ( error ) => {
                     this.store.dispatch( new User_Action_Login_Error( error.message ) );
-                    this.loggerService.debug( this.loggerName, { message: 'login()', otherParams: [ 'END', 'ERROR', error ] } );
+                    this.loggerService.debug( this.logger_name, { message: 'login()', otherParams: [ 'END', 'ERROR', error ] } );
                     throw error;
                 } )
         } )
     }
     public logout(): Promise<void> {
-        this.loggerService.debug( this.loggerName, { message: 'logout()', otherParams: [ 'START' ] } );
+        this.loggerService.debug( this.logger_name, { message: 'logout()', otherParams: [ 'START' ] } );
         return this.authService.logout()
             .then( () => {
-                this.loggerService.debug( this.loggerName, { message: 'logout()', otherParams: [ 'END', 'OK' ] } );
+                this.loggerService.debug( this.logger_name, { message: 'logout()', otherParams: [ 'END', 'OK' ] } );
                 this.store.dispatch( new User_Action_Logout_Success() )
             } )
             .catch( ( error ) => {
-                this.loggerService.debug( this.loggerName, { message: 'logout()', otherParams: [ 'END', 'ERROR', error ] } );
+                this.loggerService.debug( this.logger_name, { message: 'logout()', otherParams: [ 'END', 'ERROR', error ] } );
                 this.store.dispatch( new User_Action_Logout_Error( error.message ) )
             } )
     }
 
-    
+
 
 }

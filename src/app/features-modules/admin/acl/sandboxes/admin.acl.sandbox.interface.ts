@@ -1,37 +1,33 @@
 import { BaseSandboxService } from '../../../../shared/sandboxes/base-sandbox.service';
-import { Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { AclTreeNode, FlatTreeNode } from '../../../../shared/models/treenode.model';
 import { AclServiceModel } from '../../../../shared/models/acl.services.model';
 import { RolesService } from 'src/app/shared/services/acl/roles/roles.service';
 import { BackendServicesService } from 'src/app/shared/services/acl/services/backend-services.service';
 import { ResourcesLocksService } from 'src/app/shared/services/resource_locks/resources.locks.service';
-import { AppLoggerServiceInterface } from 'src/app/shared/services/logger/app-logger/service/app-logger.service';
+import { ApplicationInjector } from 'src/app/shared/application.injector.class';
 
 /**
  * 
  */
 export abstract class AdminAclSandboxInterface extends BaseSandboxService {
     protected readonly logger_name: string = 'AdminAclSandbox'
+    public test: string = "admin sandbox"
     public acltreenodes$: Observable<AclTreeNode[]>
     public currentSelectedNode$: Observable<FlatTreeNode>
     public availableServices$: Observable<AclServiceModel[]>
     public isAclLocked$: Observable<boolean>
 
-    constructor(
-        protected store: Store,
-        protected loggerService: AppLoggerServiceInterface,
-        protected rolesService: RolesService,
-        protected backendServices: BackendServicesService,
-        protected resourcesLocksService: ResourcesLocksService ) {
-        super( store, loggerService )
+    protected rolesService: RolesService
+    protected backendServices: BackendServicesService
+    protected resourcesLocksService: ResourcesLocksService
+
+    constructor() {
+        super()
+        this.rolesService = ApplicationInjector.injector.get( RolesService )
+        this.backendServices = ApplicationInjector.injector.get( BackendServicesService )
+        this.resourcesLocksService = ApplicationInjector.injector.get( ResourcesLocksService )
     }
-
-    /**
-     *               Startup / Init
-     */
-    protected abstract init(): void
-
 
     /**
      * 

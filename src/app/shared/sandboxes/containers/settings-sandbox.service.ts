@@ -6,7 +6,11 @@ import { AppLoggerServiceToken } from "../../services/logger/app-logger/app-logg
 
 @Injectable( { providedIn: 'root' } )
 export class SettingsSandboxService extends BaseSandboxService {
-    constructor( store: Store, @Inject( AppLoggerServiceToken ) public logger: AppLoggerService ) {
-        super( store, logger );
+    constructor() {
+        super()
+    }
+
+    resolve() {
+        return true
     }
 }

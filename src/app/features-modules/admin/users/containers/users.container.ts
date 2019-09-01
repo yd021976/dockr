@@ -25,15 +25,13 @@ export class UsersContainer implements OnInit {
    * @param sandbox 
    * @param dialogService 
    */
-  constructor( @Inject(AdminUsersSandboxProviderToken) public sandbox: AdminUsersSandboxInterface, private dialogService: MatDialog ) {
+  constructor( @Inject( AdminUsersSandboxProviderToken ) public sandbox: AdminUsersSandboxInterface, private dialogService: MatDialog ) {
     this.users$ = this.sandbox.users$
     this.selected_user$ = this.sandbox.selected_user$
     this.available_roles$ = this.sandbox.available_roles$
   }
 
-  ngOnInit() {
-    this.sandbox.init()
-  }
+  ngOnInit() { }
 
   /**
    * select a user

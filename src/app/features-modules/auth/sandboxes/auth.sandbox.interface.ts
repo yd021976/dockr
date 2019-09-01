@@ -6,18 +6,27 @@ import { AppLoggerServiceToken } from '../../../shared/services/logger/app-logge
 import { loginCredentials } from '../../../shared/models/user.model';
 import { Inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { ApplicationInjector } from 'src/app/shared/application.injector.class';
 
 export abstract class AuthSandboxInterface extends BaseSandboxService {
+    protected authService: AuthService
     public authError$: Observable<string>
-    
-    constructor(
-        protected store: Store,
-        @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerServiceInterface,
-        protected authService: AuthService
-    ) {
-        super( store, loggerService )
+
+    constructor() {
+        super()
+        this.authService = ApplicationInjector.injector.get(AuthService)
     }
 
+    /**
+     * Fake resolver
+     */
+    public resolve( route, state ) {
+        return true
+    }
+
+    /**
+     * 
+     */
     public abstract Login( credentials?: loginCredentials ): Promise<boolean>
     public abstract logout(): Promise<void>
 }

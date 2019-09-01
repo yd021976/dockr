@@ -48,6 +48,9 @@ import { AuthUsersAddUserDialog } from './users/components/dialogs/add.user/add.
 import { TreenodeRendererComponent } from './acl/components/node-treenode-renderer/treenode-renderer/treenode.renderer.component';
 import { AdminAclSandboxProviderToken } from './acl/sandboxes/admin.acl.sandbox.token';
 import { AdminUsersSandboxProviderToken } from './users/sandboxes/admin.users.sandbox.token';
+import { AdminSiteSectionSandboxProviderToken } from './site.sections/sandboxes/site.sections.sandbox.token';
+import { AdminSiteSectionSandboxService } from './site.sections/sandboxes/site.sections.sandbox.service';
+import { AdminSiteSectionsContainer } from './site.sections/containers/site.sections.container';
 
 const components = [
   AclContainer, UsersContainer, UsersComponent, AclComponent, ActionComponent, FieldComponent, RoleComponent, ServiceComponent,
@@ -57,7 +60,8 @@ const components = [
   NodeActionsComponent, DefaultActionComponent, RoleActionComponent, ServiceActionComponent, CrudActionComponent, FieldActionComponent,
   AddRoleDialogComponent, AddServiceDialogComponent, CandeactivateAclDialog,
   AuthUsersAddUserDialog,
-  TreenodeRendererComponent
+  TreenodeRendererComponent,
+  AdminSiteSectionsContainer
 ]
 
 @NgModule( {
@@ -93,10 +97,16 @@ const components = [
       multi: false,
       useClass: AdminUsersSandboxService
     },
+    {
+      provide: AdminSiteSectionSandboxProviderToken,
+      multi: false,
+      useClass: AdminSiteSectionSandboxService
+    },
 
     /**
      * Container required services
      */
+    
     TreeNodesService,
     ResourcesLocksService ]
 } )

@@ -7,9 +7,9 @@ import { AppLoggerAdapter } from './logger/app-logger-adapter';
 import { Level } from './service/app-logger-levels.class';
 
 
-export function loggerFactory(config: AppLoggerServiceConfig): AppLoggerServiceInterface {
+export function loggerFactory( config: AppLoggerServiceConfig ): AppLoggerServiceInterface {
   var instance: AppLoggerService = null;
-  instance = new AppLoggerService(config);
+  instance = new AppLoggerService( config );
   return instance;
 }
 
@@ -18,10 +18,10 @@ const defaultAppLoggerConfig: AppLoggerServiceConfig = {
   onlyLoggers: [], // output all loggers
   serviceConfig: {
     isDeveloppementMode: true,
-    logLevels: [Level.DATA]
+    logLevels: [ Level.DATA, Level.ERROR, Level.INFO, Level.WARN ]
   },
   defaultLoggerConfig: {
-    logLevels: [Level.DATA],
+    logLevels: [ Level.DATA, Level.ERROR, Level.INFO, Level.WARN ],
     isDeveloppementMode: true,
     color: "#000000",
     mute: false,
@@ -32,14 +32,14 @@ const defaultAppLoggerConfig: AppLoggerServiceConfig = {
 /**
  * 
  */
-@NgModule({
+@NgModule( {
   imports: [
     CommonModule
   ],
   declarations: []
-})
+} )
 export class AppLoggerModule {
-  public static forRoot(config?: AppLoggerServiceConfig): ModuleWithProviders {
+  public static forRoot( config?: AppLoggerServiceConfig ): ModuleWithProviders {
     return {
       ngModule: AppLoggerModule,
       providers: [
@@ -51,7 +51,7 @@ export class AppLoggerModule {
           provide: AppLoggerServiceToken,
           useFactory: loggerFactory,
           multi: false,
-          deps: [AppLoggerConfigToken]
+          deps: [ AppLoggerConfigToken ]
         }
       ],
     }

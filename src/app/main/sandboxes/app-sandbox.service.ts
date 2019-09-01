@@ -18,19 +18,24 @@ import { UserModelBase } from '../../shared/models/user.model';
 @Injectable()
 export class AppSandboxService extends BaseSandboxService {
     private static loginCount: number = 0
-    protected readonly loggerName: string = "AppSandboxService";
+    protected readonly logger_name: string = "AppSandboxService";
     @Select( AppNotificationsState.notifications$ ) private notifications: Observable<ApplicationNotification[]>
 
     constructor(
-        @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerService,
         protected authservice: AuthService,
         protected permissionsService: PermissionsService,
         protected roleService: RolesService,
-        protected store: Store
     ) {
-        super( store, loggerService )
-
+        super( )
     }
+
+    /**
+     * fake resolver
+     */
+    public resolve( route, state ) {
+        return true
+    }
+
     /**
      * State selectors
      */

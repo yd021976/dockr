@@ -3,10 +3,11 @@ import { BehaviorSubject } from "rxjs";
 
 import { AppLoggerServiceToken } from '../../services/logger/app-logger/app-logger-token';
 import { AppLoggerService } from "../logger/app-logger/service/app-logger.service";
-import { FeathersjsBackendService } from "../backend_API_Endpoints/socketio/backend-feathers.service";
-import { loginCredentials, UserBackendApiModel, UserModelBase } from "../../../shared/models/user.model";
+import { loginCredentials, UserModelBase } from "../../../shared/models/user.model";
 import { errorType, AppError } from '../../models/application.error.model';
 import { BackendStateChangeReasons } from "../../models/backend.connection.state.model";
+import { BackendServiceToken } from "../backend.api.endpoint/backend.service.token";
+import { BackendBaseServiceInterface } from "../backend.api.endpoint/interfaces/backend.base.service";
 
 export enum AuthenticateEventTypes {
     NOEVENT,
@@ -29,7 +30,7 @@ export class AuthService {
 
     constructor(
         @Inject( AppLoggerServiceToken ) protected logger: AppLoggerService,
-        protected feathersBackend: FeathersjsBackendService) {
+        @Inject( BackendServiceToken ) protected feathersBackend: BackendBaseServiceInterface ) {
 
         this.user$ = new BehaviorSubject<AuthenticateEvent>( { user: null, event: AuthenticateEventTypes.NOEVENT } );
         this.logger.createLogger( this.loggerName );

@@ -1,18 +1,17 @@
-import { BehaviorSubject } from 'rxjs';
 import * as feathers from '@feathersjs/feathers';
 import * as feathersAuthenticate from '@feathersjs/authentication-client';
 import * as feathersSocket from '@feathersjs/socketio-client';
-import { Inject, Injectable, EventEmitter } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Optional } from '@angular/core';
 
 
-import { BackendSocketioService } from './backend-socketio.service';
-import { BackendStateChangeReasons } from '../../../models/backend.connection.state.model';
-import { BackendConfigToken } from '../backend-config.token';
-import { BackendConfig } from '../../../models/backend.config.model';
-import { loginCredentials } from '../../../models/user.model';
-import { AppLoggerServiceToken } from '../../logger/app-logger/app-logger-token';
-import { AppLoggerService } from '../../logger/app-logger/service/app-logger.service';
+import { BackendSocketioServiceInterface } from '../../../implementations/socketio/backend.socketio.interface.service';
+import { BackendStateChangeReasons } from '../../../../../models/backend.connection.state.model';
+import { BackendConfigToken } from '../../../interfaces/backend.config.token';
+import { BackendConfig } from '../../../../../models/backend.config.model';
+import { loginCredentials } from '../../../../../models/user.model';
+import { AppLoggerServiceToken } from '../../../../logger/app-logger/app-logger-token';
+import { AppLoggerService } from '../../../../logger/app-logger/service/app-logger.service';
 
 @Injectable( {
   providedIn: 'root'
@@ -20,7 +19,7 @@ import { AppLoggerService } from '../../logger/app-logger/service/app-logger.ser
 /**
  * IMPORTANT: Current/last logged in user is a property sets in "feathers" object
  */
-export class FeathersjsBackendService extends BackendSocketioService {
+export class FeathersjsBackendService extends BackendSocketioServiceInterface {
   private readonly loggerName: string = "FeathersjsBackendService";
 
   private feathers: feathers.Application = null;

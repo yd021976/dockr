@@ -7,7 +7,6 @@ import { ComponentsModule } from '../../components/components.module';
 import { LayoutContainer } from './layout/layout.container';
 import { Layout2Container } from './layout2/layout2.container';
 import { LayoutContainerSandboxService } from './sandboxes/layout.container.sandbox.service';
-import { FeathersjsBackendService } from '../../services/backend_API_Endpoints/socketio/backend-feathers.service';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { LayoutContainerSandboxProviderToken } from './sandboxes/layout.container.sandbox.token';
 
@@ -25,7 +24,6 @@ export const components = [
         RouterModule.forRoot( [] )
     ],
     providers: [
-        FeathersjsBackendService,
         {
             provide: LayoutContainerSandboxProviderToken,
             multi: false,

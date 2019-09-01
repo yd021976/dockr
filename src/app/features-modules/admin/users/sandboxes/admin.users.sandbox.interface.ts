@@ -8,29 +8,24 @@ import { AppLoggerServiceInterface } from 'src/app/shared/services/logger/app-lo
 import { UserModelBase } from 'src/app/shared/models/user.model';
 import { AclRoleModel } from 'src/app/shared/models/acl.role.model';
 import { UsersService } from 'src/app/shared/services/users.service';
+import { ApplicationInjector } from 'src/app/shared/application.injector.class';
 
 /**
  * 
  */
 export abstract class AdminUsersSandboxInterface extends BaseSandboxService {
     protected readonly logger_name: string = 'AdminUsersSandbox'
+    public users_service: UsersService
+    protected roles_service: RolesService
     public users$: Observable<UserModelBase[]>
     public selected_user$: Observable<UserModelBase>
     public available_roles$: Observable<AclRoleModel[]>
 
-    constructor(
-        protected store: Store,
-        protected loggerService: AppLoggerServiceInterface,
-        public users_service: UsersService,
-        protected roles_service: RolesService ) {
-        super( store, loggerService )
+    constructor() {
+        super()
+        this.users_service = ApplicationInjector.injector.get( UsersService )
+        this.roles_service = ApplicationInjector.injector.get( RolesService )
     }
-
-    /**
-     *               Startup / Init
-     */
-    public abstract init(): void
-
 
     /**
      * 

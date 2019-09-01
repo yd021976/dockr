@@ -1,7 +1,7 @@
-import { AppLoggerService } from '../../logger/app-logger/service/app-logger.service';
+import { AppLoggerService } from '../../../logger/app-logger/service/app-logger.service';
 import { fakeAsync, async, tick } from '@angular/core/testing';
 import { mock, instance, when, deepEqual, verify } from 'ts-mockito';
-import { FeathersjsBackendService } from './backend-feathers.service';
+import { FeathersjsBackendService } from '../../providers/feathers/socket.io/feathers.service';
 import { BackendConfig } from 'src/app/shared/models/backend.config.model';
 import { Server, SocketIO } from 'mock-socket/dist/mock-socket';
 

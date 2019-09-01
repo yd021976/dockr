@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
 import { NgxsModule } from '@ngxs/store';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { NgxPermissionsModule } from 'ngx-permissions';
@@ -29,7 +29,10 @@ import { AuthService } from '../shared/services/auth/auth.service';
 import { PermissionsService } from '../shared/services/acl/permissions/permissions.service';
 import { AclEntitiesState } from '../shared/store/states/acl/entities.state/acl2.entities.state';
 import { ApplicationLocksState } from '../shared/store/states/locks/application.locks.state';
-
+import { ApplicationInjector } from '../shared/application.injector.class'
+import { RolesService } from '../shared/services/acl/roles/roles.service';
+import { FeathersjsBackendService } from '../shared/services/backend.api.endpoint/providers/feathers/socket.io/feathers.service';
+import { BackendServiceToken } from '../shared/services/backend.api.endpoint/backend.service.token';
 /**
  * Factory used by this module token APP_INITIALIZER -> Auth user with local token if one exists and is valid 
  * 
@@ -37,6 +40,10 @@ import { ApplicationLocksState } from '../shared/store/states/locks/application.
  */
 export function authUser( appsandbox: AppSandboxService ) {
   return () => Promise.resolve( appsandbox.startUpLogin() )
+}
+
+export function initAppInjector( injector: Injector ) {
+  ApplicationInjector.injector = injector
 }
 
 @NgModule( {
@@ -73,10 +80,32 @@ export function authUser( appsandbox: AppSandboxService ) {
 
   ],
   providers: [
-    AppSandboxService, AuthService, PermissionsService,
+    PermissionsService,
+    AuthService,
+    RolesService,
+    /**
+     * Backend service
+     */
+    {
+      provide: BackendServiceToken,
+      useClass: FeathersjsBackendService,
+      multi: false
+    },
+    {
+      provide: 'AppInjector',
+      multi: false,
+      useFactory: initAppInjector,
+      deps: [ Injector ]
+    },
+    {
+      provide: AppSandboxService,
+      multi: false,
+      useClass: AppSandboxService,
+      deps: [ AuthService, PermissionsService, RolesService, 'AppInjector' ]
+    },
     // Auth user at startup if a token exists and is valid (not expired)
     {
-      provide: APP_INITIALIZER, useFactory: authUser, deps: [ AppSandboxService, AuthService ], multi: true
+      provide: APP_INITIALIZER, useFactory: authUser, deps: [ AppSandboxService ], multi: true
     }
   ],
   exports: [],

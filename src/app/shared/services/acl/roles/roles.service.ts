@@ -1,19 +1,20 @@
 import * as feathers from '@feathersjs/feathers';
 import { Injectable, Inject } from "@angular/core";
 
-import { FeathersjsBackendService } from "../../backend_API_Endpoints/socketio/backend-feathers.service";
 import { AppError, errorType } from '../../../models/application.error.model';
 import { AppLoggerService } from '../../logger/app-logger/service/app-logger.service';
 import { AppLoggerServiceToken } from '../../logger/app-logger/app-logger-token';
 import * as DATA from './roles.data';
 import { AclRoleEntities, AclRoleModel } from 'src/app/shared/models/acl.role.model';
+import { BackendServiceToken } from '../../backend.api.endpoint/backend.service.token';
+import { BackendBaseServiceInterface } from '../../backend.api.endpoint/interfaces/backend.base.service';
 
 @Injectable( { providedIn: 'root' } )
 export class RolesService {
-    private readonly loggerName: string = "RolesService";
+    protected readonly loggerName: string = "RolesService";
     protected service: feathers.Service<any>;
 
-    constructor( protected backendApiService: FeathersjsBackendService, @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerService ) {
+    constructor( @Inject(BackendServiceToken) protected backendApiService: BackendBaseServiceInterface, @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerService ) {
         this.loggerService.createLogger( this.loggerName );
         this.service = this.backendApiService.service( 'roles' );
     }

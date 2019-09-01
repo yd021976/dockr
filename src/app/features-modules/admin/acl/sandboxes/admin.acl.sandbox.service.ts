@@ -29,23 +29,18 @@ import { AclTreeSelectors } from '../../../../shared/store/states/acl/selectors/
 import { AclUISelectors } from "../../../../shared/store/states/acl/selectors/acl.ui.selectors";
 import { RolesSelectors } from "../../../../shared/store/states/acl/selectors/roles.selectors";
 import { AdminAclSandboxInterface } from "./admin.acl.sandbox.interface";
-import { Resolve } from "@angular/router";
 
 @Injectable( { providedIn: 'root' } )
-export class AdminAclSandboxService extends AdminAclSandboxInterface implements Resolve<any> {
+export class AdminAclSandboxService extends AdminAclSandboxInterface {
     public acltreenodes$: Observable<AclTreeNode[]>
     public currentSelectedNode$: Observable<FlatTreeNode>
     public availableServices$: Observable<AclServiceModel[]>
     public isAclLocked$: Observable<boolean>
 
-    constructor(
-        store: Store,
-        @Inject( AppLoggerServiceToken ) public logger: AppLoggerService,
-        protected rolesService: RolesService,
-        protected backendServices: BackendServicesService,
-        protected resourcesLocksService: ResourcesLocksService ) {
+    constructor() {
 
-        super( store, logger, rolesService, backendServices, resourcesLocksService )
+        super()
+        this.debug( { message: 'constructor called', otherParams: [] } )
 
         this.acltreenodes$ = this.store.select( AclTreeSelectors.treenode_getData() ) // ACL Observable
         this.currentSelectedNode$ = this.store.select( AclUISelectors.treenodes_get_currentSelectedNode )
@@ -75,13 +70,15 @@ export class AdminAclSandboxService extends AdminAclSandboxInterface implements 
     }
 
     /**
-     * Load backend data
+     * Ropute Resolver : Load backend data
      * 
      * @param route 
      * @param state 
      */
     resolve( route, state ): Promise<any> {
-        return Promise.all( this.init() )
+        let promises: Promise<any>[] = []
+        promises.push( this.initRoles(), this.initServices(), this.initLock() )
+        return Promise.all( promises )
     }
 
     /**
@@ -136,14 +133,6 @@ export class AdminAclSandboxService extends AdminAclSandboxInterface implements 
             .catch( err => {
                 this.store.dispatch( new AclUIActions.Resource_Lock_Error( err ) )
             } )
-    }
-    /**
-     * Load ACL's data
-     */
-    protected init(): Promise<any>[] {
-        let promises: Promise<any>[] = []
-        promises.push( this.initRoles(), this.initServices(), this.initLock() )
-        return promises
     }
 
     /**

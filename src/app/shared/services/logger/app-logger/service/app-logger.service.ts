@@ -9,7 +9,7 @@ import { AppLoggerAdapterBase } from './app-logger-adapter-base.class';
 
 export type LoggerMessage = { message: string, otherParams: any[] }
 export interface AppLoggerServiceInterface {
-  createLogger( name: string, loggerConfig?: AppLoggerConfig , loggerAdapter?: any ): void
+  createLogger( name: string, loggerConfig?: AppLoggerConfig, loggerAdapter?: any ): void
   debug( adapterInstanceName: string, data: LoggerMessage ): void
   info( adapterInstanceName: string, data: LoggerMessage ): void
   warn( adapterInstanceName: string, data: LoggerMessage ): void
@@ -53,10 +53,12 @@ export class AppLoggerService<T extends AppLoggerAdapterBase = AppLoggerAdapter>
         loggerConfig.logLevels,
         loggerConfig.mute || false,
         loggerConfig.fixedWidth || 0,
-        loggerConfig || { isDeveloppementMode: false, logLevels: [ Level.DATA ], color: "#000000", fixedWidth: 0, mute: false } );
+        loggerConfig || { isDeveloppementMode: false, logLevels: [ Level.DATA ], color: "#000000", fixedWidth: 0, mute: false } )
+
+      this.info( null, { message: 'New Logger instance created', otherParams: [ name ] } )
     }
     else {
-      this.warn( null, {
+      this.debug( null, {
         message: 'Logger already exists. No new instance is created',
         otherParams: [ name ]
       } );

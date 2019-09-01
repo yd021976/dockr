@@ -9,15 +9,12 @@ import { DashboardSandboxInterface } from './dashboard.sandbox.interface';
 
 @Injectable()
 export class DashboardSandbox extends DashboardSandboxInterface {
-    
 
-    constructor(
-        store: Store,
-        @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerService,
-        protected permissionService: PermissionsService ) {
 
-        super( store, loggerService, permissionService )
-        this.loggerService.createLogger( this.loggerName )
+    constructor() {
+
+        super()
+        this.loggerService.createLogger( this.logger_name )
     }
 
     /**

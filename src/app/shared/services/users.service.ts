@@ -1,16 +1,17 @@
 import { Injectable, Inject } from "@angular/core";
 import * as feathers from '@feathersjs/feathers';
-import { FeathersjsBackendService } from "./backend_API_Endpoints/socketio/backend-feathers.service";
 import { AppLoggerServiceToken } from "./logger/app-logger/app-logger-token";
 import { AppLoggerService } from "./logger/app-logger/service/app-logger.service";
 import { UserModelBase, UserBackendApiModel } from "../models/user.model";
+import { BackendServiceToken } from "./backend.api.endpoint/backend.service.token";
+import { BackendBaseServiceInterface } from "./backend.api.endpoint/interfaces/backend.base.service";
 
 @Injectable( { providedIn: 'root' } )
 export class UsersService {
     private readonly loggerName: string = "UsersService";
     protected service: feathers.Service<any>;
 
-    constructor( protected backendApiService: FeathersjsBackendService, @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerService ) {
+    constructor(@Inject(BackendServiceToken) protected backendApiService: BackendBaseServiceInterface, @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerService ) {
         this.loggerService.createLogger( this.loggerName );
         this.service = this.backendApiService.service( 'users' );
     }
