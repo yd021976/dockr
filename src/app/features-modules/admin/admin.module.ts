@@ -51,6 +51,8 @@ import { AdminUsersSandboxProviderToken } from './users/sandboxes/admin.users.sa
 import { AdminSiteSectionSandboxProviderToken } from './site.sections/sandboxes/site.sections.sandbox.token';
 import { AdminSiteSectionSandboxService } from './site.sections/sandboxes/site.sections.sandbox.service';
 import { AdminSiteSectionsContainer } from './site.sections/containers/site.sections.container';
+import { siteSectionsServiceToken } from 'src/app/shared/services/site.sections/site.sections.token';
+import { SiteSectionsService } from 'src/app/shared/services/site.sections/site.sections.service';
 
 const components = [
   AclContainer, UsersContainer, UsersComponent, AclComponent, ActionComponent, FieldComponent, RoleComponent, ServiceComponent,
@@ -84,6 +86,11 @@ const components = [
   declarations: components,
   entryComponents: [ AddRoleDialogComponent, AddServiceDialogComponent, CandeactivateAclDialog, AuthUsersAddUserDialog ],
   providers: [
+    {
+      provide: siteSectionsServiceToken,
+      useClass: SiteSectionsService,
+      multi: false
+    },
     /**
      * Container Sandboxes providers
      */
@@ -106,7 +113,7 @@ const components = [
     /**
      * Container required services
      */
-    
+
     TreeNodesService,
     ResourcesLocksService ]
 } )

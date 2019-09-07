@@ -12,7 +12,7 @@ import { AdminSiteSectionSandboxProviderToken } from './site.sections/sandboxes/
 
 const routes: ApplicationRouteInterface[] = [
   {
-    path: 'admin', data: { isMenu: true, title: 'admin', icon: 'fa-wrench' }, canActivate: [ AclCanActivate ], children: [
+    path: 'admin', canActivate: [ AclCanActivate ], data: { isMenu: true, title: 'admin', icon: 'fa-wrench', section: 'admin' }, children: [
       {
         path: 'acl',
         component: AclContainer,
@@ -33,7 +33,7 @@ const routes: ApplicationRouteInterface[] = [
         component: AdminSiteSectionsContainer,
         canActivate: [ AclCanActivate ],
         resolve: { site_sections: AdminSiteSectionSandboxProviderToken },
-        data: { isMenu: true, link: 'admin/site-sections', title: 'Manage site section permissions' }
+        data: { isMenu: true, link: 'admin/site-sections', title: 'Manage site section permissions', section: 'site-sections' }
       },
     ]
   }

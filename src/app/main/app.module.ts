@@ -1,38 +1,30 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
-import { NgxsModule } from '@ngxs/store';
-import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
+import { NgModule, APP_INITIALIZER, Injector, InjectionToken } from '@angular/core';
 import { NgxPermissionsModule } from 'ngx-permissions';
 
 
 import { AppContainer } from './containers/app.container';
-import { ApplicationState } from '../shared/store/states/application.state';
 import { AuthModule } from '../features-modules/auth/auth.module';
 import { ComponentsModule } from '../shared/components/components.module';
 import { LayoutsModule } from '../shared/containers/layouts/layouts.module';
 import { HomeModule } from '../features-modules/home/home.module';
 import { AppSandboxService } from './sandboxes/app-sandbox.service';
-import { UserState } from '../shared/store/states/user.state';
-import { TemplatesState } from '../shared/store/states/templates.state';
 import { SettingsModule } from '../features-modules/settings/settings.module';
 import { AppRoutingModule } from './/app-routing.module';
 import { AppLoggerModule } from '../shared/services/logger/app-logger/app-logger.module';
 import { AdminModule } from '../features-modules/admin/admin.module';
-import { ServicesState } from '../shared/store/states/services.state';
-import { AclUIState } from '../shared/store/states/acl/ui.state/acl2.state';
 import { SnackBarComponent } from '../shared/components/snackbar/snack-bar.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { AppNotificationsState } from '../shared/store/states/application.notifications.state';
-import { UsersState } from '../shared/store/states/users.state';
 import { AuthService } from '../shared/services/auth/auth.service';
 import { PermissionsService } from '../shared/services/acl/permissions/permissions.service';
-import { AclEntitiesState } from '../shared/store/states/acl/entities.state/acl2.entities.state';
-import { ApplicationLocksState } from '../shared/store/states/locks/application.locks.state';
 import { ApplicationInjector } from '../shared/application.injector.class'
 import { RolesService } from '../shared/services/acl/roles/roles.service';
 import { FeathersjsBackendService } from '../shared/services/backend.api.endpoint/providers/feathers/socket.io/feathers.service';
 import { BackendServiceToken } from '../shared/services/backend.api.endpoint/backend.service.token';
+import { ApplicationStoreModule } from '../shared/store/store.module';
+
+export const AppInjectorToken = new InjectionToken<( injector: Injector ) => {}>( 'ApplicationInjectorSingleton' )
 /**
  * Factory used by this module token APP_INITIALIZER -> Auth user with local token if one exists and is valid 
  * 
@@ -52,58 +44,71 @@ export function initAppInjector( injector: Injector ) {
     SnackBarComponent
   ],
   imports: [
-    AuthModule,
     BrowserModule,
     BrowserAnimationsModule,
     ComponentsModule,
-    LayoutsModule,
-    HomeModule,
     AppLoggerModule.forRoot(),
     MatSnackBarModule,
-    NgxsModule.forRoot( [
-      ApplicationState,
-      UserState,
-      UsersState,
-      TemplatesState,
-      AclUIState,
-      AclEntitiesState,
-      ApplicationLocksState,
-      ServicesState,
-      AppNotificationsState
-    ] ),
-    NgxPermissionsModule.forRoot(),
-    NgxsReduxDevtoolsPluginModule.forRoot(),
+    ApplicationStoreModule,
+    // NgxPermissionsModule.forRoot(),
+
+
+    /**
+     * Application Layour module
+     */
+    LayoutsModule,
+
+    /**
+     * Application modules
+     */
+    AuthModule,
+    HomeModule,
     SettingsModule,
-    // AdminModule,
     AdminModule,
     AppRoutingModule,
 
   ],
   providers: [
-    PermissionsService,
-    AuthService,
-    RolesService,
     /**
-     * Backend service
-     */
+    * Whole application Backend API service
+    */
     {
       provide: BackendServiceToken,
       useClass: FeathersjsBackendService,
       multi: false
     },
+
+    /**
+     * Required services at app startup/init 
+     */
+    PermissionsService,
+    AuthService,
+    RolesService,
+
+
+    /**
+     * For classes inheritance convenience, bring a global Injector singleton (i.e Can use super() in subclass instead of super(service1, service2 ....) )
+     */
     {
-      provide: 'AppInjector',
+      provide: AppInjectorToken,
       multi: false,
       useFactory: initAppInjector,
       deps: [ Injector ]
     },
+
+    /**
+     * Main app sandbox
+     */
     {
       provide: AppSandboxService,
       multi: false,
       useClass: AppSandboxService,
-      deps: [ AuthService, PermissionsService, RolesService, 'AppInjector' ]
+      deps: [ AuthService, PermissionsService, RolesService, AppInjectorToken ]
     },
-    // Auth user at startup if a token exists and is valid (not expired)
+
+    /**
+     *  Auth user at startup if a token exists and is valid (not expired)
+     */
     {
       provide: APP_INITIALIZER, useFactory: authUser, deps: [ AppSandboxService ], multi: true
     }
