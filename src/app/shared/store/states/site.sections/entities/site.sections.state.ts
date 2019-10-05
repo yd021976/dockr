@@ -1,26 +1,22 @@
-import { State, Action, StateContext } from "@ngxs/store";
-import { SiteSectionStateModel } from "../../../models/site.sections.model";
-import { SiteSectionsActions } from "../../actions/site.sections.actions";
+import { State, Action, StateContext, Actions, ofActionDispatched, ofActionSuccessful, ofActionCompleted } from "@ngxs/store";
+import { SiteSectionStateModel } from "../../../../models/site.sections.entities.model";
+import { SiteSectionsActions } from "../../../actions/site.sections.actions";
 import { SiteSectionsNormalizr } from "./site.sections.normlizr";
+import { SiteSectionsUiActions } from "../../../actions/site.sections.ui.actions";
 
 export const default_siteSection_state: SiteSectionStateModel = {
-    isLoading: false,
-    isError: false,
-    error: '',
     section_entities: {},
-    children_entities: {},
-    selection: {
-        sectionModel: null,
-        sectionId: null
-    }
+    children_entities: {}
 }
 
 @State<SiteSectionStateModel>( {
-    name: 'siteSections',
+    name: 'site_sections',
     defaults: default_siteSection_state
 
 } )
 export class SiteSectionsState {
+    constructor( private action$: Actions ) { }
+
     static readonly normalizr: SiteSectionsNormalizr = new SiteSectionsNormalizr()
 
     /**
@@ -28,11 +24,7 @@ export class SiteSectionsState {
      */
     @Action( SiteSectionsActions.Load_All )
     load_all( ctx: StateContext<SiteSectionStateModel>, action: SiteSectionsActions.Load_All ) {
-        ctx.patchState( {
-            isLoading: true,
-            isError: false,
-            error: ''
-        } )
+        ctx.dispatch( new SiteSectionsUiActions.LoadStart() )
     }
 
     /**
@@ -46,19 +38,13 @@ export class SiteSectionsState {
                 throw new Error( 'State error at normalize data' )
             }
             ctx.setState( {
-                isLoading: false,
-                isError: false,
-                error: '',
-                section_entities: results[ 'sections' ],
-                children_entities: results[ 'children' ],
-                selection: {
-                    sectionId: null,
-                    sectionModel: null
-                }
+                section_entities: results.entities[ 'sections' ],
+                children_entities: results.entities[ 'children' ],
             } )
+            return ctx.dispatch( new SiteSectionsUiActions.LoadSuccess() )
         }
         catch ( err ) {
-            ctx.dispatch( new SiteSectionsActions.Load_All_Error( err.message ) )
+            return ctx.dispatch( new SiteSectionsActions.Load_All_Error( err.message ) )
         }
     }
 
@@ -68,16 +54,10 @@ export class SiteSectionsState {
     @Action( SiteSectionsActions.Load_All_Error )
     load_all_error( ctx: StateContext<SiteSectionStateModel>, action: SiteSectionsActions.Load_All_Error ) {
         ctx.patchState( {
-            isError: true,
-            error: action.error,
-            isLoading: false,
             section_entities: {},
             children_entities: {},
-            selection: {
-                sectionModel: null,
-                sectionId: null
-            }
         } )
+        return ctx.dispatch( new SiteSectionsUiActions.LoadError( action.error ) )
     }
 
     /**
@@ -87,11 +67,11 @@ export class SiteSectionsState {
     select( ctx: StateContext<SiteSectionStateModel>, action: SiteSectionsActions.Select ) {
         const state = ctx.getState()
         const section_model = SiteSectionsState.normalizr.denormalize( [ action.sectionId ], SiteSectionsState.normalizr.mainSchema, { sections: state.section_entities, children: state.section_entities } )
-        ctx.patchState( {
-            selection: {
-                sectionId: action.sectionId,
-                sectionModel: section_model[ 0 ]
-            }
-        } )
+
+
+        ctx.dispatch( new SiteSectionsUiActions.Select( {
+            sectionId: '',
+            sectionModel: section_model
+        } ) )
     }
 }

@@ -3,6 +3,8 @@ import { AclServicesEntities } from "./acl.services.model";
 import { AclServiceActionModelEntities } from "./acl.service.action.model";
 import { ServiceFieldEntities } from "./acl.service.field.model";
 import { FlatTreeNode } from "./treenode.model";
+import { BaseUIModel } from "./base.ui.model";
+
 
 /**
  * Roles entities
@@ -25,9 +27,6 @@ export class AclStateEntitiesModel {
 /**
  * State model for UI
  */
-export class AclStateUIModel {
-    isLoading: boolean
-    isError: boolean
-    error: string
+export class AclStateUIModel extends BaseUIModel {
     selectedNode: FlatTreeNode
 }

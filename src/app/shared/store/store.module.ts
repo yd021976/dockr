@@ -10,7 +10,8 @@ import { ApplicationLocksState } from "./states/locks/application.locks.state";
 import { ServicesState } from "./states/services.state";
 import { AppNotificationsState } from "./states/application.notifications.state";
 import { NgxsReduxDevtoolsPluginModule } from "@ngxs/devtools-plugin";
-import { SiteSectionsState } from "./states/site.sections/site.sections.state";
+import { SiteSectionsState } from "./states/site.sections/entities/site.sections.state";
+import { SiteSectionUIState } from "./states/site.sections/ui/site.sections.ui.state";
 
 @NgModule( {
     imports: [
@@ -24,7 +25,8 @@ import { SiteSectionsState } from "./states/site.sections/site.sections.state";
             ApplicationLocksState,
             ServicesState,
             AppNotificationsState,
-            SiteSectionsState
+            SiteSectionsState,
+            SiteSectionUIState
         ] ),
 
         NgxsReduxDevtoolsPluginModule.forRoot(),
