@@ -53,6 +53,8 @@ import { AdminSiteSectionSandboxService } from './site.sections/sandboxes/site.s
 import { AdminSiteSectionsContainer } from './site.sections/containers/site.sections.container';
 import { siteSectionsServiceToken } from 'src/app/shared/services/site.sections/site.sections.token';
 import { SiteSectionsService } from 'src/app/shared/services/site.sections/site.sections.service';
+import { SiteSectionsDatasource } from './site.sections/services/site.sections.datasource';
+import { SiteSectionsTreeComponent } from './site.sections/components/sections/site.sections.tree.component';
 
 const components = [
   AclContainer, UsersContainer, UsersComponent, AclComponent, ActionComponent, FieldComponent, RoleComponent, ServiceComponent,
@@ -63,7 +65,7 @@ const components = [
   AddRoleDialogComponent, AddServiceDialogComponent, CandeactivateAclDialog,
   AuthUsersAddUserDialog,
   TreenodeRendererComponent,
-  AdminSiteSectionsContainer
+  AdminSiteSectionsContainer, SiteSectionsTreeComponent
 ]
 
 @NgModule( {
@@ -109,7 +111,6 @@ const components = [
       multi: false,
       useClass: AdminSiteSectionSandboxService
     },
-
     /**
      * Container required services
      */
