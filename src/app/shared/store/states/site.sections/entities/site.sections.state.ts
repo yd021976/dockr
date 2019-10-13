@@ -62,6 +62,31 @@ export class SiteSectionsState {
 
     /**
      * 
+     * @param ctx 
+     * @param action 
+     */
+    @Action( SiteSectionsActions.Add_Section )
+    add_section( ctx: StateContext<SiteSectionStateModel>, action: SiteSectionsActions.Add_Section ) { }
+
+    /**
+     * 
+     * @param ctx 
+     * @param action 
+     */
+    @Action( SiteSectionsActions.Add_Section_Success )
+    add_section_success( ctx: StateContext<SiteSectionStateModel>, action: SiteSectionsActions.Add_Section_Success ) { }
+    
+    /**
+     * 
+     * @param ctx 
+     * @param action 
+     */
+    @Action( SiteSectionsActions.Add_Section_Error )
+    add_section_error( ctx: StateContext<SiteSectionStateModel>, action: SiteSectionsActions.Add_Section_Error ) { }
+
+
+    /**
+     * 
      */
     @Action( SiteSectionsActions.Select )
     select( ctx: StateContext<SiteSectionStateModel>, action: SiteSectionsActions.Select ) {
