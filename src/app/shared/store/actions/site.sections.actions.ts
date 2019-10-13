@@ -16,6 +16,37 @@ export namespace SiteSectionsActions {
         public constructor( public error: string ) { }
     }
 
+    export class Add_Section {
+        static readonly type = "[Site Sections] add section"
+        public constructor() { }
+
+    }
+    export class Add_Section_Success {
+        static readonly type = "[Site Sections] add section success"
+        public constructor() { }
+
+    }
+    export class Add_Section_Error {
+        static readonly type = "[Site Sections] add section error"
+        public constructor() { }
+
+    }
+    export class Remove_Section {
+        static readonly type = "[Site Sections] remove section"
+        public constructor() { }
+
+    }
+    export class Remove_Section_Success {
+        static readonly type = "[Site Sections] remove section success"
+        public constructor() { }
+
+    }
+    export class Remove_Section_Error {
+        static readonly type = "[Site Sections] remove section error"
+        public constructor() { }
+
+    }
+
     export class Select {
         static readonly type = "[Site Sections] Select"
         public constructor( public sectionId: string ) { }

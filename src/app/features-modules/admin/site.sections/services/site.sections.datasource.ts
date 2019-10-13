@@ -59,6 +59,11 @@ export class SiteSectionsDatasource {
 
     addNode( new_node: siteSectionNode, sibling_node: siteSectionNode ) {
         const node_index = this.data.indexOf( sibling_node )
+<<<<<<< HEAD
+=======
+
+        // If node doesn't exist in datasource, do nothing.
+>>>>>>> 8b081eeef28e2fdb9afc8a1baad72d04b41d1bf1
         if ( node_index == -1 ) return
 
         // find next sibling node
