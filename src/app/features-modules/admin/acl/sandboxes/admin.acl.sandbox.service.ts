@@ -63,7 +63,7 @@ export class AdminAclSandboxService extends AdminAclSandboxInterface {
     }
 
     /**
-     * Ropute Resolver : Load backend data
+     * Route Resolver : Load backend data
      * 
      * @param route 
      * @param state 

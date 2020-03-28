@@ -1,134 +1,117 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, merge, Subscriber } from 'rxjs';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { CollectionViewer, SelectionChange, DataSource } from '@angular/cdk/collections';
-import { map } from 'rxjs/operators';
+import { SiteSectionEntity, SiteSectionsEntities } from '../../../../shared/models/site.sections.entities.model'
+import { Injectable } from '@angular/core';
+import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
+import { Observable, Subscription, of as observableof } from 'rxjs';
 
-export class siteSectionNode {
-    constructor( public item: string, public level = 1, public expandable = false,
-        public isLoading = false ) { }
+export class siteSectionFlatNode {
+    constructor(public item: SiteSectionEntity = null, public level = 1, public expandable = false,
+        public isLoading = false) { }
 }
 
 
 /**
  * This class should be replaced by dynamic data from our app storage
  */
-export class siteSectionDatabase {
-    dataMap = new Map<string, string[]>( [
-        [ 'Fruits',
-            [ 'Apple', 'Orange', 'Banana' ]
-        ],
-        [ 'Vegetables',
-            [ 'Tomato', 'Potato', 'Onion' ]
-        ],
-        [ 'Apple',
-            [ 'Fuji', 'Macintosh' ]
-        ],
-        [ 'Onion',
-            [ 'Yellow', 'White', 'Purple' ]
-        ]
-    ] );
+@Injectable({ providedIn: 'root' })
+export class siteSectionDataSource {
+    public treeflattener: MatTreeFlattener<SiteSectionEntity, siteSectionFlatNode>
+    public treecontrol: FlatTreeControl<siteSectionFlatNode>
+    public treedatasource: MatTreeFlatDataSource<SiteSectionEntity, siteSectionFlatNode>
 
-    rootLevelNodes: string[] = [ 'Fruits', 'Vegetables' ];
-    
-    /** Initial data from database */
-    initialData(): siteSectionNode[] {
-        return this.rootLevelNodes.map( name => new siteSectionNode( name, 0, true ) )
+    /**
+     *  How to get node children, by default return no children
+     */
+    public getNodeChildren: (node: SiteSectionEntity) => Observable<SiteSectionEntity[]> | SiteSectionEntity[] = (node: SiteSectionEntity) => { return observableof([]) }
+
+    /**
+     * Manage mapping between Entity & Flat node
+     */
+    private flatToEntityMap: Map<siteSectionFlatNode, string> = new Map() // Map flat node object to entity ID
+    private EntityToFlatMap: Map<string, siteSectionFlatNode> = new Map() // Map entity ID to flat node object
+
+    private datasource$: Observable<SiteSectionsEntities>
+    private datasourceSubscription: Subscription = null
+
+    public set data$(source$: Observable<SiteSectionsEntities>) {
+        if (this.datasourceSubscription) this.datasourceSubscription.unsubscribe()
+        this.ResetMaps()
+
+        this.datasource$ = source$
+        this.datasource$.subscribe((data) => {
+            this.treedatasource.data = Object.keys(data).map((key) => data[key])
+        })
     }
-
-    getChildren( node: string ): string[] | undefined {
-        return this.dataMap.get( node )
-    }
-
-    isExpandable( node: string ): boolean {
-        return this.dataMap.has( node )
-    }
-}
-
-export class SiteSectionsDatasource {
-    dataChange = new BehaviorSubject<siteSectionNode[]>( [] )
-
-    constructor( private _treeControl: FlatTreeControl<siteSectionNode>,
-        private _database: siteSectionDatabase ) { }
-
-    get data(): siteSectionNode[] { return this.dataChange.value }
-    set data( value: siteSectionNode[] ) {
-        this._treeControl.dataNodes = value
-        this.dataChange.next( value )
-    }
-
-    addNode( new_node: siteSectionNode, sibling_node: siteSectionNode ) {
-        const node_index = this.data.indexOf( sibling_node )
-
-        // If node doesn't exist in datasource, do nothing.
-        if ( node_index == -1 ) return
-
-        // find next sibling node
-        let add_index = node_index + 1
-        for ( let i = node_index + 1; i < this.data.length; i++ ) {
-            // As soon we found next node with same level, store index to insert new node
-            if ( this.data[ i ].level == sibling_node.level ) {
-                add_index = i
-                break
-            }
-        }
-
-        this.data.splice( add_index, 0, new_node )
-        this.dataChange.next( this.data )
-    }
-
-    connect( collectionViewer: CollectionViewer ): Observable<siteSectionNode[]> {
-        this._treeControl.expansionModel.onChange.subscribe( change => {
-            if ( ( change as SelectionChange<siteSectionNode> ).added ||
-                ( change as SelectionChange<siteSectionNode> ).removed ) {
-                this.handleTreeControl( change as SelectionChange<siteSectionNode> );
-            }
-        } );
-
-        return merge( collectionViewer.viewChange, this.dataChange ).pipe(
-            map( ( merged ) => {
-                return this.data
-            } )
-        )
-    }
-
-    /** Handle expand/collapse behaviors */
-    handleTreeControl( change: SelectionChange<siteSectionNode> ) {
-        if ( change.added ) {
-            change.added.forEach( node => this.toggleNode( node, true ) )
-        }
-        if ( change.removed ) {
-            change.removed.slice().reverse().forEach( node => this.toggleNode( node, false ) )
-        }
+    public get data$(): Observable<SiteSectionsEntities> {
+        return this.datasource$
     }
 
     /**
-   * Toggle the node, remove from display list
-   */
-    toggleNode( node: siteSectionNode, expand: boolean ) {
-        const children = this._database.getChildren( node.item );
-        const index = this.data.indexOf( node );
-        if ( !children || index < 0 ) { // If no children, or cannot find the node, no op
-            return;
-        }
+     * 
+     * @param store Application state
+     */
+    constructor() {
+        this.treeflattener = new MatTreeFlattener<SiteSectionEntity, siteSectionFlatNode>(
+            (node: SiteSectionEntity, level: number) => this.flatEntity(node, level),
+            (node: siteSectionFlatNode) => node.level,
+            (node: siteSectionFlatNode) => node.expandable,
+            (node: SiteSectionEntity) => this.getNodeChildren(node)
+        )
+        this.treecontrol = new FlatTreeControl<siteSectionFlatNode>(this.getLevel, this.isExpandable)
+        this.treedatasource = new MatTreeFlatDataSource<SiteSectionEntity, siteSectionFlatNode>(this.treecontrol, this.treeflattener)
 
-        node.isLoading = true;
-
-        setTimeout( () => {
-            if ( expand ) {
-                const nodes = children.map( name =>
-                    new siteSectionNode( name, node.level + 1, this._database.isExpandable( name ) ) )
-                this.data.splice( index + 1, 0, ...nodes );
-            } else {
-                let count = 0
-                for ( let i = index + 1; i < this.data.length
-                    && this.data[ i ].level > node.level; i++ , count++ ) { }
-                this.data.splice( index + 1, count );
-            }
-
-            // notify the change
-            this.dataChange.next( this.data );
-            node.isLoading = false;
-        }, 1000 );
     }
+
+    /**
+     * Flat site section enity to flat node
+     */
+    private flatEntity(node: SiteSectionEntity, level: number) {
+        const existingNode = this.EntityToFlatMap.get(node.id)
+        const flatNode = existingNode ? existingNode : new siteSectionFlatNode()
+
+        // Update flat node data
+        flatNode.item = node
+        flatNode.level = level
+        flatNode.expandable = !!node.children
+
+        // Update maps
+        this.EntityToFlatMap.set(node.id, flatNode)
+        this.flatToEntityMap.set(flatNode, node.id)
+
+        // Return flattened node
+        return flatNode
+    }
+
+    /**
+     * Reset entity/flat node maps
+     */
+    private ResetMaps() {
+        this.EntityToFlatMap.clear()
+        this.flatToEntityMap.clear()
+    }
+
+    /**
+     * Does flat node has children ?
+     * 
+     * @returns boolean
+     */
+    hasChild = (_: number, node: siteSectionFlatNode): boolean => {
+        return node.item.children.length > 0
+    }
+
+    public getLevel = (node: siteSectionFlatNode) => node.level
+
+    /**
+     * Is flat node expandable ?
+     *  
+     * @param node 
+     */
+    public isExpandable(node: siteSectionFlatNode) {
+        return true
+    }
+
+    /**
+     * 
+     */
+    
 }

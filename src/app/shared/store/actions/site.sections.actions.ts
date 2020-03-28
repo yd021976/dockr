@@ -1,4 +1,4 @@
-import { SiteSectionModel, SiteSectionModels } from "../../models/site.sections.entities.model";
+import { SiteSectionModel, SiteSectionModels, SiteSectionEntity } from "../../models/site.sections.entities.model";
 
 export namespace SiteSectionsActions {
     export class Load_All {
@@ -8,12 +8,12 @@ export namespace SiteSectionsActions {
 
     export class Load_All_Success {
         static readonly type = "[Site Sections] load all success"
-        public constructor( public sections: SiteSectionModels ) { }
+        public constructor(public sections: SiteSectionModels) { }
     }
 
     export class Load_All_Error {
         static readonly type = "[Site Sections] load all error"
-        public constructor( public error: string ) { }
+        public constructor(public error: string) { }
     }
 
     export class Add_Section {
@@ -46,9 +46,20 @@ export namespace SiteSectionsActions {
         public constructor() { }
 
     }
-
+    export class Update_Section {
+        static readonly type = "[Site Sections] edit section"
+        public constructor(sectionEntity: SiteSectionEntity) { }
+    }
+    export class Update_Section_Success {
+        static readonly type = "[Site Sections] edit section success"
+        public constructor(public sectionEntity: SiteSectionEntity) { }
+    }
+    export class Update_Section_Error {
+        static readonly type = "[Site Sections] edit section error"
+        public constructor(public error: Error) { }
+    }
     export class Select {
         static readonly type = "[Site Sections] Select"
-        public constructor( public sectionId: string ) { }
+        public constructor(public sectionId: string) { }
     }
 }

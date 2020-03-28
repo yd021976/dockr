@@ -3,7 +3,7 @@ import { AclServicesEntities, AclServiceModel } from "./acl.services.model";
 /**
  * Base role model
  */
-interface BaseAclRoleModel {
+export interface BaseAclRoleModel {
     uid?: string // UUID for local storage
     _id: string;
     name: string;

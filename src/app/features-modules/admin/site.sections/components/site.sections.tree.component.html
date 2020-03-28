@@ -1,0 +1,16 @@
+<mat-tree [dataSource]="datasource" [treeControl]="treecontrol">
+    <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+        <button mat-icon-button disabled></button>
+        <div>{{node.item.description}}</div>
+    </mat-tree-node>
+    <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+        <button mat-icon-button [attr.aria-label]="'toggle ' + node.filename" matTreeNodeToggle>
+            <mat-icon class="fa-xs mat-icon-rtl-mirror"
+                fontIcon="{{treecontrol.isExpanded(node) ? 'fa-minus-circle' : 'fa-plus-circle'}}">
+            </mat-icon>
+        </button>
+        <div (click)="edit(node,this)">{{node.item.description}}</div>
+        <mat-progress-bar *ngIf="node.isLoading" mode="indeterminate" class="example-tree-progress-bar">
+        </mat-progress-bar>
+    </mat-tree-node>
+</mat-tree>

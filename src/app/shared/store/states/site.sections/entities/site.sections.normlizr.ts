@@ -6,28 +6,26 @@ export class SiteSectionsNormalizr {
 
     // define entities schemas
     mainSchema: Schema
-
     sectionSchema: Schema
-    sectionsSchema: Schema
-
-    childrenShema: Schema
+    childrenSchema: Schema
 
     constructor() {
-        if ( SiteSectionsNormalizr.instance ) return SiteSectionsNormalizr.instance
-        this.childrenShema = new schema.Entity( 'children', {} )
+        if (SiteSectionsNormalizr.instance) return SiteSectionsNormalizr.instance
 
-        this.sectionSchema = new schema.Entity( 'sections', {} )
-        this.sectionsSchema = new schema.Array( this.sectionSchema )
-        this.sectionSchema.define( { 'children': [ this.childrenShema ] } )
-        this.sectionSchema.define( { 'roles': this.sectionsSchema } )
+        // Define children entity
+        const childrenSchema = new schema.Entity('children')
+        const children = new schema.Array(childrenSchema)
+        childrenSchema.define({ 'children': children })
 
-        this.mainSchema = new schema.Array( this.sectionSchema )
+        // Define Section entity
+        const section = new schema.Entity('sections', {children})
+        this.mainSchema = new schema.Array(section)
         SiteSectionsNormalizr.instance = this
     }
-    public normalize( data, schema ) {
-        return normalize( data, schema )
+    public normalize(data, schema) {
+        return normalize(data, schema)
     }
-    public denormalize( input, schema, entities ) {
-        return denormalize( input, schema, entities )
+    public denormalize(input, schema, entities) {
+        return denormalize(input, schema, entities)
     }
 }

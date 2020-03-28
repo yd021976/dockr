@@ -21,7 +21,7 @@ export class SiteSectionModel {
  * Array/list of site section denormlized model
  */
 export class SiteSectionModels {
-    [ sectionId: string ]: SiteSectionModel
+    [sectionId: string]: SiteSectionModel
 }
 
 /**
@@ -29,15 +29,23 @@ export class SiteSectionModels {
  */
 export class SiteSectionEntity {
     id: string
+    description: string
     roles: string[]
     children: string[]
+
+    constructor(id: string, description: string, roles: Array<string> = [], children: Array<string> = []) {
+        this.id = id
+        this.description = description
+        this.roles = roles
+        this.children = children
+    }
 }
 
 /**
  * Array/list of Site section normalized entity
  */
 export class SiteSectionsEntities {
-    [ siteSectionId: string ]: SiteSectionEntity
+    [siteSectionId: string]: SiteSectionEntity
 }
 
 /**
