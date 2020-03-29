@@ -8,38 +8,37 @@ const default_state: SiteSectionUIStateModel = {
     isError: false,
     error: '', // Will log only latest error
     selection: {
-        sectionId: '',
-        sectionModel: null
+        treeviewNode : null
     }
 }
 
-@State<SiteSectionUIStateModel>( {
+@State<SiteSectionUIStateModel>({
     name: 'site_sections_ui',
     defaults: default_state
-} )
+})
 export class SiteSectionUIState {
     private running_actions_count: number = 0
-    
-    @Action( SiteSectionsUiActions.LoadStart )
-    load_start( ctx: StateContext<SiteSectionUIStateModel>, action: SiteSectionsUiActions.LoadStart ) {
+
+    @Action(SiteSectionsUiActions.LoadStart)
+    load_start(ctx: StateContext<SiteSectionUIStateModel>, action: SiteSectionsUiActions.LoadStart) {
         this.running_actions_count++
-        ctx.setState( SiteSectionsUiOperators.startLoading() )
+        ctx.setState(SiteSectionsUiOperators.startLoading())
     }
 
-    @Action( SiteSectionsUiActions.LoadSuccess )
-    load_success( ctx: StateContext<SiteSectionUIStateModel>, action: SiteSectionsUiActions.LoadSuccess ) {
+    @Action(SiteSectionsUiActions.LoadSuccess)
+    load_success(ctx: StateContext<SiteSectionUIStateModel>, action: SiteSectionsUiActions.LoadSuccess) {
         this.running_actions_count > 0 ? this.running_actions_count-- : 0
-        if ( this.running_actions_count == 0 ) ctx.setState( SiteSectionsUiOperators.loadingSuccess() )
+        if (this.running_actions_count == 0) ctx.setState(SiteSectionsUiOperators.loadingSuccess())
     }
-    @Action( SiteSectionsUiActions.LoadError )
-    load_error( ctx: StateContext<SiteSectionUIStateModel>, action: SiteSectionsUiActions.LoadError ) {
+    @Action(SiteSectionsUiActions.LoadError)
+    load_error(ctx: StateContext<SiteSectionUIStateModel>, action: SiteSectionsUiActions.LoadError) {
         this.running_actions_count > 0 ? this.running_actions_count-- : 0
-        if ( this.running_actions_count == 0 ) ctx.setState( SiteSectionsUiOperators.loadingError( action.error ) )
+        if (this.running_actions_count == 0) ctx.setState(SiteSectionsUiOperators.loadingError(action.error))
     }
 
-    @Action( SiteSectionsUiActions.Select )
-    select( ctx: StateContext<SiteSectionUIStateModel>, action: SiteSectionsUiActions.Select ) {
-        //TODO: implement state with new selected object
+    @Action(SiteSectionsUiActions.Select)
+    select(ctx: StateContext<SiteSectionUIStateModel>, action: SiteSectionsUiActions.Select) {
+        ctx.patchState({ selection: { treeviewNode: action.selection.treeviewNode } })
     }
 
 }

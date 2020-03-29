@@ -1,11 +1,11 @@
 import { BaseUIModel } from "./base.ui.model"
+import { siteSectionFlatNode } from "src/app/features-modules/admin/site.sections/services/site.sections.datasource"
 
 /**
  * Selection model
  */
 export class SiteSectionSelection {
-    sectionId: string
-    sectionModel: SiteSectionModel
+    treeviewNode: siteSectionFlatNode
 }
 
 /**

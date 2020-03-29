@@ -16,8 +16,14 @@ export class AdminSiteSectionsContainer implements OnInit {
 
     }
 
-    public edit(node: siteSectionFlatNode, domNode) {
-        node.item.description = node.item.description.concat(' -- edited')
-        this.sandbox.editNode(node)
+    treeview_select_node(node: siteSectionFlatNode) {
+        this.sandbox.selectNode(node)
+    }
+    /**
+     * 
+     * @param flatNodeEntity Node with updated "item" property
+     */
+    site_section_entity_update(flatNodeEntity: siteSectionFlatNode) {
+        this.sandbox.updateNode(flatNodeEntity)
     }
 }

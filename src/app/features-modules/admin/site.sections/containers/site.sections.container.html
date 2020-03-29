@@ -1,3 +1,4 @@
 <app-admin-site-sections-tree [datasource]="sandbox.datasource" [treecontrol]="sandbox.treecontrol"
-    [hasChild]="sandbox.hasChild">
+    [hasChild]="sandbox.hasChild" (node_selected)="treeview_select_node($event)"
+    [selectedNode]="sandbox.selectedNode | async">
 </app-admin-site-sections-tree>

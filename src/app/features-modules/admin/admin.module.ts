@@ -53,7 +53,7 @@ import { AdminSiteSectionSandboxService } from './site.sections/sandboxes/site.s
 import { AdminSiteSectionsContainer } from './site.sections/containers/site.sections.container';
 import { siteSectionsServiceToken } from 'src/app/shared/services/site.sections/site.sections.token';
 import { SiteSectionsService } from 'src/app/shared/services/site.sections/site.sections.service';
-import { SiteSectionsTreeComponent } from './site.sections/components/site.sections.tree.component';
+import { SiteSectionsTreeComponent } from './site.sections/components/treeview/site.sections.tree.component';
 
 const components = [
   AclContainer, UsersContainer, UsersComponent, AclComponent, ActionComponent, FieldComponent, RoleComponent, ServiceComponent,

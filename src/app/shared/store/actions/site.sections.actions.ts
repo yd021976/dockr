@@ -58,8 +58,4 @@ export namespace SiteSectionsActions {
         static readonly type = "[Site Sections] edit section error"
         public constructor(public error: Error) { }
     }
-    export class Select {
-        static readonly type = "[Site Sections] Select"
-        public constructor(public sectionId: string) { }
-    }
 }

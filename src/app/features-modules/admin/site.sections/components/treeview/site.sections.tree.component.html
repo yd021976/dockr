@@ -1,16 +1,14 @@
 <mat-tree [dataSource]="datasource" [treeControl]="treecontrol">
-    <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+    <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding @EnterLeave>
         <button mat-icon-button disabled></button>
-        <div>{{node.item.description}}</div>
+        <div (click)="select(node)" [class.selected]="selectedNode==node">{{node.item.description}}</div>
     </mat-tree-node>
-    <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+    <mat-tree-node *matTreeNodeDef="let node; when: hasChild" @EnterLeave matTreeNodePadding>
         <button mat-icon-button [attr.aria-label]="'toggle ' + node.filename" matTreeNodeToggle>
             <mat-icon class="fa-xs mat-icon-rtl-mirror"
                 fontIcon="{{treecontrol.isExpanded(node) ? 'fa-minus-circle' : 'fa-plus-circle'}}">
             </mat-icon>
         </button>
-        <div (click)="edit(node,this)">{{node.item.description}}</div>
-        <mat-progress-bar *ngIf="node.isLoading" mode="indeterminate" class="example-tree-progress-bar">
-        </mat-progress-bar>
+        <div class="node-content" [class.selected]="selectedNode==node" (click)="select(node)">{{node.item.description}}</div>
     </mat-tree-node>
 </mat-tree>

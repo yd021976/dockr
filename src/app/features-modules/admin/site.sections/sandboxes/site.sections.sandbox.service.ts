@@ -6,6 +6,8 @@ import { siteSectionDataSource, siteSectionFlatNode } from "../services/site.sec
 import { SiteSectionEntity, SiteSectionsEntities } from "src/app/shared/models/site.sections.entities.model";
 import { Select } from "@ngxs/store";
 import { Observable } from "rxjs";
+import { SiteSectionsUiActions } from "src/app/shared/store/actions/site.sections.ui.actions";
+import { SiteSectionsUISelectors } from "src/app/shared/store/states/site.sections/ui/site.section.ui.selectors";
 
 @Injectable({ providedIn: 'root' })
 export class AdminSiteSectionSandboxService extends AdminSiteSectionSandboxInterface {
@@ -14,6 +16,7 @@ export class AdminSiteSectionSandboxService extends AdminSiteSectionSandboxInter
     public get datasource() { return this.treedatasource.treedatasource }
     public get treecontrol() { return this.treedatasource.treecontrol }
     public get hasChild() { return this.treedatasource.hasChild }
+    @Select(SiteSectionsUISelectors.selected) public selectedNode: Observable<siteSectionFlatNode>
 
     constructor(private treedatasource: siteSectionDataSource) {
         super()
@@ -21,6 +24,14 @@ export class AdminSiteSectionSandboxService extends AdminSiteSectionSandboxInter
         /** Init the datasource service */
         this.treedatasource.data$ = this.rootSections$
         this.treedatasource.getNodeChildren = this.nodeGetChildren
+
+        // Test debug : Treeview selection
+        this.store.select(SiteSectionsSelectors.selected).subscribe((entity) => {
+            let a = 0
+        })
+        this.store.select(SiteSectionsUISelectors.selected).subscribe((treeview_node) => {
+            let a = 0
+        })
     }
 
 
@@ -60,18 +71,27 @@ export class AdminSiteSectionSandboxService extends AdminSiteSectionSandboxInter
     /**
      * 
      */
-    editNode(newValue: siteSectionFlatNode): boolean {
+    updateNode(newValue: siteSectionFlatNode): boolean {
         const siteSectionEntity = new SiteSectionEntity(newValue.item.id, newValue.item.description)
 
         this.store.dispatch(new SiteSectionsActions.Update_Section(siteSectionEntity))
-        
+
         //TODO: do backend updates + Handle backend error
-        
+
         this.store.dispatch(new SiteSectionsActions.Update_Section_Success(siteSectionEntity))
-        
+
         //TODO: Handle backend error and reverse state update
 
         //TODO: return backend update status
+        return true
+    }
+
+    /**
+     * Set state selected treeview node
+     * @param node 
+     */
+    public selectNode(node: siteSectionFlatNode): boolean {
+        this.store.dispatch(new SiteSectionsUiActions.Select({ treeviewNode: node }))
         return true
     }
 }

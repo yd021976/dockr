@@ -1,15 +1,17 @@
 import { Selector, createSelector } from "@ngxs/store";
-import { SiteSectionStateModel, SiteSectionEntity, SiteSectionsEntities } from "../../../../models/site.sections.entities.model";
+import { SiteSectionStateModel, SiteSectionEntity, SiteSectionUIStateModel } from "../../../../models/site.sections.entities.model";
 import { SiteSectionsState } from './site.sections.state'
+import { SiteSectionUIState } from "../ui/site.sections.ui.state";
 
 export class SiteSectionsSelectors {
     /**
      * Current selection
      * @param state 
      */
-    @Selector([SiteSectionsState])
-    public static selected(state: SiteSectionStateModel) {
-        // return state.selection
+    @Selector([SiteSectionsState, SiteSectionUIState])
+    public static selected(state: SiteSectionStateModel, uistate: SiteSectionUIStateModel) {
+        const entity = state.section_entities[uistate.selection.treeviewNode.item.id] || state.children_entities[uistate.selection.treeviewNode.item.id] || null
+        return entity
     }
 
     @Selector([SiteSectionsState])

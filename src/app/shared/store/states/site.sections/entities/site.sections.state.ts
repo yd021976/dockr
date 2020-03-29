@@ -89,21 +89,6 @@ export class SiteSectionsState {
     /**
      * 
      */
-    @Action(SiteSectionsActions.Select)
-    select(ctx: StateContext<SiteSectionStateModel>, action: SiteSectionsActions.Select) {
-        const state = ctx.getState()
-        const section_model = SiteSectionsState.normalizr.denormalize([action.sectionId], SiteSectionsState.normalizr.mainSchema, { sections: state.section_entities, children: state.section_entities })
-
-
-        ctx.dispatch(new SiteSectionsUiActions.Select({
-            sectionId: '',
-            sectionModel: section_model
-        }))
-    }
-
-    /**
-     * 
-     */
     @Action(SiteSectionsActions.Update_Section)
     update_section(ctx: StateContext<SiteSectionStateModel>, action: SiteSectionsActions.Update_Section) {
         ctx.dispatch(new SiteSectionsUiActions.LoadStart())

@@ -14,8 +14,10 @@ export abstract class AdminSiteSectionSandboxInterface extends BaseSandboxServic
     public datasource: MatTreeFlatDataSource<any, any>
     public treecontrol: FlatTreeControl<siteSectionFlatNode>
     public hasChild: (_: number, node: any) => boolean
-
-    public abstract editNode(newValue:siteSectionFlatNode):boolean
+    public selectedNode: Observable<siteSectionFlatNode>
+    
+    public abstract updateNode(flatNode: siteSectionFlatNode): boolean
+    public abstract selectNode(flatNode: siteSectionFlatNode): boolean
 
     constructor() {
         super()
