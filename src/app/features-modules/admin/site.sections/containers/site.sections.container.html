@@ -1,4 +1,11 @@
-<app-admin-site-sections-tree [datasource]="sandbox.datasource" [treecontrol]="sandbox.treecontrol"
-    [hasChild]="sandbox.hasChild" (node_selected)="treeview_select_node($event)"
-    [selectedNode]="sandbox.selectedNode | async">
-</app-admin-site-sections-tree>
+<div>
+    <app-admin-site-sections-tree [datasource]="sandbox.datasource" [treecontrol]="sandbox.treecontrol"
+        [hasChild]="sandbox.hasChild" (node_selected)="treeview_select_node($event)"
+        [selectedNode]="sandbox.selectedNode$ | async">
+    </app-admin-site-sections-tree>
+</div>
+<div>
+    <app-admin-site-sections-roles-list [roles]="(sandbox.currentSelectedEntity$ | async)?.roles"
+        [selected]="sandbox.required_roles_list_selected$ | async"
+        (role_selected)="required_roles_list_select_role($event)"></app-admin-site-sections-roles-list>
+</div>

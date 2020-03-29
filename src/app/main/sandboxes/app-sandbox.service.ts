@@ -19,7 +19,7 @@ import { UserModelBase } from '../../shared/models/user.model';
 export class AppSandboxService extends BaseSandboxService {
     private static loginCount: number = 0
     protected readonly logger_name: string = "AppSandboxService";
-    @Select( AppNotificationsState.notifications$ ) private notifications: Observable<ApplicationNotification[]>
+    @Select( AppNotificationsState.notifications$ ) public notifications: Observable<ApplicationNotification[]>
 
     constructor(
         protected authservice: AuthService,

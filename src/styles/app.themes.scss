@@ -32,8 +32,11 @@
 @import '../app/features-modules/admin/users/components/user.details/user.details.component.theme.scss';
 @import '../app/features-modules/admin/users/components/users.actions/users.actions.component.theme.scss';
 
-// Admin module -- Site sections
+// Admin module -- Site sections treeview
 @import '../app/features-modules/admin/site.sections/components/treeview/site.sections.tree.theme.scss';
+
+// Admin module -- Site sections roles list
+@import '../app/features-modules/admin/site.sections/components/roles.list/site.sections.roles.list.theme.scss';
 
 
 @mixin app-theme($name, $theme) {
@@ -60,8 +63,10 @@
         @include admin-users-rolesList-theme($theme);
         @include admin-users-userDetails-theme($theme);
         @include admin-users-usersActions-theme($theme);
-        // Admin module -- Site sections
-        @include admin-siteSections-component-treeview-theme($theme)
+        // Admin module -- Site sections treeview
+        @include admin-siteSections-component-treeview-theme($theme);
+        // Admin module -- Site sections roles list
+        @include admin-siteSections-component-roles-list-theme($theme);
 
     }
 }

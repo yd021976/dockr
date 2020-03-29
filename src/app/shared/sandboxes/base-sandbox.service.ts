@@ -15,9 +15,9 @@ export abstract class BaseSandboxService implements Resolve<any> {
     protected store:Store
     protected loggerService:AppLoggerServiceInterface
 
-    @Select( ApplicationState.isLoggedin ) protected _isLoggedin$: Observable<boolean>
-    @Select( ApplicationState.getCurrentUser ) protected _currentUser$: Observable<UserModel>
-    @Select( ApplicationState.isProgress ) protected _isProgress$: Observable<boolean>
+    @Select( ApplicationState.isLoggedin ) public _isLoggedin$: Observable<boolean>
+    @Select( ApplicationState.getCurrentUser ) public _currentUser$: Observable<UserModel>
+    @Select( ApplicationState.isProgress ) public _isProgress$: Observable<boolean>
 
     constructor( ) {
         this.store = ApplicationInjector.injector.get( Store )

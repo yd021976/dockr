@@ -8,15 +8,20 @@ import { Select } from "@ngxs/store";
 import { Observable } from "rxjs";
 import { SiteSectionsUiActions } from "src/app/shared/store/actions/site.sections.ui.actions";
 import { SiteSectionsUISelectors } from "src/app/shared/store/states/site.sections/ui/site.section.ui.selectors";
+import { map } from "rxjs/operators";
 
 @Injectable({ providedIn: 'root' })
 export class AdminSiteSectionSandboxService extends AdminSiteSectionSandboxInterface {
-    @Select(SiteSectionsSelectors.root_sections) private rootSections$: Observable<SiteSectionsEntities>
+    private readonly required_roles_list_component_name: string = 'required_roles_list'
+    private readonly available_roles_list_component_name: string = 'available_roles_list'
+
 
     public get datasource() { return this.treedatasource.treedatasource }
     public get treecontrol() { return this.treedatasource.treecontrol }
     public get hasChild() { return this.treedatasource.hasChild }
-    @Select(SiteSectionsUISelectors.selected) public selectedNode: Observable<siteSectionFlatNode>
+    @Select(SiteSectionsSelectors.root_sections) public rootSections$: Observable<SiteSectionsEntities>
+    @Select(SiteSectionsUISelectors.treeview_selected_node) public selectedNode$: Observable<siteSectionFlatNode>
+    @Select(SiteSectionsSelectors.selected) public currentSelectedEntity$: Observable<SiteSectionEntity>
 
     constructor(private treedatasource: siteSectionDataSource) {
         super()
@@ -25,16 +30,12 @@ export class AdminSiteSectionSandboxService extends AdminSiteSectionSandboxInter
         this.treedatasource.data$ = this.rootSections$
         this.treedatasource.getNodeChildren = this.nodeGetChildren
 
-        // Test debug : Treeview selection
-        this.store.select(SiteSectionsSelectors.selected).subscribe((entity) => {
-            let a = 0
-        })
-        this.store.select(SiteSectionsUISelectors.selected).subscribe((treeview_node) => {
-            let a = 0
-        })
+        /** Init role list selections observables */
+        this.required_roles_list_selected$ = this.store.select(SiteSectionsUISelectors.role_list_selected_role)
+            .pipe(map((component_filter_fn) => component_filter_fn(this.required_roles_list_component_name)))
+        this.available_roles_list_selected$ = this.store.select(SiteSectionsUISelectors.role_list_selected_role)
+            .pipe(map((component_filter_fn) => component_filter_fn(this.available_roles_list_component_name)))
     }
-
-
 
     /**
      * Resolver => Load backend data
@@ -87,11 +88,30 @@ export class AdminSiteSectionSandboxService extends AdminSiteSectionSandboxInter
     }
 
     /**
-     * Set state selected treeview node
+     * Update state selected treeview node
+     * 
      * @param node 
      */
     public selectNode(node: siteSectionFlatNode): boolean {
-        this.store.dispatch(new SiteSectionsUiActions.Select({ treeviewNode: node }))
+        /** set treeview selected node */
+        this.store.dispatch(new SiteSectionsUiActions.SelectTreeviewNode(node))
         return true
     }
+
+    /**
+     * 
+     * @param role 
+     */
+    public required_roles_list_select_role(role: string) {
+        this.store.dispatch(new SiteSectionsUiActions.SelectRole(role, this.required_roles_list_component_name))
+    }
+
+    /**
+     * 
+     * @param role 
+     */
+    public available_roles_list_select_role(role: string) {
+        this.store.dispatch(new SiteSectionsUiActions.SelectRole(role, this.available_roles_list_component_name))
+    }
+
 }

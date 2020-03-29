@@ -2,15 +2,18 @@ import { Selector, createSelector } from "@ngxs/store";
 import { SiteSectionStateModel, SiteSectionEntity, SiteSectionUIStateModel } from "../../../../models/site.sections.entities.model";
 import { SiteSectionsState } from './site.sections.state'
 import { SiteSectionUIState } from "../ui/site.sections.ui.state";
+import { SiteSectionsUISelectors } from "../ui/site.section.ui.selectors";
+import { siteSectionFlatNode } from "src/app/features-modules/admin/site.sections/services/site.sections.datasource";
 
 export class SiteSectionsSelectors {
     /**
      * Current selection
      * @param state 
      */
-    @Selector([SiteSectionsState, SiteSectionUIState])
-    public static selected(state: SiteSectionStateModel, uistate: SiteSectionUIStateModel) {
-        const entity = state.section_entities[uistate.selection.treeviewNode.item.id] || state.children_entities[uistate.selection.treeviewNode.item.id] || null
+    @Selector([SiteSectionsUISelectors.treeview_selected_node, SiteSectionsState])
+    public static selected(selected_node: siteSectionFlatNode, state: SiteSectionStateModel) {
+        // const entity = state.section_entities[uistate.selection.treeviewNode.item.id] || state.children_entities[uistate.selection.treeviewNode.item.id] || null
+        const entity = state.section_entities[selected_node.item.id] || state.children_entities[selected_node.item.id] || null
         return entity
     }
 
@@ -24,7 +27,6 @@ export class SiteSectionsSelectors {
     public static children_sections(state: SiteSectionStateModel) {
         return state.children_entities
     }
-
 
     /**
      * Get node's children

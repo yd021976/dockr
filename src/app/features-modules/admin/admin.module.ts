@@ -53,7 +53,8 @@ import { AdminSiteSectionSandboxService } from './site.sections/sandboxes/site.s
 import { AdminSiteSectionsContainer } from './site.sections/containers/site.sections.container';
 import { siteSectionsServiceToken } from 'src/app/shared/services/site.sections/site.sections.token';
 import { SiteSectionsService } from 'src/app/shared/services/site.sections/site.sections.service';
-import { SiteSectionsTreeComponent } from './site.sections/components/treeview/site.sections.tree.component';
+import { AdminSiteSectionsTreeComponent } from './site.sections/components/treeview/site.sections.tree.component';
+import { AdminSiteSectionsRolesListComponent } from './site.sections/components/roles.list/site.sections.roles.list.component';
 
 const components = [
   AclContainer, UsersContainer, UsersComponent, AclComponent, ActionComponent, FieldComponent, RoleComponent, ServiceComponent,
@@ -64,10 +65,10 @@ const components = [
   AddRoleDialogComponent, AddServiceDialogComponent, CandeactivateAclDialog,
   AuthUsersAddUserDialog,
   TreenodeRendererComponent,
-  AdminSiteSectionsContainer, SiteSectionsTreeComponent
+  AdminSiteSectionsContainer, AdminSiteSectionsTreeComponent, AdminSiteSectionsRolesListComponent
 ]
 
-@NgModule( {
+@NgModule({
   imports: [
     CommonModule,
     BrowserAnimationsModule,
@@ -85,7 +86,7 @@ const components = [
     ComponentsModule
   ],
   declarations: components,
-  entryComponents: [ AddRoleDialogComponent, AddServiceDialogComponent, CandeactivateAclDialog, AuthUsersAddUserDialog ],
+  entryComponents: [AddRoleDialogComponent, AddServiceDialogComponent, CandeactivateAclDialog, AuthUsersAddUserDialog],
   providers: [
     {
       provide: siteSectionsServiceToken,
@@ -115,6 +116,6 @@ const components = [
      */
 
     TreeNodesService,
-    ResourcesLocksService ]
-} )
+    ResourcesLocksService]
+})
 export class AdminModule { }

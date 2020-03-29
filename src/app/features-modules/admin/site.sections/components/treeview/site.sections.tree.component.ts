@@ -13,7 +13,7 @@ import { nodeAnimations } from './site.sections.tree.animations';
     styleUrls: ['./site.sections.tree.component.scss'],
     animations: nodeAnimations
 })
-export class SiteSectionsTreeComponent {
+export class AdminSiteSectionsTreeComponent {
     @Input('treecontrol') treecontrol: TreeControl<siteSectionFlatNode>
     @Input('datasource') datasource: MatTreeFlatDataSource<siteSectionNode, siteSectionFlatNode>
     @Input('hasChild') hasChild: (number, siteSectionFlatNode) => boolean = () => { return false }

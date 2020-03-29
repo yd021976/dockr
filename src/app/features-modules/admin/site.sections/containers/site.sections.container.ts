@@ -12,13 +12,38 @@ export class AdminSiteSectionsContainer implements OnInit {
     constructor(@Inject(AdminSiteSectionSandboxProviderToken) public sandbox: AdminSiteSectionSandboxInterface) {
     }
 
+    /**
+     * 
+     */
     ngOnInit() {
 
     }
 
+    /**
+     * 
+     * @param node 
+     */
     treeview_select_node(node: siteSectionFlatNode) {
         this.sandbox.selectNode(node)
     }
+
+    /**
+     * 
+     * @param role 
+     */
+    required_roles_list_select_role(role: string) {
+        this.sandbox.required_roles_list_select_role(role)
+
+    }
+
+    /**
+     * 
+     * @param role 
+     */
+    available_roles_list_select_role(role: string) {
+        this.sandbox.available_roles_list_select_role(role)
+    }
+
     /**
      * 
      * @param flatNodeEntity Node with updated "item" property

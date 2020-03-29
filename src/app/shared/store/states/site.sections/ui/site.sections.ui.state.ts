@@ -8,7 +8,8 @@ const default_state: SiteSectionUIStateModel = {
     isError: false,
     error: '', // Will log only latest error
     selection: {
-        treeviewNode : null
+        treeviewNode: null,
+        role: {}
     }
 }
 
@@ -36,9 +37,28 @@ export class SiteSectionUIState {
         if (this.running_actions_count == 0) ctx.setState(SiteSectionsUiOperators.loadingError(action.error))
     }
 
-    @Action(SiteSectionsUiActions.Select)
-    select(ctx: StateContext<SiteSectionUIStateModel>, action: SiteSectionsUiActions.Select) {
-        ctx.patchState({ selection: { treeviewNode: action.selection.treeviewNode } })
+    @Action(SiteSectionsUiActions.SelectTreeviewNode)
+    select_treeview_node(ctx: StateContext<SiteSectionUIStateModel>, action: SiteSectionsUiActions.SelectTreeviewNode) {
+        const state: SiteSectionUIStateModel = ctx.getState()
+        ctx.patchState({
+            selection: {
+                treeviewNode: action.node,
+                role: {} /** unset roles list selected roles */
+            }
+        })
+    }
+
+    @Action(SiteSectionsUiActions.SelectRole)
+    select_role(ctx: StateContext<SiteSectionUIStateModel>, action: SiteSectionsUiActions.SelectRole) {
+        const state: SiteSectionUIStateModel = ctx.getState()
+        ctx.patchState({
+            selection: {
+                treeviewNode: state.selection.treeviewNode,
+                role: {
+                    ...state.selection.role, [action.component_name]: action.role
+                }
+            }
+        })
     }
 
 }

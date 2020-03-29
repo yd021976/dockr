@@ -2,12 +2,16 @@ import { BaseUIModel } from "./base.ui.model"
 import { siteSectionFlatNode } from "src/app/features-modules/admin/site.sections/services/site.sections.datasource"
 
 /**
- * Selection model
+ * Selection model for UI
  */
 export class SiteSectionSelection {
     treeviewNode: siteSectionFlatNode
+    role: RoleSelection
 }
 
+export class RoleSelection {
+    [component_name: string]: string
+}
 /**
  * Site section denormalized model
  */
