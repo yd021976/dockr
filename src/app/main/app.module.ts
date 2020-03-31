@@ -23,22 +23,20 @@ import { RolesService } from '../shared/services/acl/roles/roles.service';
 import { FeathersjsBackendService } from '../shared/services/backend.api.endpoint/providers/feathers/socket.io/feathers.service';
 import { BackendServiceToken } from '../shared/services/backend.api.endpoint/backend.service.token';
 import { ApplicationStoreModule } from '../shared/store/store.module';
+import { AppInjectorToken ,initAppInjector} from './app.injector.token'
 
-export const AppInjectorToken = new InjectionToken<( injector: Injector ) => {}>( 'ApplicationInjectorSingleton' )
 /**
  * Factory used by this module token APP_INITIALIZER -> Auth user with local token if one exists and is valid 
  * 
  * @param appsandbox 
  */
-export function authUser( appsandbox: AppSandboxService ) {
-  return () => Promise.resolve( appsandbox.startUpLogin() )
+export function authUser(appsandbox: AppSandboxService) {
+  return () => Promise.resolve(appsandbox.startUpLogin())
 }
 
-export function initAppInjector( injector: Injector ) {
-  ApplicationInjector.injector = injector
-}
 
-@NgModule( {
+
+@NgModule({
   declarations: [
     AppContainer,
     SnackBarComponent
@@ -65,7 +63,7 @@ export function initAppInjector( injector: Injector ) {
     HomeModule,
     SettingsModule,
     AdminModule,
-    AppRoutingModule,
+    AppRoutingModule
 
   ],
   providers: [
@@ -93,7 +91,7 @@ export function initAppInjector( injector: Injector ) {
       provide: AppInjectorToken,
       multi: false,
       useFactory: initAppInjector,
-      deps: [ Injector ]
+      deps: [Injector]
     },
 
     /**
@@ -103,18 +101,18 @@ export function initAppInjector( injector: Injector ) {
       provide: AppSandboxService,
       multi: false,
       useClass: AppSandboxService,
-      deps: [ AuthService, PermissionsService, RolesService, AppInjectorToken ]
+      deps: [AuthService, PermissionsService, RolesService, AppInjectorToken]
     },
 
     /**
      *  Auth user at startup if a token exists and is valid (not expired)
      */
     {
-      provide: APP_INITIALIZER, useFactory: authUser, deps: [ AppSandboxService ], multi: true
+      provide: APP_INITIALIZER, useFactory: authUser, deps: [AppSandboxService], multi: true
     }
   ],
   exports: [],
-  entryComponents: [ SnackBarComponent ],
-  bootstrap: [ AppContainer ]
-} )
+  entryComponents: [SnackBarComponent],
+  bootstrap: [AppContainer]
+})
 export class AppModule { }

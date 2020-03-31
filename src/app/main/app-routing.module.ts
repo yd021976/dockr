@@ -1,22 +1,32 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER, Injector, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ApplicationRouteInterface } from '../shared/models/application.route.model';
 import { RouterModule } from '@angular/router';
 import { AclCanDeactivateGuard } from '../features-modules/admin/acl/guards/acl.can.deactivate.guard';
+import { routerConfigServiceToken } from '../shared/services/router.config/router.config.token';
+import { RouterConfigService } from '../shared/services/router.config/router.config.service';
+import { AppInjectorToken } from './app.injector.token';
 
-
-export const routes: ApplicationRouteInterface[] = [
-  { path: '', redirectTo: 'home/dashboard', pathMatch: 'full' }
+let routes: ApplicationRouteInterface[] = [
+  { path: '', redirectTo: 'home/dashboard', pathMatch: 'full', resolve: { data: routerConfigServiceToken } }
 ]
 
-@NgModule( {
+@NgModule({
   imports: [
     CommonModule,
-    RouterModule.forRoot( routes )
+    RouterModule.forRoot(routes)
   ],
-  exports: [ RouterModule ],
-  declarations: []
-} )
+  exports: [RouterModule],
+  declarations: [],
+  providers: [
+    {
+      provide: routerConfigServiceToken,
+      useClass: RouterConfigService,
+      multi: false,
+      deps: [AppInjectorToken]
+    }
+  ]
+})
 
 export class AppRoutingModule { }
