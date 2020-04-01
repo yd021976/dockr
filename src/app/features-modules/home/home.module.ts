@@ -14,7 +14,7 @@ import { dashboardSandboxProviderToken } from './sandboxes/dashboard/dashboard.s
 /**
  * 
  */
-@NgModule( {
+@NgModule({
   imports: [
     CommonModule,
     ComponentsModule,
@@ -23,7 +23,7 @@ import { dashboardSandboxProviderToken } from './sandboxes/dashboard/dashboard.s
     NgxPermissionsModule,
     DirectivesModule
   ],
-  declarations: [ HomeContainer, DashboardComponent, TodoComponent ],
+  declarations: [HomeContainer, DashboardComponent, TodoComponent],
   providers: [
     {
       provide: dashboardSandboxProviderToken,
@@ -31,6 +31,6 @@ import { dashboardSandboxProviderToken } from './sandboxes/dashboard/dashboard.s
       useClass: DashboardSandbox
     }
   ]
-} )
+})
 export class HomeModule {
 }

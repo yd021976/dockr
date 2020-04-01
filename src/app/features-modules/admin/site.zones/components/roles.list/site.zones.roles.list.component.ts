@@ -1,11 +1,11 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 
 @Component({
-    selector: 'app-admin-site-sections-roles-list',
-    templateUrl: './site.sections.roles.list.component.html',
-    styleUrls: ['./site.sections.roles.list.component.scss']
+    selector: 'app-admin-site-zones-roles-list',
+    templateUrl: './site.zones.roles.list.component.html',
+    styleUrls: ['./site.zones.roles.list.component.scss']
 })
-export class AdminSiteSectionsRolesListComponent {
+export class AdminSiteZonesRolesListComponent {
     @Input('roles') roles: string[]
     @Input('selected') selected: string
     @Output('role_selected') role_selected: EventEmitter<string> = new EventEmitter<string>()

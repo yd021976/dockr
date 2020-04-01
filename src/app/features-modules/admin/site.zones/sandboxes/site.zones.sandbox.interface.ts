@@ -3,19 +3,19 @@ import { ApplicationInjector } from "src/app/shared/application.injector.class";
 import { siteZonesServiceToken } from "src/app/shared/services/site.zones/site.zones.token";
 import { SiteZonesServiceInterface } from "src/app/shared/services/site.zones/site.zones.interface";
 import { Observable } from "rxjs";
-import { SiteSectionEntity } from "src/app/shared/models/site.sections.entities.model";
+import { SiteZoneEntities, SiteZoneEntity } from "src/app/shared/models/site.zones.entities.model";
 import { FlatTreeControl } from "@angular/cdk/tree";
+import { siteZoneFlatNode } from "../services/site.sections.datasource";
 import { MatTreeFlatDataSource } from "@angular/material";
-import { siteZoneFlatNode } from "../../site.zones/services/site.sections.datasource";
 
 
-export abstract class AdminSiteSectionSandboxInterface extends BaseSandboxService {
-    protected site_sections_service: SiteZonesServiceInterface
+export abstract class AdminSiteZonesSandboxInterface extends BaseSandboxService {
+    protected site_zones_service: SiteZonesServiceInterface
     public datasource: MatTreeFlatDataSource<any, any>
     public treecontrol: FlatTreeControl<siteZoneFlatNode>
     public hasChild: (_: number, node: any) => boolean
     public selectedNode$: Observable<siteZoneFlatNode>
-    public currentSelectedEntity$:Observable<SiteSectionEntity>
+    public currentSelectedEntity$:Observable<SiteZoneEntity>
     public required_roles_list_selected$: Observable<string>
     public available_roles_list_selected$: Observable<string>
 
@@ -26,6 +26,6 @@ export abstract class AdminSiteSectionSandboxInterface extends BaseSandboxServic
 
     constructor() {
         super()
-        this.site_sections_service = ApplicationInjector.injector.get(siteZonesServiceToken)
+        this.site_zones_service = ApplicationInjector.injector.get(siteZonesServiceToken)
     }
 }

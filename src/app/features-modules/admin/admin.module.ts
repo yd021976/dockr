@@ -48,13 +48,13 @@ import { AuthUsersAddUserDialog } from './users/components/dialogs/add.user/add.
 import { TreenodeRendererComponent } from './acl/components/node-treenode-renderer/treenode-renderer/treenode.renderer.component';
 import { AdminAclSandboxProviderToken } from './acl/sandboxes/admin.acl.sandbox.token';
 import { AdminUsersSandboxProviderToken } from './users/sandboxes/admin.users.sandbox.token';
-import { AdminSiteSectionSandboxProviderToken } from './site.sections/sandboxes/site.sections.sandbox.token';
-import { AdminSiteSectionSandboxService } from './site.sections/sandboxes/site.sections.sandbox.service';
-import { AdminSiteSectionsContainer } from './site.sections/containers/site.sections.container';
-import { siteSectionsServiceToken } from 'src/app/shared/services/site.sections/site.sections.token';
-import { SiteSectionsService } from 'src/app/shared/services/site.sections/site.sections.service';
-import { AdminSiteSectionsTreeComponent } from './site.sections/components/treeview/site.sections.tree.component';
-import { AdminSiteSectionsRolesListComponent } from './site.sections/components/roles.list/site.sections.roles.list.component';
+import { AdminSiteZonesSandboxProviderToken } from './site.zones/sandboxes/site.zones.sandbox.token';
+import { AdminSiteZonesSandboxService } from './site.zones/sandboxes/site.zones.sandbox.service';
+import { AdminSiteZonesContainer } from './site.zones/containers/site.zones.container';
+import { siteZonesServiceToken } from 'src/app/shared/services/site.zones/site.zones.token';
+import { SiteZonesService } from 'src/app/shared/services/site.zones/site.zones.service';
+import { AdminSiteZonesTreeComponent } from './site.zones/components/treeview/site.zones.tree.component';
+import { AdminSiteZonesRolesListComponent } from './site.zones/components/roles.list/site.zones.roles.list.component';
 
 const components = [
   AclContainer, UsersContainer, UsersComponent, AclComponent, ActionComponent, FieldComponent, RoleComponent, ServiceComponent,
@@ -65,7 +65,7 @@ const components = [
   AddRoleDialogComponent, AddServiceDialogComponent, CandeactivateAclDialog,
   AuthUsersAddUserDialog,
   TreenodeRendererComponent,
-  AdminSiteSectionsContainer, AdminSiteSectionsTreeComponent, AdminSiteSectionsRolesListComponent
+  AdminSiteZonesContainer, AdminSiteZonesTreeComponent, AdminSiteZonesRolesListComponent
 ]
 
 @NgModule({
@@ -89,8 +89,8 @@ const components = [
   entryComponents: [AddRoleDialogComponent, AddServiceDialogComponent, CandeactivateAclDialog, AuthUsersAddUserDialog],
   providers: [
     {
-      provide: siteSectionsServiceToken,
-      useClass: SiteSectionsService,
+      provide: siteZonesServiceToken,
+      useClass: SiteZonesService,
       multi: false
     },
     /**
@@ -107,9 +107,9 @@ const components = [
       useClass: AdminUsersSandboxService
     },
     {
-      provide: AdminSiteSectionSandboxProviderToken,
+      provide: AdminSiteZonesSandboxProviderToken,
       multi: false,
-      useClass: AdminSiteSectionSandboxService
+      useClass: AdminSiteZonesSandboxService
     },
     /**
      * Container required services

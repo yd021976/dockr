@@ -18,7 +18,6 @@ import { SnackBarComponent } from '../shared/components/snackbar/snack-bar.compo
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../shared/services/auth/auth.service';
 import { PermissionsService } from '../shared/services/acl/permissions/permissions.service';
-import { ApplicationInjector } from '../shared/application.injector.class'
 import { RolesService } from '../shared/services/acl/roles/roles.service';
 import { FeathersjsBackendService } from '../shared/services/backend.api.endpoint/providers/feathers/socket.io/feathers.service';
 import { BackendServiceToken } from '../shared/services/backend.api.endpoint/backend.service.token';

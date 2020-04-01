@@ -1,11 +1,11 @@
 import { BaseUIModel } from "./base.ui.model"
-import { siteSectionFlatNode } from "src/app/features-modules/admin/site.sections/services/site.sections.datasource"
+import { siteZoneFlatNode } from "src/app/features-modules/admin/site.zones/services/site.sections.datasource"
 
 /**
  * Selection model for UI
  */
-export class SiteSectionSelection {
-    treeviewNode: siteSectionFlatNode
+export class SiteZonesSelection {
+    treeviewNode: siteZoneFlatNode
     role: RoleSelection
 }
 
@@ -15,23 +15,23 @@ export class RoleSelection {
 /**
  * Site section denormalized model
  */
-export class SiteSectionModel {
+export class SiteZoneModel {
     id: string
     roles: string[]
-    children: SiteSectionModel[]
+    children: SiteZoneModel[]
 }
 
 /**
  * Array/list of site section denormlized model
  */
-export class SiteSectionModels {
-    [sectionId: string]: SiteSectionModel
+export class SiteZonesModel {
+    [sectionId: string]: SiteZoneModel
 }
 
 /**
  * Site section normalized entity
  */
-export class SiteSectionEntity {
+export class SiteZoneEntity {
     id: string
     description: string
     roles: string[]
@@ -48,18 +48,18 @@ export class SiteSectionEntity {
 /**
  * Array/list of Site section normalized entity
  */
-export class SiteSectionsEntities {
-    [siteSectionId: string]: SiteSectionEntity
+export class SiteZoneEntities {
+    [siteSectionId: string]: SiteZoneEntity
 }
 
 /**
  * Site section state model
  */
-export class SiteSectionStateModel {
-    section_entities: SiteSectionsEntities
-    children_entities: SiteSectionsEntities
+export class SiteZonesStateModel {
+    section_entities: SiteZoneEntities
+    children_entities: SiteZoneEntities
 }
 
-export class SiteSectionUIStateModel extends BaseUIModel {
-    selection: SiteSectionSelection
+export class SiteZonesUIStateModel extends BaseUIModel {
+    selection: SiteZonesSelection
 }

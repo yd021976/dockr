@@ -9,7 +9,7 @@ import { RouterConfigService } from '../shared/services/router.config/router.con
 import { AppInjectorToken } from './app.injector.token';
 
 let routes: ApplicationRouteInterface[] = [
-  { path: '', redirectTo: 'home/dashboard', pathMatch: 'full', resolve: { data: routerConfigServiceToken } }
+  { path: '', redirectTo: 'home/dashboard', pathMatch: 'full', resolve: { roles: routerConfigServiceToken } }
 ]
 
 @NgModule({

@@ -33,10 +33,10 @@
 @import '../app/features-modules/admin/users/components/users.actions/users.actions.component.theme.scss';
 
 // Admin module -- Site sections treeview
-@import '../app/features-modules/admin/site.sections/components/treeview/site.sections.tree.theme.scss';
+@import '../app/features-modules/admin/site.zones/components/treeview/site.zones.tree.theme.scss';
 
 // Admin module -- Site sections roles list
-@import '../app/features-modules/admin/site.sections/components/roles.list/site.sections.roles.list.theme.scss';
+@import '../app/features-modules/admin/site.zones/components/roles.list/site.zones.roles.list.theme.scss';
 
 
 @mixin app-theme($name, $theme) {

@@ -6,7 +6,7 @@ import { BackendServiceToken } from '../backend.api.endpoint/backend.service.tok
 import { BackendBaseServiceInterface } from '../backend.api.endpoint/interfaces/backend.base.service';
 import { BackendMethodsInterface } from '../backend.api.endpoint/interfaces/backend.service.methods.interface';
 
-export abstract class SiteSectionsServiceInterface implements BackendMethodsInterface {
+export abstract class SiteZonesServiceInterface implements BackendMethodsInterface {
     protected readonly loggerName: string = "site-sections-service"
     protected readonly serviceName: string = "site-sections"
     protected service: feathers.Service<any>

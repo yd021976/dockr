@@ -7,8 +7,8 @@ import { AclCanDeactivateGuard } from './acl/guards/acl.can.deactivate.guard';
 import { AclCanActivate } from './acl/guards/acl.can.activate.guard';
 import { AdminAclSandboxProviderToken } from './acl/sandboxes/admin.acl.sandbox.token';
 import { AdminUsersSandboxProviderToken } from './users/sandboxes/admin.users.sandbox.token';
-import { AdminSiteSectionsContainer } from './site.sections/containers/site.sections.container';
-import { AdminSiteSectionSandboxProviderToken } from './site.sections/sandboxes/site.sections.sandbox.token';
+import { AdminSiteZonesContainer } from './site.zones/containers/site.zones.container';
+import { AdminSiteZonesSandboxProviderToken } from './site.zones/sandboxes/site.zones.sandbox.token';
 
 const routes: ApplicationRouteInterface[] = [
   {
@@ -30,9 +30,9 @@ const routes: ApplicationRouteInterface[] = [
       },
       {
         path: 'site-sections',
-        component: AdminSiteSectionsContainer,
+        component: AdminSiteZonesContainer,
         canActivate: [ AclCanActivate ],
-        resolve: { site_sections: AdminSiteSectionSandboxProviderToken },
+        resolve: { site_sections: AdminSiteZonesSandboxProviderToken },
         data: { isMenu: true, link: 'admin/site-sections', title: 'Manage site section permissions', section: 'site-sections' }
       },
     ]
