@@ -1,24 +1,24 @@
 import { State, Action, StateContext, Actions, ofActionDispatched, ofActionSuccessful, ofActionCompleted } from "@ngxs/store";
 import { SiteZonesStateModel } from "../../../../models/site.zones.entities.model";
 import { SiteZonesActions } from "../../../actions/site.zones.actions";
-import { SiteZonesNormalizr } from "./site.zones.normlizr";
+import { SiteSectionsNormalizr } from "./site.sections.normlizr";
 import { SiteZonesUiActions } from "../../../actions/site.zones.ui.actions";
 import { state } from "@angular/animations";
 
-export const default_siteZones_state: SiteZonesStateModel = {
+export const default_siteSection_state: SiteZonesStateModel = {
     zone_entities: {},
     children_entities: {}
 }
 
 @State<SiteZonesStateModel>({
-    name: 'site_zones',
-    defaults: default_siteZones_state
+    name: 'site_sections',
+    defaults: default_siteSection_state
 
 })
-export class SiteZonesState {
+export class SiteSectionsState {
     constructor(private action$: Actions) { }
 
-    static readonly normalizr: SiteZonesNormalizr = new SiteZonesNormalizr()
+    static readonly normalizr: SiteSectionsNormalizr = new SiteSectionsNormalizr()
 
     /**
      * 
@@ -34,12 +34,12 @@ export class SiteZonesState {
     @Action(SiteZonesActions.Load_All_Success)
     load_all_success(ctx: StateContext<SiteZonesStateModel>, action: SiteZonesActions.Load_All_Success) {
         try {
-            const results = SiteZonesState.normalizr.normalize(action.zones, SiteZonesState.normalizr.mainSchema)
-            if (!results.entities || !results.entities['zones'] || !results.entities['children']) {
+            const results = SiteSectionsState.normalizr.normalize(action.zones, SiteSectionsState.normalizr.mainSchema)
+            if (!results.entities || !results.entities['sections'] || !results.entities['children']) {
                 throw new Error('State error at normalize data')
             }
             ctx.setState({
-                zone_entities: results.entities['zones'],
+                zone_entities: results.entities['sections'],
                 children_entities: results.entities['children'],
             })
             return ctx.dispatch(new SiteZonesUiActions.LoadSuccess())
@@ -67,7 +67,7 @@ export class SiteZonesState {
      * @param action 
      */
     @Action(SiteZonesActions.Add_Zone)
-    add_zone(ctx: StateContext<SiteZonesStateModel>, action: SiteZonesActions.Add_Zone) { }
+    add_section(ctx: StateContext<SiteZonesStateModel>, action: SiteZonesActions.Add_Zone) { }
 
     /**
      * 
@@ -75,7 +75,7 @@ export class SiteZonesState {
      * @param action 
      */
     @Action(SiteZonesActions.Add_Zone_Success)
-    add_zone_success(ctx: StateContext<SiteZonesStateModel>, action: SiteZonesActions.Add_Zone_Success) { }
+    add_section_success(ctx: StateContext<SiteZonesStateModel>, action: SiteZonesActions.Add_Zone_Success) { }
 
     /**
      * 
@@ -83,14 +83,14 @@ export class SiteZonesState {
      * @param action 
      */
     @Action(SiteZonesActions.Add_Zone_Error)
-    add_zone_error(ctx: StateContext<SiteZonesStateModel>, action: SiteZonesActions.Add_Zone_Error) { }
+    add_section_error(ctx: StateContext<SiteZonesStateModel>, action: SiteZonesActions.Add_Zone_Error) { }
 
 
     /**
      * 
      */
     @Action(SiteZonesActions.Update_Zone)
-    update_zone(ctx: StateContext<SiteZonesStateModel>, action: SiteZonesActions.Update_Zone) {
+    update_section(ctx: StateContext<SiteZonesStateModel>, action: SiteZonesActions.Update_Zone) {
         ctx.dispatch(new SiteZonesUiActions.LoadStart())
     }
 
@@ -98,7 +98,7 @@ export class SiteZonesState {
      * 
      */
     @Action(SiteZonesActions.Update_Zone_Success)
-    update_zone_success(ctx: StateContext<SiteZonesStateModel>, action: SiteZonesActions.Update_Zone_Success) {
+    update_section_success(ctx: StateContext<SiteZonesStateModel>, action: SiteZonesActions.Update_Zone_Success) {
         const state = ctx.getState().children_entities
 
         ctx.patchState({
@@ -115,7 +115,7 @@ export class SiteZonesState {
      * 
      */
     @Action(SiteZonesActions.Update_Zone_Error)
-    update_zone_error(ctx: StateContext<SiteZonesStateModel>, action: SiteZonesActions.Update_Zone_Error) {
+    update_section_error(ctx: StateContext<SiteZonesStateModel>, action: SiteZonesActions.Update_Zone_Error) {
 
     }
 

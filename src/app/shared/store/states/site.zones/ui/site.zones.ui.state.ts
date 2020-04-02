@@ -14,7 +14,7 @@ const default_state: SiteZonesUIStateModel = {
 }
 
 @State<SiteZonesUIStateModel>({
-    name: 'site_sections_ui',
+    name: 'site_zones_ui',
     defaults: default_state
 })
 export class SiteZonesUIState {

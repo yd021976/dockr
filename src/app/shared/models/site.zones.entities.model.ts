@@ -13,7 +13,7 @@ export class RoleSelection {
     [component_name: string]: string
 }
 /**
- * Site section denormalized model
+ * Site zone denormalized model
  */
 export class SiteZoneModel {
     id: string
@@ -22,14 +22,14 @@ export class SiteZoneModel {
 }
 
 /**
- * Array/list of site section denormlized model
+ * Array/list of site zone denormlized model
  */
 export class SiteZonesModel {
-    [sectionId: string]: SiteZoneModel
+    [siteZoneId: string]: SiteZoneModel
 }
 
 /**
- * Site section normalized entity
+ * Site zone normalized entity
  */
 export class SiteZoneEntity {
     id: string
@@ -46,17 +46,17 @@ export class SiteZoneEntity {
 }
 
 /**
- * Array/list of Site section normalized entity
+ * Array/list of Site zone normalized entity
  */
 export class SiteZoneEntities {
-    [siteSectionId: string]: SiteZoneEntity
+    [siteZoneId: string]: SiteZoneEntity
 }
 
 /**
- * Site section state model
+ * Site zone state model
  */
 export class SiteZonesStateModel {
-    section_entities: SiteZoneEntities
+    zone_entities: SiteZoneEntities
     children_entities: SiteZoneEntities
 }
 

@@ -63,7 +63,7 @@ export class siteZonesDataSource {
     }
 
     /**
-     * Flat site section enity to flat node
+     * Flat site zone enity to flat node
      */
     private flatEntity(node: SiteZoneEntity, level: number) {
         const existingNode = this.EntityToFlatMap.get(node.id)

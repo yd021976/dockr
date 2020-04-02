@@ -8,7 +8,7 @@ export namespace SiteZonesActions {
 
     export class Load_All_Success {
         static readonly type = "[Site Zones] load all success"
-        public constructor(public sections: SiteZonesModel) { }
+        public constructor(public zones: SiteZonesModel) { }
     }
 
     export class Load_All_Error {

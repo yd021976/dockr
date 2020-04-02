@@ -9,8 +9,8 @@ import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { ApplicationRouteData } from '../../models/application.route.model';
 
 export abstract class SiteZonesServiceInterface implements BackendMethodsInterface {
-    protected readonly loggerName: string = "site-sections-service"
-    protected readonly serviceName: string = "site-sections"
+    protected readonly loggerName: string = "site-zones-service"
+    protected readonly serviceName: string = "site-zones"
     protected service: feathers.Service<any>
     protected backendApiService: BackendBaseServiceInterface
     protected loggerService: AppLoggerServiceInterface

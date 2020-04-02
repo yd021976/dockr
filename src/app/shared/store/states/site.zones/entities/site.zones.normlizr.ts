@@ -17,7 +17,7 @@ export class SiteZonesNormalizr {
         const children = new schema.Array(childrenSchema)
         childrenSchema.define({ 'children': children })
 
-        // Define Section entity
+        // Define zone entity
         const zone = new schema.Entity('zones', {children})
         this.mainSchema = new schema.Array(zone)
         SiteZonesNormalizr.instance = this

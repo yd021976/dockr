@@ -32,10 +32,10 @@
 @import '../app/features-modules/admin/users/components/user.details/user.details.component.theme.scss';
 @import '../app/features-modules/admin/users/components/users.actions/users.actions.component.theme.scss';
 
-// Admin module -- Site sections treeview
+// Admin module -- Site zones treeview
 @import '../app/features-modules/admin/site.zones/components/treeview/site.zones.tree.theme.scss';
 
-// Admin module -- Site sections roles list
+// Admin module -- Site zones roles list
 @import '../app/features-modules/admin/site.zones/components/roles.list/site.zones.roles.list.theme.scss';
 
 
@@ -63,9 +63,9 @@
         @include admin-users-rolesList-theme($theme);
         @include admin-users-userDetails-theme($theme);
         @include admin-users-usersActions-theme($theme);
-        // Admin module -- Site sections treeview
+        // Admin module -- Site zones treeview
         @include admin-siteZones-component-treeview-theme($theme);
-        // Admin module -- Site sections roles list
+        // Admin module -- Site zones roles list
         @include admin-siteZones-component-roles-list-theme($theme);
 
     }
