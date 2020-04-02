@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { AdminSiteZonesSandboxProviderToken } from "../sandboxes/site.zones.sandbox.token";
 import { AdminSiteZonesSandboxInterface } from "../sandboxes/site.zones.sandbox.interface";
-import { siteZoneFlatNode } from "../services/site.sections.datasource";
+import { siteZoneFlatNode } from "../services/site.zones.datasource";
 import { Router } from "@angular/router";
 
 @Component({
@@ -49,7 +49,7 @@ export class AdminSiteZonesContainer implements OnInit {
      * 
      * @param flatNodeEntity Node with updated "item" property
      */
-    site_section_entity_update(flatNodeEntity: siteZoneFlatNode) {
+    site_zone_entity_update(flatNodeEntity: siteZoneFlatNode) {
         this.sandbox.updateNode(flatNodeEntity)
     }
 }

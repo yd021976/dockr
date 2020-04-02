@@ -1,5 +1,5 @@
 import { BaseUIModel } from "./base.ui.model"
-import { siteZoneFlatNode } from "src/app/features-modules/admin/site.zones/services/site.sections.datasource"
+import { siteZoneFlatNode } from "src/app/features-modules/admin/site.zones/services/site.zones.datasource"
 
 /**
  * Selection model for UI

@@ -1,16 +1,16 @@
 import { Schema, schema, denormalize, normalize } from "normalizr";
 
-export class SiteSectionsNormalizr {
-    static instance: SiteSectionsNormalizr = null
+export class SiteZonesNormalizr {
+    static instance: SiteZonesNormalizr = null
     schemaOptions
 
     // define entities schemas
     mainSchema: Schema
-    sectionSchema: Schema
+    zoneSchema: Schema
     childrenSchema: Schema
 
     constructor() {
-        if (SiteSectionsNormalizr.instance) return SiteSectionsNormalizr.instance
+        if (SiteZonesNormalizr.instance) return SiteZonesNormalizr.instance
 
         // Define children entity
         const childrenSchema = new schema.Entity('children')
@@ -18,9 +18,9 @@ export class SiteSectionsNormalizr {
         childrenSchema.define({ 'children': children })
 
         // Define Section entity
-        const section = new schema.Entity('sections', {children})
-        this.mainSchema = new schema.Array(section)
-        SiteSectionsNormalizr.instance = this
+        const zone = new schema.Entity('zones', {children})
+        this.mainSchema = new schema.Array(zone)
+        SiteZonesNormalizr.instance = this
     }
     public normalize(data, schema) {
         return normalize(data, schema)

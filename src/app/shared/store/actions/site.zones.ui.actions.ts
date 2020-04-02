@@ -1,5 +1,5 @@
 import { SiteZoneModel, SiteZonesModel, SiteZonesSelection } from "../../models/site.zones.entities.model";
-import { siteZoneFlatNode } from "src/app/features-modules/admin/site.zones/services/site.sections.datasource";
+import { siteZoneFlatNode } from "src/app/features-modules/admin/site.zones/services/site.zones.datasource";
 
 export namespace SiteZonesUiActions {
     export class LoadStart {

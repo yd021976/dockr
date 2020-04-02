@@ -1,6 +1,8 @@
 import { Injectable, Inject } from '@angular/core';
 import { SiteZonesServiceInterface } from './site.zones.interface';
 import * as mock from './site.zones.mock.data'
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { ApplicationRouteData } from '../../models/application.route.model';
 
 @Injectable({
     providedIn: 'root'
@@ -8,6 +10,18 @@ import * as mock from './site.zones.mock.data'
 export class SiteZonesService extends SiteZonesServiceInterface {
     constructor() {
         super()
+    }
+
+    /**
+     * Route Resolver
+     * Get required roles for a site zone stored in Route "data". If Route "siteZone" is not defined, return no required roles
+     * 
+     * @param activatedRoute 
+     * @param routerState 
+     */
+    resolve(activatedRoute: ActivatedRouteSnapshot, routerState: RouterStateSnapshot): Promise<ApplicationRouteData> {
+        /**TODO: Call this service "get" method to get route roles data */
+        return Promise.resolve({ isMenu: false, title: 'resolved data' })
     }
 
     find(params): Promise<any> {

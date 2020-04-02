@@ -3,7 +3,7 @@ import { patch } from '@ngxs/store/operators';
 import { SiteZonesUIStateModel } from '../../../../models/site.zones.entities.model';
 import { StateUtils } from '../../utils'
 
-export namespace SiteSectionsUiOperators {
+export namespace SiteZonesUiOperators {
     export function startLoading(): StateOperator<SiteZonesUIStateModel> {
         return patch<SiteZonesUIStateModel>( StateUtils.setLoadingStart() )
     }

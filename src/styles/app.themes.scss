@@ -64,9 +64,9 @@
         @include admin-users-userDetails-theme($theme);
         @include admin-users-usersActions-theme($theme);
         // Admin module -- Site sections treeview
-        @include admin-siteSections-component-treeview-theme($theme);
+        @include admin-siteZones-component-treeview-theme($theme);
         // Admin module -- Site sections roles list
-        @include admin-siteSections-component-roles-list-theme($theme);
+        @include admin-siteZones-component-roles-list-theme($theme);
 
     }
 }

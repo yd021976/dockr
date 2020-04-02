@@ -1,4 +1,4 @@
-import { NgModule, Inject } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ApplicationRouteInterface } from '../../shared/models/application.route.model';
 import { UsersContainer } from './users/containers/users.container';
@@ -8,41 +8,41 @@ import { AclCanActivate } from './acl/guards/acl.can.activate.guard';
 import { AdminAclSandboxProviderToken } from './acl/sandboxes/admin.acl.sandbox.token';
 import { AdminUsersSandboxProviderToken } from './users/sandboxes/admin.users.sandbox.token';
 import { AdminSiteZonesContainer } from './site.zones/containers/site.zones.container';
-import { AdminSiteZonesSandboxProviderToken } from './site.zones/sandboxes/site.zones.sandbox.token';
+import { siteZonesServiceToken } from 'src/app/shared/services/site.zones/site.zones.token';
 
 const routes: ApplicationRouteInterface[] = [
   {
-    path: 'admin', canActivate: [ AclCanActivate ], data: { isMenu: true, title: 'admin', icon: 'fa-wrench', section: 'admin' }, children: [
+    path: 'admin', canActivate: [AclCanActivate], data: { isMenu: true, title: 'admin', icon: 'fa-wrench', siteZone: 'admin' }, children: [
       {
         path: 'acl',
         component: AclContainer,
-        canActivate: [ AclCanActivate ],
-        canDeactivate: [ AclCanDeactivateGuard ],
+        canActivate: [AclCanActivate],
+        canDeactivate: [AclCanDeactivateGuard],
         resolve: { roles: AdminAclSandboxProviderToken },
-        data: { isMenu: true, link: 'admin/acl', title: 'Data & Services permissions' }
+        data: { isMenu: true, link: 'admin/acl', title: 'Data & Services permissions', siteZone: 'acl' }
       },
       {
         path: 'users',
         component: UsersContainer,
-        canActivate: [ AclCanActivate ],
+        canActivate: [AclCanActivate],
         resolve: { users: AdminUsersSandboxProviderToken },
-        data: { isMenu: true, link: 'admin/users', title: 'Manage Users' }
+        data: { isMenu: true, link: 'admin/users', title: 'Manage Users', siteZone: 'users' }
       },
       {
-        path: 'site-sections',
+        path: 'site-zones',
         component: AdminSiteZonesContainer,
-        canActivate: [ AclCanActivate ],
-        resolve: { site_sections: AdminSiteZonesSandboxProviderToken },
-        data: { isMenu: true, link: 'admin/site-sections', title: 'Manage site section permissions', section: 'site-sections' }
+        canActivate: [AclCanActivate],
+        resolve: { 'site_zones_roles': siteZonesServiceToken },
+        data: { isMenu: true, link: 'admin/site-zones', title: 'Manage site zones permissions', siteZone: 'site-zones' }
       },
     ]
   }
 ];
-@NgModule( {
+@NgModule({
   imports: [
-    RouterModule.forChild( routes )
+    RouterModule.forChild(routes)
   ],
-  exports: [ RouterModule ],
-  providers: [ AclCanDeactivateGuard, AclCanActivate ]
-} )
+  exports: [RouterModule],
+  providers: [AclCanDeactivateGuard, AclCanActivate]
+})
 export class AdminRoutingModule { }

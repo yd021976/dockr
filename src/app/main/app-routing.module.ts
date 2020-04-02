@@ -4,12 +4,12 @@ import { CommonModule } from '@angular/common';
 import { ApplicationRouteInterface } from '../shared/models/application.route.model';
 import { RouterModule } from '@angular/router';
 import { AclCanDeactivateGuard } from '../features-modules/admin/acl/guards/acl.can.deactivate.guard';
-import { routerConfigServiceToken } from '../shared/services/router.config/router.config.token';
-import { RouterConfigService } from '../shared/services/router.config/router.config.service';
 import { AppInjectorToken } from './app.injector.token';
+import { siteZonesServiceToken } from '../shared/services/site.zones/site.zones.token';
+import { SiteZonesService } from '../shared/services/site.zones/site.zones.service';
 
 let routes: ApplicationRouteInterface[] = [
-  { path: '', redirectTo: 'home/dashboard', pathMatch: 'full', resolve: { roles: routerConfigServiceToken } }
+  { path: '', redirectTo: 'home/dashboard', pathMatch: 'full', resolve: { 'site_zones_roles': siteZonesServiceToken } }
 ]
 
 @NgModule({
@@ -21,8 +21,8 @@ let routes: ApplicationRouteInterface[] = [
   declarations: [],
   providers: [
     {
-      provide: routerConfigServiceToken,
-      useClass: RouterConfigService,
+      provide: siteZonesServiceToken,
+      useClass: SiteZonesService,
       multi: false,
       deps: [AppInjectorToken]
     }

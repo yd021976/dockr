@@ -16,45 +16,45 @@ export namespace SiteZonesActions {
         public constructor(public error: string) { }
     }
 
-    export class Add_Section {
+    export class Add_Zone {
         static readonly type = "[Site Zones] add zone"
         public constructor() { }
 
     }
-    export class Add_Section_Success {
+    export class Add_Zone_Success {
         static readonly type = "[Site Zones] add zone success"
         public constructor() { }
 
     }
-    export class Add_Section_Error {
+    export class Add_Zone_Error {
         static readonly type = "[Site Zones] add zone error"
         public constructor() { }
 
     }
-    export class Remove_Section {
+    export class Remove_Zone {
         static readonly type = "[Site Zones] remove zone"
         public constructor() { }
 
     }
-    export class Remove_Section_Success {
+    export class Remove_Zone_Success {
         static readonly type = "[Site Zones] remove zone success"
         public constructor() { }
 
     }
-    export class Remove_Section_Error {
+    export class Remove_Zone_Error {
         static readonly type = "[Site Zones] remove zone error"
         public constructor() { }
 
     }
-    export class Update_Section {
+    export class Update_Zone {
         static readonly type = "[Site Zones] edit zone"
-        public constructor(sectionEntity: SiteZoneEntity) { }
+        public constructor(zoneEntity: SiteZoneEntity) { }
     }
-    export class Update_Section_Success {
+    export class Update_Zone_Success {
         static readonly type = "[Site Zones] edit zone success"
-        public constructor(public sectionEntity: SiteZoneEntity) { }
+        public constructor(public zoneEntity: SiteZoneEntity) { }
     }
-    export class Update_Section_Error {
+    export class Update_Zone_Error {
         static readonly type = "[Site Zones] edit zone error"
         public constructor(public error: Error) { }
     }

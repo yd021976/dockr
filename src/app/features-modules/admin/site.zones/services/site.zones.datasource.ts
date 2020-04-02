@@ -14,7 +14,7 @@ export class siteZoneFlatNode {
  * This class handle nested site zone data to flat data for treeview
  */
 @Injectable({ providedIn: 'root' })
-export class siteSectionDataSource {
+export class siteZonesDataSource {
     public treeflattener: MatTreeFlattener<SiteZoneEntity, siteZoneFlatNode>
     public treecontrol: FlatTreeControl<siteZoneFlatNode>
     public treedatasource: MatTreeFlatDataSource<SiteZoneEntity, siteZoneFlatNode>

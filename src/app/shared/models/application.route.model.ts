@@ -6,7 +6,6 @@ export abstract class ApplicationRouteData {
   icon?: string
   link?: string
   isAuthRequired?: boolean
-  section?: string
   siteZone?:string // the site zone, used to set app zone user abilities based on roles
 }
 export interface ApplicationRouteInterface extends Route {

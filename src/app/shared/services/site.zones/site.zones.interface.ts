@@ -5,6 +5,8 @@ import { ApplicationInjector } from '../../application.injector.class';
 import { BackendServiceToken } from '../backend.api.endpoint/backend.service.token';
 import { BackendBaseServiceInterface } from '../backend.api.endpoint/interfaces/backend.base.service';
 import { BackendMethodsInterface } from '../backend.api.endpoint/interfaces/backend.service.methods.interface';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { ApplicationRouteData } from '../../models/application.route.model';
 
 export abstract class SiteZonesServiceInterface implements BackendMethodsInterface {
     protected readonly loggerName: string = "site-sections-service"
@@ -21,6 +23,7 @@ export abstract class SiteZonesServiceInterface implements BackendMethodsInterfa
         this.service = this.backendApiService.service( this.serviceName )
     }
 
+    public abstract resolve(activatedRoute: ActivatedRouteSnapshot, routerState: RouterStateSnapshot): Promise<ApplicationRouteData>
     public abstract find( params? )
     public abstract create( id, param )
     public abstract delete( id, param )

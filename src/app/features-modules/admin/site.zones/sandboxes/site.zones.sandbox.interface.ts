@@ -3,9 +3,9 @@ import { ApplicationInjector } from "src/app/shared/application.injector.class";
 import { siteZonesServiceToken } from "src/app/shared/services/site.zones/site.zones.token";
 import { SiteZonesServiceInterface } from "src/app/shared/services/site.zones/site.zones.interface";
 import { Observable } from "rxjs";
-import { SiteZoneEntities, SiteZoneEntity } from "src/app/shared/models/site.zones.entities.model";
+import { SiteZoneEntity } from "src/app/shared/models/site.zones.entities.model";
 import { FlatTreeControl } from "@angular/cdk/tree";
-import { siteZoneFlatNode } from "../services/site.sections.datasource";
+import { siteZoneFlatNode } from "../services/site.zones.datasource";
 import { MatTreeFlatDataSource } from "@angular/material";
 
 

@@ -1,6 +1,6 @@
 import { State, Action, StateContext } from '@ngxs/store'
 import { SiteZonesUIStateModel } from 'src/app/shared/models/site.zones.entities.model';
-import { SiteSectionsUiOperators } from './site.section.ui.operators';
+import { SiteZonesUiOperators } from './site.zones.ui.operators';
 import { SiteZonesUiActions } from '../../../actions/site.zones.ui.actions';
 
 const default_state: SiteZonesUIStateModel = {
@@ -17,24 +17,24 @@ const default_state: SiteZonesUIStateModel = {
     name: 'site_sections_ui',
     defaults: default_state
 })
-export class SiteSectionUIState {
+export class SiteZonesUIState {
     private running_actions_count: number = 0
 
     @Action(SiteZonesUiActions.LoadStart)
     load_start(ctx: StateContext<SiteZonesUIStateModel>, action: SiteZonesUiActions.LoadStart) {
         this.running_actions_count++
-        ctx.setState(SiteSectionsUiOperators.startLoading())
+        ctx.setState(SiteZonesUiOperators.startLoading())
     }
 
     @Action(SiteZonesUiActions.LoadSuccess)
     load_success(ctx: StateContext<SiteZonesUIStateModel>, action: SiteZonesUiActions.LoadSuccess) {
         this.running_actions_count > 0 ? this.running_actions_count-- : 0
-        if (this.running_actions_count == 0) ctx.setState(SiteSectionsUiOperators.loadingSuccess())
+        if (this.running_actions_count == 0) ctx.setState(SiteZonesUiOperators.loadingSuccess())
     }
     @Action(SiteZonesUiActions.LoadError)
     load_error(ctx: StateContext<SiteZonesUIStateModel>, action: SiteZonesUiActions.LoadError) {
         this.running_actions_count > 0 ? this.running_actions_count-- : 0
-        if (this.running_actions_count == 0) ctx.setState(SiteSectionsUiOperators.loadingError(action.error))
+        if (this.running_actions_count == 0) ctx.setState(SiteZonesUiOperators.loadingError(action.error))
     }
 
     @Action(SiteZonesUiActions.SelectTreeviewNode)
