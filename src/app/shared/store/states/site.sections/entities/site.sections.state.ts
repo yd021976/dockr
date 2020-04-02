@@ -1,9 +1,8 @@
-import { State, Action, StateContext, Actions, ofActionDispatched, ofActionSuccessful, ofActionCompleted } from "@ngxs/store";
+import { State, Action, StateContext, Actions } from "@ngxs/store";
 import { SiteZonesStateModel } from "../../../../models/site.zones.entities.model";
 import { SiteZonesActions } from "../../../actions/site.zones.actions";
-import { SiteSectionsNormalizr } from "./site.sections.normlizr";
 import { SiteZonesUiActions } from "../../../actions/site.zones.ui.actions";
-import { state } from "@angular/animations";
+import { SiteZonesNormalizr } from "../../site.zones/entities/site.zones.normlizr";
 
 export const default_siteSection_state: SiteZonesStateModel = {
     zone_entities: {},
@@ -18,7 +17,7 @@ export const default_siteSection_state: SiteZonesStateModel = {
 export class SiteSectionsState {
     constructor(private action$: Actions) { }
 
-    static readonly normalizr: SiteSectionsNormalizr = new SiteSectionsNormalizr()
+    static readonly normalizr: SiteZonesNormalizr = new SiteZonesNormalizr()
 
     /**
      * 
