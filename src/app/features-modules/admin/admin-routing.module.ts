@@ -9,10 +9,11 @@ import { AdminAclSandboxProviderToken } from './acl/sandboxes/admin.acl.sandbox.
 import { AdminUsersSandboxProviderToken } from './users/sandboxes/admin.users.sandbox.token';
 import { AdminSiteZonesContainer } from './site.zones/containers/site.zones.container';
 import { siteZonesServiceToken } from 'src/app/shared/services/site.zones/site.zones.token';
+import { AdminSiteZonesSandboxProviderToken } from './site.zones/sandboxes/site.zones.sandbox.token';
 
 const routes: ApplicationRouteInterface[] = [
   {
-    path: 'admin', canActivate: [AclCanActivate], data: { isMenu: true, title: 'admin', icon: 'fa-wrench', siteZone: 'admin' }, children: [
+    path: 'admin', canActivate: [AclCanActivate], data: { isMenu: true, title: 'Admin', icon: 'fa-wrench', siteZone: 'admin' }, children: [
       {
         path: 'acl',
         component: AclContainer,
@@ -32,7 +33,7 @@ const routes: ApplicationRouteInterface[] = [
         path: 'site-zones',
         component: AdminSiteZonesContainer,
         canActivate: [AclCanActivate],
-        resolve: { 'site_zones_roles': siteZonesServiceToken },
+        resolve: { 'site_zones_roles': siteZonesServiceToken, 'routesState':AdminSiteZonesSandboxProviderToken },
         data: { isMenu: true, link: 'admin/site-zones', title: 'Manage site zones permissions', siteZone: 'site-zones' }
       },
     ]

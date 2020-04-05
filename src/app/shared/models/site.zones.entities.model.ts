@@ -33,13 +33,15 @@ export class SiteZonesModel {
  */
 export class SiteZoneEntity {
     id: string
-    description: string
+    path?: string
+    isRedirect : boolean // Is this zone entity come from a route defined with "redirectTo"
+    title: string
     roles: string[]
     children: string[]
 
     constructor(id: string, description: string, roles: Array<string> = [], children: Array<string> = []) {
         this.id = id
-        this.description = description
+        this.title = description
         this.roles = roles
         this.children = children
     }
@@ -62,4 +64,9 @@ export class SiteZonesStateModel {
 
 export class SiteZonesUIStateModel extends BaseUIModel {
     selection: SiteZonesSelection
+}
+
+export type SiteZonesNormalizrResultEntities = {
+    'routes': SiteZoneEntities,
+    'children': SiteZoneEntities
 }

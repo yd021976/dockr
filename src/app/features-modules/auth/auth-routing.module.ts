@@ -11,10 +11,10 @@ import { AppInjectorToken } from 'src/app/main/app.injector.token';
 
 const routes: ApplicationRouteInterface[] = [
   {
-    path: 'auth', data: { isMenu: false, siteZone: 'auth', }, resolve: siteZonesServiceToken, children: [
-      { path: 'login', component: LoginContainer, data: { isMenu: false, siteZone: 'login' }, resolve: siteZonesServiceToken },
-      { path: 'logout', component: LogoutContainer, data: { isMenu: false, siteZone: 'logout' }, resolve: siteZonesServiceToken },
-      { path: 'register', component: RegisterContainer, data: { isMenu: false, siteZone: 'register' }, resolve: siteZonesServiceToken },
+    path: 'auth', data: { isMenu: false, siteZone: 'auth', title: 'Authentication' }, resolve: siteZonesServiceToken, children: [
+      { path: 'login', component: LoginContainer, data: { isMenu: false, siteZone: 'login', title: 'Login' }, resolve: siteZonesServiceToken },
+      { path: 'logout', component: LogoutContainer, data: { isMenu: false, siteZone: 'logout', title: 'Logout' }, resolve: siteZonesServiceToken },
+      { path: 'register', component: RegisterContainer, data: { isMenu: false, siteZone: 'register', title: 'Register' }, resolve: siteZonesServiceToken },
     ]
   }
 ];

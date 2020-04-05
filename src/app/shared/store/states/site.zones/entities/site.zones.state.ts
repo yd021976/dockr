@@ -1,5 +1,5 @@
 import { State, Action, StateContext, Actions, ofActionDispatched, ofActionSuccessful, ofActionCompleted } from "@ngxs/store";
-import { SiteZonesStateModel } from "../../../../models/site.zones.entities.model";
+import { SiteZonesStateModel, SiteZoneEntities } from "../../../../models/site.zones.entities.model";
 import { SiteZonesActions } from "../../../actions/site.zones.actions";
 import { SiteZonesNormalizr } from "./site.zones.normlizr";
 import { SiteZonesUiActions } from "../../../actions/site.zones.ui.actions";
@@ -29,18 +29,22 @@ export class SiteZonesState {
     }
 
     /**
-     * 
+     *  Load routes (siteZones) data
      */
     @Action(SiteZonesActions.Load_All_Success)
     load_all_success(ctx: StateContext<SiteZonesStateModel>, action: SiteZonesActions.Load_All_Success) {
         try {
-            const results = SiteZonesState.normalizr.normalize(action.zones, SiteZonesState.normalizr.mainSchema)
-            if (!results.entities || !results.entities['zones'] || !results.entities['children']) {
+            const results = SiteZonesState.normalizr.normalize(action.appRoutes, SiteZonesState.normalizr.mainSchema)
+            if (!results.entities || !results.entities.routes || !results.entities.children) {
                 throw new Error('State error at normalize data')
             }
+
+            /** Remove entity with "redirect to" property because required roles should be handled by the target route */
+            
+            /** Update state */
             ctx.setState({
-                zone_entities: results.entities['zones'],
-                children_entities: results.entities['children'],
+                zone_entities: results.entities.routes,
+                children_entities: results.entities.children
             })
             return ctx.dispatch(new SiteZonesUiActions.LoadSuccess())
         }

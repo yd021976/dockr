@@ -39,7 +39,11 @@ export class siteZonesDataSource {
 
         this.datasource$ = source$
         this.datasource$.subscribe((data) => {
-            this.treedatasource.data = Object.keys(data).map((key) => data[key])
+            this.treedatasource.data = Object.keys(data)
+                .filter((key) => {
+                    return !data[key].isRedirect
+                })
+                .map((key) => data[key])
         })
     }
     public get data$(): Observable<SiteZoneEntities> {
@@ -96,7 +100,8 @@ export class siteZonesDataSource {
      * @returns boolean
      */
     hasChild = (_: number, node: siteZoneFlatNode): boolean => {
-        return node.item.children.length > 0
+        const haschild = node.item.children != undefined && node.item.children.length > 0
+        return haschild
     }
 
     public getLevel = (node: siteZoneFlatNode) => node.level
@@ -113,5 +118,5 @@ export class siteZonesDataSource {
     /**
      * 
      */
-    
+
 }

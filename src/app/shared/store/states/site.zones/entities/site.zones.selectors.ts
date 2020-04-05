@@ -1,5 +1,5 @@
 import { Selector, createSelector } from "@ngxs/store";
-import { SiteZonesStateModel, SiteZoneEntity } from "../../../../models/site.zones.entities.model";
+import { SiteZonesStateModel, SiteZoneEntity, SiteZoneEntities } from "../../../../models/site.zones.entities.model";
 import { SiteZonesState } from './site.zones.state'
 import { SiteZonesUISelectors } from "../ui/site.zones.ui.selectors";
 import { siteZoneFlatNode } from "src/app/features-modules/admin/site.zones/services/site.zones.datasource";
@@ -15,9 +15,13 @@ export class SiteZonesSelectors {
         return entity
     }
 
+    /**
+     * Return array of root site zones
+     */
     @Selector([SiteZonesState])
     public static root_zones(state: SiteZonesStateModel) {
         return state.zone_entities
+
     }
 
 

@@ -1,4 +1,5 @@
-import { SiteZoneModel, SiteZonesModel, SiteZoneEntity } from "../../models/site.zones.entities.model";
+import { SiteZoneEntity } from "../../models/site.zones.entities.model";
+import { ApplicationRouteInterface } from "../../models/application.route.model";
 
 export namespace SiteZonesActions {
     export class Load_All {
@@ -8,7 +9,7 @@ export namespace SiteZonesActions {
 
     export class Load_All_Success {
         static readonly type = "[Site Zones] load all success"
-        public constructor(public zones: SiteZonesModel) { }
+        public constructor(public appRoutes: ApplicationRouteInterface[]) { }
     }
 
     export class Load_All_Error {

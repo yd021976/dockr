@@ -1,7 +1,7 @@
 <mat-tree [dataSource]="datasource" [treeControl]="treecontrol">
     <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding @EnterLeave>
         <button mat-icon-button disabled></button>
-        <div (click)="select(node)" [class.selected]="selectedNode==node" class="node-content">{{node.item.description}}</div>
+        <div (click)="select(node)" [class.selected]="selectedNode==node" class="node-content">{{node.item.title || node.item.id}}</div>
     </mat-tree-node>
     <mat-tree-node *matTreeNodeDef="let node; when: hasChild" @EnterLeave matTreeNodePadding>
         <button mat-icon-button [attr.aria-label]="'toggle ' + node.filename" matTreeNodeToggle>
@@ -9,6 +9,6 @@
                 fontIcon="{{treecontrol.isExpanded(node) ? 'fa-minus-circle' : 'fa-plus-circle'}}">
             </mat-icon>
         </button>
-        <div class="node-content" [class.selected]="selectedNode==node" (click)="select(node)">{{node.item.description}}</div>
+        <div class="node-content" [class.selected]="selectedNode==node" (click)="select(node)">{{node.item.title || node.item.id}}</div>
     </mat-tree-node>
 </mat-tree>

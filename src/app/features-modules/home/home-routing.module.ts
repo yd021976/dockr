@@ -11,7 +11,7 @@ import { SiteZonesService } from 'src/app/shared/services/site.zones/site.zones.
 const routes: ApplicationRouteInterface[] = [
   {
     path: 'home', component: HomeContainer, data: { isMenu: true, title: 'Home', icon: 'fa-home', siteZone: 'home' }, resolve: { 'roles': siteZonesServiceToken }, runGuardsAndResolvers: 'always', children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full', data: { isMenu: false, title: 'empty' } },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full', data: { isMenu: false, title: 'empty',siteZone:'dashboard-home' } },
       { path: 'dashboard', component: DashboardComponent, data: { isMenu: true, link: 'home/dashboard', title: 'Dashboard', siteZone: 'dashboard' }, resolve: { 'roles': siteZonesServiceToken } },
       { path: 'todos', component: TodoComponent, data: { isMenu: true, link: 'home/todos', title: 'Todos', siteZone: 'todos' }, resolve: { 'roles': siteZonesServiceToken } }
     ]

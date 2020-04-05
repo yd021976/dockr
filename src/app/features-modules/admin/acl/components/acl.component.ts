@@ -28,14 +28,14 @@ import { FlatTreeNode } from 'src/app/shared/models/treenode.model';
       transition( ':enter', [
         style( { 'min-height': '0px', 'max-height': '0px', 'height': '0px' } ),
         group( [
-          query( "@*", animateChild(), { optional: true } ),
+          query( '@*', animateChild(), { optional: true } ),
           animate( '0.3s 50ms ease', style( { 'max-height': '*', 'min-height': '*', 'height': '*' } ) )
         ] )
       ] ),
       transition( ':leave', [
         style( { 'min-height': '*' } ),
         group( [
-          query( "@*", animateChild(), { optional: true } ),
+          query( '@*', animateChild(), { optional: true } ),
           animate( '0.3s 50ms ease', style( { 'min-height': '0px', 'height': '0px' } ) )
         ] )
       ] )
@@ -43,7 +43,7 @@ import { FlatTreeNode } from 'src/app/shared/models/treenode.model';
   ]
 } )
 export class AclComponent implements OnInit, AfterViewInit {
-  @Input( 'colModel' ) colmodel: AclTreeColmodel[]
+  @Input( 'colmodel' ) colmodel: AclTreeColmodel[]
   @Input( 'nodeTemplateRenderer' ) nodeTemplateRenderer: TemplateRef<any>
   @Input( 'treecontrol' ) treecontrol: BaseTreeControl<any>
   @Input( 'flatDataSource' ) flatDataSource: MatTreeFlatDataSource<any, any>

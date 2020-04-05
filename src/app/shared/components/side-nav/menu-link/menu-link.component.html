@@ -1,4 +1,4 @@
-<ng-container *ngIf="!menuItem.children && menuItem.data?.isMenu">
+<ng-container *ngIf="menuItem && !menuItem.children && menuItem.data?.isMenu">
   <a class="menu-link-item" routerLink="{{menuItem.data?.link}}" #linkActive="routerLinkActive" routerLinkActive="linkActive">
     <mat-icon class="fa-xs menu-link-title-icon" [fontIcon]="linkActive.isActive?'fa-angle-right':'fa-angle-right'"></mat-icon>
     <span class="menu-link-title-description">{{menuItem.data?.title}}</span>

@@ -1,14 +1,16 @@
-import { AdminSiteZonesSandboxInterface } from "./site.zones.sandbox.interface";
 import { Injectable } from "@angular/core";
-import { SiteZonesActions } from "src/app/shared/store/actions/site.zones.actions";
-import { SiteZonesSelectors } from "src/app/shared/store/states/site.zones/entities/site.zones.selectors";
-import { siteZonesDataSource, siteZoneFlatNode } from "../services/site.zones.datasource";
-import { SiteZoneEntity, SiteZoneEntities } from "src/app/shared/models/site.zones.entities.model";
+import { Router } from "@angular/router";
 import { Select } from "@ngxs/store";
 import { Observable } from "rxjs";
-import { SiteZonesUiActions } from "src/app/shared/store/actions/site.zones.ui.actions";
-import { SiteZonesUISelectors } from "src/app/shared/store/states/site.zones/ui/site.zones.ui.selectors";
 import { map } from "rxjs/operators";
+import { ApplicationRouteInterface } from "src/app/shared/models/application.route.model";
+import { SiteZoneEntities, SiteZoneEntity } from "src/app/shared/models/site.zones.entities.model";
+import { SiteZonesActions } from "src/app/shared/store/actions/site.zones.actions";
+import { SiteZonesUiActions } from "src/app/shared/store/actions/site.zones.ui.actions";
+import { SiteZonesSelectors } from "src/app/shared/store/states/site.zones/entities/site.zones.selectors";
+import { SiteZonesUISelectors } from "src/app/shared/store/states/site.zones/ui/site.zones.ui.selectors";
+import { siteZoneFlatNode, siteZonesDataSource } from "../services/site.zones.datasource";
+import { AdminSiteZonesSandboxInterface } from "./site.zones.sandbox.interface";
 
 @Injectable({ providedIn: 'root' })
 export class AdminSiteZonesSandboxService extends AdminSiteZonesSandboxInterface {
@@ -23,7 +25,7 @@ export class AdminSiteZonesSandboxService extends AdminSiteZonesSandboxInterface
     @Select(SiteZonesUISelectors.treeview_selected_node) public selectedNode$: Observable<siteZoneFlatNode>
     @Select(SiteZonesSelectors.selected) public currentSelectedEntity$: Observable<SiteZoneEntity>
 
-    constructor(private treedatasource: siteZonesDataSource) {
+    constructor(private treedatasource: siteZonesDataSource, private router: Router) {
         super()
 
         /** Init the datasource service */
@@ -55,6 +57,7 @@ export class AdminSiteZonesSandboxService extends AdminSiteZonesSandboxInterface
      */
     private load_site_zones_data(): Promise<void> {
         this.store.dispatch(new SiteZonesActions.Load_All())
+        this.store.dispatch(new SiteZonesActions.Load_All_Success(<ApplicationRouteInterface[]>this.router.config))
         return Promise.resolve()
     }
 
@@ -63,13 +66,16 @@ export class AdminSiteZonesSandboxService extends AdminSiteZonesSandboxInterface
      */
     public nodeGetChildren = (node: SiteZoneEntity) => {
         return this.store.selectSnapshot(SiteZonesSelectors.getChildrenEntities(node))
+            .filter((entity) => {
+                return !entity.isRedirect
+            })
     }
 
     /**
      * 
      */
     updateNode(newValue: siteZoneFlatNode): boolean {
-        const siteZoneEntity = new SiteZoneEntity(newValue.item.id, newValue.item.description)
+        const siteZoneEntity = new SiteZoneEntity(newValue.item.id, newValue.item.title)
 
         this.store.dispatch(new SiteZonesActions.Update_Zone(siteZoneEntity))
 
