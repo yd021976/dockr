@@ -11,10 +11,10 @@ import { AppInjectorToken } from 'src/app/main/app.injector.token';
 
 const routes: ApplicationRouteInterface[] = [
   {
-    path: 'auth', data: { isMenu: false, siteZone: 'auth', title: 'Authentication' }, resolve: siteZonesServiceToken, children: [
-      { path: 'login', component: LoginContainer, data: { isMenu: false, siteZone: 'login', title: 'Login' }, resolve: siteZonesServiceToken },
-      { path: 'logout', component: LogoutContainer, data: { isMenu: false, siteZone: 'logout', title: 'Logout' }, resolve: siteZonesServiceToken },
-      { path: 'register', component: RegisterContainer, data: { isMenu: false, siteZone: 'register', title: 'Register' }, resolve: siteZonesServiceToken },
+    path: 'auth', data: { isMenu: false, siteZone: 'auth', title: 'Authentication' }, children: [
+      { path: 'login', component: LoginContainer, data: { isMenu: false, siteZone: 'login', title: 'Login' } },
+      { path: 'logout', component: LogoutContainer, data: { isMenu: false, siteZone: 'logout', title: 'Logout' } },
+      { path: 'register', component: RegisterContainer, data: { isMenu: false, siteZone: 'register', title: 'Register' } },
     ]
   }
 ];
@@ -22,13 +22,11 @@ const routes: ApplicationRouteInterface[] = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [
-    {
-      provide: siteZonesServiceToken,
-      useClass: SiteZonesService,
-      multi: false,
-      deps: [AppInjectorToken]
-    }
-  ]
+  providers: [{
+    provide: siteZonesServiceToken,
+    useClass: SiteZonesService,
+    multi: false,
+    deps: [AppInjectorToken]
+  }]
 })
 export class AuthRoutingModule { }

@@ -5,8 +5,8 @@ import { siteZoneFlatNode } from "src/app/features-modules/admin/site.zones/serv
  * Selection model for UI
  */
 export class SiteZonesSelection {
-    treeviewNode: siteZoneFlatNode
-    role: RoleSelection
+    treeviewNode: siteZoneFlatNode // The treeview selected node
+    role: RoleSelection // The component(s) selected role
 }
 
 export class RoleSelection {
@@ -17,7 +17,7 @@ export class RoleSelection {
  */
 export class SiteZoneModel {
     id: string
-    roles: string[]
+    roles: siteZoneRoles
     children: SiteZoneModel[]
 }
 
@@ -36,10 +36,10 @@ export class SiteZoneEntity {
     path?: string
     isRedirect : boolean // Is this zone entity come from a route defined with "redirectTo"
     title: string
-    roles: string[]
+    roles: siteZoneRoles
     children: string[]
 
-    constructor(id: string, description: string, roles: Array<string> = [], children: Array<string> = []) {
+    constructor(id: string, description: string, roles: siteZoneRoles = [], children: Array<string> = []) {
         this.id = id
         this.title = description
         this.roles = roles
@@ -69,4 +69,10 @@ export class SiteZonesUIStateModel extends BaseUIModel {
 export type SiteZonesNormalizrResultEntities = {
     'routes': SiteZoneEntities,
     'children': SiteZoneEntities
+}
+
+export type siteZoneRoles = string[]
+
+export type siteZonesServiceInterface = {
+    [siteZoneId:string]:string[] /** array of roles for each site zone ID */
 }

@@ -1,8 +1,10 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { SiteZonesServiceInterface } from './site.zones.interface';
 import * as mock from './site.zones.mock.data'
-import { ActivatedRouteSnapshot, RouterStateSnapshot, ActivatedRoute } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { ApplicationRouteData } from '../../models/application.route.model';
+import { siteZoneRoles } from '../../models/site.zones.entities.model';
+import * as feathers_errors  from '@feathersjs/errors';
 
 @Injectable({
     providedIn: 'root'
@@ -27,8 +29,12 @@ export class SiteZonesService extends SiteZonesServiceInterface {
     find(params): Promise<any> {
         return Promise.resolve(mock.default)
     }
-    get(id, params): Promise<any> {
-        return this.defaultResponse()
+    get(id, params): Promise<siteZoneRoles> {
+        return this.service.get(id)
+            .then(roles => roles)
+            .catch((err:feathers_errors.NotFound) => {
+
+            })
     }
     create(id, param): Promise<any> {
         return this.defaultResponse()

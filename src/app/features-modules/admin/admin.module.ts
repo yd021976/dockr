@@ -55,6 +55,7 @@ import { siteZonesServiceToken } from 'src/app/shared/services/site.zones/site.z
 import { SiteZonesService } from 'src/app/shared/services/site.zones/site.zones.service';
 import { AdminSiteZonesTreeComponent } from './site.zones/components/treeview/site.zones.tree.component';
 import { AdminSiteZonesRolesListComponent } from './site.zones/components/roles.list/site.zones.roles.list.component';
+import { AppInjectorToken } from 'src/app/main/app.injector.token';
 
 const components = [
   AclContainer, UsersContainer, UsersComponent, AclComponent, ActionComponent, FieldComponent, RoleComponent, ServiceComponent,
@@ -91,7 +92,8 @@ const components = [
     {
       provide: siteZonesServiceToken,
       useClass: SiteZonesService,
-      multi: false
+      multi: false,
+      deps: [AppInjectorToken]
     },
     /**
      * Container Sandboxes providers

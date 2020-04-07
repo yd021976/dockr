@@ -95,6 +95,20 @@ export class AdminSiteZonesSandboxService extends AdminSiteZonesSandboxInterface
      * @param node 
      */
     public selectNode(node: siteZoneFlatNode): boolean {
+        /** Load site zone roles */
+        this.store.dispatch(new SiteZonesActions.Update_Zone(node.item))
+
+        /** Load site zone role from role service */
+        this.site_zones_service.get(node.item.id)
+            .then((roles) => {
+                node.item.roles = roles
+                this.store.dispatch(new SiteZonesActions.Update_Zone_Success(node.item))
+            })
+            /** Error while loading site zone required roles from backend */
+            .catch(err => {
+                this.store.dispatch(new SiteZonesActions.Update_Zone_Error(err))
+            })
+
         /** set treeview selected node */
         this.store.dispatch(new SiteZonesUiActions.SelectTreeviewNode(node))
         return true

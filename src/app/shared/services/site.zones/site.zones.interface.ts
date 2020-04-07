@@ -7,6 +7,7 @@ import { BackendBaseServiceInterface } from '../backend.api.endpoint/interfaces/
 import { BackendMethodsInterface } from '../backend.api.endpoint/interfaces/backend.service.methods.interface';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { ApplicationRouteData } from '../../models/application.route.model';
+import { siteZonesServiceInterface, siteZoneRoles } from '../../models/site.zones.entities.model';
 
 export abstract class SiteZonesServiceInterface implements BackendMethodsInterface {
     protected readonly loggerName: string = "site-zones-service"
@@ -24,10 +25,10 @@ export abstract class SiteZonesServiceInterface implements BackendMethodsInterfa
     }
 
     public abstract resolve(activatedRoute: ActivatedRouteSnapshot, routerState: RouterStateSnapshot): Promise<ApplicationRouteData>
-    public abstract find( params? )
-    public abstract create( id, param )
-    public abstract delete( id, param )
-    public abstract get( id, params )
-    public abstract patch( id, param )
-    public abstract update( id, param )
+    public abstract find( params? ):Promise<siteZonesServiceInterface>
+    public abstract create( id, param? )
+    public abstract delete( id, param? )
+    public abstract get( id, params? ):Promise<siteZoneRoles>
+    public abstract patch( id, param? )
+    public abstract update( id, param? )
 }

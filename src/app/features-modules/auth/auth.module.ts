@@ -19,12 +19,15 @@ import { PermissionsService } from 'src/app/shared/services/acl/permissions/perm
 import { Ability } from '@casl/ability';
 import { AuthSandboxProviderToken } from './sandboxes/auth.sandbox.token';
 import { AuthSandbox } from './sandboxes/auth.sandbox';
+import { siteZonesServiceToken } from 'src/app/shared/services/site.zones/site.zones.token';
+import { SiteZonesService } from 'src/app/shared/services/site.zones/site.zones.service';
+import { AppInjectorToken } from 'src/app/main/app.injector.token';
 
 export function createAbility() {
-  return new Ability( [] )
+  return new Ability([])
 }
 
-@NgModule( {
+@NgModule({
   imports: [
     CommonModule,
     ComponentsModule,
@@ -34,7 +37,7 @@ export function createAbility() {
     MatFormFieldModule,
     MatInputModule,
   ],
-  declarations: [ LoginContainer, LogoutContainer, RegisterContainer, LoginComponent, LogoutComponent, RegisterComponent ],
+  declarations: [LoginContainer, LogoutContainer, RegisterContainer, LoginComponent, LogoutComponent, RegisterComponent],
   providers: [
     {
       provide: AuthSandboxProviderToken,
@@ -43,6 +46,6 @@ export function createAbility() {
     },
     AclService, RolesService,
     { provide: Ability, useFactory: createAbility, multi: false },
-    { provide: PermissionsService, deps: [ Ability ] } ]
-} )
+    { provide: PermissionsService, deps: [Ability] }]
+})
 export class AuthModule { }
