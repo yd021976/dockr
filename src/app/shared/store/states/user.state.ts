@@ -1,10 +1,9 @@
-import { Action, State, StateContext, Selector, Select } from '@ngxs/store';
+import { Action, State, StateContext, Selector } from '@ngxs/store';
 import { UserModel } from '../../models/user.model';
 import * as actions from '../actions/user.actions';
-import { Inject } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { AppLoggerServiceToken } from '../../services/logger/app-logger/app-logger-token';
-import { AppLoggerService } from '../../services/logger/app-logger/service/app-logger.service';
-import { stat } from 'fs';
+import { AppLoggerServiceInterface } from '../../services/logger/app-logger/service/app-logger.service';
 
 export const default_state_user: UserModel = {
     "_id": '',
@@ -24,10 +23,12 @@ export const default_state_user: UserModel = {
     name: 'user',
     defaults: default_state_user
 } )
+
+@Injectable()
 export class UserState {
     private readonly loggerName: string = "UserState";
 
-    constructor( @Inject( AppLoggerServiceToken ) protected loggerService: AppLoggerService ) {
+    constructor( @Inject( AppLoggerServiceToken ) protected loggerService: AppLoggerServiceInterface ) {
         this.loggerService.createLogger( this.loggerName );
     }
 

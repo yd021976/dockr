@@ -2,6 +2,7 @@ import { State, Action, StateContext } from '@ngxs/store'
 import { SiteZonesUIStateModel } from 'src/app/shared/models/site.zones.entities.model';
 import { SiteZonesUiOperators } from './site.zones.ui.operators';
 import { SiteZonesUiActions } from '../../../actions/site.zones.ui.actions';
+import { Injectable } from '@angular/core';
 
 const default_state: SiteZonesUIStateModel = {
     isLoading: false,
@@ -17,6 +18,8 @@ const default_state: SiteZonesUIStateModel = {
     name: 'site_zones_ui',
     defaults: default_state
 })
+
+@Injectable()
 export class SiteZonesUIState {
     private running_actions_count: number = 0
 

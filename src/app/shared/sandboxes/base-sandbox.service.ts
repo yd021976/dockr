@@ -1,4 +1,4 @@
-import { Observable, BehaviorSubject } from "rxjs";
+import { Observable } from "rxjs";
 import { Select, Store } from "@ngxs/store";
 
 import { ApplicationState } from "../store/states/application.state";

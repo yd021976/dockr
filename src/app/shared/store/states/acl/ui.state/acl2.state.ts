@@ -5,6 +5,7 @@ import { AclUIActions } from '../../../actions/acl2/acl2.state.actions'
 import { AppError, errorType } from "src/app/shared/models/application.error.model";
 import { UIStateAclOperators } from './state.operators'
 import { error_actions, error_actions_types, start_actions, start_actions_types, success_actions, success_actions_types } from './state.action.types.list'
+import { Injectable } from "@angular/core";
 
 
 @State<AclStateUIModel>( {
@@ -16,6 +17,8 @@ import { error_actions, error_actions_types, start_actions, start_actions_types,
         selectedNode: null
     }
 } )
+
+@Injectable()
 export class AclUIState {
     /**
      * 

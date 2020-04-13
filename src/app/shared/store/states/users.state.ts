@@ -2,6 +2,7 @@ import { State, Action, StateContext, Selector } from "@ngxs/store";
 import { UsersModel, UserModel, UserModelBase } from "../../models/user.model";
 import { Users_Load_All, Users_Load_All_Success, Users_Load_All_Error, Users_Select_User, Users_Update_User, Users_Update_User_Success, Users_Update_User_Error, Users_Add, Users_Add_Success, Users_Add_Error, Users_Remove, Users_Remove_Success, Users_Remove_Error } from "../actions/users.action";
 import * as _ from 'lodash';
+import { Injectable } from "@angular/core";
 
 export const default_state_users: UsersModel = {
     users: [],
@@ -16,6 +17,8 @@ export const default_state_users: UsersModel = {
     name: 'users',
     defaults: default_state_users
 } )
+
+@Injectable()
 export class UsersState {
     /**
      * 

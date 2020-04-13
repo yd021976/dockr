@@ -8,7 +8,6 @@ import { DashboardSandbox } from './sandboxes/dashboard/dashboard.sandbox.servic
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { ComponentsModule } from '../../shared/components/components.module';
 import { TodoComponent } from './components/todo/todo.component';
-import { NgxPermissionsModule } from 'ngx-permissions';
 import { DirectivesModule } from 'src/app/shared/directives/directives.module';
 import { dashboardSandboxProviderToken } from './sandboxes/dashboard/dashboard.sandbox.token';
 /**
@@ -20,7 +19,6 @@ import { dashboardSandboxProviderToken } from './sandboxes/dashboard/dashboard.s
     ComponentsModule,
     HomeRoutingModule,
     MatExpansionModule,
-    NgxPermissionsModule,
     DirectivesModule
   ],
   declarations: [HomeContainer, DashboardComponent, TodoComponent],

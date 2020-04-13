@@ -4,6 +4,7 @@ import { SiteZonesActions } from "../../../actions/site.zones.actions";
 import { SiteZonesNormalizr } from "./site.zones.normlizr";
 import { SiteZonesUiActions } from "../../../actions/site.zones.ui.actions";
 import { state } from "@angular/animations";
+import { Injectable } from "@angular/core";
 
 export const default_siteZones_state: SiteZonesStateModel = {
     zone_entities: {},
@@ -15,6 +16,7 @@ export const default_siteZones_state: SiteZonesStateModel = {
     defaults: default_siteZones_state
 
 })
+@Injectable()
 export class SiteZonesState {
     constructor(private action$: Actions) { }
 

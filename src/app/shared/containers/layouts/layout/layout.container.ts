@@ -4,9 +4,9 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 import { BackendConnectionState } from '../../../models/backend.connection.state.model';
 import { ErrorDialogComponent } from '../../../components/error/dialog/error-dialog.component';
-import { LayoutContainerSandboxService } from '../sandboxes/layout.container.sandbox.service';
 import { ThemeItem } from '../../../models/theme-items.model';
 import { LayoutContainerSandboxProviderToken } from '../sandboxes/layout.container.sandbox.token';
+import { LayoutContainerSandboxInterface } from '../sandboxes/layout.container.sandbox.interface';
 
 @Component( {
     selector: 'app-layout',
@@ -23,7 +23,7 @@ export class LayoutContainer implements OnInit, OnDestroy {
     private dialogConnection: MatDialogRef<ErrorDialogComponent>;
 
     constructor(
-        @Inject( LayoutContainerSandboxProviderToken ) public layoutSandbox: LayoutContainerSandboxService,
+        @Inject( LayoutContainerSandboxProviderToken ) public layoutSandbox: LayoutContainerSandboxInterface,
         public router: Router,
         private dialogService: MatDialog ) {
 

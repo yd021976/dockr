@@ -2,6 +2,7 @@ import { State, Action, StateContext, Selector } from "@ngxs/store";
 import { AppError } from "../../models/application.error.model";
 import { ApplicationNotifications_Append_Message, ApplicationNotifications_Shift_Message, ApplicationNotifications_Remove_Message } from "../actions/application-notifications.actions";
 import { ApplicationNotificationsModel, ApplicationNotification } from "../../models/application.notifications.model";
+import { Injectable } from "@angular/core";
 
 export const default_state_application_notifications: ApplicationNotificationsModel = { notifications: [] }
 
@@ -9,6 +10,8 @@ export const default_state_application_notifications: ApplicationNotificationsMo
     name: 'ApplicationNotifications',
     defaults: default_state_application_notifications
 } )
+
+@Injectable()
 export class AppNotificationsState {
     /**
      * Action

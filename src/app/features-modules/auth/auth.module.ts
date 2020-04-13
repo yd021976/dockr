@@ -46,6 +46,6 @@ export function createAbility() {
     },
     AclService, RolesService,
     { provide: Ability, useFactory: createAbility, multi: false },
-    { provide: PermissionsService, deps: [Ability] }]
+    { provide: PermissionsService, deps: [Ability], useValue: undefined }]
 })
 export class AuthModule { }

@@ -1,8 +1,4 @@
-import { Injectable, Inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { Store, } from '@ngxs/store';
-import { AppLoggerService } from '../../../services/logger/app-logger/service/app-logger.service';
-import { AppLoggerServiceToken } from '../../../services/logger/app-logger/app-logger-token';
+import { Injectable } from '@angular/core';
 import { LayoutContainerSandboxInterface } from './layout.container.sandbox.interface';
 
 @Injectable()

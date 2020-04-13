@@ -5,6 +5,8 @@ import { BackendConnectionState } from "src/app/shared/models/backend.connection
 import { ApplicationInjector } from "src/app/shared/application.injector.class";
 import { BackendBaseServiceInterface } from "src/app/shared/services/backend.api.endpoint/interfaces/backend.base.service";
 import { BackendServiceToken } from "src/app/shared/services/backend.api.endpoint/backend.service.token";
+import { Select } from "@ngxs/store";
+import { ApplicationState } from "src/app/shared/store/states/application.state";
 
 
 export abstract class LayoutContainerSandboxInterface extends BaseSandboxService {

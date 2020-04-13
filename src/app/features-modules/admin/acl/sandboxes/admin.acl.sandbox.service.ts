@@ -9,7 +9,6 @@ import { AclRoleModel, AclRoleEntity } from "src/app/shared/models/acl.role.mode
 import { Acl_Field_Update_Allowed_Success, Acl_Field_Update_Allowed, Acl_Field_Update_Allowed_Error } from "../../../../shared/store/actions/acl2/acl2.field.entity.action";
 import { Acl_Action_Update_Allowed_Success, Acl_Action_Update_Allowed, Acl_Action_Update_Allowed_Error } from "../../../../shared/store/actions/acl2/acl2.action.entity.actions";
 import { Acl_Services_Remove_Entity_Success, Acl_Services_Remove_Entity, Acl_Services_Remove_Entity_Error } from "../../../../shared/store/actions/acl2/acl2.service.entity.actions";
-import { Application_Event_Notification } from "../../../../shared/store/actions/application.actions";
 import { ApplicationNotification, ApplicationNotificationType } from "../../../../shared/models/application.notifications.model";
 import { ApplicationNotifications_Append_Message } from "../../../../shared/store/actions/application-notifications.actions";
 import { v4 as uuid } from 'uuid';
@@ -22,6 +21,7 @@ import { AclTreeSelectors } from '../../../../shared/store/states/acl/selectors/
 import { AclUISelectors } from "../../../../shared/store/states/acl/selectors/acl.ui.selectors";
 import { RolesSelectors } from "../../../../shared/store/states/acl/selectors/roles.selectors";
 import { AdminAclSandboxInterface } from "./admin.acl.sandbox.interface";
+import { ApplicationActions } from "src/app/shared/store/actions/application.actions";
 
 @Injectable( { providedIn: 'root' } )
 export class AdminAclSandboxService extends AdminAclSandboxInterface {
@@ -84,7 +84,7 @@ export class AdminAclSandboxService extends AdminAclSandboxInterface {
                 this.store.dispatch( new RolesStateActions.Load_All_Success( results ) )
             } )
             .catch( ( err ) => {
-                this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, err[ 'name' ], ApplicationNotificationType.ERROR ) ) )
+                this.store.dispatch( new ApplicationActions.Application_Event_Notification( new ApplicationNotification( err.message, err[ 'name' ], ApplicationNotificationType.ERROR ) ) )
                 this.store.dispatch( new RolesStateActions.Load_All_Error( err ) )
             } )
     }
@@ -98,7 +98,7 @@ export class AdminAclSandboxService extends AdminAclSandboxInterface {
                 this.store.dispatch( new Services_Load_All_Success( results ) )
             } )
             .catch( ( err ) => {
-                this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, 'LoadRolesError', ApplicationNotificationType.ERROR ) ) )
+                this.store.dispatch( new ApplicationActions.Application_Event_Notification( new ApplicationNotification( err.message, 'LoadRolesError', ApplicationNotificationType.ERROR ) ) )
             } )
     }
 
@@ -149,7 +149,7 @@ export class AdminAclSandboxService extends AdminAclSandboxInterface {
             .catch( err => {
                 if ( err.name != 'lockAlreadyAcquired' ) {
                     this.store.dispatch( new AclUIActions.Resource_Lock_Error( err ) )
-                    this.store.dispatch( new Application_Event_Notification( new ApplicationNotification( err.message, 'AclLockError', ApplicationNotificationType.ERROR ) ) )
+                    this.store.dispatch( new ApplicationActions.Application_Event_Notification( new ApplicationNotification( err.message, 'AclLockError', ApplicationNotificationType.ERROR ) ) )
                 }
                 else {
                     this.store.dispatch( [ new AclUIActions.Resource_Lock_Success(), new ApplicationLocksActions.update( resource_name, { name: resource_name, isLocked: false } ) ] )
@@ -179,7 +179,7 @@ export class AdminAclSandboxService extends AdminAclSandboxInterface {
                 this.store.dispatch( [
                     new AclUIActions.Resource_UnLock_Error( err ),
                     new ApplicationLocksActions.update( resource_name, { name: resource_name, isLocked: false } ),
-                    new Application_Event_Notification( new ApplicationNotification( err.message, 'AclReleaseError', ApplicationNotificationType.ERROR ) )
+                    new ApplicationActions.Application_Event_Notification( new ApplicationNotification( err.message, 'AclReleaseError', ApplicationNotificationType.ERROR ) )
                 ] )
             } )
 
@@ -270,7 +270,7 @@ export class AdminAclSandboxService extends AdminAclSandboxInterface {
                     .catch( ( error ) => {
                         this.store.dispatch( [
                             new Acl_Field_Update_Allowed_Error( error ),
-                            new Application_Event_Notification( new ApplicationNotification( error.message, 'Backend_AclFieldUpdate', ApplicationNotificationType.ERROR ) )
+                            new ApplicationActions.Application_Event_Notification( new ApplicationNotification( error.message, 'Backend_AclFieldUpdate', ApplicationNotificationType.ERROR ) )
                         ] )
                     } )
             } )
@@ -326,7 +326,7 @@ export class AdminAclSandboxService extends AdminAclSandboxInterface {
                     } )
                     .catch( err => {
                         this.store.dispatch( [
-                            new Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclServiceRemove', ApplicationNotificationType.ERROR ) ),
+                            new ApplicationActions.Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclServiceRemove', ApplicationNotificationType.ERROR ) ),
                             new Acl_Services_Remove_Entity_Error( err )
                         ] )
                     } )
@@ -358,7 +358,7 @@ export class AdminAclSandboxService extends AdminAclSandboxInterface {
                     .catch( err => {
                         this.store.dispatch( [
                             new RolesStateActions.Add_Service_Error( err ),
-                            new Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclRoleAddService', ApplicationNotificationType.ERROR ) )
+                            new ApplicationActions.Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclRoleAddService', ApplicationNotificationType.ERROR ) )
                         ] )
                     } )
             } )
@@ -393,7 +393,7 @@ export class AdminAclSandboxService extends AdminAclSandboxInterface {
                     .catch( err => {
                         this.store.dispatch( [
                             new RolesStateActions.Add_Entity_Error( err ),
-                            new Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclAddRole', ApplicationNotificationType.ERROR ) )
+                            new ApplicationActions.Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclAddRole', ApplicationNotificationType.ERROR ) )
                         ] )
                     } )
             } )
@@ -417,7 +417,7 @@ export class AdminAclSandboxService extends AdminAclSandboxInterface {
                     .catch( err => {
                         this.store.dispatch( [
                             new RolesStateActions.Remove_Entity_Error( err ),
-                            new Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclRemoveRole', ApplicationNotificationType.ERROR ) )
+                            new ApplicationActions.Application_Event_Notification( new ApplicationNotification( err.message, 'Backend_AclRemoveRole', ApplicationNotificationType.ERROR ) )
                         ] )
                     } )
             } )

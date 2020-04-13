@@ -1,10 +1,9 @@
-import * as feathers from '@feathersjs/feathers';
-import * as feathersAuthenticate from '@feathersjs/authentication-client';
-import * as feathersSocket from '@feathersjs/socketio-client';
+import init_Feathers_Application, { Application, Service } from '@feathersjs/feathers';
+import init_Feathers_AuthClient from '@feathersjs/authentication-client';
+import init_Feathers_Socket from '@feathersjs/socketio-client';
+import { AuthenticationResult } from '@feathersjs/authentication';
 import { Inject, Injectable } from '@angular/core';
 import { Optional } from '@angular/core';
-
-
 import { BackendSocketioServiceInterface } from '../../../implementations/socketio/backend.socketio.interface.service';
 import { BackendStateChangeReasons } from '../../../../../models/backend.connection.state.model';
 import { BackendConfigToken } from '../../../interfaces/backend.config.token';
@@ -13,25 +12,23 @@ import { loginCredentials } from '../../../../../models/user.model';
 import { AppLoggerServiceToken } from '../../../../logger/app-logger/app-logger-token';
 import { AppLoggerService } from '../../../../logger/app-logger/service/app-logger.service';
 
-@Injectable( {
-  providedIn: 'root'
-} )
+@Injectable()
 /**
  * IMPORTANT: Current/last logged in user is a property sets in "feathers" object
  */
 export class FeathersjsBackendService extends BackendSocketioServiceInterface {
   private readonly loggerName: string = "FeathersjsBackendService";
 
-  private feathers: feathers.Application = null;
+  private feathers: Application = null;
   private currentCounter: number = 0; // For debug purpose ONLY ==> Copy of static "count" property
   static count: number = 0; // Class instances count
 
   constructor(
-    @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerService,
-    @Optional() @Inject( BackendConfigToken ) config: BackendConfig ) {
-    super( loggerService, config );
+    @Inject(AppLoggerServiceToken) public loggerService: AppLoggerService,
+    @Optional() @Inject(BackendConfigToken) config: BackendConfig) {
+    super(loggerService, config);
     // Register a new logger name
-    this.loggerService.createLogger( this.loggerName );
+    this.loggerService.createLogger(this.loggerName);
 
     // Class instance count 
     FeathersjsBackendService.count++;
@@ -40,103 +37,81 @@ export class FeathersjsBackendService extends BackendSocketioServiceInterface {
   }
 
   private configureFeathers() {
-    this.feathers = feathers.default()
+    this.feathers = init_Feathers_Application()
 
     this.feathers
-      .configure( feathersSocket( this.socketio ) )
-      .configure( feathersAuthenticate.default( {
-        storage: window.localStorage
-      } ) );
-
+      .configure(init_Feathers_Socket(this.socketio))
+      .configure(init_Feathers_AuthClient());
 
     /**
      * Event when user logs out
      */
-    this.feathers.service( 'authentication' ).on( 'user-token-expired', ( data ) => {
-      this.updateConnectionState( { attemptNumber: 0, changeReason: BackendStateChangeReasons.Feathers_Token_Expired } )
-      this.feathers.set( 'user', null )
-    } )
+    this.feathers.service('authentication').on('user-token-expired', (data) => {
+      this.updateConnectionState({ attemptNumber: 0, changeReason: BackendStateChangeReasons.Feathers_Token_Expired })
+      // Remove token from storage
+      this.feathers.authentication.removeAccessToken().then((status)=>{
+        return this.feathers.authentication.reset()
+      })
+      this.feathers.set('user', null)
+    })
 
-    this.feathers.on( 'reauthentication-error', ( event ) => {
-      this.loggerService.debug( this.loggerName, {
-        message: 'reauthentication-error', otherParams: [ event ]
-      } );
+    this.feathers.on('reauthentication-error', (event) => {
+      this.loggerService.debug(this.loggerName, {
+        message: 'reauthentication-error', otherParams: [event]
+      });
 
 
-      if ( event[ 'data' ] && event[ 'data' ][ 'name' ] == 'TokenExpiredError' ) {
+      if (event['data'] && event['data']['name'] == 'TokenExpiredError') {
         // IMPORTANT: We don't clear "user" property here. We need to keep track of last loggedin user, even after auth error or deconnexion
-        this.updateConnectionState( { changeReason: BackendStateChangeReasons.Feathers_reauthentication_error } );
+        this.updateConnectionState({ changeReason: BackendStateChangeReasons.Feathers_reauthentication_error });
       }
-    } );
+    });
   }
   public getCurrentUser(): any {
-    return this.feathers.get( 'user' );
+    return this.feathers.get('user');
   }
-  public service( name: string ): feathers.Service<any> {
-    return this.feathers.service( name );
+  public service(name: string): Service<any> {
+    return this.feathers.service(name);
   }
 
   /**
    * Authenticate user and sets <user> property of this service
    * Note : As event "authenticated" will be trigerred in this method, the user data will be fetched twice. @see configureFeathers
    */
-  public authenticate( credentials?: loginCredentials ): Promise<any> {
-    this.loggerService.debug( this.loggerName, { message: 'authenticate()', otherParams: [ 'START', credentials ] } );
-    return this.feathers.authenticate( credentials )
-      .then( response => {
-        this.loggerService.debug( this.loggerName, { message: 'authenticate()', otherParams: [ 'PROGRESS', 'STEP-1', response ] } );
-        return this.feathers.passport.verifyJWT( response.accessToken )
-      } )
-      .then( ( payload: any ) => {
-        this.loggerService.debug( this.loggerName, { message: 'authenticate()', otherParams: [ 'PROGRESS', 'STEP-2', payload ] } );
-        return this.feathers.service( 'users' ).get( payload.userId );
-      } )
-      .then( user => {
-        this.loggerService.debug( this.loggerName, { message: 'authenticate()', otherParams: [ 'END', 'OK', user ] } );
-        this.feathers.set( 'user', user );
-        return user;
-      } )
-      .catch( ( error ) => {
+  public authenticate(credentials?: loginCredentials): Promise<AuthenticationResult> {
+    this.loggerService.debug(this.loggerName, { message: 'authenticate()', otherParams: ['START', credentials] });
+    return this.feathers.authenticate(credentials)
+      .then((authentication_data) => {
+        this.feathers.set('user', authentication_data.user);
+        return authentication_data;
+      })
+      .catch((error) => {
         throw error;
-      } )
+      })
   }
 
-  public logout(): Promise<any> {
-    // Clear current user
-    this.feathers.set( 'user', null );
-    this.updateConnectionState( { changeReason: BackendStateChangeReasons.Feathers_Logout } );
-
-    return this.feathers.logout();
-  }
-
-  /** 
-   * Check if user is authenticated against JWT
+  /**
    * 
-   * NOTE : 
-   * - You must authenticate if user is authenticated, this method DO NOT authenticated user even if payload is valid !!!
-  */
-  public isAuth(): Promise<boolean> {
-    var isAuth = false, jwt = null, jwt_data = '';
+   */
+  public reAuthenticate(): Promise<AuthenticationResult> {
+    return this.feathers.reAuthenticate()
+  }
 
-    return new Promise( ( resolve, reject ) => {
-      this.feathers.passport.getJWT()
-        .then( ( token ) => {
-          jwt = token;
-          if ( jwt !== null && jwt !== undefined ) {
-            this.feathers.passport.verifyJWT( jwt )
-              .then( ( data ) => {
-                jwt_data = data;
-                isAuth = this.feathers.passport.payloadIsValid( jwt );
-                resolve( isAuth );
-              } )
-              .catch( error => resolve( isAuth ) )
-          } else {
-            resolve( isAuth );
-          }
-        } )
-        .catch( () => {
-          resolve( isAuth );
-        } );
-    } );
+
+  public async logout(): Promise<any> {
+    // Check if a user is authenticated. If no, no need to call logout again
+    return this._getAuthenticationData()
+      .then((auth_data: AuthenticationResult) => {
+        if (auth_data === undefined) return // if no authenticated user, do not call logout because unecessary and generate a feathersbackend exception (@see issue #1905 https://github.com/feathersjs/feathers/issues/1905)
+        this.updateConnectionState({ changeReason: BackendStateChangeReasons.Feathers_Logout });
+        return this.feathers.logout();
+      })
+      .catch((err) => {
+        throw err
+      })
+  }
+
+  private _getAuthenticationData(): Promise<AuthenticationResult> {
+    return this.feathers.get('authentication') || Promise.resolve(undefined)
   }
 }

@@ -1,6 +1,7 @@
 import { State, Action, StateContext, Selector } from "@ngxs/store";
 import { Services_Load_All_Success } from "../actions/services.actions";
 import { ServicesModel } from "../../models/services.model";
+import { Injectable } from "@angular/core";
 
 
 export const default_state_services: ServicesModel = {
@@ -18,6 +19,8 @@ export const default_state_services: ServicesModel = {
         name: 'backendServices'
     }
 )
+
+@Injectable()
 export class ServicesState {
     @Action( Services_Load_All_Success )
     public services_loadall_success( ctx: StateContext<ServicesModel>, action: Services_Load_All_Success ) {

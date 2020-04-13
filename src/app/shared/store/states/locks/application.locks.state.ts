@@ -2,6 +2,7 @@ import { State, Action, StateContext, StateOperator } from "@ngxs/store";
 import { ApplicationLocksStateModel, Lock } from '../../../models/application.locks.model'
 import { ApplicationLocksActions } from '../../actions/application.locks.actions'
 import { patch, append, removeItem, updateItem } from "@ngxs/store/operators";
+import { Injectable } from "@angular/core";
 
 function add( lock: Lock ): StateOperator<ApplicationLocksStateModel> {
     return patch<ApplicationLocksStateModel>( {
@@ -32,6 +33,8 @@ function update( lockName: string, lock: Lock ): StateOperator<ApplicationLocksS
         locks: []
     }
 } )
+
+@Injectable()
 export class ApplicationLocksState {
 
     /**

@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, APP_INITIALIZER, Injector, InjectionToken } from '@angular/core';
-import { NgxPermissionsModule } from 'ngx-permissions';
 
 
 import { AppContainer } from './containers/app.container';
@@ -47,7 +46,6 @@ export function authUser(appsandbox: AppSandboxService) {
     AppLoggerModule.forRoot(),
     MatSnackBarModule,
     ApplicationStoreModule,
-    // NgxPermissionsModule.forRoot(),
 
 
     /**

@@ -1,7 +1,8 @@
-import { Input, Output, EventEmitter } from '@angular/core';
+import { Input, Output, EventEmitter, Directive } from '@angular/core';
 import { AclTreeNode } from '../../../../../shared/models/treenode.model';
 import { Observable, of } from 'rxjs';
 
+@Directive()
 export class BaseNodeComponent {
     @Input()
     get node(): AclTreeNode { return this._node }

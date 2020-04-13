@@ -39,7 +39,7 @@ const defaultAppLoggerConfig: AppLoggerServiceConfig = {
   declarations: []
 } )
 export class AppLoggerModule {
-  public static forRoot( config?: AppLoggerServiceConfig ): ModuleWithProviders {
+  public static forRoot( config?: AppLoggerServiceConfig ): ModuleWithProviders<AppLoggerModule> {
     return {
       ngModule: AppLoggerModule,
       providers: [
