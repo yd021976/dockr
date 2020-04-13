@@ -59,6 +59,9 @@ export class AuthSandbox extends AuthSandboxInterface {
             })
     }
 
+    /** unused but must be implemented */
+    protected on_login() { }
+    protected on_logout() { }
 
 
 }

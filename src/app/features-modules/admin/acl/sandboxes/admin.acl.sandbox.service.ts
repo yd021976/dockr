@@ -425,4 +425,8 @@ export class AdminAclSandboxService extends AdminAclSandboxInterface {
 
     }
 
+    /** unused but must be implemented */
+    protected on_login() { }
+    protected on_logout() { }
+    
 }

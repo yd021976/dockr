@@ -130,4 +130,9 @@ export class AdminSiteZonesSandboxService extends AdminSiteZonesSandboxInterface
         this.store.dispatch(new SiteZonesUiActions.SelectRole(role, this.available_roles_list_component_name))
     }
 
+
+    /** unused but must be implemented */
+    protected on_login() { }
+    protected on_logout() { }
+
 }

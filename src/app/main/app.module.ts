@@ -40,12 +40,12 @@ export function authUser(appsandbox: AppSandboxService) {
     SnackBarComponent
   ],
   imports: [
+    ApplicationStoreModule,
     BrowserModule,
     BrowserAnimationsModule,
     ComponentsModule,
     AppLoggerModule.forRoot(),
     MatSnackBarModule,
-    ApplicationStoreModule,
 
 
     /**

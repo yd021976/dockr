@@ -115,4 +115,9 @@ export class AppSandboxService extends BaseSandboxService {
                 return false
             })
     }
+
+    /** unused but must be implemented */
+    protected on_login() { }
+    protected on_logout() { }
+    
 }

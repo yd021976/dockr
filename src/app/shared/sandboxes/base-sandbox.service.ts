@@ -12,23 +12,43 @@ export abstract class BaseSandboxService implements Resolve<any> {
     // Base logger name
     protected readonly logger_name: string = "base-app-sandbox";
 
-    protected store:Store
-    protected loggerService:AppLoggerServiceInterface
+    protected store: Store
+    protected loggerService: AppLoggerServiceInterface
 
-    @Select( ApplicationState.isLoggedin ) public _isLoggedin$: Observable<boolean>
-    @Select( ApplicationState.getCurrentUser ) public _currentUser$: Observable<UserModel>
-    @Select( ApplicationState.isProgress ) public _isProgress$: Observable<boolean>
+    @Select(ApplicationState.isLoggedin) public _isLoggedin$: Observable<boolean>
+    @Select(ApplicationState.getCurrentUser) public _currentUser$: Observable<UserModel>
+    @Select(ApplicationState.isProgress) public _isProgress$: Observable<boolean>
 
-    constructor( ) {
-        this.store = ApplicationInjector.injector.get( Store )
-        this.loggerService = ApplicationInjector.injector.get( AppLoggerServiceToken )
-        this.loggerService.createLogger( this.logger_name )
+    constructor() {
+        this.store = ApplicationInjector.injector.get(Store)
+        this.loggerService = ApplicationInjector.injector.get(AppLoggerServiceToken)
+        this.loggerService.createLogger(this.logger_name)
+
+        /** listen to login/lohout/token expiration to run tasks */
+        this._isLoggedin$.subscribe((status) => {
+            switch (status) {
+                case true:
+                    this.on_login()
+                    break
+                case false:
+                    this.on_logout()
+                    break
+                default:
+                    break
+            }
+        })
     }
+
+    /** Action when user login */
+    protected abstract on_login(): void
+
+    /** Action when user logout */
+    protected abstract on_logout(): void
 
     /**
      * Router : Route resolver
      */
-    public abstract resolve( route, state )
+    public abstract resolve(route, state)
 
     /**
      * Global application states
@@ -47,16 +67,16 @@ export abstract class BaseSandboxService implements Resolve<any> {
     /**
      *  Log methods
      */
-    public debug( data: LoggerMessage ): void {
-        this.loggerService.debug( this.logger_name, data )
+    public debug(data: LoggerMessage): void {
+        this.loggerService.debug(this.logger_name, data)
     }
-    public info( data: LoggerMessage ): void {
-        this.loggerService.info( this.logger_name, data )
+    public info(data: LoggerMessage): void {
+        this.loggerService.info(this.logger_name, data)
     }
-    public error( data: LoggerMessage ): void {
-        this.loggerService.error( this.logger_name, data )
+    public error(data: LoggerMessage): void {
+        this.loggerService.error(this.logger_name, data)
     }
-    public warn( data: LoggerMessage ): void {
-        this.loggerService.warn( this.logger_name, data )
+    public warn(data: LoggerMessage): void {
+        this.loggerService.warn(this.logger_name, data)
     }
 }

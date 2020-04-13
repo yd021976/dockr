@@ -23,4 +23,9 @@ export class DashboardSandbox extends DashboardSandboxInterface {
     get aclController(): aclControllerFunc {
         return this.permissionService.checkACL
     }
+
+    /** unused but must be implemented */
+    protected on_login() { }
+    protected on_logout() { }
+    
 }

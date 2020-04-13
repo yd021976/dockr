@@ -8,16 +8,21 @@ export class LayoutContainerSandboxService extends LayoutContainerSandboxInterfa
 
     constructor() {
         super()
-        this.loggerService.createLogger( this.logger_name )
+        this.loggerService.createLogger(this.logger_name)
     }
 
     // TODO: hard coded route => Find a better way to get route to login page
     navigateLogin() {
-        this.router.navigate( [ 'auth/login' ] );
+        this.router.navigate(['auth/login']);
     }
 
     //TODO: hard coded route => Find a better way to get route to login page
     navigateLogout() {
-        this.router.navigate( [ 'auth/logout' ] );
+        this.router.navigate(['auth/logout']);
     }
+
+    /** unused but must be implemented */
+    protected on_login() { }
+    protected on_logout() { }
+
 }

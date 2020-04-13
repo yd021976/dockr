@@ -123,4 +123,10 @@ export class AdminUsersSandboxService extends AdminUsersSandboxInterface {
                 this.store.dispatch( new ApplicationNotifications_Append_Message( new ApplicationNotification( err.message, 'UpdateUser', ApplicationNotificationType.ERROR ) ) )
             } )
     }
+
+
+    /** unused but must be implemented */
+    protected on_login() { }
+    protected on_logout() { }
+    
 }
