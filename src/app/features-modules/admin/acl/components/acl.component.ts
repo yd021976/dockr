@@ -61,7 +61,7 @@ export class AclComponent implements OnInit, AfterViewInit {
   constructor() {
 
     //IMPORTANT: The selection model don't have multi selection mode, so only 1 item could be added and/or removed. Max 2 events will be emmited
-    this.selection.onChange.subscribe( ( changes ) => {
+    this.selection.changed.subscribe( ( changes ) => {
       var selectedNode: FlatTreeNode
 
       // Notify no new node is selected if we have only a removed item and no new selected node

@@ -1,7 +1,7 @@
 import { Input, Component, Output, EventEmitter } from "@angular/core";
 import { siteZoneFlatNode } from "../../services/site.zones.datasource";
 import { TreeControl } from "@angular/cdk/tree";
-import { MatTreeFlatDataSource } from "@angular/material";
+import { MatTreeFlatDataSource } from "@angular/material/tree";
 import { nodeAnimations } from './site.zones.tree.animations';
 import { SiteZoneEntity } from "src/app/shared/models/site.zones.entities.model";
 

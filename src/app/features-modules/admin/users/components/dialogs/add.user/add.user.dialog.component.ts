@@ -1,7 +1,8 @@
 import { Component, ViewChild, ElementRef, Inject } from "@angular/core";
 import { UserBackendApiModel, UserModelBase } from "src/app/shared/models/user.model";
 import { AclRoleModel } from "src/app/shared/models/acl.role.model";
-import { MAT_DIALOG_DATA, MatSelectionListChange } from '@angular/material';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSelectionListChange } from '@angular/material/list';
 import { Observable, of } from "rxjs";
 
 export type auth_users_add_user_dialog_result = {

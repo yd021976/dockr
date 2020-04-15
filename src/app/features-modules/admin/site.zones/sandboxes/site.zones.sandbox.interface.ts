@@ -6,7 +6,7 @@ import { Observable } from "rxjs";
 import { SiteZoneEntity } from "src/app/shared/models/site.zones.entities.model";
 import { FlatTreeControl } from "@angular/cdk/tree";
 import { siteZoneFlatNode } from "../services/site.zones.datasource";
-import { MatTreeFlatDataSource } from "@angular/material";
+import { MatTreeFlatDataSource } from "@angular/material/tree";
 
 
 export abstract class AdminSiteZonesSandboxInterface extends BaseSandboxService {

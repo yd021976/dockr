@@ -21,8 +21,21 @@ import { RolesService } from '../shared/services/acl/roles/roles.service';
 import { FeathersjsBackendService } from '../shared/services/backend.api.endpoint/providers/feathers/socket.io/feathers.service';
 import { BackendServiceToken } from '../shared/services/backend.api.endpoint/backend.service.token';
 import { ApplicationStoreModule } from '../shared/store/store.module';
-import { AppInjectorToken ,initAppInjector} from './app.injector.token'
+import { AppInjectorToken, initAppInjector } from './app.injector.token'
 import { NgxsResetPluginModule } from 'ngxs-reset-plugin';
+import { NgxsModule } from '@ngxs/store';
+import { ApplicationState } from '../shared/store/states/application.state';
+import { UserState } from '../shared/store/states/user.state';
+import { UsersState } from '../shared/store/states/users.state';
+import { TemplatesState } from '../shared/store/states/templates.state';
+import { AclUIState } from '../shared/store/states/acl/ui.state/acl2.state';
+import { AclEntitiesState } from '../shared/store/states/acl/entities.state/acl2.entities.state';
+import { ApplicationLocksState } from '../shared/store/states/locks/application.locks.state';
+import { ServicesState } from '../shared/store/states/services.state';
+import { AppNotificationsState } from '../shared/store/states/application.notifications.state';
+import { SiteZonesState } from '../shared/store/states/site.zones/entities/site.zones.state';
+import { SiteZonesUIState } from '../shared/store/states/site.zones/ui/site.zones.ui.state';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 
 /**
  * Factory used by this module token APP_INITIALIZER -> Auth user with local token if one exists and is valid 
@@ -41,7 +54,21 @@ export function authUser(appsandbox: AppSandboxService) {
     SnackBarComponent
   ],
   imports: [
+    NgxsModule.forRoot([
+      ApplicationState,
+      UserState,
+      UsersState,
+      TemplatesState,
+      AclUIState,
+      AclEntitiesState,
+      ApplicationLocksState,
+      ServicesState,
+      AppNotificationsState,
+      SiteZonesState,
+      SiteZonesUIState
+    ]),
     NgxsResetPluginModule.forRoot(),
+    NgxsReduxDevtoolsPluginModule.forRoot(),
     ApplicationStoreModule,
     BrowserModule,
     BrowserAnimationsModule,

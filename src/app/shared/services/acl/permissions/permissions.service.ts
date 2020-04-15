@@ -1,4 +1,4 @@
-import { Ability, AbilityBuilder, RawRule } from '@casl/ability'
+import { Ability, AbilityBuilder, RawRule, RawRuleFrom } from '@casl/ability'
 import { Injectable } from '@angular/core';
 import { AclRoleModel } from 'src/app/shared/models/acl.role.model';
 import { AclServiceActionModel, ALLOWED_STATES } from 'src/app/shared/models/acl.service.action.model';
@@ -37,7 +37,9 @@ export class PermissionsService implements PermissionServiceInterface {
      */
     public setAbility( roles: AclRoleModel[] ): Ability {
         let rules = this.buildRulesFromRoles( roles )
-        return this.ability.update( rules )
+        
+        /** FIXME: load rules from role */
+        return this.ability.update( [] )
     }
 
     /**
@@ -55,7 +57,7 @@ export class PermissionsService implements PermissionServiceInterface {
     }
 
     private buildRulesFromRoles( roles: AclRoleModel[] ): RawRule[] {
-        let rawRules = [], tmpRule: RawRule
+        let rawRules:RawRule[]=[], tmpRule: RawRule
         let subject: string, action: string, fields: string[]
 
         roles.forEach( ( role: AclRoleModel ) => {

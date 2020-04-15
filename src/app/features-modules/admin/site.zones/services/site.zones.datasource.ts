@@ -1,7 +1,7 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { SiteZoneEntity, SiteZoneEntities } from '../../../../shared/models/site.zones.entities.model'
 import { Injectable } from '@angular/core';
-import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
+import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material/tree';
 import { Observable, Subscription, of as observableof } from 'rxjs';
 
 export class siteZoneFlatNode {
