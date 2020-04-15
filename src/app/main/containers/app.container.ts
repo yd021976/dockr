@@ -77,13 +77,13 @@ export class AppContainer implements OnDestroy {
 
     /** User has logged in */
     if (this.current_user_login_state == false && isAuth != false) {
-      //TODO: do something
+      //TODO: do something on user login
       const a = 0
     }
 
     /** user has logged out */
     if (this.current_user_login_state == true && isAuth != true) {
-      //TODO: do something
+      //TODO: do something on user logout
       const a = 0
     }
 

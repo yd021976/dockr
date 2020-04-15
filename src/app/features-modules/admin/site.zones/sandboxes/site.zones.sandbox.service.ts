@@ -80,7 +80,6 @@ export class AdminSiteZonesSandboxService extends AdminSiteZonesSandboxInterface
         this.store.dispatch(new SiteZonesActions.Update_Zone(siteZoneEntity))
 
         //TODO: do backend updates + Handle backend error
-
         this.store.dispatch(new SiteZonesActions.Update_Zone_Success(siteZoneEntity))
 
         //TODO: Handle backend error and reverse state update
@@ -132,7 +131,13 @@ export class AdminSiteZonesSandboxService extends AdminSiteZonesSandboxInterface
 
 
     /** unused but must be implemented */
-    protected on_login() { }
-    protected on_logout() { }
+    protected on_login() {
+        //TODO Load state data
+        const a = 0
+    }
+    protected on_logout() {
+        //TODO Load state data
+        const a = 0
+     }
 
 }

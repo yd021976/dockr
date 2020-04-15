@@ -13,6 +13,11 @@ import { RolesService } from '../../shared/services/acl/roles/roles.service';
 import { AclRoleModel } from '../../shared/models/acl.role.model';
 import { UserModel } from '../../shared/models/user.model';
 import { Ability } from '@casl/ability';
+import { StateResetAll, StateClear, StateReset } from 'ngxs-reset-plugin';
+import { UserState } from 'src/app/shared/store/states/user.state';
+import { AclEntitiesState } from 'src/app/shared/store/states/acl/entities.state/acl2.entities.state';
+import { ApplicationLocksState } from 'src/app/shared/store/states/locks/application.locks.state';
+import { SiteZonesState } from 'src/app/shared/store/states/site.zones/entities/site.zones.state';
 
 @Injectable()
 export class AppSandboxService extends BaseSandboxService {
@@ -116,8 +121,10 @@ export class AppSandboxService extends BaseSandboxService {
             })
     }
 
-    /** unused but must be implemented */
+    /** login/Logout events notification */
     protected on_login() { }
-    protected on_logout() { }
-    
+    protected on_logout() {
+        this.store.dispatch(new StateResetAll(SiteZonesState))
+    }
+
 }

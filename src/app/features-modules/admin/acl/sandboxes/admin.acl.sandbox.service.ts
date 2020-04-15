@@ -299,7 +299,7 @@ export class AdminAclSandboxService extends AdminAclSandboxInterface {
                     } )
             } )
             .catch( err => {
-                //TODO: Handle error if store update error for action node
+                //TODO Handle error if store update error for action node
             } )
 
     }

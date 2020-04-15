@@ -22,6 +22,7 @@ import { FeathersjsBackendService } from '../shared/services/backend.api.endpoin
 import { BackendServiceToken } from '../shared/services/backend.api.endpoint/backend.service.token';
 import { ApplicationStoreModule } from '../shared/store/store.module';
 import { AppInjectorToken ,initAppInjector} from './app.injector.token'
+import { NgxsResetPluginModule } from 'ngxs-reset-plugin';
 
 /**
  * Factory used by this module token APP_INITIALIZER -> Auth user with local token if one exists and is valid 
@@ -40,6 +41,7 @@ export function authUser(appsandbox: AppSandboxService) {
     SnackBarComponent
   ],
   imports: [
+    NgxsResetPluginModule.forRoot(),
     ApplicationStoreModule,
     BrowserModule,
     BrowserAnimationsModule,

@@ -7,6 +7,7 @@ import { AppLoggerServiceInterface, LoggerMessage } from "../services/logger/app
 import { Resolve } from "@angular/router";
 import { ApplicationInjector } from "../application.injector.class";
 import { AppLoggerServiceToken } from "../services/logger/app-logger/app-logger-token";
+import { take } from "rxjs/operators";
 
 export abstract class BaseSandboxService implements Resolve<any> {
     // Base logger name
@@ -14,35 +15,47 @@ export abstract class BaseSandboxService implements Resolve<any> {
 
     protected store: Store
     protected loggerService: AppLoggerServiceInterface
+    protected current_user_login_state: boolean = false /** user login/logout flag */
 
     @Select(ApplicationState.isLoggedin) public _isLoggedin$: Observable<boolean>
     @Select(ApplicationState.getCurrentUser) public _currentUser$: Observable<UserModel>
     @Select(ApplicationState.isProgress) public _isProgress$: Observable<boolean>
 
     constructor() {
+        /** init NGXS store service */
         this.store = ApplicationInjector.injector.get(Store)
+        
+        /** init sandbox console logger */
         this.loggerService = ApplicationInjector.injector.get(AppLoggerServiceToken)
         this.loggerService.createLogger(this.logger_name)
+        
+        /** init user login/logout state */
+        this.current_user_login_state = this.store.selectSnapshot(ApplicationState.isLoggedin)
 
-        /** listen to login/lohout/token expiration to run tasks */
+        /** listen to user login/logout and notify sandbox services */
         this._isLoggedin$.subscribe((status) => {
             switch (status) {
                 case true:
-                    this.on_login()
+                    if (this.current_user_login_state === false) {
+                        this.on_login()
+                    }
                     break
                 case false:
-                    this.on_logout()
+                    if (this.current_user_login_state === true) {
+                        this.on_logout()
+                    }
                     break
                 default:
                     break
             }
+            this.current_user_login_state = status
         })
     }
 
-    /** Action when user login */
+    /** Notify sandbox when user login */
     protected abstract on_login(): void
 
-    /** Action when user logout */
+    /** Notify sandbox when user logout */
     protected abstract on_logout(): void
 
     /**

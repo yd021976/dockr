@@ -1,4 +1,4 @@
-import { State } from "@ngxs/store";
+import { State, Actions, Store, ofActionSuccessful, InitState } from "@ngxs/store";
 import { AclStateUIModel } from "src/app/shared/models/acl.entities.model";
 import { Action, StateContext, Selector } from "@ngxs/store";
 import { AclUIActions } from '../../../actions/acl2/acl2.state.actions'
@@ -6,9 +6,10 @@ import { AppError, errorType } from "src/app/shared/models/application.error.mod
 import { UIStateAclOperators } from './state.operators'
 import { error_actions, error_actions_types, start_actions, start_actions_types, success_actions, success_actions_types } from './state.action.types.list'
 import { Injectable } from "@angular/core";
+import { take } from "rxjs/operators";
 
 
-@State<AclStateUIModel>( {
+@State<AclStateUIModel>({
     name: 'acl2',
     defaults: {
         isLoading: false,
@@ -16,28 +17,38 @@ import { Injectable } from "@angular/core";
         error: '',
         selectedNode: null
     }
-} )
+})
 
 @Injectable()
 export class AclUIState {
     /**
      * 
      */
-    constructor() { }
-
-    @Action( start_actions )
-    loading_start( ctx: StateContext<AclStateUIModel>, action: start_actions_types ) {
-        ctx.setState( UIStateAclOperators.loadingStart() )
+    constructor(private actions$: Actions, private store: Store) {
+        this.actions$.subscribe((action) => {
+            console.log('State AclUIState action observable', action)
+        })
+        // .pipe(ofActionSuccessful(InitState), take(1))
+        // .subscribe(
+        //     () => {
+        //         const initialState = this.store.snapshot()
+        //     }
+        // )
     }
 
-    @Action( success_actions )
-    loading_success( ctx: StateContext<AclStateUIModel>, action: success_actions_types ) {
-        ctx.setState( UIStateAclOperators.loadingSuccess() )
+    @Action(start_actions)
+    loading_start(ctx: StateContext<AclStateUIModel>, action: start_actions_types) {
+        ctx.setState(UIStateAclOperators.loadingStart())
     }
 
-    @Action( error_actions )
-    loading_error( ctx: StateContext<AclStateUIModel>, action: error_actions_types ) {
-        ctx.setState( UIStateAclOperators.loadingError( action.error ) )
+    @Action(success_actions)
+    loading_success(ctx: StateContext<AclStateUIModel>, action: success_actions_types) {
+        ctx.setState(UIStateAclOperators.loadingSuccess())
+    }
+
+    @Action(error_actions)
+    loading_error(ctx: StateContext<AclStateUIModel>, action: error_actions_types) {
+        ctx.setState(UIStateAclOperators.loadingError(action.error))
     }
 
     /**
@@ -45,8 +56,8 @@ export class AclUIState {
      * @param ctx 
      * @param action 
      */
-    @Action( AclUIActions.Acl_Tree_Node_Select )
-    acl_tree_select_node( ctx: StateContext<AclStateUIModel>, action: AclUIActions.Acl_Tree_Node_Select ) {
+    @Action(AclUIActions.Acl_Tree_Node_Select)
+    acl_tree_select_node(ctx: StateContext<AclStateUIModel>, action: AclUIActions.Acl_Tree_Node_Select) {
         ctx.patchState(
             {
                 selectedNode: action.currentNode
@@ -54,8 +65,8 @@ export class AclUIState {
         )
     }
 
-    @Selector( [ AclUIState ] )
-    static isLoading( state: AclStateUIModel ): boolean {
+    @Selector([AclUIState])
+    static isLoading(state: AclStateUIModel): boolean {
         return state.isLoading
     }
 }

@@ -13,9 +13,9 @@ import { NgxsReduxDevtoolsPluginModule } from "@ngxs/devtools-plugin";
 import { SiteZonesState } from "./states/site.zones/entities/site.zones.state";
 import { SiteZonesUIState } from "./states/site.zones/ui/site.zones.ui.state";
 
-@NgModule( {
+@NgModule({
     imports: [
-        NgxsModule.forRoot( [
+        NgxsModule.forRoot([
             ApplicationState,
             UserState,
             UsersState,
@@ -27,11 +27,11 @@ import { SiteZonesUIState } from "./states/site.zones/ui/site.zones.ui.state";
             AppNotificationsState,
             SiteZonesState,
             SiteZonesUIState
-        ] ),
-
-        NgxsReduxDevtoolsPluginModule.forRoot(),
+        ]),
+        // NgxsReduxDevtoolsPluginModule.forRoot(),
+        
     ]
-} )
+})
 export class ApplicationStoreModule {
 
 }

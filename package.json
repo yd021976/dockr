@@ -52,6 +52,7 @@
     "material-design-icons": "^3.0.1",
     "ng2-logger": "^2.0.48",
     "ngx-permissions": "^6.0.6",
+    "ngxs-reset-plugin": "^1.3.0",
     "normalizr": "^3.6.0",
     "rxjs": "^6.5.5",
     "socket.io-client": "^2.3.0",

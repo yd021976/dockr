@@ -89,15 +89,15 @@ const components = [
   declarations: components,
   entryComponents: [AddRoleDialogComponent, AddServiceDialogComponent, CandeactivateAclDialog, AuthUsersAddUserDialog],
   providers: [
+    /**
+     * Container Sandboxes providers
+     */
     {
       provide: siteZonesServiceToken,
       useClass: SiteZonesService,
       multi: false,
       deps: [AppInjectorToken]
     },
-    /**
-     * Container Sandboxes providers
-     */
     {
       provide: AdminAclSandboxProviderToken,
       multi: false,
@@ -116,7 +116,6 @@ const components = [
     /**
      * Container required services
      */
-
     TreeNodesService,
     ResourcesLocksService]
 })

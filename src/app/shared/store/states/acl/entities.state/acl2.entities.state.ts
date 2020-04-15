@@ -1,4 +1,4 @@
-import { State, Action, StateContext } from "@ngxs/store";
+import { State, Action, StateContext, ofActionSuccessful, InitState, Store, Actions } from "@ngxs/store";
 import { AclStateEntitiesModel, AclEntities } from "src/app/shared/models/acl.entities.model";
 import { NormalizrSchemas } from "../entities-management/normalizer";
 import { RolesStateActions } from "../../../actions/acl2/acl2.role.entity.actions"
@@ -12,6 +12,7 @@ import { Acl_Action_Update_Allowed, Acl_Action_Update_Allowed_Success, Acl_Actio
 import { Acl_Services_Remove_Entity, Acl_Services_Remove_Entity_Error, Acl_Services_Remove_Entity_Success } from "../../../actions/acl2/acl2.service.entity.actions";
 import { Injectable } from "@angular/core";
 import { ApplicationActions } from "../../../actions/application.actions";
+import { take } from "rxjs/operators";
 
 
 const default_state = {
@@ -34,7 +35,16 @@ export class AclEntitiesState {
     // define entities schemas
     static readonly normalizr_utils: NormalizrSchemas = new NormalizrSchemas()
 
-    constructor() { }
+    constructor(private actions$: Actions, private store: Store) {
+        this.actions$
+            .pipe(ofActionSuccessful(InitState), take(1))
+            .subscribe(
+                () => {
+                    const initialState = this.store.snapshot()
+                }
+            )
+    }
+
     @Action(ApplicationActions.Application_Reset_State)
     reset_state(ctx: StateContext<AclStateEntitiesModel>, action: ApplicationActions.Application_Reset_State) {
         ctx.setState(default_state)
