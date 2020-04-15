@@ -28,7 +28,7 @@ import { SiteZonesUIState } from "./states/site.zones/ui/site.zones.ui.state";
             SiteZonesState,
             SiteZonesUIState
         ]),
-        // NgxsReduxDevtoolsPluginModule.forRoot(),
+        NgxsReduxDevtoolsPluginModule.forRoot(),
         
     ]
 })
