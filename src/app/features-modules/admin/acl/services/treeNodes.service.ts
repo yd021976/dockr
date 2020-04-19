@@ -10,8 +10,6 @@ import { FlatTreeNode } from "src/app/shared/models/treenode.model";
  * Service to manage convert from hierarchical "AclTreeNode" to flat tree node structure
  * 
  */
-
-
 @Injectable()
 export class TreeNodesService {
     private _treeControl: FlatTreeControl<FlatTreeNode>

@@ -2,18 +2,4 @@
 @import "../../../../../../styles/app-theme-globals.scss";
 
 @mixin admin-users-usersActions-theme($theme) {
-    app-admin-users-actions {
-        .mat-badge-small {
-            .mat-badge-content {
-                width: 12px;
-                height: 12px;
-                line-height: 12px;
-            }
-            &.mat-badge-after {
-                .mat-badge-content {
-                    right: -8px;
-                }
-            }
-        }
-    }
 }
