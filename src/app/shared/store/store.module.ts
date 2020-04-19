@@ -12,6 +12,7 @@ import { AppNotificationsState } from "./states/application.notifications.state"
 import { NgxsReduxDevtoolsPluginModule } from "@ngxs/devtools-plugin";
 import { SiteZonesState } from "./states/site.zones/entities/site.zones.state";
 import { SiteZonesUIState } from "./states/site.zones/ui/site.zones.ui.state";
+import { NgxsResetPluginModule } from "ngxs-reset-plugin";
 
 @NgModule({
     imports: [
@@ -29,7 +30,7 @@ import { SiteZonesUIState } from "./states/site.zones/ui/site.zones.ui.state";
             SiteZonesUIState
         ]),
         NgxsReduxDevtoolsPluginModule.forRoot(),
-        
+        NgxsResetPluginModule.forRoot(),
     ]
 })
 export class ApplicationStoreModule {

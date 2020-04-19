@@ -40,7 +40,7 @@ export class FeathersjsBackendService extends BackendSocketioServiceInterface {
     this.feathers = init_Feathers_Application()
 
     this.feathers
-      .configure(init_Feathers_Socket(this.socketio))
+      .configure(init_Feathers_Socket(this.socketio, { timeout: 60000 }))
       .configure(init_Feathers_AuthClient());
 
     /**
@@ -49,7 +49,7 @@ export class FeathersjsBackendService extends BackendSocketioServiceInterface {
     this.feathers.service('authentication').on('user-token-expired', (data) => {
       this.updateConnectionState({ attemptNumber: 0, changeReason: BackendStateChangeReasons.Feathers_Token_Expired })
       // Remove token from storage
-      this.feathers.authentication.removeAccessToken().then((status)=>{
+      this.feathers.authentication.removeAccessToken().then((status) => {
         return this.feathers.authentication.reset()
       })
       this.feathers.set('user', null)
@@ -102,7 +102,7 @@ export class FeathersjsBackendService extends BackendSocketioServiceInterface {
     // Check if a user is authenticated. If no, no need to call logout again
     return this._getAuthenticationData()
       .then((auth_data: AuthenticationResult) => {
-        if (auth_data === undefined) return // if no authenticated user, do not call logout because unecessary and generate a feathersbackend exception (@see issue #1905 https://github.com/feathersjs/feathers/issues/1905)
+        if (auth_data === undefined || auth_data === null) return // if no authenticated user, do not call logout because unecessary and generate a feathersbackend exception (@see issue #1905 https://github.com/feathersjs/feathers/issues/1905)
         this.updateConnectionState({ changeReason: BackendStateChangeReasons.Feathers_Logout });
         return this.feathers.logout();
       })

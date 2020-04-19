@@ -21,7 +21,7 @@
 @import '../app/shared/components/side-nav/menu-panel/menu-panel-component-theme.scss';
 
 // Admin module -- ACL
-@import '../app/features-modules/admin//acl/components/node-actions/node-actions.theme.scss';
+@import '../app/features-modules/admin//acl/components/node-actions/node-actions.component.theme.scss';
 @import '../app/features-modules/admin/acl/components/acl.component.theme.scss';
 
 // Admin module -- Users
@@ -54,8 +54,8 @@
         @include home-container-theme($theme);
         @include home-dashboard-component-theme($theme);
         // Admin module -- ACL
-        @include admin-acl-node-actions-theme($theme);
         @include admin-acl-component-theme($theme);
+        @include admin-acl-node-actions-theme($theme);
         // Admin module -- Users
         @include admin-users-userslist-theme($theme);
         @include admin-users-component-theme($theme);

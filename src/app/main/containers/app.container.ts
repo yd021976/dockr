@@ -1,10 +1,10 @@
-import { Component, OnDestroy } from '@angular/core'
-import { AppSandboxService } from '../sandboxes/app-sandbox.service';
+import { Component, OnDestroy, Inject } from '@angular/core'
 import { MatSnackBarRef, MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarComponent } from '../../shared/components/snackbar/snack-bar.component';
 import { Subscription } from 'rxjs';
 import { ApplicationNotification } from '../../shared/models/application.notifications.model';
-
+import {appSandboxTokenProvider} from '../sandboxes/app-sandbox-token';
+import { AppSandboxService } from '../sandboxes/app-sandbox.service';
 
 @Component({
   selector: 'app-root-container',
@@ -22,7 +22,7 @@ export class AppContainer implements OnDestroy {
    * 
    * @param sandbox 
    */
-  constructor(public sandbox: AppSandboxService, private snackbar: MatSnackBar) {
+  constructor(@Inject( appSandboxTokenProvider) public sandbox:AppSandboxService, private snackbar: MatSnackBar) {
 
   }
 

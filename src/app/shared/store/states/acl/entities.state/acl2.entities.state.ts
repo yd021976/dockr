@@ -35,15 +35,7 @@ export class AclEntitiesState {
     // define entities schemas
     static readonly normalizr_utils: NormalizrSchemas = new NormalizrSchemas()
 
-    constructor(private actions$: Actions, private store: Store) {
-        this.actions$
-            .pipe(ofActionSuccessful(InitState), take(1))
-            .subscribe(
-                () => {
-                    const initialState = this.store.snapshot()
-                }
-            )
-    }
+    constructor() {}
 
     @Action(ApplicationActions.Application_Reset_State)
     reset_state(ctx: StateContext<AclStateEntitiesModel>, action: ApplicationActions.Application_Reset_State) {

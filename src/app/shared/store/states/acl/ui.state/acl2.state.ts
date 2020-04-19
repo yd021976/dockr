@@ -24,17 +24,7 @@ export class AclUIState {
     /**
      * 
      */
-    constructor(private actions$: Actions, private store: Store) {
-        this.actions$.subscribe((action) => {
-            console.log('State AclUIState action observable', action)
-        })
-        // .pipe(ofActionSuccessful(InitState), take(1))
-        // .subscribe(
-        //     () => {
-        //         const initialState = this.store.snapshot()
-        //     }
-        // )
-    }
+    constructor() {}
 
     @Action(start_actions)
     loading_start(ctx: StateContext<AclStateUIModel>, action: start_actions_types) {

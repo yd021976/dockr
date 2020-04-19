@@ -3,8 +3,8 @@
         <div fxFlex>
             <button mat-button color="primary" (click)="onAddUser()">
                 <div>
-                    <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-user" matBadge="+" matBadgeColor="accent"
-                              matBadgePosition="after" matBadgeOverlap="false"></mat-icon>
+                    <mat-icon class="fa mat-icon-rtl-mirror my-custom-icon" fontIcon="fa-user" matBadge="+" matBadgeColor="accent"
+                              matBadgePosition="after" matBadgeOverlap="false" matBadgeSize="small"></mat-icon>
                     <div class="button-label">Add</div>
                 </div>
             </button>
@@ -13,7 +13,7 @@
             <button mat-button color="primary" [disabled]="user==null" (click)="onRemoveUser()">
                 <div>
                     <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-user" matBadge="-" matBadgeColor="accent"
-                              matBadgePosition="after" matBadgeOverlap="false" [matBadgeDisabled]="user==null"></mat-icon>
+                              matBadgePosition="after" matBadgeOverlap="false" matBadgeSize="small" [matBadgeDisabled]="user==null"></mat-icon>
                     <div class="button-label">Remove</div>
                 </div>
             </button>

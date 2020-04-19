@@ -1,4 +1,41 @@
-@import '~@angular/material/theming';
-@import '../../../../../styles/app-theme-globals.scss'; // Global app colors
+// Import all the tools needed to customize the theme and extract parts of it
+@import "~@angular/material/theming";
+@import "../../../../../../styles/app-theme-globals.scss";
 
-@mixin admin-acl-node-action-theme($theme) {}
+// Define a mixin that accepts a theme and outputs the color styles for the component.
+@mixin admin-acl-node-actions-theme($theme) {
+    app-admin-acl-node-actions {
+        fieldset {
+            border-color: border-dark-color($theme);
+        }
+        .mat-badge-medium,
+        .mat-badge-large,
+        .mat-badge-small {
+            .mat-badge-content {
+                width: 10px;
+                height: 10px;
+                line-height: 8px;
+                font-size: 8px;
+                transition: none;
+            }
+
+            &.mat-badge-before {
+                .mat-badge-content {
+                    left: -4px;
+                }
+            }
+
+            &.mat-badge-after {
+                .mat-badge-content {
+                    right: -8px;
+                }
+            }
+
+            &.mat-badge-above {
+                .mat-badge-content {
+                    top: -4px;
+                }
+            }
+        }
+    }
+}

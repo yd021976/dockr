@@ -7,8 +7,9 @@ import { AppLoggerServiceInterface, LoggerMessage } from "../services/logger/app
 import { Resolve } from "@angular/router";
 import { ApplicationInjector } from "../application.injector.class";
 import { AppLoggerServiceToken } from "../services/logger/app-logger/app-logger-token";
-import { take } from "rxjs/operators";
+import { Injectable } from "@angular/core";
 
+@Injectable()
 export abstract class BaseSandboxService implements Resolve<any> {
     // Base logger name
     protected readonly logger_name: string = "base-app-sandbox";
@@ -24,13 +25,17 @@ export abstract class BaseSandboxService implements Resolve<any> {
     constructor() {
         /** init NGXS store service */
         this.store = ApplicationInjector.injector.get(Store)
-        
+
         /** init sandbox console logger */
         this.loggerService = ApplicationInjector.injector.get(AppLoggerServiceToken)
         this.loggerService.createLogger(this.logger_name)
-        
+
+
         /** init user login/logout state */
-        this.current_user_login_state = this.store.selectSnapshot(ApplicationState.isLoggedin)
+        this.current_user_login_state = this.store.selectSnapshot((state) => {
+            if (!state.application) return false
+            return state.application.user.isLoggedIn
+        })
 
         /** listen to user login/logout and notify sandbox services */
         this._isLoggedin$.subscribe((status) => {
@@ -51,6 +56,7 @@ export abstract class BaseSandboxService implements Resolve<any> {
             this.current_user_login_state = status
         })
     }
+
 
     /** Notify sandbox when user login */
     protected abstract on_login(): void

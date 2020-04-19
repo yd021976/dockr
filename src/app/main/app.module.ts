@@ -22,20 +22,10 @@ import { FeathersjsBackendService } from '../shared/services/backend.api.endpoin
 import { BackendServiceToken } from '../shared/services/backend.api.endpoint/backend.service.token';
 import { ApplicationStoreModule } from '../shared/store/store.module';
 import { AppInjectorToken, initAppInjector } from './app.injector.token'
-import { NgxsResetPluginModule } from 'ngxs-reset-plugin';
-import { NgxsModule } from '@ngxs/store';
-import { ApplicationState } from '../shared/store/states/application.state';
-import { UserState } from '../shared/store/states/user.state';
-import { UsersState } from '../shared/store/states/users.state';
-import { TemplatesState } from '../shared/store/states/templates.state';
-import { AclUIState } from '../shared/store/states/acl/ui.state/acl2.state';
-import { AclEntitiesState } from '../shared/store/states/acl/entities.state/acl2.entities.state';
-import { ApplicationLocksState } from '../shared/store/states/locks/application.locks.state';
-import { ServicesState } from '../shared/store/states/services.state';
-import { AppNotificationsState } from '../shared/store/states/application.notifications.state';
-import { SiteZonesState } from '../shared/store/states/site.zones/entities/site.zones.state';
-import { SiteZonesUIState } from '../shared/store/states/site.zones/ui/site.zones.ui.state';
-import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
+import { Store, Actions } from '@ngxs/store';
+import { appSandboxTokenProvider } from './sandboxes/app-sandbox-token';
+
+
 
 /**
  * Factory used by this module token APP_INITIALIZER -> Auth user with local token if one exists and is valid 
@@ -43,9 +33,8 @@ import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
  * @param appsandbox 
  */
 export function authUser(appsandbox: AppSandboxService) {
-  return () => Promise.resolve(appsandbox.startUpLogin())
+  return () => appsandbox.init()
 }
-
 
 
 @NgModule({
@@ -54,24 +43,9 @@ export function authUser(appsandbox: AppSandboxService) {
     SnackBarComponent
   ],
   imports: [
-    NgxsModule.forRoot([
-      ApplicationState,
-      UserState,
-      UsersState,
-      TemplatesState,
-      AclUIState,
-      AclEntitiesState,
-      ApplicationLocksState,
-      ServicesState,
-      AppNotificationsState,
-      SiteZonesState,
-      SiteZonesUIState
-    ]),
-    NgxsResetPluginModule.forRoot(),
-    NgxsReduxDevtoolsPluginModule.forRoot(),
-    ApplicationStoreModule,
     BrowserModule,
     BrowserAnimationsModule,
+    ApplicationStoreModule,
     ComponentsModule,
     AppLoggerModule.forRoot(),
     MatSnackBarModule,
@@ -124,17 +98,17 @@ export function authUser(appsandbox: AppSandboxService) {
      * Main app sandbox
      */
     {
-      provide: AppSandboxService,
+      provide: appSandboxTokenProvider,
       multi: false,
       useClass: AppSandboxService,
-      deps: [AuthService, PermissionsService, RolesService, AppInjectorToken]
+      deps: [Store, Actions, AuthService, PermissionsService, RolesService, AppInjectorToken]
     },
 
     /**
      *  Auth user at startup if a token exists and is valid (not expired)
      */
     {
-      provide: APP_INITIALIZER, useFactory: authUser, deps: [AppSandboxService], multi: true
+      provide: APP_INITIALIZER, useFactory: authUser, deps: [appSandboxTokenProvider, Store, Actions], multi: true
     }
   ],
   exports: [],
