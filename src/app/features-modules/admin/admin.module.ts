@@ -56,9 +56,11 @@ import { SiteZonesService } from 'src/app/shared/services/site.zones/site.zones.
 import { AdminSiteZonesTreeComponent } from './site.zones/components/treeview/site.zones.tree.component';
 import { AdminSiteZonesRolesListComponent } from './site.zones/components/roles.list/site.zones.roles.list.component';
 import { AppInjectorToken } from 'src/app/main/app.injector.token';
+import {PermissionsContainer} from './permissions/containers';
 
 const components = [
   AclContainer, UsersContainer, UsersComponent, AclComponent, ActionComponent, FieldComponent, RoleComponent, ServiceComponent,
+  PermissionsContainer,
   RolesListComponent, UsersListComponent, UserDetailsComponent, UsersActionsComponent,
   NodeDetailComponent,
   RoleDetailComponent, ServiceDetailComponent, ActionDetailComponent, FieldDetailComponent,
