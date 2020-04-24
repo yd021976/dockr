@@ -56,11 +56,16 @@ import { SiteZonesService } from 'src/app/shared/services/site.zones/site.zones.
 import { AdminSiteZonesTreeComponent } from './site.zones/components/treeview/site.zones.tree.component';
 import { AdminSiteZonesRolesListComponent } from './site.zones/components/roles.list/site.zones.roles.list.component';
 import { AppInjectorToken } from 'src/app/main/app.injector.token';
-import {PermissionsContainer} from './permissions/containers';
+import { AdminPermissionsContainer } from './permissions/containers/permissions.container';
+import { AdminPermissionsSandboxProviderToken } from './permissions/sandboxes/admin.permissions.sandbox.token';
+import { AdminPermissionsSandboxService } from './permissions/sandboxes/admin.permissions.sandbox.service';
+import { AdminPermissionsTreeviewComponent } from './permissions/components/treeview/admin.permissions.treeview.component';
+import { AdminPermissionsTreedataService } from './permissions/services/admin.permissions.treedata.service';
+import { AdminPermissionsTreeviewNodeRenderer } from './permissions/components/treeview/node.renderer/treenode.renderer.component';
 
 const components = [
   AclContainer, UsersContainer, UsersComponent, AclComponent, ActionComponent, FieldComponent, RoleComponent, ServiceComponent,
-  PermissionsContainer,
+  AdminPermissionsContainer, AdminPermissionsTreeviewComponent, AdminPermissionsTreeviewNodeRenderer,
   RolesListComponent, UsersListComponent, UserDetailsComponent, UsersActionsComponent,
   NodeDetailComponent,
   RoleDetailComponent, ServiceDetailComponent, ActionDetailComponent, FieldDetailComponent,
@@ -115,10 +120,16 @@ const components = [
       multi: false,
       useClass: AdminSiteZonesSandboxService
     },
+    {
+      provide: AdminPermissionsSandboxProviderToken,
+      multi: false,
+      useClass: AdminPermissionsSandboxService
+    },
     /**
      * Container required services
      */
     TreeNodesService,
+    AdminPermissionsTreedataService,
     ResourcesLocksService]
 })
 export class AdminModule { }

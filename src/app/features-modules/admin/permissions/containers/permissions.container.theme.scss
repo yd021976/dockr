@@ -1,0 +1,8 @@
+/*
+Import all the tools needed to customize the theme and extract parts of it
+*/
+@import "~@angular/material/theming";
+@import "../../../../../styles/app-theme-globals.scss"; // Global app colors
+
+@mixin admin-permissions-container-theme($theme) {
+}

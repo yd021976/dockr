@@ -24,6 +24,10 @@
 @import '../app/features-modules/admin//acl/components/node-actions/node-actions.component.theme.scss';
 @import '../app/features-modules/admin/acl/components/acl.component.theme.scss';
 
+// Admin module -- Permissions
+@import '../app/features-modules/admin/permissions/containers/permissions.container.theme.scss';
+@import '../app/features-modules/admin/permissions/components/treeview/admin.permissions.treeview.component.theme.scss';
+
 // Admin module -- Users
 @import '../app/features-modules/admin/users/containers/users.container.theme.scss';
 @import '../app/features-modules/admin/users/components/users.component.theme.scss';
@@ -56,6 +60,9 @@
         // Admin module -- ACL
         @include admin-acl-component-theme($theme);
         @include admin-acl-node-actions-theme($theme);
+        // Admin module -- Permissions
+        @include admin-permissions-treeview-component-theme($theme);
+        @include admin-permissions-container-theme($theme);
         // Admin module -- Users
         @include admin-users-userslist-theme($theme);
         @include admin-users-component-theme($theme);

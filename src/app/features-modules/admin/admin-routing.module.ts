@@ -10,17 +10,27 @@ import { AdminUsersSandboxProviderToken } from './users/sandboxes/admin.users.sa
 import { AdminSiteZonesContainer } from './site.zones/containers/site.zones.container';
 import { siteZonesServiceToken } from 'src/app/shared/services/site.zones/site.zones.token';
 import { AdminSiteZonesSandboxProviderToken } from './site.zones/sandboxes/site.zones.sandbox.token';
+import { AdminPermissionsContainer } from './permissions/containers/permissions.container';
+import { AdminPermissionsSandboxProviderToken } from './permissions/sandboxes/admin.permissions.sandbox.token';
 
 const routes: ApplicationRouteInterface[] = [
   {
     path: 'admin', canActivate: [AclCanActivate], data: { isMenu: true, title: 'Admin', icon: 'fa-wrench', siteZone: 'admin' }, children: [
+      // {
+      //   path: 'acl',
+      //   component: AclContainer,
+      //   canActivate: [AclCanActivate],
+      //   canDeactivate: [AclCanDeactivateGuard],
+      //   resolve: { roles: AdminAclSandboxProviderToken },
+      //   data: { isMenu: true, link: 'admin/acl', title: 'Data & Services permissions', siteZone: 'acl' }
+      // },
       {
-        path: 'acl',
-        component: AclContainer,
-        canActivate: [AclCanActivate],
-        canDeactivate: [AclCanDeactivateGuard],
-        resolve: { roles: AdminAclSandboxProviderToken },
-        data: { isMenu: true, link: 'admin/acl', title: 'Data & Services permissions', siteZone: 'acl' }
+        path: 'permissions',
+        component: AdminPermissionsContainer,
+        canActivate: [],
+        canDeactivate: [],
+        resolve: { roles: AdminPermissionsSandboxProviderToken },
+        data: { isMenu: true, link: 'admin/permissions', title: 'Roles permissions', siteZone: 'permissions' }
       },
       {
         path: 'users',
