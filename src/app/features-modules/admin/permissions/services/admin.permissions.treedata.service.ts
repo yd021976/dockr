@@ -3,7 +3,7 @@ import { FlatTreeControl } from "@angular/cdk/tree";
 import { Observable, Subscription, of as observableof } from 'rxjs';
 import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree";
 import * as _ from 'lodash';
-import { AdminPermissionsEntitiesTypes, AdminPermissionsFlatNode, AdminPermissionsEntityTypes, EntityChildren } from "../store/models/admin.permissions.model";
+import { AdminPermissionsFlatNode, AdminPermissionsEntityTypes, EntityChildren } from "../store/models/admin.permissions.model";
 
 /**
  * 
@@ -63,8 +63,8 @@ export class AdminPermissionsTreedataService {
      * Flat site zone enity to flat node
      */
     private flatEntity(node: AdminPermissionsEntityTypes, level: number) {
-        const existingNode = this.EntityToFlatMap.get(node.uid)
-        const flatNode = existingNode ? existingNode : new AdminPermissionsFlatNode()
+        let existingNode = this.EntityToFlatMap.get(node.uid)
+        let flatNode = existingNode !== undefined ? existingNode : new AdminPermissionsFlatNode()
 
         // Update flat node data
         flatNode.item = node
@@ -122,7 +122,7 @@ export class AdminPermissionsTreedataService {
                 children = entityToCheck['fields']
                 break
         }
-        const result = (children !== null) && (children.length!==0) 
+        const result = (children !== null) && (children.length !== 0)
         return result
     }
     public getLevel = (node: AdminPermissionsFlatNode) => node.level

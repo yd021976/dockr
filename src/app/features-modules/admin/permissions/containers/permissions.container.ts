@@ -1,7 +1,7 @@
 import { Component, ViewChild, OnDestroy, Inject, ChangeDetectorRef, ApplicationRef, OnInit } from '@angular/core';
 import { AdminPermissionsSandboxInterface } from '../sandboxes/admin.permissions.sandbox.interface';
 import { AdminPermissionsSandboxProviderToken } from '../sandboxes/admin.permissions.sandbox.token';
-import { TreeViewColumnModel } from '../store/models/admin.permissions.model';
+import { TreeViewColumnModel, AdminPermissionsFlatNode, ALLOWED_STATES } from '../store/models/admin.permissions.model';
 
 
 @Component({
@@ -18,6 +18,18 @@ export class AdminPermissionsContainer implements OnInit, OnDestroy {
     }
     ngOnDestroy() { }
 
+    /**
+     * A node check has been inverted.
+     * @param node 
+     */
+    public checkChange(node: AdminPermissionsFlatNode) {
+        /** invert node status */
+        const new_allowed_status = node.item.allowed == ALLOWED_STATES.ALLOWED ? ALLOWED_STATES.FORBIDDEN : ALLOWED_STATES.ALLOWED
+
+        /** update node data */
+        this.sandbox.node_update_allowed(node, new_allowed_status)
+
+    }
     private setColmodel(): TreeViewColumnModel[] {
         return [
             {

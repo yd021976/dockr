@@ -12,7 +12,6 @@ import { nodeAnimations } from './admin.permissions.tree.animations';
 })
 export class AdminPermissionsTreeviewComponent {
     @Input('columnModel') columnModel: TreeViewColumnModel[] = []
-    // @Input('nodeTemplateRenderer') nodeTemplateRenderer: TemplateRef<any>
     // @Output('nodeToggled') nodeToggled: EventEmitter<AdminPermissionsFlatNode> = new EventEmitter<AdminPermissionsFlatNode>()
 
     @Input('treecontrol') treecontrol: BaseTreeControl<AdminPermissionsFlatNode>
@@ -20,10 +19,15 @@ export class AdminPermissionsTreeviewComponent {
     @Input('selectedNode') selectedNode: AdminPermissionsFlatNode
     @Input('hasChild') hasChild: (number, AdminPermissionsFlatNode) => boolean = () => { return false }
     @Output('nodeSelected') nodeSelected: EventEmitter<AdminPermissionsFlatNode> = new EventEmitter<AdminPermissionsFlatNode>()
+    @Output('checked') checked: EventEmitter<AdminPermissionsFlatNode> = new EventEmitter<AdminPermissionsFlatNode>()
 
     @ViewChild('tree', { static: true }) matTree: MatTree<any>
 
     public select(node: AdminPermissionsFlatNode) {
         this.nodeSelected.emit(node)
+    }
+
+    public checkChange(node: AdminPermissionsFlatNode, checked: boolean) {
+        this.checked.emit(node)
     }
 }

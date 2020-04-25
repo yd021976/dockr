@@ -4,7 +4,8 @@ import { AdminPermissionsNormalizrSchemas } from "../../entity.management/normal
 import * as _ from 'lodash';
 import { Injectable } from "@angular/core";
 import { AdminPermissionsRolesStateActions } from "../../actions/admin.permissions.role.entity.actions";
-import { AdminPermissionsStateModel, EntityChildren } from "../../models/admin.permissions.model";
+import { AdminPermissionsStateModel, EntityChildren, AdminPermissionsServiceEntity, ALLOWED_STATES, AdminPermissionsStateEntities, AdminPermissionsOperationEntity, AdminPermissionsEntityTypes, AdminPermissionsFieldEntity, AdminPermissionsEntitiesTypes } from "../../models/admin.permissions.model";
+import { AdminPermissionsStateActions } from "../../actions/admin.permissions.state.actions";
 
 
 const default_state: AdminPermissionsStateModel = {
@@ -96,356 +97,225 @@ export class AdminPermissionsEntitiesState {
         })
     }
 
+    /**
+     * 
+     */
+    @Action(AdminPermissionsStateActions.NodeUpdateAllowedStatus)
+    admin_permissions_node_update_allowed(ctx: StateContext<AdminPermissionsStateModel>, action: AdminPermissionsStateActions.NodeUpdateAllowedStatus) {
+        let entities = ctx.getState().entities
+        const entity_type = action.node.item.constructor.name
+        let entity: AdminPermissionsEntityTypes
 
-    /*******************************************************************************************************************************************************************
-     *                                                     Role entities -- ADD role entity
-     *******************************************************************************************************************************************************************/
+        switch (entity_type) {
+            /** Do nothing : Role hasn't allowed property */
+            case "AdminPermissionsRoleEntity":
+                break
+            case "AdminPermissionsServiceEntity":
+                entity = entities.services[action.node.item.uid]
+                break
+            case "AdminPermissionsOperationEntity":
+                entity = entities.operations[action.node.item.uid]
+                break
+            case "AdminPermissionsFieldEntity":
+                entity = entities.fields[action.node.item.uid]
+                break
+        }
 
-    // @Action(RolesStateActions.Add_Entity)
-    // roles_add_entity(ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Add_Entity) {
-    //     const normalized = normalize([action.roleEntity], AclEntitiesState.normalizr_utils.mainSchema)
-    //     const role_entities = normalized.entities['roles'] ? normalized.entities['roles'] : {}
-    //     const service_entities = normalized.entities['services'] ? normalized.entities['services'] : {}
-    //     const actions_entities = normalized.entities['crud_operations'] ? normalized.entities['crud_operations'] : {}
-    //     const fields_entities = normalized.entities['fields'] ? normalized.entities['fields'] : {}
-    //     const previous_entities = _.cloneDeep(ctx.getState().entities)
+        /** Update allowed status first : Entity down to its children, then entity up to its root parent entity */
+        let updated_entities = this.entity_update_allowed_status_down(entities, entity, action.allowed_status)
+        updated_entities = this.entity_update_allowed_status_up(updated_entities, entity, action.allowed_status)
 
-    //     ctx.patchState({
-    //         previous_entities: previous_entities,
-    //         entities: {
-    //             roles: { ...ctx.getState().entities.roles, ...role_entities },
-    //             services: { ...ctx.getState().entities.services, ...service_entities },
-    //             actions: { ...ctx.getState().entities.actions, ...actions_entities },
-    //             fields: { ...ctx.getState().entities.fields, ...fields_entities }
-    //         }
-    //     })
-    // }
+        /** update state */
+        ctx.patchState({
+            entities: { ...updated_entities }
+        })
 
-    // /**
-    //  * 
-    //  * @param ctx 
-    //  * @param action 
-    //  */
-    // @Action(RolesStateActions.Add_Entity_Success)
-    // roles_add_entity_success(ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Add_Entity_Success) {
-    //     ctx.patchState({ previous_entities: null })
-    // }
+        //DEBUG
+        const result = ctx.getState()
+    }
 
-    // /**
-    //  * 
-    //  * @param ctx 
-    //  * @param action 
-    //  */
-    // @Action(RolesStateActions.Add_Entity_Error)
-    // roles_add_entity_error(ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Add_Entity_Error) {
-    //     const previous_entities: AclEntities = ctx.getState().previous_entities != null ? ctx.getState().previous_entities : ctx.getState().entities
-    //     ctx.patchState({
-    //         entities: previous_entities,
-    //         previous_entities: null
-    //     })
-    // }
+    /**
+     * Generic method to update allowed status from an entity up to its root parent
+     * NOTE : Does not update the entity but only parents
+     * 
+     * WARN As we are processing objects references of entities input parameter, it will be updated
+     * 
+     * @param entities 
+     * @param entity Entity from start to update
+     * @param allowed_status 
+     */
+    private entity_update_allowed_status_up(
+        entities: AdminPermissionsStateEntities, /** will be changed and updated in the method */
+        entity: AdminPermissionsEntityTypes,
+        allowed_status: ALLOWED_STATES): AdminPermissionsStateEntities {
 
+        const isParentIndeterminate: boolean = this.isParentIndeterminate(entity, entities, allowed_status)
+        /** if parent is not indeterminate, assume that the current allowed status of entity is the same for all siblings */
+        const allowed_status_to_update: ALLOWED_STATES = isParentIndeterminate ? ALLOWED_STATES.INDETERMINATE : allowed_status
 
-    // /*******************************************************************************************************************************************************************
-    //  *                                                  Role entities -- REMOVE role entity
-    //  *******************************************************************************************************************************************************************/
-    // @Action(RolesStateActions.Remove_Entity)
-    // role_remove_entity(ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Remove_Entity) {
-    //     const state = ctx.getState()
-    //     const previous_entities: AclEntities = _.cloneDeep(state.entities)
+        /** update parent entities recursively */
+        let parent = this.getParent(entity, entities)
+        while (parent !== null) {
+            parent.allowed = parent.allowed !== undefined && parent.allowed !== null ? allowed_status_to_update : undefined /** if allowed status not set, do nothing */
+            parent = this.getParent(parent, entities)
+        }
 
-    //     state.entities.roles[action.roleUid].services.forEach((serviceUID) => {
-    //         state.entities.services[serviceUID].crud_operations.forEach((actionUID) => {
-    //             state.entities.actions[actionUID].fields.forEach((fieldUID) => {
-    //                 delete state.entities.fields[fieldUID]
-    //             })
-    //             delete state.entities.actions[actionUID]
-    //         })
-    //         delete state.entities.services[serviceUID]
-    //     })
-    //     delete state.entities.roles[action.roleUid]
-
-    //     ctx.patchState({
-    //         previous_entities: previous_entities,
-    //         entities: {
-    //             roles: { ...state.entities.roles },
-    //             services: { ...state.entities.services },
-    //             actions: { ...state.entities.actions },
-    //             fields: { ...state.entities.fields }
-    //         }
-    //     })
-    // }
-    // /**
-    //  * Remove role entity from state
-    //  * @param ctx 
-    //  * @param action 
-    //  */
-    // @Action(RolesStateActions.Remove_Entity_Success)
-    // roles_remove_entity_success(ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Remove_Entity_Success) {
-    //     ctx.patchState({
-    //         previous_entities: null
-    //     })
-
-    // }
-    // /**
-    //  * 
-    //  * @param ctx 
-    //  * @param action 
-    //  */
-    // @Action(RolesStateActions.Remove_Entity_Error)
-    // roles_remove_entity_error(ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Remove_Entity_Error) {
-    //     const previous_entities: AclEntities = ctx.getState().previous_entities != null ? ctx.getState().previous_entities : ctx.getState().entities
-    //     ctx.patchState({
-    //         entities: previous_entities,
-    //         previous_entities: null
-    //     })
-    // }
+        return entities
+    }
 
 
+    /**
+     * Generic method to update allowed status from an entity down to its children entities
+     * 
+     * @param entities 
+     * @param entity 
+     * @param allowed_status 
+     */
+    private entity_update_allowed_status_down(
+        entities: AdminPermissionsStateEntities,
+        entity: AdminPermissionsEntityTypes,
+        allowed_status: ALLOWED_STATES): AdminPermissionsStateEntities {
 
-    // /*******************************************************************************************************************************************************************
-    //  *                                                  Role entities -- ADD service entity
-    //  *******************************************************************************************************************************************************************/
+        /** define entity state property name and entity children property name*/
+        const entity_type = entity.constructor.name
+        let state_entity_prop_name: string = ''
+        let children_entities_prop_name: string = ''
 
-    // /**
-    // * 
-    // * @param ctx 
-    // * @param action 
-    // */
-    // @Action(RolesStateActions.Add_Service)
-    // role_add_service(ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Add_Service) {
-    //     var normalizedEntities = normalize(action.backendServiceModel, AclEntitiesState.normalizr_utils.serviceSchema)
-    //     const serviceUid = normalizedEntities.result
-    //     var state = ctx.getState()
+        switch (entity_type) {
+            case "AdminPermissionsRoleEntity":
+                state_entity_prop_name = 'roles'
+                children_entities_prop_name = 'services'
+                break
+            case "AdminPermissionsServiceEntity":
+                state_entity_prop_name = 'services'
+                children_entities_prop_name = 'operations'
+                break
+            case "AdminPermissionsOperationEntity":
+                state_entity_prop_name = 'operations'
+                children_entities_prop_name = 'fields'
+                break
+            case "AdminPermissionsFieldEntity":
+                state_entity_prop_name = 'fields'
+                children_entities_prop_name = 'fields'
+                break
+        }
 
-    //     // Save current state entities
-    //     let previous_entities = _.cloneDeep(state.entities)
+        //FIXME: Should we must do a complete copy of entities ?
+        let updated_entities: AdminPermissionsStateEntities = entities
+        updated_entities[state_entity_prop_name][entity.uid].allowed = allowed_status
 
-    //     // Update role entity
-    //     var roleEntity = state.entities.roles[action.roleUid]
-    //     roleEntity.services.push(serviceUid)
+        /** update entity children allowed property */
+        const children: EntityChildren = updated_entities[state_entity_prop_name][entity.uid][children_entities_prop_name]
+        let child_entity: AdminPermissionsEntityTypes
+        children.forEach((child_entity_uid) => {
+            child_entity = updated_entities[children_entities_prop_name][child_entity_uid]
+            updated_entities = this.entity_update_allowed_status_down(updated_entities, child_entity, allowed_status)
+        })
+        return updated_entities
+    }
 
-    //     ctx.patchState({
-    //         entities: {
-    //             roles: { ...state.entities.roles },
-    //             services: { ...state.entities.services, ...normalizedEntities.entities['services'] },
-    //             actions: { ...state.entities.actions, ...normalizedEntities.entities['crud_operations'] },
-    //             fields: { ...state.entities.fields, ...normalizedEntities.entities['fields'] }
-    //         },
-    //         previous_entities: previous_entities
-    //     })
-    // }
+    /**
+     * check if a parent entity is in an indeterminate state from a child entity
+     * 
+     * @param child_entity the child entity to check indeterlinate state from
+     * @param entities 
+     */
+    private isParentIndeterminate(child_entity: AdminPermissionsEntityTypes, entities: AdminPermissionsStateEntities, allowed_status: ALLOWED_STATES): boolean {
+        let indeterminate: boolean = false
+        const siblings_entities: AdminPermissionsEntityTypes[] = this.getSiblings(child_entity, entities)
 
-    // /**
-    //  * 
-    //  * @param ctx 
-    //  * @param action 
-    //  */
-    // @Action(RolesStateActions.Add_Service_Success)
-    // role_add_service_success(ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Add_Service_Success) {
-    //     ctx.patchState({ previous_entities: null })
-    // }
+        siblings_entities.some((entity) => {
+            /** at first 'allowed' difference, we know */
+            if (entity.allowed !== allowed_status) {
+                indeterminate = true
+                return true
+            }
+        })
+        return indeterminate
+    }
+    /**
+     * Get all siblings entities from an entity
+     * 
+     * @param entity 
+     */
+    private getSiblings(entity: AdminPermissionsEntityTypes, entities: AdminPermissionsStateEntities): AdminPermissionsEntityTypes[] {
+        const parent_entity: AdminPermissionsEntityTypes = this.getParent(entity, entities)
+        const parent_entity_type: string = parent_entity.constructor.name
+        let parent_entity_children_prop_name: string
 
-    // /**
-    //  * 
-    //  * @param ctx 
-    //  * @param action 
-    //  */
-    // @Action(RolesStateActions.Add_Service_Error)
-    // Acl_Role_Add_Service_Error(ctx: StateContext<AclStateEntitiesModel>, action: RolesStateActions.Add_Service_Error) {
-    //     const previous_state = ctx.getState().previous_entities
-    //     ctx.patchState({ entities: previous_state || ctx.getState().entities, previous_entities: null })
-    // }
+        switch (parent_entity_type) {
+            case "AdminPermissionsRoleEntity":
+                parent_entity_children_prop_name = 'services'
+                break
+            case "AdminPermissionsServiceEntity":
+                parent_entity_children_prop_name = 'operations'
+                break
+            case "AdminPermissionsOperationEntity":
+                parent_entity_children_prop_name = 'fields'
+                break
+            case "AdminPermissionsFieldEntity":
+                parent_entity_children_prop_name = 'fields'
+                break
+        }
 
-
-
-
-
-    // /*******************************************************************************************************************************************************************
-    // *                                                  Field entities -- Update entity
-    // *******************************************************************************************************************************************************************/
-
-
-    // /**
-    // * 
-    // * @param ctx 
-    // * @param action 
-    // */
-    // @Action(Acl_Field_Update_Allowed)
-    // field_update_property_allowed(ctx: StateContext<AclStateEntitiesModel>, action: Acl_Field_Update_Allowed) {
-    //     const state: AclStateEntitiesModel = ctx.getState()
-    //     var field_entity: ServiceFieldEntity = state.entities.fields[action.entity_uid]
-    //     var parent_action_entity: AclServiceActionModelEntity = null
-
-    //     // Save current state entities
-    //     let previous_entities = _.cloneDeep(state.entities)
-
-    //     // Upate field entity
-    //     field_entity.allowed = action.allowed
-
-    //     // Get the root field if action uid field is a child. Default is action <uid> property
-    //     var parent_field_uid: string = (entity_management.fields.field_get_root_field(action.entity_uid, state.entities.fields)).uid
-
-    //     // Get the parent "action" entity
-    //     parent_action_entity = entity_management.fields.field_get_parent_action(parent_field_uid, state.entities.actions)
-
-    //     // Update allowed property for this field and all his descendants/parents allowed property
-    //     entity_management.fields.field_update_allowed(action.entity_uid, action.allowed, state.entities.fields)
-
-    //     // Update action allowed state
-    //     entity_management.actions.action_update_allowed(parent_action_entity.uid, state.entities.actions, state.entities.fields)
-
-    //     ctx.patchState({
-    //         entities: {
-    //             roles: { ...state.entities.roles },
-    //             services: { ...state.entities.services },
-    //             actions: { ...state.entities.actions, [parent_action_entity.uid]: parent_action_entity },
-    //             fields: { ...state.entities.fields, [action.entity_uid]: field_entity }
-    //         },
-    //         previous_entities: previous_entities
-    //     })
-    // }
-    // /**
-    //  * Update field "allowed" property and update parent fields and action entities
-    //  * @param ctx 
-    //  * @param action 
-    //  */
-    // @Action(Acl_Field_Update_Allowed_Success)
-    // field_update_property_allowed_success(ctx: StateContext<AclStateEntitiesModel>, action: Acl_Field_Update_Allowed_Success) {
-    //     ctx.patchState({ previous_entities: null })
-    // }
-
-    // /**
-    //  * Error after updating, roll back entities to previous state
-    //  * 
-    //  * @param ctx 
-    //  * @param action 
-    //  */
-    // @Action(Acl_Field_Update_Allowed_Error)
-    // field_update_property_allowed_error(ctx: StateContext<AclStateEntitiesModel>, action: Acl_Field_Update_Allowed_Error) {
-    //     let state = ctx.getState()
-    //     ctx.patchState({
-    //         entities: state.previous_entities,
-    //         previous_entities: null
-    //     })
-    // }
+        const parent_children: EntityChildren = parent_entity[parent_entity_children_prop_name] /** array of children uid */
+        const siblings: AdminPermissionsEntityTypes[] =
+            Object.values(entities[parent_entity_children_prop_name] as AdminPermissionsEntitiesTypes).filter((entity: AdminPermissionsEntityTypes) => {
+                return parent_children.find(child_uid => entity.uid === child_uid)
+            })
 
 
-    // /*******************************************************************************************************************************************************************
-    // *                                                  Action entities -- Update entity
-    // *******************************************************************************************************************************************************************/
+        return siblings
+    }
 
-    // /**
-    //  * 
-    //  * @param ctx 
-    //  * @param action 
-    //  */
-    // @Action(Acl_Action_Update_Allowed)
-    // action_update_property_allowed(ctx: StateContext<AclStateEntitiesModel>, action: Acl_Action_Update_Allowed) {
-    //     const state: AclStateEntitiesModel = ctx.getState()
-    //     var action_entity: AclServiceActionModelEntity = state.entities.actions[action.entity_uid]
+    /**
+     * Get entity's parent
+     * 
+     * @param entity 
+     */
+    private getParent(entity: AdminPermissionsEntityTypes, entities: AdminPermissionsStateEntities): AdminPermissionsEntityTypes {
+        let entity_type = entity.constructor.name
+        let parent_entity_name: string
+        let parent_children_prop_name: string
+        let parent: AdminPermissionsEntityTypes = null
+        let field_parent: AdminPermissionsEntityTypes = null
 
-    //     // Save current state entities
-    //     let previous_entities = _.cloneDeep(state.entities)
+        const getParent = () => {
+            const parent_entities: AdminPermissionsEntitiesTypes = entities[parent_entity_name]
+            parent = null
+            parent = Object.values(parent_entities).find((value: AdminPermissionsEntityTypes) => {
+                let found = (value[parent_children_prop_name] as EntityChildren).find((child_uid) => { return child_uid == entity.uid })
+                return found
+            })
+            return parent
+        }
 
-    //     // Update action entity
-    //     action_entity.allowed = action.allowed
-
-    //     // Update fields entities
-    //     action_entity.fields.forEach((field_uid) => {
-    //         state.entities.fields[field_uid].allowed = action.allowed
-    //         entity_management.fields.field_update_allowed(field_uid, action.allowed, state.entities.fields)
-    //     })
-
-    //     ctx.patchState({
-    //         previous_entities: previous_entities,
-    //         entities: {
-    //             roles: { ...state.entities.roles },
-    //             services: { ...state.entities.services },
-    //             actions: { ...state.entities.actions, [action.entity_uid]: action_entity },
-    //             fields: { ...state.entities.fields }
-    //         }
-    //     })
-    // }
-    // /**
-    //  * @param ctx 
-    //  * @param action 
-    //  */
-    // @Action(Acl_Action_Update_Allowed_Success)
-    // action_update_property_allowed_success(ctx: StateContext<AclStateEntitiesModel>, action: Acl_Action_Update_Allowed_Success) {
-    //     ctx.patchState({ previous_entities: null })
-    // }
-    // /**
-    //  * 
-    //  * @param ctx 
-    //  * @param action 
-    //  */
-    // @Action(Acl_Action_Update_Allowed_Error)
-    // action_update_property_allowed_error(ctx: StateContext<AclStateEntitiesModel>, action: Acl_Action_Update_Allowed_Error) {
-    //     let state = ctx.getState()
-    //     ctx.patchState({
-    //         entities: state.previous_entities,
-    //         previous_entities: null
-    //     })
-    // }
-
-
-    // /*******************************************************************************************************************************************************************
-    // *                                                  Service entities -- Remove entity
-    // *******************************************************************************************************************************************************************/
-    // /**
-    //  * 
-    //  * @param ctx 
-    //  * @param action 
-    //  */
-    // @Action(Acl_Services_Remove_Entity)
-    // services_remove_entity(ctx: StateContext<AclStateEntitiesModel>, action: Acl_Services_Remove_Entity) {
-    //     const state: AclStateEntitiesModel = ctx.getState()
-    //     const previous_entities_state: AclEntities = _.cloneDeep(state.entities)
-
-    //     try {
-    //         // Remove service entity and all children (actions & fields), then remove service uid reference from role
-    //         entity_management.services.service_remove_entity(action.service_uid, state.entities.roles, state.entities.services, state.entities.actions, state.entities.fields)
-
-    //         // Update state
-    //         ctx.patchState({
-    //             previous_entities: previous_entities_state,
-    //             entities: {
-    //                 roles: { ...state.entities.roles },
-    //                 services: { ...state.entities.services },
-    //                 actions: { ...state.entities.actions },
-    //                 fields: { ...state.entities.fields }
-    //             }
-    //         })
-    //     } catch (e) {
-    //         ctx.dispatch(new Acl_Services_Remove_Entity_Error(e.message))
-    //     }
-    // }
-    // /**
-    //  * 
-    //  * @param ctx 
-    //  * @param action 
-    //  */
-    // @Action(Acl_Services_Remove_Entity_Success)
-    // services_remove_entity_success(ctx: StateContext<AclStateEntitiesModel>, action: Acl_Services_Remove_Entity_Success) {
-    //     // Update state
-    //     ctx.patchState({
-    //         previous_entities: null
-    //     })
-    // }
-
-    // @Action(Acl_Services_Remove_Entity_Error)
-    // services_remove_entity_error(ctx: StateContext<AclStateEntitiesModel>, action: Acl_Services_Remove_Entity_Error) {
-    //     const current_state: AclStateEntitiesModel = ctx.getState()
-
-    //     // Sets new state entities : If a previous entities state exist, then get it to rollback state, if not keep current state entities
-    //     const state_entities_update: AclEntities = current_state.previous_entities != null ? current_state.previous_entities : current_state.entities
-
-    //     // Rollback state to previous state if a previous state is set
-    //     ctx.patchState({
-    //         entities: state_entities_update,
-    //         previous_entities: null
-    //     })
-    // }
-
+        switch (entity_type) {
+            case "AdminPermissionsRoleEntity":
+                parent_entity_name = ''
+                parent_children_prop_name = 'services'
+                break
+            case "AdminPermissionsServiceEntity":
+                parent_entity_name = 'roles'
+                parent_children_prop_name = 'services'
+                break
+            case "AdminPermissionsOperationEntity":
+                parent_entity_name = 'services'
+                parent_children_prop_name = 'operations'
+                break
+            case "AdminPermissionsFieldEntity":
+                parent_entity_name = 'fields'
+                parent_children_prop_name = 'fields'
+                /** we must check field has field parent here. If no field parent, then the parent is 'operations' */
+                field_parent = getParent()
+                if (field_parent === undefined) { /** this means we did not find a parent entity of type "field" */
+                    parent_entity_name = 'operations'
+                }
+                break
+        }
+        /** return parent entity */
+        if (field_parent !== undefined && field_parent !== null) return field_parent
+        if (entity_type == 'AdminPermissionsRoleEntity') return null
+        return getParent()
+    }
 }

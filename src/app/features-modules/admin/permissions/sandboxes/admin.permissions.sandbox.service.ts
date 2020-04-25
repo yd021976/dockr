@@ -4,18 +4,19 @@ import { AdminPermissionsRolesStateActions } from "../store/actions/admin.permis
 import { ApplicationActions } from "src/app/shared/store/actions/application.actions";
 import { ApplicationNotification, ApplicationNotificationType } from "src/app/shared/models/application.notifications.model";
 import { Observable, of } from "rxjs";
-import { AdminPermissionsBaseModel,AdminPermissionsEntityTypes } from "../store/models/admin.permissions.model";
+import { AdminPermissionsEntityTypes, AdminPermissionsFlatNode, ALLOWED_STATES } from "../store/models/admin.permissions.model";
 import { AdminPermissionsStateSelectors } from '../store/selectors/admin.permissions.selectors';
 import { AdminPermissionsTreedataService } from "../services/admin.permissions.treedata.service";
+import { AdminPermissionsStateActions } from "../store/actions/admin.permissions.state.actions";
 
 @Injectable({ providedIn: 'root' })
 export class AdminPermissionsSandboxService extends AdminPermissionsSandboxInterface {
     public isAclLocked$: Observable<boolean> = of(false)
 
-    public get datasource() {return this.treedatasource.treedatasource}
+    public get datasource() { return this.treedatasource.treedatasource }
     public get treecontrol() { return this.treedatasource.treecontrol }
     public get hasChild() { return this.treedatasource.hasChild }
-    
+
     constructor(private treedatasource: AdminPermissionsTreedataService) {
         super()
         this.treenodes$ = this.nodeGetChildren()
@@ -50,6 +51,15 @@ export class AdminPermissionsSandboxService extends AdminPermissionsSandboxInter
      */
     public nodeGetChildren = (node: AdminPermissionsEntityTypes = null): Observable<AdminPermissionsEntityTypes[]> => {
         return this.store.select(AdminPermissionsStateSelectors.getChildren(node))
+    }
+
+    /**
+     * 
+     */
+    public node_update_allowed(node: AdminPermissionsFlatNode, allowed_status: ALLOWED_STATES) {
+        this.store.dispatch(new AdminPermissionsStateActions.NodeUpdateAllowedStatus(node, allowed_status)).toPromise().then((result) => {
+
+        })
     }
     /** unused but must be implemented */
     protected on_login() { }

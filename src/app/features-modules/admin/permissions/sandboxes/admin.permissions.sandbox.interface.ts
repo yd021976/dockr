@@ -38,6 +38,6 @@ export abstract class AdminPermissionsSandboxInterface extends BaseSandboxServic
      *                  ACTIONS
      * 
      */
-
+    public abstract node_update_allowed(node, allowed_status)
 
 }

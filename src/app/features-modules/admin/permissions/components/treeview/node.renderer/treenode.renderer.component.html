@@ -13,8 +13,8 @@
     </button>
     <div class="node-renderer" fxFlex>
       <div class="node-renderer-description" fxFlex="1 0" fxLayoutAlign="left center">{{node.item.name || node.item.id}}</div>
-      <div class="node-renderer-checkbox" fxFlex="1 0" fxLayoutAlign="left center" *ngIf="node.item.allowed!==null">
-        <mat-checkbox [checked]="node.item.allowed"></mat-checkbox>
+      <div class="node-renderer-checkbox" fxFlex="1 0" fxLayoutAlign="left center" *ngIf="node.item.allowed!==null && node.item.allowed!==undefined">
+        <mat-checkbox [checked]="node.item.allowed=='1'" [indeterminate]="node.item.allowed==allowed_states.INDETERMINATE" (change)="checkChange($event)"></mat-checkbox>
       </div>
     </div>
   </div>

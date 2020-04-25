@@ -16,23 +16,8 @@
     <div class="contents" fxFlex fxLayout="row" fxFlex="1 1 auto">
         <div fxFlex>
             <app-admin-permissions-treeview #AclTree [datasource]="sandbox.datasource" [columnModel]="treeColumnModel"
-                [treecontrol]="sandbox.treecontrol" [hasChild]="sandbox.hasChild">
+                [treecontrol]="sandbox.treecontrol" [hasChild]="sandbox.hasChild" (checked)="checkChange($event)">
             </app-admin-permissions-treeview>
-
-
-            <!-- How to render tree nodes -->
-            <!-- <ng-template #node let-node>
-                <ng-container [ngSwitch]="node.type">
-                    <app-admin-acl-tree-node-role *ngSwitchCase="node_types.ROLE" [node]="node" [editable]="aclLocked$"></app-admin-acl-tree-node-role>
-                    <app-admin-acl-tree-node-service *ngSwitchCase="node_types.SERVICE" [editable]="aclLocked$" [node]="node"></app-admin-acl-tree-node-service>
-                    <app-admin-acl-tree-node-action *ngSwitchCase="node_types.CRUDOPERATION" [node]="node" [editable]="aclLocked$"
-                                                    (checkChange)="onActionCheckChange($event)">
-                    </app-admin-acl-tree-node-action>
-                    <app-admin-acl-tree-node-field *ngSwitchCase="node_types.FIELDACCESS" [editable]="aclLocked$" [node]="node"
-                                                   (checkChange)="onFieldCheckChange($event)">
-                    </app-admin-acl-tree-node-field>
-                </ng-container>
-            </ng-template> -->
         </div>
 
         <!-- Node actions -->
