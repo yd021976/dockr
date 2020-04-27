@@ -5,8 +5,4 @@ export namespace ApplicationActions {
         static readonly type = '[Application] Notification event'
         constructor(public Notification:ApplicationNotification) {}
     }
-    export class Application_Reset_State{
-        static readonly type = '[Application] Reset State'
-        constructor() {}
-    }
 }

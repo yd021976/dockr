@@ -1,12 +1,11 @@
 import { State, Action, StateContext } from "@ngxs/store";
-import { AclStateEntitiesModel } from "src/app/shared/models/acl.entities.model";
 import { AdminPermissionsNormalizrSchemas } from "../../entity.management/normalizer";
 import * as _ from 'lodash';
 import { Injectable } from "@angular/core";
 import { AdminPermissionsRolesStateActions } from "../../actions/admin.permissions.role.entity.actions";
-import { AdminPermissionsStateModel, EntityChildren, AdminPermissionsServiceEntity, ALLOWED_STATES, AdminPermissionsStateEntities, AdminPermissionsOperationEntity, AdminPermissionsEntityTypes, AdminPermissionsFieldEntity, AdminPermissionsEntitiesTypes } from "../../models/admin.permissions.model";
+import { AdminPermissionsStateModel, EntityChildren, ALLOWED_STATES, AdminPermissionsStateEntities, AdminPermissionsEntityTypes, AdminPermissionsEntitiesTypes } from "../../models/admin.permissions.model";
 import { AdminPermissionsStateActions } from "../../actions/admin.permissions.state.actions";
-
+import { EntityUtilities } from "../../entity.management/entity.utilities/admin.permissions.entity.utilities";
 
 const default_state: AdminPermissionsStateModel = {
     entities: {
@@ -25,18 +24,17 @@ const default_state: AdminPermissionsStateModel = {
 })
 
 @Injectable()
-export class AdminPermissionsEntitiesState {
+export class AdminPermissionsEntitiesState extends EntityUtilities {
     // define entities schemas
     static readonly normalizr_utils: AdminPermissionsNormalizrSchemas = new AdminPermissionsNormalizrSchemas()
 
-    constructor() { }
-
-    // @Action(ApplicationActions.Application_Reset_State)
-    // reset_state(ctx: StateContext<AclStateEntitiesModel>, action: ApplicationActions.Application_Reset_State) {
-    //     ctx.setState(default_state)
-    // }
-
-
+    /**
+     * Return a deep copy of current state entities
+     * @param ctx 
+     */
+    get_cloned_entities(ctx: StateContext<AdminPermissionsStateModel>): AdminPermissionsStateEntities {
+        return _.cloneDeep(ctx.getState().entities)
+    }
     /*******************************************************************************************************************************************************************
      *                                                              Load entities
      *******************************************************************************************************************************************************************/
@@ -102,37 +100,28 @@ export class AdminPermissionsEntitiesState {
      */
     @Action(AdminPermissionsStateActions.NodeUpdateAllowedStatus)
     admin_permissions_node_update_allowed(ctx: StateContext<AdminPermissionsStateModel>, action: AdminPermissionsStateActions.NodeUpdateAllowedStatus) {
-        let entities = ctx.getState().entities
-        const entity_type = action.node.item.constructor.name
-        let entity: AdminPermissionsEntityTypes
+        /** Create a copy of current state entities */
+        this.entities = this.get_cloned_entities(ctx)
 
-        switch (entity_type) {
-            /** Do nothing : Role hasn't allowed property */
-            case "AdminPermissionsRoleEntity":
-                break
-            case "AdminPermissionsServiceEntity":
-                entity = entities.services[action.node.item.uid]
-                break
-            case "AdminPermissionsOperationEntity":
-                entity = entities.operations[action.node.item.uid]
-                break
-            case "AdminPermissionsFieldEntity":
-                entity = entities.fields[action.node.item.uid]
-                break
-        }
-
-        /** Update allowed status first : Entity down to its children, then entity up to its root parent entity */
-        let updated_entities = this.entity_update_allowed_status_down(entities, entity, action.allowed_status)
-        updated_entities = this.entity_update_allowed_status_up(updated_entities, entity, action.allowed_status)
+        /** Update allowed value of entities, entity's children and entity's parents */
+        this.update_entity_allowed_property(action.node.item, action.allowed_status)
 
         /** update state */
         ctx.patchState({
-            entities: { ...updated_entities }
+            entities: { ...this.entities }
         })
 
         //DEBUG
         const result = ctx.getState()
     }
+    /**
+     * TODO : Remove below unused methods
+     */
+
+
+
+
+
 
     /**
      * Generic method to update allowed status from an entity up to its root parent

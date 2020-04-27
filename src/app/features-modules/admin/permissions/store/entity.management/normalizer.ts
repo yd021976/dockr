@@ -20,8 +20,9 @@ export class AdminPermissionsNormalizrSchemas {
         /** generate UID for object if not already exists */
         if (!Object.prototype.hasOwnProperty.call(value, 'uid')) value['uid'] = uuid()
 
-        let children:EntityChildren = []
+        let children: EntityChildren = []
         let entity: AdminPermissionsRoleEntity | AdminPermissionsServiceEntity | AdminPermissionsOperationEntity | AdminPermissionsFieldEntity
+        let parent_entities_key: string
 
         /** Create object of node type */
         switch (key) {
@@ -30,29 +31,49 @@ export class AdminPermissionsNormalizrSchemas {
                 children = value['crud_operations'] ? cloneDeep(value['crud_operations']) : []
                 entity = new AdminPermissionsServiceEntity()
                 entity.operations = children
+                entity.children_key = 'operations'
+                parent_entities_key = 'roles'
                 break
             case 'operations':
                 entity = new AdminPermissionsOperationEntity()
                 children = value['fields'] ? cloneDeep(value['fields']) : []
                 entity.fields = children
+                entity.children_key = 'fields'
+                parent_entities_key = 'services'
                 break
             case 'fields':
                 entity = new AdminPermissionsFieldEntity()
                 children = value['fields'] ? cloneDeep(value['fields']) : []
                 entity.fields = children
+                entity.children_key = 'fields'
+                switch (parent.constructor.name) {
+                    case 'AdminPermissionsFieldEntity':
+                        parent_entities_key = 'fields'
+                        break
+                    case 'AdminPermissionsOperationEntity':
+                        parent_entities_key = 'operations'
+                        break
+                }
                 break
             default:
                 children = value['services'] ? cloneDeep(value['services']) : []
                 entity = new AdminPermissionsRoleEntity()
                 entity.services = children
+                entity.children_key = 'services'
                 break
         }
-
         if (entity !== null) {
+            entity.entitiesKey = key
             entity.id = value['_id'] ? value['_id'] : value['id']
             entity.name = value['name']
             entity.uid = value['uid']
             entity.allowed = value['allowed'] || null
+            entity.parentEntity = {
+                type: (parent !== null && parent.constructor.name !== 'Array') ? parent.constructor.name : null,
+                uid: (parent !== null && parent.constructor.name !== 'Array') ? parent.uid : null,
+                entitiestKey: parent_entities_key,
+                childrenKey: key
+            }
             return entity
         }
         /**WARN this should never appears, if so there is a bug */

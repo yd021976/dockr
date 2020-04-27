@@ -9,15 +9,24 @@ export enum ALLOWED_STATES {
     FORBIDDEN = "0",
     INDETERMINATE = "indeterminate"
 }
+export interface ParentEntity {
+    type: string // Parent classname
+    uid: string // UID of parent
+    entitiestKey: string // Parent state entities key
+    childrenKey: string // Parent children property name
+}
 
 /**
  * 
  */
 export class AdminPermissionsBaseModel {
+    uid?: string
     id: string
     name: string
     allowed?: ALLOWED_STATES
-    uid?: string
+    parentEntity: ParentEntity /** Entity's parent data */
+    entitiesKey:string /** name of entities collection key this entity is part of */
+    children_key:string /** name of the entity children property */
 }
 
 

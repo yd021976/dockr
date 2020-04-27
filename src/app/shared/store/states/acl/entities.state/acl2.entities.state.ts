@@ -36,10 +36,6 @@ export class AclEntitiesState {
 
     constructor() {}
 
-    @Action(ApplicationActions.Application_Reset_State)
-    reset_state(ctx: StateContext<AclStateEntitiesModel>, action: ApplicationActions.Application_Reset_State) {
-        ctx.setState(default_state)
-    }
     /*******************************************************************************************************************************************************************
      *                                                              Load entities
      *******************************************************************************************************************************************************************/

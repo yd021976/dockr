@@ -130,6 +130,7 @@ const components = [
      */
     TreeNodesService,
     AdminPermissionsTreedataService,
-    ResourcesLocksService]
+    ResourcesLocksService,
+  ]
 })
 export class AdminModule { }
