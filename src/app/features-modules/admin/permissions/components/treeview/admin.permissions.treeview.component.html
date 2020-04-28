@@ -2,9 +2,9 @@
     <!-- tree table header -->
     <div fxLayout="column" fxFlex="0 1 auto" class="tree-wrapper">
         <div fxFlex="32px" class="table_header_container">
-            <div fxLayout="row" fxLayoutAlign="start center" fxFlexFill>
+            <div fxLayout="row" fxLayoutAlign="start center" fxFlex>
                 <div class="mat-header-cell column column_header" [fxFlex]="column.size" fxFlexFill
-                    *ngFor="let column of columnModel">
+                    *ngFor="let column of column_model">
                     <div fxFlex fxFlexAlign="center">{{column.colName}}</div>
                 </div>
             </div>
@@ -13,19 +13,21 @@
         <div fxFlex="0 1 auto" class="tree_container">
             <mat-tree [dataSource]="datasource" [treeControl]="treecontrol">
                 <mat-tree-node *matTreeNodeDef="let node" fxLayout="row" fxLayoutAlign="start stretch" @EnterLeave>
-                    <app-admin-permissions-treeview-node-renderer [column-model]="columnModel" [node]="node"
-                        [tree-control]="treecontrol" (checked)="checkChange(node,$event)">
+                    <app-admin-permissions-treeview-node-renderer [column-model]="column_model" [node]="node"
+                        [selected-node]="selected_node" [disabled]="disabled" [tree-control]="treecontrol"
+                        (on-node-checked)="checkChange(node,$event)" (on-node-selected)="select(node)">
                     </app-admin-permissions-treeview-node-renderer>
                 </mat-tree-node>
             </mat-tree>
         </div>
         <!-- tree table footer -->
         <div fxFlex="1 0 8px" class="tree_container_filler">
-            <div fxLayout="row" fxLayoutAlign="start center" fxFlexFill>
-                <div class="mat-header-cell column column_header" *ngFor="let column of columnModel"
+            <div fxLayout="row" fxLayoutAlign="start center" fxFlex>
+                <div class="mat-header-cell column column_header" *ngFor="let column of column_model"
                     [fxFlex]="column.size" fxFlexFill>
                     <div fxFlex fxFlexAlign="center"></div>
                 </div>
             </div>
         </div>
     </div>
+</div>

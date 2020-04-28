@@ -92,8 +92,8 @@ export class AdminPermissionsStateModel {
 // }
 
 export interface TreeViewColumnModel {
-    colName: string
-    size: string
+    colName:string
+    size:string
 }
 
 export type NodeTreeviewColumnModel = {

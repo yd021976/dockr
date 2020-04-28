@@ -4,17 +4,21 @@
 </div>
 
 <!-- Render the node contents-->
-<div [fxFlex]="node_column_model.column_size" fxFlexFill class="column node" (click)="onNodeSelected(node)"
-  [class.selected]="isSelected">
+<div [fxFlex]="node_column_model.column_size" fxFlexFill class="column node" (click)="selectNode(node)"
+  [class.selected]="is_selected">
   <div fxFlex fxFlexAlign="center" class="tree_container_cell"
     [style.padding-left]="node_column_model.node_padding_left+'px'">
     <button mat-icon-button [disabled]="!node.expandable" (click)="nodeExpandToggle()" matTreeNodeToggle>
       <mat-icon class="fa-xs mat-icon-rtl-mirror" [fontIcon]="buttonFontIcon"></mat-icon>
     </button>
     <div class="node-renderer" fxFlex>
-      <div class="node-renderer-description" fxFlex="1 0" fxLayoutAlign="left center">{{node.item.name || node.item.id}}</div>
-      <div class="node-renderer-checkbox" fxFlex="1 0" fxLayoutAlign="left center" *ngIf="node.item.allowed!==null && node.item.allowed!==undefined">
-        <mat-checkbox [checked]="node.item.allowed=='1'" [indeterminate]="node.item.allowed==allowed_states.INDETERMINATE" (change)="checkChange($event)"></mat-checkbox>
+      <div class="node-renderer-description" fxFlex="1 0" fxLayoutAlign="left center">{{node.item.name || node.item.id}}
+      </div>
+      <div class="node-renderer-checkbox" fxFlex="1 0" fxLayoutAlign="left center"
+        *ngIf="node.item.allowed!==null && node.item.allowed!==undefined">
+        <mat-checkbox [disabled]="disabled" [checked]="node.item.allowed=='1'"
+          [indeterminate]="node.item.allowed==allowed_states.INDETERMINATE" (change)="checkChange($event)">
+        </mat-checkbox>
       </div>
     </div>
   </div>

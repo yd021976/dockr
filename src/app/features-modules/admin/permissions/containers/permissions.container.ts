@@ -11,7 +11,7 @@ import { TreeViewColumnModel, AdminPermissionsFlatNode, ALLOWED_STATES } from '.
 })
 export class AdminPermissionsContainer implements OnInit, OnDestroy {
     public treeColumnModel: TreeViewColumnModel[]
-
+    public aclLocked$
     constructor(@Inject(AdminPermissionsSandboxProviderToken) public sandbox: AdminPermissionsSandboxInterface) { }
     ngOnInit() {
         this.treeColumnModel = this.setColmodel()
@@ -28,7 +28,26 @@ export class AdminPermissionsContainer implements OnInit, OnDestroy {
 
         /** update node data */
         this.sandbox.node_update_allowed(node, new_allowed_status)
+    }
+    /**
+     * 
+     */
+    public selectNode(node: AdminPermissionsFlatNode) {
+        this.sandbox.selectNode(node)
+    }
 
+    /**
+     * 
+     */
+    public lock() {
+        return this.sandbox.lock_ressource()
+    }
+
+    /**
+     * 
+     */
+    public unlock() {
+        return this.sandbox.unlock_ressource()
     }
     private setColmodel(): TreeViewColumnModel[] {
         return [

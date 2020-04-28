@@ -1,0 +1,7 @@
+<div class="container" [ngSwitch]="selected_node_type">
+    <div><button>Add role</button></div>
+    <div *ngSwitchCase="'role'"><button>Remove role</button><button>Add service</button></div>
+    <div *ngSwitchCase="'service'"><button>Remove service</button></div>
+    <div *ngSwitchCase="'operation'"></div>
+    <div *ngSwitchCase="'field'"></div>
+</div>

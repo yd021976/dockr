@@ -14,6 +14,7 @@ import { SiteZonesState } from "./states/site.zones/entities/site.zones.state";
 import { SiteZonesUIState } from "./states/site.zones/ui/site.zones.ui.state";
 import { NgxsResetPluginModule } from "ngxs-reset-plugin";
 import { AdminPermissionsEntitiesState } from "src/app/features-modules/admin/permissions/store/state/entities/admin.permissions.entities.state";
+import { AdminPermissionsUIState } from "src/app/features-modules/admin/permissions/store/state/ui/admin.permissions.ui.state";
 
 @NgModule({
     imports: [
@@ -29,7 +30,7 @@ import { AdminPermissionsEntitiesState } from "src/app/features-modules/admin/pe
             AppNotificationsState,
             SiteZonesState,
             SiteZonesUIState,
-            AdminPermissionsEntitiesState
+            AdminPermissionsEntitiesState, AdminPermissionsUIState
         ]),
         NgxsReduxDevtoolsPluginModule.forRoot(),
         NgxsResetPluginModule.forRoot(),

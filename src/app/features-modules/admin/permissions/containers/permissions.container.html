@@ -1,33 +1,38 @@
 <div class="main_layout" fxLayout="column" fxFlex="1 1 auto">
-    <div class="toolbar" fxFlex>
-        <!-- <button *ngIf="!(aclLocked$ | async)" mat-button color="primary" (click)="lock($event)" [disabled]="!(isLoggedIn$ | async)">
-            <div>
-                <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-unlock"></mat-icon>
-                <div class="button-label">Lock to modify</div>
-            </div>
-        </button>
-        <button *ngIf="aclLocked$ | async" mat-button color="accent" (click)="unlock($event)" [disabled]="!(isLoggedIn$ | async)">
-            <div>
-                <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-lock"></mat-icon>
-                <div class="button-label">Unlock</div>
-            </div>
-        </button> -->
-    </div>
-    <div class="contents" fxFlex fxLayout="row" fxFlex="1 1 auto">
-        <div fxFlex>
-            <app-admin-permissions-treeview #AclTree [datasource]="sandbox.datasource" [columnModel]="treeColumnModel"
-                [treecontrol]="sandbox.treecontrol" [hasChild]="sandbox.hasChild" (checked)="checkChange($event)">
-            </app-admin-permissions-treeview>
+    <div class="toolbar" fxFlex="40px">
+        <div>
+            <button *ngIf="!(sandbox.isAclLocked$ | async)" mat-button color="primary" (click)="lock($event)"
+                [disabled]="!(sandbox.isLoggedin$ | async)">
+                <div>
+                    <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-unlock"></mat-icon>
+                    <div class="button-label">Lock to modify</div>
+                </div>
+            </button>
         </div>
+        <div>
+            <button *ngIf="sandbox.isAclLocked$ | async" mat-button color="accent" (click)="unlock($event)"
+                [disabled]="!(sandbox.isLoggedin$ | async)">
+                <div>
+                    <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-lock"></mat-icon>
+                    <div class="button-label">Unlock</div>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <div class="contents" fxFlex fxLayout="row" fxFlex="1 1 auto">
+        <app-admin-permissions-treeview (node-checked)="checkChange($event)" (node-selected)="selectNode($event)"
+            #AclTree [datasource]="sandbox.datasource" [column-model]="treeColumnModel"
+            [treecontrol]="sandbox.treecontrol" [hasChild]="sandbox.hasChild"
+            [disabled]="!(sandbox.isAclLocked$ | async)" [selected-node]="sandbox.selectedNode$ | async">
+        </app-admin-permissions-treeview>
 
         <!-- Node actions -->
-        <!-- <div fxFlex="200px">
-            <app-admin-acl-node-actions [node]="selectedNode$ | async" [availableServices]="availableRoleService$ | async" (addRole)="add_role($event)"
-                                        (removeRole)="remove_role($event)" (addService)="add_service($event)" (removeService)="remove_service($event)"
-                                        [editable]="aclLocked$">
-            </app-admin-acl-node-actions>
-        </div> -->
-        <div fxFlex="1 0 auto">
+        <div fxFlex="200px">
+            <app-admin-permissions-treeview-actions [selected-node]="sandbox.selectedNode$ | async">
+            </app-admin-permissions-treeview-actions>
+        </div>
+        <div class='right-space-filler' fxFlex="1 0 auto">
             <!--Fake div to fill empty spaces after 'actions'-->
         </div>
     </div>

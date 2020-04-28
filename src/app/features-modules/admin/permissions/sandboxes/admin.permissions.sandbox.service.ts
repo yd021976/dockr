@@ -8,11 +8,18 @@ import { AdminPermissionsEntityTypes, AdminPermissionsFlatNode, ALLOWED_STATES }
 import { AdminPermissionsStateSelectors } from '../store/selectors/admin.permissions.selectors';
 import { AdminPermissionsTreedataService } from "../services/admin.permissions.treedata.service";
 import { AdminPermissionsStateActions } from "../store/actions/admin.permissions.state.actions";
+import { ApplicationLocksActions } from "src/app/shared/store/actions/application.locks.actions";
+import { ApplicationNotifications_Append_Message } from "src/app/shared/store/actions/application-notifications.actions";
+import { Select } from "@ngxs/store";
+import { ApplicationLocksSelectors } from "src/app/shared/store/states/locks/application.locks.selectors";
+import { AdminPermissionsUIActions } from "../store/actions/admin.permissions.ui.actions";
+import {AdminPermissionsUIState} from '../store/state/ui/admin.permissions.ui.state';
 
 @Injectable({ providedIn: 'root' })
 export class AdminPermissionsSandboxService extends AdminPermissionsSandboxInterface {
-    public isAclLocked$: Observable<boolean> = of(false)
-
+    static readonly lock_ressouce_name: string = "admin.permissions"
+    @Select(ApplicationLocksSelectors.isLocked(AdminPermissionsSandboxService.lock_ressouce_name)) public isAclLocked$: Observable<boolean>
+    @Select(AdminPermissionsUIState.selected) public selectedNode$: Observable<AdminPermissionsFlatNode>
     public get datasource() { return this.treedatasource.treedatasource }
     public get treecontrol() { return this.treedatasource.treecontrol }
     public get hasChild() { return this.treedatasource.hasChild }
@@ -31,7 +38,9 @@ export class AdminPermissionsSandboxService extends AdminPermissionsSandboxInter
      * @param state 
      */
     resolve(route, state): Promise<any> {
-        return this._loadRoles()
+        let promises: Promise<any>[] = []
+        promises.push(this._loadRoles(), this.init_lock_status())
+        return Promise.all(promises)
     }
 
     private _loadRoles(): Promise<any> {
@@ -60,6 +69,68 @@ export class AdminPermissionsSandboxService extends AdminPermissionsSandboxInter
         this.store.dispatch(new AdminPermissionsStateActions.NodeUpdateAllowedStatus(node, allowed_status)).toPromise().then((result) => {
 
         })
+    }
+
+    private init_lock_status(): Promise<any> {
+        this.store.dispatch([new ApplicationLocksActions.remove({ name: AdminPermissionsSandboxService.lock_ressouce_name })])
+        return this.resourcesLocksService.list(false)
+            .then(locked_resources => {
+                // Search for existing "acl" lock
+                Object.keys(locked_resources).forEach((resource_id) => {
+                    if (resource_id == AdminPermissionsSandboxService.lock_ressouce_name) {
+                        // check resource is locked
+                        if (locked_resources[resource_id].lockInfos.state == 'locked')
+                            // The resource "admin permissions" is already lock, update state
+                            this.store.dispatch(new ApplicationLocksActions.add({ name: AdminPermissionsSandboxService.lock_ressouce_name, isLocked: true }))
+                    }
+                })
+                return // progress to next "then" step
+            })
+            .then(() => { })
+            .catch(err => { })
+    }
+    public unlock_ressource(): Promise<any> {
+        return this.resourcesLocksService.release(AdminPermissionsSandboxService.lock_ressouce_name)
+            .then(released => {
+                this.store.dispatch([
+                    new ApplicationNotifications_Append_Message(new ApplicationNotification('Data are unlocked. You can\'t modify them.', 'AclRelease', ApplicationNotificationType.INFO)),
+                    new ApplicationLocksActions.update(AdminPermissionsSandboxService.lock_ressouce_name, { name: AdminPermissionsSandboxService.lock_ressouce_name, isLocked: false })
+                ])
+                return released
+            })
+            .catch((err) => {
+                this.store.dispatch([
+                    new ApplicationLocksActions.update(AdminPermissionsSandboxService.lock_ressouce_name, { name: AdminPermissionsSandboxService.lock_ressouce_name, isLocked: false }),
+                    new ApplicationActions.Application_Event_Notification(new ApplicationNotification(err.message, 'AclReleaseError', ApplicationNotificationType.ERROR))
+                ])
+            })
+
+    }
+    public lock_ressource(): Promise<any> {
+        return this.resourcesLocksService.lock(AdminPermissionsSandboxService.lock_ressouce_name)
+            .then(locked => {
+                this.store.dispatch([
+                    new ApplicationLocksActions.update(AdminPermissionsSandboxService.lock_ressouce_name, { name: AdminPermissionsSandboxService.lock_ressouce_name, isLocked: true }),
+                    new ApplicationNotifications_Append_Message(new ApplicationNotification('Data are locked. You can modify them.', 'AclLocked', ApplicationNotificationType.INFO))
+                ])
+                return locked
+            })
+            .catch(err => {
+                if (err.name != 'lockAlreadyAcquired') {
+                    this.store.dispatch(new ApplicationActions.Application_Event_Notification(new ApplicationNotification(err.message, 'AclLockError', ApplicationNotificationType.ERROR)))
+                }
+                else {
+                    this.store.dispatch([new ApplicationLocksActions.update(AdminPermissionsSandboxService.lock_ressouce_name, { name: AdminPermissionsSandboxService.lock_ressouce_name, isLocked: false })])
+                    return err.data['lockInfos'] || null
+                }
+            })
+    }
+
+    /**
+     * 
+     */
+    public selectNode(node: AdminPermissionsFlatNode) {
+        this.store.dispatch(new AdminPermissionsUIActions.SelectTreeviewNode(node))
     }
     /** unused but must be implemented */
     protected on_login() { }

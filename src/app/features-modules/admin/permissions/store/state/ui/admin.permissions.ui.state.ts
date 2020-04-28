@@ -13,7 +13,7 @@ import { AdminPermissionsUIActions } from "../../actions/admin.permissions.ui.ac
 @Injectable()
 export class AdminPermissionsUIState {
     @Action(AdminPermissionsUIActions.SelectTreeviewNode)
-    public static admin_permissions_ui_select_treeview_node(ctx: StateContext<AdminPermissionsStateUIModel>, action: AdminPermissionsUIActions.SelectTreeviewNode) {
+    public admin_permissions_ui_select_treeview_node(ctx: StateContext<AdminPermissionsStateUIModel>, action: AdminPermissionsUIActions.SelectTreeviewNode) {
         /** handle de-selection of node (i.e When action 'node' is the same that is already selected in state) */
         const current_selection = ctx.getState().selected
         const selection = current_selection === action.node ? null : action.node

@@ -12,16 +12,17 @@ import { ALLOWED_STATES } from 'src/app/shared/models/acl.service.action.model';
 })
 export class AdminPermissionsTreeviewNodeRenderer implements OnInit, OnChanges {
   @Input('node') public node: AdminPermissionsFlatNode
-  @Input('selected-node') public selectedNode: AdminPermissionsFlatNode = null
-  @Input('node-type-renderer') public nodeType_renderer: TemplateRef<any>
+  @Input('disabled') public disabled: boolean
+  @Input('selected-node') public selected_node: AdminPermissionsFlatNode = null
+  @Input('node-type-renderer') public node_type_renderer: TemplateRef<any>
   @Input('column-model') public column_model: TreeViewColumnModel[]
-  @Input('tree-control') public treeControl: FlatTreeControl<AdminPermissionsFlatNode>
-  @Output('node-selected') public nodeSelected: EventEmitter<AdminPermissionsFlatNode> = new EventEmitter<AdminPermissionsFlatNode>()
-  @Output('checked') public checked: EventEmitter<string | boolean> = new EventEmitter<string | boolean>()
+  @Input('tree-control') public treecontrol: FlatTreeControl<AdminPermissionsFlatNode>
+  @Output('on-node-selected') public on_node_selected: EventEmitter<AdminPermissionsFlatNode> = new EventEmitter<AdminPermissionsFlatNode>()
+  @Output('on-node-checked') public on_node_checked: EventEmitter<string | boolean> = new EventEmitter<string | boolean>()
 
   public allowed_states = ALLOWED_STATES
-  public isExpanded: boolean = false
-  public isSelected: boolean // is this node is the selected node ?
+  public is_expanded: boolean = false
+  public is_selected: boolean // is this node is the selected node ?
   public buttonFontIcon: string // icon to display for states : expanded/collapsed or not expandable (spacer)
   public node_column_model: NodeTreeviewColumnModel
 
@@ -29,12 +30,12 @@ export class AdminPermissionsTreeviewNodeRenderer implements OnInit, OnChanges {
   private checkInputParameters() {
     if (this.column_model == null || (this.column_model && this.column_model.length) == 0) throw new Error('[TreenodeRendererComponent] <column-model> Input is required')
     if (!this.node) throw new Error('[TreenodeRendererComponent] <node> Input is required')
-    if (!this.treeControl) throw new Error('[TreenodeRendererComponent] <tree-control> Input is required')
+    if (!this.treecontrol) throw new Error('[TreenodeRendererComponent] <tree-control> Input is required')
   }
   ngOnInit() {
     // Check required input parameters
     this.checkInputParameters()
-    this.isExpanded = this.treeControl.isExpanded(this.node)
+    this.is_expanded = this.treecontrol.isExpanded(this.node)
     this.isNodeSelected()
     this.setNodeIcon()
     this.compute_column_model()
@@ -45,20 +46,20 @@ export class AdminPermissionsTreeviewNodeRenderer implements OnInit, OnChanges {
    * @param status 
    */
   public checkChange(status: MatCheckboxChange) {
-    this.checked.emit(status.checked)
+    this.on_node_checked.emit(status.checked)
   }
   /**
    * 
    */
-  public onNodeSelected() {
-    this.nodeSelected.emit(this.node)
+  public selectNode() {
+    this.on_node_selected.emit(this.node)
   }
 
   /**
    * 
    */
   public nodeExpandToggle() {
-    this.isExpanded = this.treeControl.isExpanded(this.node)
+    this.is_expanded = this.treecontrol.isExpanded(this.node)
     this.setNodeIcon()
   }
 
@@ -73,7 +74,11 @@ export class AdminPermissionsTreeviewNodeRenderer implements OnInit, OnChanges {
     // Check required input parameters  
     this.checkInputParameters()
 
-    if (changes['selectedNode']) { this.isNodeSelected() }
+    if (changes['selected_node']) {
+      this.isNodeSelected()
+    }
+    
+    
     if (changes['node']) {
       this.isNodeSelected()
       this.setNodeIcon()
@@ -91,7 +96,7 @@ export class AdminPermissionsTreeviewNodeRenderer implements OnInit, OnChanges {
    * 
    */
   private isNodeSelected(): void {
-    this.isSelected = this.selectedNode == this.node ? true : false
+    this.is_selected = this.selected_node == this.node ? true : false
   }
 
   /**
@@ -99,7 +104,7 @@ export class AdminPermissionsTreeviewNodeRenderer implements OnInit, OnChanges {
    */
   private setNodeIcon() {
     if (this.node.expandable) {
-      this.buttonFontIcon = this.isExpanded ? 'fa-minus-circle' : 'fa-plus-circle'
+      this.buttonFontIcon = this.is_expanded ? 'fa-minus-circle' : 'fa-plus-circle'
     } else {
       this.buttonFontIcon = 'fa-fw'
     }

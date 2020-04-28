@@ -2,6 +2,7 @@ import { Schema, schema, denormalize, normalize } from "normalizr";
 import { v4 as uuid } from 'uuid';
 import { AdminPermissionsEntityTypes, AdminPermissionsRoleEntity, AdminPermissionsServiceEntity, AdminPermissionsOperationEntity, AdminPermissionsFieldEntity, EntityChildren } from "../models/admin.permissions.model";
 import { cloneDeep } from 'lodash';
+import { ALLOWED_STATES } from "src/app/shared/models/acl.service.action.model";
 /**
  * 
  */
@@ -23,6 +24,7 @@ export class AdminPermissionsNormalizrSchemas {
         let children: EntityChildren = []
         let entity: AdminPermissionsRoleEntity | AdminPermissionsServiceEntity | AdminPermissionsOperationEntity | AdminPermissionsFieldEntity
         let parent_entities_key: string
+        let entity_allowed_prop_value: ALLOWED_STATES = null
 
         /** Create object of node type */
         switch (key) {
@@ -33,6 +35,7 @@ export class AdminPermissionsNormalizrSchemas {
                 entity.operations = children
                 entity.children_key = 'operations'
                 parent_entities_key = 'roles'
+                entity_allowed_prop_value = null /** no allowed property for 'service' entity */
                 break
             case 'operations':
                 entity = new AdminPermissionsOperationEntity()
@@ -40,6 +43,11 @@ export class AdminPermissionsNormalizrSchemas {
                 entity.fields = children
                 entity.children_key = 'fields'
                 parent_entities_key = 'services'
+                /** set allowed value, ensure for this entity that a value is provided */
+                if (value['allowed'] === null || value['allowed'] === undefined)
+                    entity_allowed_prop_value = ALLOWED_STATES.FORBIDDEN
+                else
+                    entity_allowed_prop_value = value['allowed']
                 break
             case 'fields':
                 entity = new AdminPermissionsFieldEntity()
@@ -54,12 +62,18 @@ export class AdminPermissionsNormalizrSchemas {
                         parent_entities_key = 'operations'
                         break
                 }
+                /** set allowed value, ensure for this entity that a value is provided */
+                if (value['allowed'] === null || value['allowed'] === undefined)
+                    entity_allowed_prop_value = ALLOWED_STATES.FORBIDDEN
+                else
+                    entity_allowed_prop_value = value['allowed']
                 break
             default:
                 children = value['services'] ? cloneDeep(value['services']) : []
                 entity = new AdminPermissionsRoleEntity()
                 entity.services = children
                 entity.children_key = 'services'
+                entity_allowed_prop_value = null /** no allowed property for 'service' entity */
                 break
         }
         if (entity !== null) {
@@ -67,7 +81,7 @@ export class AdminPermissionsNormalizrSchemas {
             entity.id = value['_id'] ? value['_id'] : value['id']
             entity.name = value['name']
             entity.uid = value['uid']
-            entity.allowed = value['allowed'] || null
+            entity.allowed = entity_allowed_prop_value
             entity.parentEntity = {
                 type: (parent !== null && parent.constructor.name !== 'Array') ? parent.constructor.name : null,
                 uid: (parent !== null && parent.constructor.name !== 'Array') ? parent.uid : null,

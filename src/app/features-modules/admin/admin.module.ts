@@ -62,10 +62,11 @@ import { AdminPermissionsSandboxService } from './permissions/sandboxes/admin.pe
 import { AdminPermissionsTreeviewComponent } from './permissions/components/treeview/admin.permissions.treeview.component';
 import { AdminPermissionsTreedataService } from './permissions/services/admin.permissions.treedata.service';
 import { AdminPermissionsTreeviewNodeRenderer } from './permissions/components/treeview/node.renderer/treenode.renderer.component';
+import { AdminPermissionsTreeviewActionsComponent } from './permissions/components/treeview/actions/admin.permissions.treeview.actions.component';
 
 const components = [
   AclContainer, UsersContainer, UsersComponent, AclComponent, ActionComponent, FieldComponent, RoleComponent, ServiceComponent,
-  AdminPermissionsContainer, AdminPermissionsTreeviewComponent, AdminPermissionsTreeviewNodeRenderer,
+  AdminPermissionsContainer, AdminPermissionsTreeviewComponent, AdminPermissionsTreeviewNodeRenderer, AdminPermissionsTreeviewActionsComponent,
   RolesListComponent, UsersListComponent, UserDetailsComponent, UsersActionsComponent,
   NodeDetailComponent,
   RoleDetailComponent, ServiceDetailComponent, ActionDetailComponent, FieldDetailComponent,
