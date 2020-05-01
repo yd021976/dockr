@@ -1,7 +1,54 @@
 <div class="container" [ngSwitch]="selected_node_type">
-    <div><button>Add role</button></div>
-    <div *ngSwitchCase="'role'"><button>Remove role</button><button>Add service</button></div>
-    <div *ngSwitchCase="'service'"><button>Remove service</button></div>
-    <div *ngSwitchCase="'operation'"></div>
-    <div *ngSwitchCase="'field'"></div>
+    <!-- Default actions-->
+    <div>
+        <button mat-button color="primary"
+            (click)="onActionClick({node:selected_node,action:action_types.add})">
+            <div>
+                <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-users" matBadge="+" matBadgeColor="primary"
+                    matBadgePosition="after" matBadgeOverlap="false">
+                </mat-icon>
+                <div class="button-label">Add role</div>
+            </div>
+        </button>
+    </div>
+
+    <!-- Role actions-->
+    <div *ngSwitchCase="entity_types.role">
+        <button mat-button color="primary"
+            (click)="onActionClick({node:selected_node,action:action_types.remove})">
+            <div>
+                <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-users" matBadge="-" matBadgeColor="primary"
+                    matBadgePosition="after" matBadgeOverlap="false"></mat-icon>
+                <div class="button-label">Remove role</div>
+            </div>
+        </button>
+
+        <button mat-button color="primary"
+            (click)="onActionClick({node:selected_node,action:action_types.add})">
+            <div>
+                <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-project-diagram" matBadge="+"
+                    matBadgeColor="primary" matBadgePosition="after" matBadgeOverlap="false"></mat-icon>
+                <div class="button-label">Add service</div>
+            </div>
+        </button>
+    </div>
+
+
+    <!-- Service actions-->
+    <div *ngSwitchCase="entity_types.service"
+        (click)="onActionClick({node:selected_node,action:action_types.remove})">
+        <button mat-button color="primary">
+            <div>
+                <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-project-diagram" matBadge="-"
+                    matBadgeColor="primary" matBadgePosition="after" matBadgeOverlap="false"></mat-icon>
+                <div class="button-label">Remove service</div>
+            </div>
+        </button>
+    </div>
+
+    <!-- Operation actions-->
+    <div *ngSwitchCase="entity_types.operation"></div>
+
+    <!-- Field actions-->
+    <div *ngSwitchCase="entity_types.field"></div>
 </div>

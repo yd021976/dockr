@@ -1,32 +1,54 @@
 import { THIS_EXPR } from "@angular/compiler/src/output/output_ast"
 
 export type AdminPermissionsEntitiesTypes = AdminPermissionsRoleEntities | AdminPermissionsServiceEntities | AdminPermissionsOperationEntities | AdminPermissionsFieldEntities
+
 export type AdminPermissionsEntityTypes = AdminPermissionsRoleEntity | AdminPermissionsServiceEntity | AdminPermissionsOperationEntity | AdminPermissionsFieldEntity
+
 export type EntityChildren = Array<string>
 
+/**
+ * Allowed values for entity allowed property
+ */
 export enum ALLOWED_STATES {
     ALLOWED = "1",
     FORBIDDEN = "0",
-    INDETERMINATE = "indeterminate"
+    INDETERMINATE = "indeterminate",
 }
+export enum ENTITY_TYPES {
+    ROLE = "role",
+    SERVICE = "service",
+    OPERATION = "operation",
+    FIELD = "field",
+}
+/**
+ * Action types
+ */
+export enum EntityActionTypes {
+    ADD = "add",
+    REMOVE = "remove",
+}
+/**
+ * Extra entity data : Parent entity data
+ */
 export interface ParentEntity {
     type: string // Parent classname
     uid: string // UID of parent
-    entitiestKey: string // Parent state entities key
+    entitiesKey: string // Parent state entities key
     childrenKey: string // Parent children property name
 }
 
 /**
- * 
+ * Base entity model
  */
-export class AdminPermissionsBaseModel {
+export abstract class AdminPermissionsBaseModel {
     uid?: string
     id: string
+    entity_type: ENTITY_TYPES
     name: string
-    allowed?: ALLOWED_STATES
+    allowed?: ALLOWED_STATES /** this should be 'null' if entity doesn't support this feature */
     parentEntity: ParentEntity /** Entity's parent data */
-    entitiesKey:string /** name of entities collection key this entity is part of */
-    children_key:string /** name of the entity children property */
+    entitiesKey: string /** name of entities collection key this entity is part of */
+    children_key: string /** name of the entity children property */
 }
 
 
@@ -66,7 +88,7 @@ export class AdminPermissionsFieldEntities {
 
 
 /**
- * Permissions entities
+ * State entities format
  */
 export class AdminPermissionsStateEntities {
     root_results: EntityChildren
@@ -75,27 +97,27 @@ export class AdminPermissionsStateEntities {
     operations: AdminPermissionsOperationEntities
     fields: AdminPermissionsFieldEntities
 }
-
 /**
- * State model for "roles" data
+ * State model for State
  */
 export class AdminPermissionsStateModel {
     entities: AdminPermissionsStateEntities
     previous_entities: AdminPermissionsStateEntities  // Backup entities before update : Usefull to revert entities when error occured
+    dirty_entities: AdminPermissionsEntitiesTypes /** Dirty entities collection that have been updated and required backend updates */
+}
+
+
+/**
+ * Simple column model for column definition
+ */
+export interface TreeViewColumnModel {
+    colName: string
+    size: string
 }
 
 /**
- * State model for UI
+ * Column definition for a node of column treeview
  */
-// export class AdminPermissionsStateUIModel extends BaseUIModel {
-//     selectedNode: FlatTreeNode
-// }
-
-export interface TreeViewColumnModel {
-    colName:string
-    size:string
-}
-
 export type NodeTreeviewColumnModel = {
     column_model: TreeViewColumnModel[], // The colmun model
     columns_before_node: TreeViewColumnModel[], // columns before the node
@@ -104,12 +126,23 @@ export type NodeTreeviewColumnModel = {
     node_padding_left: number, // Node indent : Left padding for node level > # of columns in column model property
 }
 
+/**
+ * Node for column treeview
+ */
 export class AdminPermissionsFlatNode {
     item: AdminPermissionsEntityTypes
     level: number
     expandable: boolean
 }
 
+
+/**
+ * UI State model
+ */
 export class AdminPermissionsStateUIModel {
-    selected: AdminPermissionsFlatNode
+    isLoading: boolean /** is an action running */
+    isError: boolean /** is an error occured */
+    error: string /** error message */
+    selected: AdminPermissionsFlatNode /** current treeview selected */
 }
+

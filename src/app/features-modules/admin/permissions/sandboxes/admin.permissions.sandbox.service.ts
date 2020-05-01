@@ -4,7 +4,7 @@ import { AdminPermissionsRolesStateActions } from "../store/actions/admin.permis
 import { ApplicationActions } from "src/app/shared/store/actions/application.actions";
 import { ApplicationNotification, ApplicationNotificationType } from "src/app/shared/models/application.notifications.model";
 import { Observable, of } from "rxjs";
-import { AdminPermissionsEntityTypes, AdminPermissionsFlatNode, ALLOWED_STATES } from "../store/models/admin.permissions.model";
+import { AdminPermissionsEntityTypes, AdminPermissionsFlatNode, ALLOWED_STATES, AdminPermissionsServiceEntity, AdminPermissionsRoleEntity, AdminPermissionsStateModel, AdminPermissionsEntitiesTypes, ENTITY_TYPES, AdminPermissionsStateEntities } from "../store/models/admin.permissions.model";
 import { AdminPermissionsStateSelectors } from '../store/selectors/admin.permissions.selectors';
 import { AdminPermissionsTreedataService } from "../services/admin.permissions.treedata.service";
 import { AdminPermissionsStateActions } from "../store/actions/admin.permissions.state.actions";
@@ -13,22 +13,42 @@ import { ApplicationNotifications_Append_Message } from "src/app/shared/store/ac
 import { Select } from "@ngxs/store";
 import { ApplicationLocksSelectors } from "src/app/shared/store/states/locks/application.locks.selectors";
 import { AdminPermissionsUIActions } from "../store/actions/admin.permissions.ui.actions";
-import {AdminPermissionsUIState} from '../store/state/ui/admin.permissions.ui.state';
+import { AdminPermissionsUIState } from '../store/state/ui/admin.permissions.ui.state';
+import { Role } from "../store/entity.management/entity.utilities/internals/admin.permissions.entity.utilities.role";
+import { AdminPermissionsNormalizrSchemas } from "../store/entity.management/normalizer";
+import { v4 as uuid } from 'uuid';
 
 @Injectable({ providedIn: 'root' })
 export class AdminPermissionsSandboxService extends AdminPermissionsSandboxInterface {
     static readonly lock_ressouce_name: string = "admin.permissions"
+
     @Select(ApplicationLocksSelectors.isLocked(AdminPermissionsSandboxService.lock_ressouce_name)) public isAclLocked$: Observable<boolean>
     @Select(AdminPermissionsUIState.selected) public selectedNode$: Observable<AdminPermissionsFlatNode>
+
     public get datasource() { return this.treedatasource.treedatasource }
     public get treecontrol() { return this.treedatasource.treecontrol }
     public get hasChild() { return this.treedatasource.hasChild }
 
+    private readonly normalizer: AdminPermissionsNormalizrSchemas
+    private readonly role_entity_utilities: Role
+
+
+    /**
+     * Constructor
+     */
     constructor(private treedatasource: AdminPermissionsTreedataService) {
         super()
         this.treenodes$ = this.nodeGetChildren()
         this.treedatasource.data$ = this.treenodes$
         this.treedatasource.getNodeChildren = this.nodeGetChildren
+
+        this.normalizer = new AdminPermissionsNormalizrSchemas()
+        this.role_entity_utilities = new Role()
+
+        /** observable for dirty entities to save */
+        this.store.select(AdminPermissionsStateSelectors.dirtyRoles).subscribe((entities) => {
+            /**TODO: update backend database */
+        })
     }
 
     /**
@@ -132,6 +152,37 @@ export class AdminPermissionsSandboxService extends AdminPermissionsSandboxInter
     public selectNode(node: AdminPermissionsFlatNode) {
         this.store.dispatch(new AdminPermissionsUIActions.SelectTreeviewNode(node))
     }
+    /**
+     * Add role entity
+     */
+    add_role_entity(name: string) {
+        this.store.dispatch(new AdminPermissionsRolesStateActions.Add_Entity(name))
+
+        // const role_object = this.normalizer.denormalize([new_entity], this.normalizer.mainSchema, entities)
+
+        // this.rolesService.update(role_object, true)
+        //     .then((result) => {
+        //         this.store.dispatch(new AdminPermissionsRolesStateActions.Add_Entity_Success(name))
+        //     }).catch(error => {
+        //         this.store.dispatch([
+        //             new AdminPermissionsRolesStateActions.Add_Entity_Error(error),
+        //             new ApplicationActions.Application_Event_Notification(new ApplicationNotification(error, 'AddRoleError', ApplicationNotificationType.ERROR))
+        //         ])
+        //     })
+    }
+    /**
+     * remove role entity
+     */
+    remove_role_entity(node: AdminPermissionsFlatNode) { }
+    /**
+     * Add service entity
+     */
+    add_service_entity(entity: AdminPermissionsServiceEntity) { }
+    /**
+     * remove service entity
+     */
+    remove_service_entity(node: AdminPermissionsFlatNode) { }
+
     /** unused but must be implemented */
     protected on_login() { }
     protected on_logout() { }

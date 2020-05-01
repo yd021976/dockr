@@ -1,6 +1,18 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from "@angular/core";
-import { AdminPermissionsFlatNode } from '../../../store/models/admin.permissions.model'
+import { AdminPermissionsFlatNode, ENTITY_TYPES, EntityActionTypes } from '../../../store/models/admin.permissions.model'
 
+/**
+ * 
+ */
+export interface IActionClick {
+    node:AdminPermissionsFlatNode /** the node the action relies on */
+    action: EntityActionTypes /** the click action type */
+}
+
+
+/**
+ * 
+ */
 @Component({
     selector: 'app-admin-permissions-treeview-actions',
     templateUrl: './admin.permissions.treeview.actions.component.html',
@@ -9,31 +21,21 @@ import { AdminPermissionsFlatNode } from '../../../store/models/admin.permission
 })
 export class AdminPermissionsTreeviewActionsComponent implements OnChanges {
     @Input('selected-node') public selected_node: AdminPermissionsFlatNode
-    public selected_node_type: string = null
+    @Output('on-action-click') public on_action_click: EventEmitter<IActionClick> = new EventEmitter<IActionClick>()
+    public selected_node_type: ENTITY_TYPES = null
+    public entity_types = ENTITY_TYPES
+    public action_types = EntityActionTypes
+
+    onActionClick(action: IActionClick) {
+        this.on_action_click.emit(action)
+    }
     /**
      * On input parameters changes, compute the node type to display action buttons
      * @param changes 
      */
     ngOnChanges(changes: SimpleChanges) {
         if (changes['selected_node']) {
-            if (this.selected_node === null) {
-                this.selected_node_type = null
-            } else {
-                switch (this.selected_node.item.constructor.name) {
-                    case "AdminPermissionsRoleEntity":
-                        this.selected_node_type = 'role'
-                        break;
-                    case "AdminPermissionsServiceEntity":
-                        this.selected_node_type = 'service'
-                        break;
-                    case "AdminPermissionsOperationEntity":
-                        this.selected_node_type = 'operation'
-                        break;
-                    case "AdminPermissionsFieldEntity":
-                        this.selected_node_type = 'field'
-                        break;
-                }
-            }
+            this.selected_node_type = this.selected_node === null ? null : this.selected_node.item.entity_type
         }
     }
 }

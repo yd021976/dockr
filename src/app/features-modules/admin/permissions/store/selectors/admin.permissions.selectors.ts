@@ -1,9 +1,10 @@
 import { Selector, createSelector } from '@ngxs/store';
 import { AdminPermissionsEntitiesState } from '../state/entities/admin.permissions.entities.state';
-import { AdminPermissionsBaseModel, AdminPermissionsStateModel, AdminPermissionsEntitiesTypes, AdminPermissionsEntityTypes, AdminPermissionsStateEntities } from '../models/admin.permissions.model';
-import { Observable } from 'rxjs';
+import { AdminPermissionsStateModel, AdminPermissionsEntitiesTypes, AdminPermissionsEntityTypes, AdminPermissionsStateEntities } from '../models/admin.permissions.model';
+import { EntityUtilities } from '../entity.management/entity.utilities/admin.permissions.entity.utilities';
 
 export class AdminPermissionsStateSelectors {
+    static entities_util: EntityUtilities = new EntityUtilities()
 
     public static getChildren(node: AdminPermissionsEntityTypes = null) {
         return createSelector([AdminPermissionsEntitiesState], (state: AdminPermissionsStateModel): AdminPermissionsEntityTypes[] => {
@@ -39,11 +40,16 @@ export class AdminPermissionsStateSelectors {
 
             /** get children entities */
             children = Object.values(parent_entity[entityChildren])
-                .map((entity_uid:string) => {
+                .map((entity_uid: string) => {
                     return entitiesToMap[entity_uid]
                 })
             return children
         })
     }
 
+    /** list all dirty entities */
+    @Selector([AdminPermissionsEntitiesState])
+    public static dirtyRoles(state: AdminPermissionsStateModel) {
+        return state.dirty_entities
+    }
 }

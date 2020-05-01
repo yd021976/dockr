@@ -7,13 +7,39 @@ import { AdminPermissionsEntityTypes, EntityChildren, ALLOWED_STATES, AdminPermi
  * IMPORTANT : You MUST set the 'entities' property before using any method
  */
 export class AllowedProperty extends AdminPermissionsBaseEntityUtility {
+
+    /** Updated entities that has been updated after 'update allowed property' call */
+    private dirty_entities: AdminPermissionsEntitiesTypes = {}
+    /**
+    * Update entity allowed property, update all decendants children, update parents allowed property
+    *  
+    * @param entity 
+    * @param allowed_value 
+    */
+    public update_entity_allowed_property(entity: AdminPermissionsEntityTypes, allowed_value: ALLOWED_STATES): AdminPermissionsEntitiesTypes {
+        this.dirty_entities = {} /** Reset dirty entities before processing allowed property update */
+        let entity_from_entities: AdminPermissionsEntityTypes = this.entities[entity.entitiesKey][entity.uid]
+        /** 1: update entity */
+        entity_from_entities.allowed = allowed_value
+
+        /** 2: update children */
+        this.update_children_entity_allowed_property(entity, allowed_value)
+
+        /** 3: update parents */
+        this.update_parents_entity_allowed_property(entity, allowed_value)
+
+        /** Return dirty entities */
+        return this.dirty_entities
+    }
+
+
     /**
      * Get the parent entity from an antity
      * 
      * @param entity 
      */
     private get_parent_entity(entity: AdminPermissionsEntityTypes): AdminPermissionsEntityTypes {
-        return entity.parentEntity.type !== null ? this.entities[entity.parentEntity.entitiestKey][entity.parentEntity.uid] : null
+        return entity.parentEntity.type !== null ? this.entities[entity.parentEntity.entitiesKey][entity.parentEntity.uid] : null
     }
 
 
@@ -26,7 +52,7 @@ export class AllowedProperty extends AdminPermissionsBaseEntityUtility {
         const parent_entity: AdminPermissionsEntityTypes = this.get_parent_entity(entity)
         if (parent_entity === null) return []
 
-        const siblingsUidArray: EntityChildren = this.entities[entity.parentEntity.entitiestKey][entity.parentEntity.uid][entity.parentEntity.childrenKey]
+        const siblingsUidArray: EntityChildren = this.entities[entity.parentEntity.entitiesKey][entity.parentEntity.uid][entity.parentEntity.childrenKey]
         const children_entities: AdminPermissionsEntityTypes[] = this.entities[entity.parentEntity.childrenKey]
         const siblings: AdminPermissionsEntityTypes[] = Object.values(children_entities).filter((child_entity) => {
             return siblingsUidArray.find((sibling_entity_uid) => {
@@ -79,24 +105,6 @@ export class AllowedProperty extends AdminPermissionsBaseEntityUtility {
 
 
     /**
-     * Update entity allowed property, update all decendants children, update parents allowed property
-     *  
-     * @param entity 
-     * @param allowed_value 
-     */
-    public update_entity_allowed_property(entity: AdminPermissionsEntityTypes, allowed_value: ALLOWED_STATES) {
-        let entity_from_entities: AdminPermissionsEntityTypes = this.entities[entity.entitiesKey][entity.uid]
-        /** 1: update entity */
-        entity_from_entities.allowed = allowed_value
-
-        /** 2: update children */
-        this.update_children_entity_allowed_property(entity, allowed_value)
-
-        /** 3: update parents */
-        this.update_parents_entity_allowed_property(entity, allowed_value)
-    }
-
-    /**
      * 
      * @param entity 
      * @param allowed_value 
@@ -104,9 +112,18 @@ export class AllowedProperty extends AdminPermissionsBaseEntityUtility {
     private update_parents_entity_allowed_property(entity: AdminPermissionsEntityTypes, allowed_value: ALLOWED_STATES): void {
         let parent_entity: AdminPermissionsEntityTypes = this.get_parent_entity(entity)
         let entity_from_entities = this.entities[entity.entitiesKey][entity.uid]
+        let parent_allowed_property: ALLOWED_STATES
+
         while (parent_entity !== null) {
             /** Update parent property ONLY if it has allowed property supported (i.e. Not null) */
-            if (parent_entity.allowed !== null) parent_entity.allowed = this.compute_parent_allowed_property(entity_from_entities)
+            if (parent_entity.allowed !== null) {
+                parent_allowed_property = this.compute_parent_allowed_property(entity_from_entities)
+                if (parent_entity.allowed !== parent_allowed_property) {
+                    this.dirty_entities[parent_entity.uid] = parent_entity
+                    parent_entity.allowed = parent_allowed_property
+                }
+            }
+
             // Get next parent entity
             entity_from_entities = parent_entity
             parent_entity = this.get_parent_entity(entity_from_entities)
@@ -122,7 +139,10 @@ export class AllowedProperty extends AdminPermissionsBaseEntityUtility {
         /** update children entities in working entities collection */
         let children = this.entity_get_children(entity)
         children.forEach((child_entity) => {
-            child_entity.allowed = allowed_value
+            if (child_entity.allowed !== allowed_value) {
+                child_entity.allowed = allowed_value
+                this.dirty_entities[child_entity.uid] = child_entity
+            }
             this.update_children_entity_allowed_property(child_entity, allowed_value)
         })
     }

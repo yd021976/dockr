@@ -29,7 +29,8 @@
 
         <!-- Node actions -->
         <div fxFlex="200px">
-            <app-admin-permissions-treeview-actions [selected-node]="sandbox.selectedNode$ | async">
+            <app-admin-permissions-treeview-actions [selected-node]="sandbox.selectedNode$ | async"
+                (on-action-click)="onNodeActionClick($event)">
             </app-admin-permissions-treeview-actions>
         </div>
         <div class='right-space-filler' fxFlex="1 0 auto">

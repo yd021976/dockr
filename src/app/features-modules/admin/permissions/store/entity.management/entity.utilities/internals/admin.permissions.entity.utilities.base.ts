@@ -1,11 +1,9 @@
-import { cloneDeep } from 'lodash';
 import { AdminPermissionsStateEntities } from "../../../models/admin.permissions.model";
 
 export class AdminPermissionsBaseEntityUtility {
     /** The working entities collection to update */
     private _entities: AdminPermissionsStateEntities
     set entities(entities) {
-        // this._entities = cloneDeep(entities)
         this._entities = entities
     }
     get entities(): AdminPermissionsStateEntities {

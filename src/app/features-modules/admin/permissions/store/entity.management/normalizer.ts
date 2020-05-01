@@ -1,6 +1,6 @@
 import { Schema, schema, denormalize, normalize } from "normalizr";
 import { v4 as uuid } from 'uuid';
-import { AdminPermissionsEntityTypes, AdminPermissionsRoleEntity, AdminPermissionsServiceEntity, AdminPermissionsOperationEntity, AdminPermissionsFieldEntity, EntityChildren } from "../models/admin.permissions.model";
+import { AdminPermissionsRoleEntity, AdminPermissionsServiceEntity, AdminPermissionsOperationEntity, AdminPermissionsFieldEntity, EntityChildren, ENTITY_TYPES } from "../models/admin.permissions.model";
 import { cloneDeep } from 'lodash';
 import { ALLOWED_STATES } from "src/app/shared/models/acl.service.action.model";
 /**
@@ -29,9 +29,10 @@ export class AdminPermissionsNormalizrSchemas {
         /** Create object of node type */
         switch (key) {
             case 'services':
+                entity = new AdminPermissionsServiceEntity()
+                entity.entity_type = ENTITY_TYPES.SERVICE
                 //WARN Here we change the source property name 'crud_operations' to 'operations'
                 children = value['crud_operations'] ? cloneDeep(value['crud_operations']) : []
-                entity = new AdminPermissionsServiceEntity()
                 entity.operations = children
                 entity.children_key = 'operations'
                 parent_entities_key = 'roles'
@@ -39,6 +40,7 @@ export class AdminPermissionsNormalizrSchemas {
                 break
             case 'operations':
                 entity = new AdminPermissionsOperationEntity()
+                entity.entity_type = ENTITY_TYPES.OPERATION
                 children = value['fields'] ? cloneDeep(value['fields']) : []
                 entity.fields = children
                 entity.children_key = 'fields'
@@ -53,6 +55,7 @@ export class AdminPermissionsNormalizrSchemas {
                 entity = new AdminPermissionsFieldEntity()
                 children = value['fields'] ? cloneDeep(value['fields']) : []
                 entity.fields = children
+                entity.entity_type = ENTITY_TYPES.FIELD
                 entity.children_key = 'fields'
                 switch (parent.constructor.name) {
                     case 'AdminPermissionsFieldEntity':
@@ -69,8 +72,9 @@ export class AdminPermissionsNormalizrSchemas {
                     entity_allowed_prop_value = value['allowed']
                 break
             default:
-                children = value['services'] ? cloneDeep(value['services']) : []
                 entity = new AdminPermissionsRoleEntity()
+                entity.entity_type = ENTITY_TYPES.ROLE
+                children = value['services'] ? cloneDeep(value['services']) : []
                 entity.services = children
                 entity.children_key = 'services'
                 entity_allowed_prop_value = null /** no allowed property for 'service' entity */
@@ -85,7 +89,7 @@ export class AdminPermissionsNormalizrSchemas {
             entity.parentEntity = {
                 type: (parent !== null && parent.constructor.name !== 'Array') ? parent.constructor.name : null,
                 uid: (parent !== null && parent.constructor.name !== 'Array') ? parent.uid : null,
-                entitiestKey: parent_entities_key,
+                entitiesKey: parent_entities_key,
                 childrenKey: key
             }
             return entity

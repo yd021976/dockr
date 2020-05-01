@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Add role</h2>
+<mat-dialog-content>
+  <form>
+    <mat-form-field class="">
+      <input matInput placeholder="Role name" [(ngModel)]="dialogData.result" (keyup.enter)="onInputEnter()" name="role-name" cdkFocusInitial>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="dialogData" (click)="onClose(true)">Cancel</button>
+  <button #submitdialog mat-button [mat-dialog-close]="dialogData" (click)="onClose(false)">Confirm</button>
+</mat-dialog-actions>

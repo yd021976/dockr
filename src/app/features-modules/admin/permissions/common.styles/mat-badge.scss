@@ -1,0 +1,29 @@
+@mixin mat-badge-override {
+    .mat-badge-medium, .mat-badge-large, .mat-badge-small {
+        .mat-badge-content {
+            width: 10px;
+            height: 10px;
+            line-height: 8px;
+            font-size: 8px;
+            transition: none;
+        }
+        
+        &.mat-badge-before {
+            .mat-badge-content {
+                left: -4px;
+            }
+        }
+        
+        &.mat-badge-after {
+            .mat-badge-content {
+                right: -8px;
+            }
+        }
+        
+        &.mat-badge-above {
+            .mat-badge-content {
+                top: -4px;
+            }
+        }
+    } 
+}
