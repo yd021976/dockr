@@ -24,7 +24,7 @@ export function node_get_children( state: AclStateEntitiesModel, node: AclTreeNo
             } )
             break
         case NODE_TYPES.SERVICE:
-            var serviceCrudOperations = state.entities.services[ node.uid ].crud_operations
+            var serviceCrudOperations = state.entities.services[ node.uid ].operations
             children = serviceCrudOperations.map( ( key ) => {
                 var crud = state.entities.actions[ key ]
                 return {

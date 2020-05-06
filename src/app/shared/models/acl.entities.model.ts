@@ -1,5 +1,5 @@
 import { AclRoleEntities } from "./acl.role.model";
-import { AclServicesEntities } from "./acl.services.model";
+import { BackendServicesEntities } from "./acl.services.model";
 import { AclServiceActionModelEntities } from "./acl.service.action.model";
 import { ServiceFieldEntities } from "./acl.service.field.model";
 import { FlatTreeNode } from "./treenode.model";
@@ -11,7 +11,7 @@ import { BaseUIModel } from "./base.ui.model";
  */
 export class AclEntities {
     roles: AclRoleEntities
-    services: AclServicesEntities
+    services: BackendServicesEntities
     actions: AclServiceActionModelEntities
     fields: ServiceFieldEntities
 }

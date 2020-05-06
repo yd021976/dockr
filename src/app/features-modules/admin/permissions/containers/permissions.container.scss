@@ -11,6 +11,18 @@
     width: 100%;
     overflow: hidden;
 }
+
 button {
     padding-left: 0;
+    padding-right: 0;
+}
+
+.button-label {
+    margin-left: 3px;
+}
+.toolbar {
+    .button-container {
+        display: inline-flex;
+        padding-right: 20px;
+    }
 }

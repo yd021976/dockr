@@ -1,6 +1,6 @@
 import { AclRoleEntity, AclRoleEntities } from "src/app/shared/models/acl.role.model";
 import { action_remove_entity } from './actions'
-import { AclServicesEntities, AclServiceEntity } from "src/app/shared/models/acl.services.model";
+import { BackendServicesEntities, AclServiceEntity } from "src/app/shared/models/acl.services.model";
 import { AclServiceActionModelEntities, AclServiceActionModelEntity } from "src/app/shared/models/acl.service.action.model";
 import { ServiceFieldEntities } from "src/app/shared/models/acl.service.field.model";
 import { role_get_service_index } from "./roles";
@@ -21,7 +21,7 @@ export function service_get_parent( service_uid: string, role_entities: AclRoleE
 }
 
 
-export function service_get_entityFromUid( entity_uid: string, service_entities: AclServicesEntities ):AclServiceEntity {
+export function service_get_entityFromUid( entity_uid: string, service_entities: BackendServicesEntities ):AclServiceEntity {
     const service_entity = service_entities[ entity_uid ] || null
     return service_entity
 }
@@ -35,7 +35,7 @@ export function service_get_entityFromUid( entity_uid: string, service_entities:
 export function service_remove_entity(
     service_uid: string,
     role_entities: AclRoleEntities,
-    service_entities: AclServicesEntities,
+    service_entities: BackendServicesEntities,
     action_entities: AclServiceActionModelEntities,
     field_entities: ServiceFieldEntities ) {
 
@@ -51,7 +51,7 @@ export function service_remove_entity(
 
     // Remove all service action and fields
     var service_entity = service_entities[ service_uid ]
-    service_entity.crud_operations.forEach( action_uid => {
+    service_entity.operations.forEach( action_uid => {
         action_remove_entity( action_uid, action_entities, field_entities ) // Will remove all fields that belong to this action if any exist
     } )
 

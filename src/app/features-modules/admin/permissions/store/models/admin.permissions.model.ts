@@ -1,4 +1,5 @@
-import { THIS_EXPR } from "@angular/compiler/src/output/output_ast"
+import { Observable } from "rxjs"
+import { BackendServiceModel } from "src/app/shared/models/acl.services.model"
 
 export type AdminPermissionsEntitiesTypes = AdminPermissionsRoleEntities | AdminPermissionsServiceEntities | AdminPermissionsOperationEntities | AdminPermissionsFieldEntities
 
@@ -14,47 +15,79 @@ export enum ALLOWED_STATES {
     FORBIDDEN = "0",
     INDETERMINATE = "indeterminate",
 }
+
+/**
+ * Entity types
+ * WARN the strings of each type MUST match storage/state keys
+ */
 export enum ENTITY_TYPES {
-    ROLE = "role",
-    SERVICE = "service",
-    OPERATION = "operation",
-    FIELD = "field",
+    ROLE = "roles",
+    SERVICE = "services",
+    OPERATION = "operations",
+    FIELD = "fields",
 }
 /**
  * Action types
  */
 export enum EntityActionTypes {
-    ADD = "add",
-    REMOVE = "remove",
+    ADD_ROLE = "add role",
+    REMOVE_ROLE = "remove role",
+    ADD_SERVICE = "add service",
+    REMOVE_SERVICE = "remove service",
 }
 /**
  * Extra entity data : Parent entity data
  */
-export interface ParentEntity {
+export interface AdminPermissionParentEntityMeta {
     type: string // Parent classname
     uid: string // UID of parent
-    entitiesKey: string // Parent state entities key
-    childrenKey: string // Parent children property name
+    storage_key: string // Parent state entities key
+    children_key: string // Parent children property name
+}
+export interface AdminPermissionChildrenEntityMeta {
+    entity_prop_key: string /** name of the entity children property */
+    storage_key: string /**name of children state entities key */
 }
 
-/**
- * Base entity model
- */
-export abstract class AdminPermissionsBaseModel {
+/** Base entity data : Should be extended */
+export interface EntityBaseModel {
+    id: string
+    name: string
+
+    /** optionnal properties */
     uid?: string
+    entity_type?: ENTITY_TYPES
+    storage_key?: string /** name of entities collection key this entity is part of */
+    allowed?: ALLOWED_STATES /** this should be 'null' if entity doesn't support this feature */
+    parent_entity_meta?: AdminPermissionParentEntityMeta /** Entity's parent data */
+    children_entities_meta?: AdminPermissionChildrenEntityMeta
+}
+/**
+ * Base entity model for state
+ */
+export abstract class AdminPermissionsStateEntityBaseModel implements EntityBaseModel {
+    uid: string
     id: string
     entity_type: ENTITY_TYPES
     name: string
+    storage_key: string /** name of entities collection key this entity is part of */
     allowed?: ALLOWED_STATES /** this should be 'null' if entity doesn't support this feature */
-    parentEntity: ParentEntity /** Entity's parent data */
-    entitiesKey: string /** name of entities collection key this entity is part of */
-    children_key: string /** name of the entity children property */
+    parent_entity_meta: AdminPermissionParentEntityMeta /** Entity's parent data */
+    children_entities_meta: AdminPermissionChildrenEntityMeta
+}
+/**
+ * Interface for entity creation (either from backend loading or from factory builder)
+ */
+export interface AdminPermissionsEntityRawData extends EntityBaseModel {
+    /** entity possible children */
+    services?: EntityChildren | any[]
+    operations?: EntityChildren | any[]
+    fields?: EntityChildren | any[]
 }
 
-
 /** Role model */
-export class AdminPermissionsRoleEntity extends AdminPermissionsBaseModel {
-    services: EntityChildren
+export class AdminPermissionsRoleEntity extends AdminPermissionsStateEntityBaseModel {
+    services: EntityChildren | AdminPermissionsServiceEntity[] | BackendServiceModel[]
 }
 
 export class AdminPermissionsRoleEntities {
@@ -63,24 +96,24 @@ export class AdminPermissionsRoleEntities {
 
 
 /** Service model */
-export class AdminPermissionsServiceEntity extends AdminPermissionsBaseModel {
-    operations: EntityChildren
+export class AdminPermissionsServiceEntity extends AdminPermissionsStateEntityBaseModel {
+    operations: EntityChildren | AdminPermissionsOperationEntity[]
 }
 export class AdminPermissionsServiceEntities {
     [uid: string]: AdminPermissionsServiceEntity
 }
 
 /** Operations model */
-export class AdminPermissionsOperationEntity extends AdminPermissionsBaseModel {
-    fields: EntityChildren
+export class AdminPermissionsOperationEntity extends AdminPermissionsStateEntityBaseModel {
+    fields: EntityChildren | AdminPermissionsFieldEntity[]
 }
 export class AdminPermissionsOperationEntities {
     [uid: string]: AdminPermissionsOperationEntity
 }
 
 /** Fields model */
-export class AdminPermissionsFieldEntity extends AdminPermissionsBaseModel {
-    fields: EntityChildren
+export class AdminPermissionsFieldEntity extends AdminPermissionsStateEntityBaseModel {
+    fields: EntityChildren | AdminPermissionsFieldEntity[]
 }
 export class AdminPermissionsFieldEntities {
     [uid: string]: AdminPermissionsFieldEntity
@@ -133,6 +166,7 @@ export class AdminPermissionsFlatNode {
     item: AdminPermissionsEntityTypes
     level: number
     expandable: boolean
+    is_dirty: boolean | Observable<boolean>
 }
 
 

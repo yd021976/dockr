@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { NODE_TYPES, FlatTreeNode } from '../../../../../shared/models/treenode.model';
-import { AclServiceModel } from 'src/app/shared/models/acl.services.model';
+import { BackendServiceModel } from 'src/app/shared/models/acl.services.model';
 import { Observable, of } from 'rxjs';
 
 @Component( {
@@ -10,7 +10,7 @@ import { Observable, of } from 'rxjs';
 } )
 export class NodeActionsComponent implements OnInit {
   @Input( 'node' ) node: FlatTreeNode
-  @Input( 'availableServices' ) availableServices: AclServiceModel[]
+  @Input( 'availableServices' ) availableServices: BackendServiceModel[]
   @Input( 'editable' ) editable$: Observable<boolean> = of( false )
   @Output( 'addRole' ) addRole: EventEmitter<FlatTreeNode> = new EventEmitter<FlatTreeNode>()
   @Output( 'addService' ) addService: EventEmitter<FlatTreeNode> = new EventEmitter<FlatTreeNode>()

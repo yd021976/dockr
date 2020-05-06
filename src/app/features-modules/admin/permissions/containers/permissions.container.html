@@ -1,6 +1,6 @@
 <div class="main_layout" fxLayout="column" fxFlex="1 1 auto">
     <div class="toolbar" fxFlex="40px">
-        <div>
+        <div class="button-container">
             <button *ngIf="!(sandbox.isAclLocked$ | async)" mat-button color="primary" (click)="lock($event)"
                 [disabled]="!(sandbox.isLoggedin$ | async)">
                 <div>
@@ -8,13 +8,29 @@
                     <div class="button-label">Lock to modify</div>
                 </div>
             </button>
-        </div>
-        <div>
             <button *ngIf="sandbox.isAclLocked$ | async" mat-button color="accent" (click)="unlock($event)"
                 [disabled]="!(sandbox.isLoggedin$ | async)">
                 <div>
                     <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-lock"></mat-icon>
                     <div class="button-label">Unlock</div>
+                </div>
+            </button>
+        </div>
+        <div class="button-container">
+            <button mat-button color="primary" (click)="save_changes()"
+                [disabled]="!(sandbox.isLoggedin$ | async) || !(sandbox.isDirty$ | async)">
+                <div>
+                    <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-save"></mat-icon>
+                    <div class="button-label">Save</div>
+                </div>
+            </button>
+        </div>
+        <div class="button-container">
+            <button mat-button color="primary" (click)="cancel_changes()"
+                [disabled]="!(sandbox.isLoggedin$ | async) || !(sandbox.isDirty$ | async)">
+                <div>
+                    <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-history"></mat-icon>
+                    <div class="button-label">Cancel</div>
                 </div>
             </button>
         </div>

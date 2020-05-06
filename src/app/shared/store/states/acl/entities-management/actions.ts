@@ -1,7 +1,7 @@
 import { AclServiceActionModelEntity, AclServiceActionModelEntities, ALLOWED_STATES } from "src/app/shared/models/acl.service.action.model";
 import { ServiceFieldEntities } from "src/app/shared/models/acl.service.field.model";
 import { field_remove_entity } from "./fields";
-import { AclServicesEntities, AclServiceEntity } from "src/app/shared/models/acl.services.model";
+import { BackendServicesEntities, AclServiceEntity } from "src/app/shared/models/acl.services.model";
 
 
 /**
@@ -28,11 +28,11 @@ export function action_remove_entity( action_uid: string, action_entities: AclSe
  * @param crud_uid 
  * @param services_entities 
  */
-export function action_get_parent( crud_uid: string, services_entities: AclServicesEntities ): AclServiceEntity {
+export function action_get_parent( crud_uid: string, services_entities: BackendServicesEntities ): AclServiceEntity {
     var serviceEntity: AclServiceEntity = null
 
     Object.keys( services_entities ).map( ( serviceUID ) => {
-        if ( services_entities[ serviceUID ].crud_operations.find( ( crudUID ) => crudUID == crud_uid ) ) {
+        if ( services_entities[ serviceUID ].operations.find( ( crudUID ) => crudUID == crud_uid ) ) {
             serviceEntity = services_entities[ serviceUID ]
         }
     } )

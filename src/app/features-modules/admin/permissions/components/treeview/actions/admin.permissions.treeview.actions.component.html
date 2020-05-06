@@ -2,7 +2,7 @@
     <!-- Default actions-->
     <div>
         <button mat-button color="primary"
-            (click)="onActionClick({node:selected_node,action:action_types.add})">
+            (click)="onActionClick({node:selected_node,action:action_types.ADD_ROLE})">
             <div>
                 <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-users" matBadge="+" matBadgeColor="primary"
                     matBadgePosition="after" matBadgeOverlap="false">
@@ -13,9 +13,9 @@
     </div>
 
     <!-- Role actions-->
-    <div *ngSwitchCase="entity_types.role">
+    <div *ngSwitchCase="entity_types.ROLE">
         <button mat-button color="primary"
-            (click)="onActionClick({node:selected_node,action:action_types.remove})">
+            (click)="onActionClick({node:selected_node,action:action_types.REMOVE_ROLE})">
             <div>
                 <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-users" matBadge="-" matBadgeColor="primary"
                     matBadgePosition="after" matBadgeOverlap="false"></mat-icon>
@@ -24,7 +24,7 @@
         </button>
 
         <button mat-button color="primary"
-            (click)="onActionClick({node:selected_node,action:action_types.add})">
+            (click)="onActionClick({node:selected_node,action:action_types.ADD_SERVICE})">
             <div>
                 <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-project-diagram" matBadge="+"
                     matBadgeColor="primary" matBadgePosition="after" matBadgeOverlap="false"></mat-icon>
@@ -35,8 +35,8 @@
 
 
     <!-- Service actions-->
-    <div *ngSwitchCase="entity_types.service"
-        (click)="onActionClick({node:selected_node,action:action_types.remove})">
+    <div *ngSwitchCase="entity_types.SERVICE"
+        (click)="onActionClick({node:selected_node,action:action_types.REMOVE_SERVICE})">
         <button mat-button color="primary">
             <div>
                 <mat-icon class="fa mat-icon-rtl-mirror" fontIcon="fa-project-diagram" matBadge="-"
@@ -47,8 +47,8 @@
     </div>
 
     <!-- Operation actions-->
-    <div *ngSwitchCase="entity_types.operation"></div>
+    <div *ngSwitchCase="entity_types.OPERATION"></div>
 
     <!-- Field actions-->
-    <div *ngSwitchCase="entity_types.field"></div>
+    <div *ngSwitchCase="entity_types.FIELD"></div>
 </div>

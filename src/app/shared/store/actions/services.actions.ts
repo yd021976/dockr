@@ -1,4 +1,4 @@
-import { AclServiceModel } from "../../models/acl.services.model";
+import { BackendServiceModel } from "../../models/acl.services.model";
 
 export class Services_Load_All {
     static readonly type = '[services] load all';
@@ -6,7 +6,7 @@ export class Services_Load_All {
 }
 export class Services_Load_All_Success {
     static readonly type = '[services] load all success';
-    constructor(public services: AclServiceModel[]) { }
+    constructor(public services: BackendServiceModel[]) { }
 }
 export class Services_Load_All_Error {
     static readonly type = '[services] load all error';

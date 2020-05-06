@@ -12,7 +12,7 @@ var DATA: AclRoleModel[] =
                         id: 'templates',
                         description: 'Document templates',
                         name: 'Templates management',
-                        crud_operations:
+                        operations:
                             [
                                 {
                                     id: ACL_SERVICES_ACTIONS.READ,
@@ -58,7 +58,7 @@ var DATA: AclRoleModel[] =
                         id: 'Documents',
                         description: 'Document',
                         name: 'Documents',
-                        crud_operations:
+                        operations:
                             [
                                 {
                                     id: ACL_SERVICES_ACTIONS.READ,

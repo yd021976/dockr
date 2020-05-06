@@ -1,7 +1,7 @@
 import { BaseSandboxService } from '../../../../shared/sandboxes/base-sandbox.service';
 import { Observable } from 'rxjs';
 import { AclTreeNode, FlatTreeNode } from '../../../../shared/models/treenode.model';
-import { AclServiceModel } from '../../../../shared/models/acl.services.model';
+import { BackendServiceModel } from '../../../../shared/models/acl.services.model';
 import { RolesService } from 'src/app/shared/services/acl/roles/roles.service';
 import { BackendServicesService } from 'src/app/shared/services/acl/services/backend-services.service';
 import { ResourcesLocksService } from 'src/app/shared/services/resource_locks/resources.locks.service';
@@ -15,7 +15,7 @@ export abstract class AdminAclSandboxInterface extends BaseSandboxService {
     public test: string = "admin sandbox"
     public acltreenodes$: Observable<AclTreeNode[]>
     public currentSelectedNode$: Observable<FlatTreeNode>
-    public availableServices$: Observable<AclServiceModel[]>
+    public availableServices$: Observable<BackendServiceModel[]>
     public isAclLocked$: Observable<boolean>
 
     protected rolesService: RolesService
@@ -51,7 +51,7 @@ export abstract class AdminAclSandboxInterface extends BaseSandboxService {
     public abstract field_update_allowed_property( field_node: AclTreeNode ): void
     public abstract action_update_allowed_property( action_node: AclTreeNode ): void
     public abstract services_remove_entity( service_node: AclTreeNode ): void
-    public abstract role_add_service( role_node: AclTreeNode, backendServiceModel: AclServiceModel ): void
+    public abstract role_add_service( role_node: AclTreeNode, backendServiceModel: BackendServiceModel ): void
     public abstract roles_add_entity( role_name: string ): void
     public abstract roles_remove_entity( role: AclTreeNode ): void
 

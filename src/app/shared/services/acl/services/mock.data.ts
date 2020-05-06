@@ -1,13 +1,13 @@
-import { AclServiceModel, AclServicesEntities } from "src/app/shared/models/acl.services.model";
+import { BackendServiceModel, BackendServicesEntities } from "src/app/shared/models/acl.services.model";
 import { ACL_SERVICES_ACTIONS, ALLOWED_STATES } from "src/app/shared/models/acl.service.action.model";
 
-var DATA: AclServiceModel[] =
+var DATA: BackendServiceModel[] =
     [
         {
             id: 'templates',
             description: 'Document templates',
             name: 'Templates management',
-            crud_operations:
+            operations:
                 [
                     {
                         id: ACL_SERVICES_ACTIONS.READ,
@@ -39,7 +39,7 @@ var DATA: AclServiceModel[] =
             id: 'Documents',
             description: 'Document',
             name: 'Documents',
-            crud_operations:
+            operations:
                 [
                     {
                         id: ACL_SERVICES_ACTIONS.READ,
@@ -71,7 +71,7 @@ var DATA: AclServiceModel[] =
             id: 'Users',
             description: 'Users management',
             name: 'Users',
-            crud_operations:
+            operations:
                 [
                     {
                         id: ACL_SERVICES_ACTIONS.READ,

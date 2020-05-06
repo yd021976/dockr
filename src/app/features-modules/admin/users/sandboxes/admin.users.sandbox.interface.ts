@@ -2,7 +2,7 @@ import { BaseSandboxService } from '../../../../shared/sandboxes/base-sandbox.se
 import { Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { AclTreeNode, FlatTreeNode } from '../../../../shared/models/treenode.model';
-import { AclServiceModel } from '../../../../shared/models/acl.services.model';
+import { BackendServiceModel } from '../../../../shared/models/acl.services.model';
 import { RolesService } from 'src/app/shared/services/acl/roles/roles.service';
 import { AppLoggerServiceInterface } from 'src/app/shared/services/logger/app-logger/service/app-logger.service';
 import { UserModelBase } from 'src/app/shared/models/user.model';

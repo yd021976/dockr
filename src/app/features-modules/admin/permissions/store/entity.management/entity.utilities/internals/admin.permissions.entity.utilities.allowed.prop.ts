@@ -1,5 +1,7 @@
 import { AdminPermissionsBaseEntityUtility } from "./admin.permissions.entity.utilities.base";
-import { AdminPermissionsEntityTypes, EntityChildren, ALLOWED_STATES, AdminPermissionsEntitiesTypes } from "../../../models/admin.permissions.model";
+import { AdminPermissionsEntityTypes, ALLOWED_STATES, AdminPermissionsEntitiesTypes } from "../../../models/admin.permissions.model";
+import { Inject } from "@angular/core";
+import { AdminPermissionsEntityDataService } from "./admin.permissions.entity.data.service";
 
 
 /**
@@ -7,20 +9,20 @@ import { AdminPermissionsEntityTypes, EntityChildren, ALLOWED_STATES, AdminPermi
  * IMPORTANT : You MUST set the 'entities' property before using any method
  */
 export class AllowedProperty extends AdminPermissionsBaseEntityUtility {
-
-    /** Updated entities that has been updated after 'update allowed property' call */
-    private dirty_entities: AdminPermissionsEntitiesTypes = {}
+    constructor(@Inject(AdminPermissionsEntityDataService) entity_data_service: AdminPermissionsEntityDataService) {
+        super(entity_data_service)
+    }
     /**
     * Update entity allowed property, update all decendants children, update parents allowed property
-    *  
+    * IMPORTANT : Assume dirty entities are reset to empty
     * @param entity 
     * @param allowed_value 
     */
     public update_entity_allowed_property(entity: AdminPermissionsEntityTypes, allowed_value: ALLOWED_STATES): AdminPermissionsEntitiesTypes {
-        this.dirty_entities = {} /** Reset dirty entities before processing allowed property update */
-        let entity_from_entities: AdminPermissionsEntityTypes = this.entities[entity.entitiesKey][entity.uid]
+        let entity_from_entities: AdminPermissionsEntityTypes = this.entity_data_service.entities[entity.storage_key][entity.uid]
         /** 1: update entity */
         entity_from_entities.allowed = allowed_value
+        this.entity_data_service.dirty_entities[entity_from_entities.uid] = entity_from_entities
 
         /** 2: update children */
         this.update_children_entity_allowed_property(entity, allowed_value)
@@ -29,38 +31,28 @@ export class AllowedProperty extends AdminPermissionsBaseEntityUtility {
         this.update_parents_entity_allowed_property(entity, allowed_value)
 
         /** Return dirty entities */
-        return this.dirty_entities
+        return this.entity_data_service.dirty_entities
     }
 
 
-    /**
-     * Get the parent entity from an antity
-     * 
-     * @param entity 
-     */
-    private get_parent_entity(entity: AdminPermissionsEntityTypes): AdminPermissionsEntityTypes {
-        return entity.parentEntity.type !== null ? this.entities[entity.parentEntity.entitiesKey][entity.parentEntity.uid] : null
-    }
+    // /**
+    //  * get siblings entity from an entity
+    //  * 
+    //  * @param entity 
+    //  */
+    // private get_siblings(entity: AdminPermissionsEntityTypes): AdminPermissionsEntityTypes[] {
+    //     const parent_entity: AdminPermissionsEntityTypes = this.getParent(entity)
+    //     if (parent_entity === null) return []
 
-
-    /**
-     * get siblings entity from an entity
-     * 
-     * @param entity 
-     */
-    private get_siblings(entity: AdminPermissionsEntityTypes): AdminPermissionsEntityTypes[] {
-        const parent_entity: AdminPermissionsEntityTypes = this.get_parent_entity(entity)
-        if (parent_entity === null) return []
-
-        const siblingsUidArray: EntityChildren = this.entities[entity.parentEntity.entitiesKey][entity.parentEntity.uid][entity.parentEntity.childrenKey]
-        const children_entities: AdminPermissionsEntityTypes[] = this.entities[entity.parentEntity.childrenKey]
-        const siblings: AdminPermissionsEntityTypes[] = Object.values(children_entities).filter((child_entity) => {
-            return siblingsUidArray.find((sibling_entity_uid) => {
-                return child_entity.uid === sibling_entity_uid
-            })
-        })
-        return siblings === undefined ? [] : siblings
-    }
+    //     const siblingsUidArray: EntityChildren = this.entities[entity.parent_entity_meta.storage_key][entity.parent_entity_meta.uid][entity.parent_entity_meta.children_key]
+    //     const children_entities: AdminPermissionsEntityTypes[] = this.entities[entity.parent_entity_meta.children_key]
+    //     const siblings: AdminPermissionsEntityTypes[] = Object.values(children_entities).filter((child_entity) => {
+    //         return siblingsUidArray.find((sibling_entity_uid) => {
+    //             return child_entity.uid === sibling_entity_uid
+    //         })
+    //     })
+    //     return siblings === undefined ? [] : siblings
+    // }
 
 
     /**
@@ -70,7 +62,7 @@ export class AllowedProperty extends AdminPermissionsBaseEntityUtility {
      */
     private compute_parent_allowed_property(entity: AdminPermissionsEntityTypes): ALLOWED_STATES {
         let allowed: ALLOWED_STATES = entity.allowed
-        const siblings: AdminPermissionsEntityTypes[] = this.get_siblings(entity)
+        const siblings: AdminPermissionsEntityTypes[] = this.getSiblings(entity)
 
         if (siblings !== null && siblings.length !== 0) {
             const sibling_allowed_status: ALLOWED_STATES = allowed
@@ -90,18 +82,18 @@ export class AllowedProperty extends AdminPermissionsBaseEntityUtility {
      * 
      * @param entity 
      */
-    private entity_get_children(entity: AdminPermissionsEntityTypes): AdminPermissionsEntityTypes[] {
-        const children: EntityChildren = entity[entity.children_key]
+    // private entity_get_children(entity: AdminPermissionsEntityTypes): AdminPermissionsEntityTypes[] {
+    //     const children: EntityChildren = entity[entity.children_entities_meta.storage_key]
 
-        /** Return array of children entities from working 'entities' collection */
-        const entities_children_collection: AdminPermissionsEntitiesTypes = this.entities[entity.children_key]
-        let entity_children = Object.values(entities_children_collection).filter((children_entity: AdminPermissionsEntityTypes) => {
-            return children.find((child_key: string) => {
-                return child_key === children_entity.uid
-            })
-        })
-        return entity_children || []
-    }
+    //     /** Return array of children entities from working 'entities' collection */
+    //     const entities_children_collection: AdminPermissionsEntitiesTypes = this.entities[entity.children_entities_meta.storage_key]
+    //     let entity_children = Object.values(entities_children_collection).filter((children_entity: AdminPermissionsEntityTypes) => {
+    //         return children.find((child_key: string) => {
+    //             return child_key === children_entity.uid
+    //         })
+    //     })
+    //     return entity_children || []
+    // }
 
 
     /**
@@ -110,8 +102,8 @@ export class AllowedProperty extends AdminPermissionsBaseEntityUtility {
      * @param allowed_value 
      */
     private update_parents_entity_allowed_property(entity: AdminPermissionsEntityTypes, allowed_value: ALLOWED_STATES): void {
-        let parent_entity: AdminPermissionsEntityTypes = this.get_parent_entity(entity)
-        let entity_from_entities = this.entities[entity.entitiesKey][entity.uid]
+        let parent_entity: AdminPermissionsEntityTypes = this.getParent(entity)
+        let entity_from_entities = this.entity_data_service.entities[entity.storage_key][entity.uid]
         let parent_allowed_property: ALLOWED_STATES
 
         while (parent_entity !== null) {
@@ -119,14 +111,15 @@ export class AllowedProperty extends AdminPermissionsBaseEntityUtility {
             if (parent_entity.allowed !== null) {
                 parent_allowed_property = this.compute_parent_allowed_property(entity_from_entities)
                 if (parent_entity.allowed !== parent_allowed_property) {
-                    this.dirty_entities[parent_entity.uid] = parent_entity
                     parent_entity.allowed = parent_allowed_property
                 }
             }
+            /** as child entity is dirty, consider parent as dirty */
+            this.entity_data_service.dirty_entities[parent_entity.uid] = parent_entity
 
             // Get next parent entity
             entity_from_entities = parent_entity
-            parent_entity = this.get_parent_entity(entity_from_entities)
+            parent_entity = this.getParent(entity_from_entities)
         }
     }
 
@@ -137,11 +130,11 @@ export class AllowedProperty extends AdminPermissionsBaseEntityUtility {
      */
     private update_children_entity_allowed_property(entity: AdminPermissionsEntityTypes, allowed_value: ALLOWED_STATES): void {
         /** update children entities in working entities collection */
-        let children = this.entity_get_children(entity)
+        let children = this.getChildren(entity)
         children.forEach((child_entity) => {
             if (child_entity.allowed !== allowed_value) {
                 child_entity.allowed = allowed_value
-                this.dirty_entities[child_entity.uid] = child_entity
+                this.entity_data_service.dirty_entities[child_entity.uid] = child_entity
             }
             this.update_children_entity_allowed_property(child_entity, allowed_value)
         })

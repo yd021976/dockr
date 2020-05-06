@@ -65,7 +65,7 @@ export class PermissionsService implements PermissionServiceInterface {
                 subject = service.name
 
                 // For each "action" add permitted fields
-                service.crud_operations
+                service.operations
                     .filter( operation => operation.allowed == ALLOWED_STATES.ALLOWED || operation.allowed == ALLOWED_STATES.INDETERMINATE ) // do not include "FORBIDDEN" actions
                     .forEach( ( crud_operation ) => {
                         action = crud_operation.id

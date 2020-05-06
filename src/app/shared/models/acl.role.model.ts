@@ -1,4 +1,4 @@
-import { AclServicesEntities, AclServiceModel } from "./acl.services.model";
+import { BackendServicesEntities, BackendServiceModel } from "./acl.services.model";
 
 /**
  * Base role model
@@ -11,7 +11,7 @@ export interface BaseAclRoleModel {
 
 // Role object
 export interface AclRoleModel extends BaseAclRoleModel {
-    services: AclServiceModel[]
+    services: BackendServiceModel[]
 }
 
 /**

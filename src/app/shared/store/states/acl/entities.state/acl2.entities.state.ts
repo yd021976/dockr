@@ -152,7 +152,7 @@ export class AclEntitiesState {
         const previous_entities: AclEntities = _.cloneDeep(state.entities)
 
         state.entities.roles[action.roleUid].services.forEach((serviceUID) => {
-            state.entities.services[serviceUID].crud_operations.forEach((actionUID) => {
+            state.entities.services[serviceUID].operations.forEach((actionUID) => {
                 state.entities.actions[actionUID].fields.forEach((fieldUID) => {
                     delete state.entities.fields[fieldUID]
                 })

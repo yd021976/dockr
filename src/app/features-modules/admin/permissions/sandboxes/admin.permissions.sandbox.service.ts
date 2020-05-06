@@ -3,20 +3,32 @@ import { AdminPermissionsSandboxInterface } from "./admin.permissions.sandbox.in
 import { AdminPermissionsRolesStateActions } from "../store/actions/admin.permissions.role.entity.actions";
 import { ApplicationActions } from "src/app/shared/store/actions/application.actions";
 import { ApplicationNotification, ApplicationNotificationType } from "src/app/shared/models/application.notifications.model";
-import { Observable, of } from "rxjs";
-import { AdminPermissionsEntityTypes, AdminPermissionsFlatNode, ALLOWED_STATES, AdminPermissionsServiceEntity, AdminPermissionsRoleEntity, AdminPermissionsStateModel, AdminPermissionsEntitiesTypes, ENTITY_TYPES, AdminPermissionsStateEntities } from "../store/models/admin.permissions.model";
+import { Observable } from "rxjs";
+import {
+    AdminPermissionsEntityTypes,
+    AdminPermissionsFlatNode,
+    ALLOWED_STATES,
+    AdminPermissionsServiceEntity,
+    AdminPermissionsRoleEntity,
+    AdminPermissionsEntitiesTypes,
+    AdminPermissionsStateModel,
+    AdminPermissionsStateUIModel,
+    ENTITY_TYPES
+} from "../store/models/admin.permissions.model";
 import { AdminPermissionsStateSelectors } from '../store/selectors/admin.permissions.selectors';
 import { AdminPermissionsTreedataService } from "../services/admin.permissions.treedata.service";
 import { AdminPermissionsStateActions } from "../store/actions/admin.permissions.state.actions";
 import { ApplicationLocksActions } from "src/app/shared/store/actions/application.locks.actions";
 import { ApplicationNotifications_Append_Message } from "src/app/shared/store/actions/application-notifications.actions";
-import { Select } from "@ngxs/store";
+import { Select, Selector } from "@ngxs/store";
 import { ApplicationLocksSelectors } from "src/app/shared/store/states/locks/application.locks.selectors";
 import { AdminPermissionsUIActions } from "../store/actions/admin.permissions.ui.actions";
 import { AdminPermissionsUIState } from '../store/state/ui/admin.permissions.ui.state';
-import { Role } from "../store/entity.management/entity.utilities/internals/admin.permissions.entity.utilities.role";
-import { AdminPermissionsNormalizrSchemas } from "../store/entity.management/normalizer";
-import { v4 as uuid } from 'uuid';
+import { Services_Load_All, Services_Load_All_Success } from "src/app/shared/store/actions/services.actions";
+import { ServicesState } from "src/app/shared/store/states/services.state";
+import { BackendServiceModel } from "src/app/shared/models/acl.services.model";
+import { AdminPermissionsEntitiesState } from "../store/state/entities/admin.permissions.entities.state";
+import { ServicesModel } from "src/app/shared/models/services.model";
 
 @Injectable({ providedIn: 'root' })
 export class AdminPermissionsSandboxService extends AdminPermissionsSandboxInterface {
@@ -24,15 +36,33 @@ export class AdminPermissionsSandboxService extends AdminPermissionsSandboxInter
 
     @Select(ApplicationLocksSelectors.isLocked(AdminPermissionsSandboxService.lock_ressouce_name)) public isAclLocked$: Observable<boolean>
     @Select(AdminPermissionsUIState.selected) public selectedNode$: Observable<AdminPermissionsFlatNode>
+    @Select(AdminPermissionsStateSelectors.isDirty) public isDirty$: Observable<boolean>
 
     public get datasource() { return this.treedatasource.treedatasource }
     public get treecontrol() { return this.treedatasource.treecontrol }
     public get hasChild() { return this.treedatasource.hasChild }
 
-    private readonly normalizer: AdminPermissionsNormalizrSchemas
-    private readonly role_entity_utilities: Role
+    @Selector([ServicesState, AdminPermissionsUIState, AdminPermissionsEntitiesState])
+    public static role_available_services(available_services: ServicesModel, ui_state: AdminPermissionsStateUIModel, permissions_state: AdminPermissionsStateModel) {
+        if (ui_state.selected === null || ui_state.selected === undefined) return []
 
+        /** get current selected entity. If not a role entity return empty array*/
+        const role_entity: AdminPermissionsRoleEntity = permissions_state.entities[ui_state.selected.item.storage_key][ui_state.selected.item.uid]
+        if (role_entity.entity_type !== ENTITY_TYPES.ROLE) return []
 
+        const role_current_services: AdminPermissionsServiceEntity[] = Object.values(role_entity.services)
+            .map((service_uid) => {
+                return permissions_state.entities[role_entity.children_entities_meta.storage_key][service_uid]
+            })
+        const role_available_services = Object.values(available_services.services).filter((available_service: BackendServiceModel) => {
+            /** Check service id is not already associated to a role */
+            if (!(role_current_services.find((service_entity) => { return available_service.id === service_entity.id }))) {
+                /** add this available service */
+                return available_service
+            }
+        })
+        return role_available_services
+    }
     /**
      * Constructor
      */
@@ -41,14 +71,10 @@ export class AdminPermissionsSandboxService extends AdminPermissionsSandboxInter
         this.treenodes$ = this.nodeGetChildren()
         this.treedatasource.data$ = this.treenodes$
         this.treedatasource.getNodeChildren = this.nodeGetChildren
+        this.treedatasource.isEntityDirty = this.isEntityDirty
 
-        this.normalizer = new AdminPermissionsNormalizrSchemas()
-        this.role_entity_utilities = new Role()
-
-        /** observable for dirty entities to save */
-        this.store.select(AdminPermissionsStateSelectors.dirtyRoles).subscribe((entities) => {
-            /**TODO: update backend database */
-        })
+        /** selectors */
+        this.available_services$ = this.store.select(AdminPermissionsSandboxService.role_available_services)
     }
 
     /**
@@ -59,7 +85,7 @@ export class AdminPermissionsSandboxService extends AdminPermissionsSandboxInter
      */
     resolve(route, state): Promise<any> {
         let promises: Promise<any>[] = []
-        promises.push(this._loadRoles(), this.init_lock_status())
+        promises.push(this._loadRoles(), this.init_lock_status(), this.initServices())
         return Promise.all(promises)
     }
 
@@ -74,21 +100,65 @@ export class AdminPermissionsSandboxService extends AdminPermissionsSandboxInter
                 this.store.dispatch(new AdminPermissionsRolesStateActions.Load_All_Error(err))
             })
     }
-
+    /**
+     * Load backend available services
+     */
+    private initServices(): Promise<any> {
+        this.store.dispatch(new Services_Load_All())
+        return this.backendServices.find()
+            .then((results) => {
+                this.store.dispatch(new Services_Load_All_Success(results))
+            })
+            .catch((err) => {
+                this.store.dispatch(new ApplicationActions.Application_Event_Notification(new ApplicationNotification(err.message, 'LoadRolesError', ApplicationNotificationType.ERROR)))
+            })
+    }
     /**
      * Get a node children entities array
      */
-    public nodeGetChildren = (node: AdminPermissionsEntityTypes = null): Observable<AdminPermissionsEntityTypes[]> => {
-        return this.store.select(AdminPermissionsStateSelectors.getChildren(node))
+    public nodeGetChildren = (entity: AdminPermissionsEntityTypes = null): Observable<AdminPermissionsEntityTypes[]> => {
+        return this.store.select(AdminPermissionsStateSelectors.getChildren(entity))
     }
 
     /**
-     * 
+     * Is an entity is dirty
      */
-    public node_update_allowed(node: AdminPermissionsFlatNode, allowed_status: ALLOWED_STATES) {
-        this.store.dispatch(new AdminPermissionsStateActions.NodeUpdateAllowedStatus(node, allowed_status)).toPromise().then((result) => {
+    public isEntityDirty = (entity: AdminPermissionsEntityTypes = null): Observable<boolean> => {
+        return this.store.select(AdminPermissionsStateSelectors.isEntityDirty(entity))
+    }
+
+    /**
+     * Cancel state pending changes
+     */
+    public cancel_update(entity: AdminPermissionsEntityTypes = null) {
+        this.store.dispatch(new AdminPermissionsStateActions.CancelChanges())
+    }
+
+
+    /**
+     * Save all state pending changes
+     */
+    public save_changes() {
+        /** get dirty roles to save */
+        const roles_to_save: AdminPermissionsEntitiesTypes = this.store.selectSnapshot(AdminPermissionsStateSelectors.getDirtyRoles)
+
+        /** Iterate on roles to save */
+        Object.values(roles_to_save).forEach((role_entity: AdminPermissionsRoleEntity) => {
 
         })
+    }
+
+    /**
+     * Update allowed status of an entity, its parents and children 
+     */
+    public node_update_allowed(node: AdminPermissionsFlatNode, allowed_status: ALLOWED_STATES) {
+        this.store.dispatch(new AdminPermissionsStateActions.NodeUpdateAllowedStatus(node, allowed_status))
+            .toPromise()
+            .then(() => {
+                /**DEBUG */
+                const dirty_entities = this.store.selectSnapshot(AdminPermissionsStateSelectors.getDirtyEntities)
+                const dirty_roles = this.store.selectSnapshot(AdminPermissionsStateSelectors.getDirtyRoles)
+            })
     }
 
     private init_lock_status(): Promise<any> {
@@ -156,19 +226,12 @@ export class AdminPermissionsSandboxService extends AdminPermissionsSandboxInter
      * Add role entity
      */
     add_role_entity(name: string) {
-        this.store.dispatch(new AdminPermissionsRolesStateActions.Add_Entity(name))
-
-        // const role_object = this.normalizer.denormalize([new_entity], this.normalizer.mainSchema, entities)
-
-        // this.rolesService.update(role_object, true)
-        //     .then((result) => {
-        //         this.store.dispatch(new AdminPermissionsRolesStateActions.Add_Entity_Success(name))
-        //     }).catch(error => {
-        //         this.store.dispatch([
-        //             new AdminPermissionsRolesStateActions.Add_Entity_Error(error),
-        //             new ApplicationActions.Application_Event_Notification(new ApplicationNotification(error, 'AddRoleError', ApplicationNotificationType.ERROR))
-        //         ])
-        //     })
+        this.store.dispatch(new AdminPermissionsRolesStateActions.Add_Entity(name)).toPromise()
+            .then(() => {
+                /** get dirty role entities */
+                const dirty_roles = this.store.selectSnapshot(AdminPermissionsStateSelectors.getDirtyRoles)
+                const dirty_entities = this.store.selectSnapshot(AdminPermissionsStateSelectors.getDirtyEntities)
+            })
     }
     /**
      * remove role entity
@@ -177,7 +240,15 @@ export class AdminPermissionsSandboxService extends AdminPermissionsSandboxInter
     /**
      * Add service entity
      */
-    add_service_entity(entity: AdminPermissionsServiceEntity) { }
+    add_service_entity(service: BackendServiceModel) {
+        const ui_selected_item: AdminPermissionsFlatNode = this.store.selectSnapshot(AdminPermissionsUIState.selected)
+        const selected_role_entity: AdminPermissionsEntityTypes = ui_selected_item !== null ? ui_selected_item.item : null
+
+        /** throw error if selected entity is not role or no selection */
+        if (selected_role_entity === null || selected_role_entity.entity_type !== ENTITY_TYPES.ROLE) throw new Error('Can not add service because current selected item is not a role entity')
+
+        this.store.dispatch(new AdminPermissionsRolesStateActions.Add_Service(selected_role_entity as AdminPermissionsRoleEntity, service))
+    }
     /**
      * remove service entity
      */

@@ -3,27 +3,27 @@ import { AclServiceActionModel } from "./acl.service.action.model";
 /**
  * Backend service definition
  */
-interface BaseAclServiceModel {
+interface BaseBackendServiceModel {
     uid?:string // UUID
     id: string;
     name: string;
     description: string;
 }
-export interface AclServiceModel extends BaseAclServiceModel {
-    crud_operations: AclServiceActionModel[]
+export interface BackendServiceModel extends BaseBackendServiceModel {
+    operations: AclServiceActionModel[]
 }
-export interface AclServiceEntity extends BaseAclServiceModel {
-    crud_operations: string[]
+export interface AclServiceEntity extends BaseBackendServiceModel {
+    operations: string[]
 }
 /**
  * list of backend services entities
  */
-export interface AclServicesEntities {
+export interface BackendServicesEntities {
     [id: string]: AclServiceEntity
 }
 
 export interface BackendServicesStateModel {
-    entities: AclServicesEntities;
+    entities: BackendServicesEntities;
     isLoading: boolean;
     isError: boolean;
     error: string;

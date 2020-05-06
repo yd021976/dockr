@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { AclTreeNode, NODE_TYPES, FlatTreeNode } from "../../../../shared/models/treenode.model";
-import { AclServiceModel } from "../../../../shared/models/acl.services.model";
+import { BackendServiceModel } from "../../../../shared/models/acl.services.model";
 import { Services_Load_All_Success, Services_Load_All } from "../../../../shared/store/actions/services.actions";
 import { AclUIActions } from '../../../../shared/store/actions/acl2/acl2.state.actions'
 import { RolesStateActions } from "../../../../shared/store/actions/acl2/acl2.role.entity.actions"
@@ -27,7 +27,7 @@ import { ApplicationActions } from "src/app/shared/store/actions/application.act
 export class AdminAclSandboxService extends AdminAclSandboxInterface {
     public acltreenodes$: Observable<AclTreeNode[]>
     public currentSelectedNode$: Observable<FlatTreeNode>
-    public availableServices$: Observable<AclServiceModel[]>
+    public availableServices$: Observable<BackendServiceModel[]>
     public isAclLocked$: Observable<boolean>
 
     constructor() {
@@ -344,7 +344,7 @@ export class AdminAclSandboxService extends AdminAclSandboxInterface {
      * 
      * @param role_node 
      */
-    public role_add_service( role_node: AclTreeNode, backendServiceModel: AclServiceModel ) {
+    public role_add_service( role_node: AclTreeNode, backendServiceModel: BackendServiceModel ) {
         // Add service entity to role
         this.store.dispatch( new RolesStateActions.Add_Service( role_node.uid, backendServiceModel ) ).toPromise()
             // Store in updated role in backend

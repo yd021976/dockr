@@ -1,5 +1,5 @@
 import { AclRoleModel } from "src/app/shared/models/acl.role.model";
-import { AclServiceModel } from "src/app/shared/models/acl.services.model";
+import { BackendServiceModel } from "src/app/shared/models/acl.services.model";
 
 export namespace RolesStateActions {
     export class Load_All {
@@ -44,11 +44,11 @@ export namespace RolesStateActions {
 
     export class Add_Service {
         static readonly type = '[acl roles] Add Service';
-        constructor( public roleUid: string, public backendServiceModel: AclServiceModel ) { }
+        constructor( public roleUid: string, public backendServiceModel: BackendServiceModel ) { }
     }
     export class Add_Service_Success {
         static readonly type = '[acl roles] Add Service success';
-        constructor( public roleUid: string, public backendServiceModel: AclServiceModel ) { }
+        constructor( public roleUid: string, public backendServiceModel: BackendServiceModel ) { }
     }
     export class Add_Service_Error {
         static readonly type = '[acl roles] Add Service error';

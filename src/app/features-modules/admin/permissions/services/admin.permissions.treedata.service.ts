@@ -19,8 +19,14 @@ export class AdminPermissionsTreedataService {
     /**
      *  How to get node children, by default return no children
      */
-    public getNodeChildren: (node: AdminPermissionsEntityTypes) => Observable<AdminPermissionsEntityTypes[]> | AdminPermissionsEntityTypes[]
+    public getNodeChildren: (entity: AdminPermissionsEntityTypes) => Observable<AdminPermissionsEntityTypes[]> | AdminPermissionsEntityTypes[]
         = (node: AdminPermissionsEntityTypes) => { return observableof([]) }
+
+    /**
+     * is an entity is dirty, by default return false
+     */
+    public isEntityDirty: (entity: AdminPermissionsEntityTypes) => Observable<boolean> | boolean
+        = (entity: AdminPermissionsEntityTypes) => { return false }
 
     /**
      * Manage mapping between Entity & Flat node
@@ -62,18 +68,19 @@ export class AdminPermissionsTreedataService {
     /**
      * Flat site zone enity to flat node
      */
-    private flatEntity(node: AdminPermissionsEntityTypes, level: number) {
-        let existingNode = this.EntityToFlatMap.get(node.uid)
+    private flatEntity(entity: AdminPermissionsEntityTypes, level: number) {
+        let existingNode = this.EntityToFlatMap.get(entity.uid)
         let flatNode = existingNode !== undefined ? existingNode : new AdminPermissionsFlatNode()
 
         // Update flat node data
-        flatNode.item = node
+        flatNode.item = entity
         flatNode.level = level
-        flatNode.expandable = this.entityHasChildren(node)
-
+        flatNode.expandable = this.entityHasChildren(entity)
+        flatNode.is_dirty = this.isEntityDirty(entity)
+        
         // Update maps
-        this.EntityToFlatMap.set(node.uid, flatNode)
-        this.flatToEntityMap.set(flatNode, node.uid)
+        this.EntityToFlatMap.set(entity.uid, flatNode)
+        this.flatToEntityMap.set(flatNode, entity.uid)
 
         // Return flattened node
         return flatNode

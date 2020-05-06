@@ -1,5 +1,5 @@
 import { ServicesModel } from "src/app/shared/models/services.model";
-import { AclServiceModel, AclServicesEntities } from "src/app/shared/models/acl.services.model";
+import { BackendServiceModel, BackendServicesEntities } from "src/app/shared/models/acl.services.model";
 import { AclRoleEntity, AclRoleEntities } from "src/app/shared/models/acl.role.model";
 
 /**
@@ -7,11 +7,11 @@ import { AclRoleEntity, AclRoleEntities } from "src/app/shared/models/acl.role.m
  * @param aclState 
  * @param serviceState 
  */
-export function role_get_available_services( role_entity: AclRoleEntity, services_entities: AclServicesEntities, serviceState: ServicesModel ): AclServiceModel[] {
+export function role_get_available_services( role_entity: AclRoleEntity, services_entities: BackendServicesEntities, serviceState: ServicesModel ): BackendServiceModel[] {
     if ( role_entity == null ) return [] //return empty array if no role provided
 
     // var currentRoleUid: string = node_get_role_entity( aclState.selectedNode, aclState ).uid
-    var availableServices: AclServiceModel[] = []
+    var availableServices: BackendServiceModel[] = []
     var roleHasServices: string
 
     availableServices = serviceState.services.filter( ( service ) => {

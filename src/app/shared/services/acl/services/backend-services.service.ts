@@ -1,27 +1,22 @@
 import * as feathers from '@feathersjs/feathers';
-import { Injectable, Inject } from "@angular/core";
+import { Injectable } from "@angular/core";
 
 import { AppError, errorType } from '../../../models/application.error.model';
-import { AppLoggerService } from '../../logger/app-logger/service/app-logger.service';
-import { AppLoggerServiceToken } from '../../logger/app-logger/app-logger-token';
-import { AclServiceModel } from 'src/app/shared/models/acl.services.model';
+import { BackendServiceModel } from 'src/app/shared/models/acl.services.model';
 
 import * as DATA from './mock.data';
 import { AclServiceActionModel, ACL_SERVICES_ACTIONS } from 'src/app/shared/models/acl.service.action.model';
-import { BackendServiceToken } from '../../backend.api.endpoint/backend.service.token';
-import { BackendBaseServiceInterface } from '../../backend.api.endpoint/interfaces/backend.base.service';
+import { BackendServicesInterface } from './backend-services.service.interface';
 
-@Injectable( { providedIn: 'root' } )
-export class BackendServicesService {
-    private readonly loggerName: string = "BackendServiceService";
+@Injectable()
+export class BackendServicesService extends BackendServicesInterface {
     protected service: feathers.Service<any>;
 
-    constructor( @Inject(BackendServiceToken) protected backendApiService: BackendBaseServiceInterface, @Inject( AppLoggerServiceToken ) public loggerService: AppLoggerService ) {
-        this.loggerService.createLogger( this.loggerName );
-        this.service = this.backendApiService.service( 'service-model' );
+    constructor() {
+        super()
     }
 
-    public async find( params?: any ): Promise<AclServiceModel[]> {
+    public async find(params?: any): Promise<BackendServiceModel[]> {
         /**
          * DEBUG ONLY
          */
@@ -31,23 +26,32 @@ export class BackendServicesService {
 
 
         // Ensure a valid JWT exist before request
-        return this.service.find( params )
-            .then( services => {
-                return this.formatBackendServiceModel( services )
-            } )
-            .catch( ( error ) => {
-                throw new AppError( error.message, errorType.backendError, error )
-            } );
+        return this.service.find(params)
+            .then(services => {
+                return this.formatBackendServiceModel(services)
+            })
+            .catch((error) => {
+                throw new AppError(error.message, errorType.backendError, error)
+            });
     }
-    private formatBackendServiceModel( services: any[] ): AclServiceModel[] {
-        var formatedServices: AclServiceModel[] = []
-        var serviceObject: AclServiceModel, actions: AclServiceActionModel[], actionObject: AclServiceActionModel, actionType: ACL_SERVICES_ACTIONS, service_fields
 
-        Object.values( services ).forEach( service => {
+    public create(id, param?) { }
+    public delete(id, param?) { }
+    public get(id, params?): Promise<any> { 
+        return Promise.resolve()
+    }
+    public patch(id, param?) { }
+    public update(id, param?) { }
+
+    protected formatBackendServiceModel(services: any[]): BackendServiceModel[] {
+        var formatedServices: BackendServiceModel[] = []
+        var serviceObject: BackendServiceModel, actions: AclServiceActionModel[], actionObject: AclServiceActionModel, actionType: ACL_SERVICES_ACTIONS, service_fields
+
+        Object.values(services).forEach(service => {
             // Build actions
             actions = []
-            Object.keys( service.schema.actions || [] ).forEach( action_id => {
-                switch ( action_id ) {
+            Object.keys(service.schema.actions || []).forEach(action_id => {
+                switch (action_id) {
                     case "read":
                         actionType = ACL_SERVICES_ACTIONS.READ
                         break
@@ -61,25 +65,25 @@ export class BackendServicesService {
                         actionType = ACL_SERVICES_ACTIONS.UPDATE
                         break
                     default:
-                        this.loggerService.warn( this.loggerName, { message: "Action '" + action_id + "' is not a valid action type", otherParams: [ service ] } )
+                        this.loggerService.warn(this.loggerName, { message: "Action '" + action_id + "' is not a valid action type", otherParams: [service] })
                 }
-                // Do a copy of field definition (do not use Object.asscign() as it shallow copy objects...)
+                // Do a copy of field definition (do not use Object.assign() as it shallow copy objects...)
                 // NOTE: In some cases, fields definition should be empty object if service do not require check at field level
-                service_fields = JSON.parse( JSON.stringify( service.schema.fields_definition || {} ) )
+                service_fields = JSON.parse(JSON.stringify(service.schema.fields_definition || {}))
                 actionObject = {
                     id: actionType,
-                    fields: service.schema.actions[ action_id ].checkFieldAccess === true ? service_fields || {} : {}
+                    fields: service.schema.actions[action_id].checkFieldAccess === true ? service_fields || {} : {}
                 }
-                actions.push( actionObject )
-            } )
+                actions.push(actionObject)
+            })
             serviceObject = {
                 id: service.id,
                 name: service.name,
-                crud_operations: actions,
+                operations: actions,
                 description: service.description
             }
-            formatedServices.push( serviceObject )
-        } )
+            formatedServices.push(serviceObject)
+        })
         return formatedServices
     }
 }

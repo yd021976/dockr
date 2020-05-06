@@ -40,10 +40,15 @@ import { AdminPermissionsTreedataService } from './permissions/services/admin.pe
 import { AdminPermissionsTreeviewNodeRenderer } from './permissions/components/treeview/node.renderer/treenode.renderer.component';
 import { AdminPermissionsTreeviewActionsComponent } from './permissions/components/treeview/actions/admin.permissions.treeview.actions.component';
 import { AdminPermissionsAddRoleDialogComponent } from './permissions/components/dialogs/add.role/add.role.dialog.component';
+import { AdminPermissionsEntityDataService } from './permissions/store/entity.management/entity.utilities/internals/admin.permissions.entity.data.service';
+import { backendservicesServiceToken } from 'src/app/shared/services/acl/services/backen-services.service.token';
+import { BackendServicesService } from 'src/app/shared/services/acl/services/backend-services.service';
+import { AdminPermissionsAddServiceDialogComponent } from './permissions/components/dialogs/add.service/add.service.dialog.component';
 
 const components = [
   /** Permissions : Role based data permissions */
-  AdminPermissionsContainer, AdminPermissionsTreeviewComponent, AdminPermissionsTreeviewNodeRenderer, AdminPermissionsTreeviewActionsComponent, AdminPermissionsAddRoleDialogComponent,
+  AdminPermissionsContainer, AdminPermissionsTreeviewComponent, AdminPermissionsTreeviewNodeRenderer, AdminPermissionsTreeviewActionsComponent, 
+  AdminPermissionsAddRoleDialogComponent, AdminPermissionsAddServiceDialogComponent,
   /** User admin */
   UsersContainer, UsersComponent, RolesListComponent, UsersListComponent, UserDetailsComponent, UsersActionsComponent,
   /** Users admin */
@@ -69,17 +74,24 @@ const components = [
     ComponentsModule
   ],
   declarations: components,
-  entryComponents: [AuthUsersAddUserDialog, AdminPermissionsAddRoleDialogComponent],
+  entryComponents: [AuthUsersAddUserDialog, AdminPermissionsAddRoleDialogComponent, AdminPermissionsAddServiceDialogComponent],
   providers: [
-    /**
-     * Container Sandboxes providers
-     */
+    /** Module services depedencies */
     {
       provide: siteZonesServiceToken,
       useClass: SiteZonesService,
       multi: false,
       deps: [AppInjectorToken]
     },
+    {
+      provide: backendservicesServiceToken,
+      useClass: BackendServicesService,
+      multi: false,
+      deps: [AppInjectorToken]
+    },
+    /**
+     * Containers Sandboxes providers
+     */
     {
       provide: AdminUsersSandboxProviderToken,
       multi: false,
@@ -100,6 +112,8 @@ const components = [
      */
     AdminPermissionsTreedataService,
     ResourcesLocksService,
+    /** state services */
+    AdminPermissionsEntityDataService
   ]
 })
 export class AdminModule { }
