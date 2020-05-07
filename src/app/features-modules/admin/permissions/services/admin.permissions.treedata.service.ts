@@ -77,7 +77,7 @@ export class AdminPermissionsTreedataService {
         flatNode.level = level
         flatNode.expandable = this.entityHasChildren(entity)
         flatNode.is_dirty = this.isEntityDirty(entity)
-        
+
         // Update maps
         this.EntityToFlatMap.set(entity.uid, flatNode)
         this.flatToEntityMap.set(flatNode, entity.uid)
@@ -139,8 +139,7 @@ export class AdminPermissionsTreedataService {
      *  
      * @param node 
      */
-    public isExpandable(node: AdminPermissionsFlatNode) {
-        //TODO compute if node is expandable instead of always returning <true>
-        return true
+    public isExpandable = (node: AdminPermissionsFlatNode) => {
+        return this.entityHasChildren(node)
     }
 }

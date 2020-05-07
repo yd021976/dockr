@@ -144,7 +144,9 @@ export class AdminPermissionsContainer implements OnInit, OnDestroy {
     /**
      * 
      */
-    private remove_role_entity(node: AdminPermissionsFlatNode) { }
+    private remove_role_entity(node: AdminPermissionsFlatNode) {
+        this.sandbox.remove_role_entity(node)
+    }
 
     /**
      * 
@@ -164,12 +166,12 @@ export class AdminPermissionsContainer implements OnInit, OnDestroy {
                 this.dialog_add_service = null
             })
         }
-     }
+    }
 
     /**
      * 
      */
     private remove_service_entity(node: AdminPermissionsFlatNode) {
-       
+
     }
 }

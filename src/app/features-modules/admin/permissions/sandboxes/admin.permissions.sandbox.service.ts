@@ -236,7 +236,9 @@ export class AdminPermissionsSandboxService extends AdminPermissionsSandboxInter
     /**
      * remove role entity
      */
-    remove_role_entity(node: AdminPermissionsFlatNode) { }
+    remove_role_entity(node: AdminPermissionsFlatNode) {
+        this.store.dispatch(new AdminPermissionsRolesStateActions.Remove_Entity(node.item.uid))
+    }
     /**
      * Add service entity
      */

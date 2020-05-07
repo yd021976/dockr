@@ -130,13 +130,18 @@ export class AdminPermissionsStateEntities {
     operations: AdminPermissionsOperationEntities
     fields: AdminPermissionsFieldEntities
 }
+export interface AdminPermissionsStateDirtyEntities {
+    added : AdminPermissionsEntitiesTypes
+    removed: AdminPermissionsEntitiesTypes
+    updated : AdminPermissionsEntitiesTypes
+}
 /**
  * State model for State
  */
 export class AdminPermissionsStateModel {
     entities: AdminPermissionsStateEntities
     previous_entities: AdminPermissionsStateEntities  // Backup entities before update : Usefull to revert entities when error occured
-    dirty_entities: AdminPermissionsEntitiesTypes /** Dirty entities collection that have been updated and required backend updates */
+    dirty_entities: AdminPermissionsStateDirtyEntities /** Dirty entities collection that have been updated and required backend updates */
 }
 
 

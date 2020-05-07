@@ -3,7 +3,10 @@ import { factory } from "./admin.permissions.entity.factory"
 import { Inject } from "@angular/core"
 import { AdminPermissionsEntityDataService } from "./admin.permissions.entity.data.service"
 
-
+/**
+ * 
+ * IMPORTANT Do not update directly the entity/dirty data in the service <AdminPermissionsEntityDataService> here
+ */
 export class AdminPermissionEntityManagement {
     constructor(@Inject(AdminPermissionsEntityDataService) protected entity_data_service) {
     }
@@ -50,11 +53,6 @@ export class AdminPermissionEntityManagement {
         return siblings === undefined ? [] : siblings
     }
 
-
-    /**
-     * 
-     */
-    addChildren() { }
 
     /**
      * Entity factory

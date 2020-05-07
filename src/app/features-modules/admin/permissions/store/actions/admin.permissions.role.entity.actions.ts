@@ -20,42 +20,14 @@ export namespace AdminPermissionsRolesStateActions {
         static readonly type = '[admin permissions] add role entity';
         constructor(public entity_name: string, public entity_uid: string = null) { }
     }
-    export class Add_Entity_Success {
-        static readonly type = '[admin permissions] add role entity success';
-        constructor(public entity_uid: string, public entity_name: string) { }
-
-    }
-    export class Add_Entity_Error {
-        static readonly type = '[admin permissions] add role entity error';
-        constructor(
-            public error: string,
-            public entity_uid: string /** entity uid to remove */
-        ) { }
-    }
+  
     export class Remove_Entity {
         static readonly type = '[admin permissions] remove role entity';
-        constructor(public entity_uid: string) { }
+        constructor(public role_entity_uid: string) { }
     }
-    export class Remove_Entity_Success {
-        static readonly type = '[admin permissions] remove role entity success';
-        constructor(public roleUid: string) { }
-
-    }
-    export class Remove_Entity_Error {
-        static readonly type = '[admin permissions] remove role entity error';
-        constructor(public error: string) { }
-    }
-
+  
     export class Add_Service {
         static readonly type = '[admin permissions] Add Service';
-        constructor(public role_entity: AdminPermissionsRoleEntity, public service: BackendServiceModel) { }
+        constructor(public role_entity: AdminPermissionsRoleEntity, public service_to_add: BackendServiceModel) { }
     }
-    // export class Add_Service_Success {
-    //     static readonly type = '[admin permissions role state| Add Service success';
-    //     constructor( public roleUid: string, public backendServiceModel: AclServiceModel ) { }
-    // }
-    // export class Add_Service_Error {
-    //     static readonly type = '[admin permissions role state| Add Service error';
-    //     constructor( public error: string ) { }
-    // }
 }

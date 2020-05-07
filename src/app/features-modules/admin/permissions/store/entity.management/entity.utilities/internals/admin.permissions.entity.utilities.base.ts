@@ -5,6 +5,7 @@ import { AdminPermissionsEntityDataService } from "./admin.permissions.entity.da
 
 /**
  * Utility class for admin permissions entities 
+ * IMPORTANT Do not update directly the entity/dirty data in the service <AdminPermissionsEntityDataService> here
  */
 export class AdminPermissionsBaseEntityUtility {
     protected utilities: AdminPermissionEntityManagement
@@ -14,10 +15,6 @@ export class AdminPermissionsBaseEntityUtility {
         this.utilities = new AdminPermissionEntityManagement(this.entity_data_service)
     }
 
-    /** reset dirty entities */
-    public resetDirty() {
-        this.entity_data_service.reset_dirty_entities()
-    }
 
     createEntity(rawdata: AdminPermissionsEntityRawData, parent: AdminPermissionsEntityRawData = null, type: ENTITY_TYPES = null): AdminPermissionsEntityTypes {
         return this.utilities.createEntity(rawdata, parent, type)
@@ -32,6 +29,4 @@ export class AdminPermissionsBaseEntityUtility {
     getSiblings(entity: AdminPermissionsEntityTypes) {
         return this.utilities.getSiblings(entity)
     }
-    removeEntity(entity: AdminPermissionsEntityTypes) { }
-    addEntity(entity: AdminPermissionsEntityTypes) { }
 }

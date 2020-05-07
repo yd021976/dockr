@@ -5,7 +5,7 @@
 
 <!-- Render the node contents-->
 <div [fxFlex]="node_column_model.column_size" fxFlexFill class="column node" (click)="selectNode(node)"
-  [class.selected]="is_selected">
+  [class.selected]="selected_node===node">
   <div fxFlex fxFlexAlign="center" class="tree_container_cell"
     [style.padding-left]="node_column_model.node_padding_left+'px'">
     <button mat-icon-button [disabled]="!node.expandable" (click)="nodeExpandToggle()" matTreeNodeToggle>

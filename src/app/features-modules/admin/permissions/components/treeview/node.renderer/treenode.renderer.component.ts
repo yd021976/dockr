@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, TemplateRef, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, TemplateRef, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, DoCheck } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { AdminPermissionsFlatNode, TreeViewColumnModel, NodeTreeviewColumnModel } from '../../../store/models/admin.permissions.model';
 import { MatCheckboxChange } from '@angular/material/checkbox';
@@ -10,11 +10,10 @@ import { ALLOWED_STATES } from 'src/app/shared/models/acl.service.action.model';
   styleUrls: ['./treenode.renderer.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class AdminPermissionsTreeviewNodeRenderer implements OnInit, OnChanges {
+export class AdminPermissionsTreeviewNodeRenderer implements OnInit, OnChanges, DoCheck {
   @Input('node') public node: AdminPermissionsFlatNode
   @Input('disabled') public disabled: boolean
   @Input('selected-node') public selected_node: AdminPermissionsFlatNode = null
-  @Input('node-type-renderer') public node_type_renderer: TemplateRef<any>
   @Input('column-model') public column_model: TreeViewColumnModel[]
   @Input('tree-control') public treecontrol: FlatTreeControl<AdminPermissionsFlatNode>
   @Output('on-node-selected') public on_node_selected: EventEmitter<AdminPermissionsFlatNode> = new EventEmitter<AdminPermissionsFlatNode>()
@@ -22,7 +21,6 @@ export class AdminPermissionsTreeviewNodeRenderer implements OnInit, OnChanges {
 
   public allowed_states = ALLOWED_STATES
   public is_expanded: boolean = false
-  public is_selected: boolean // is this node is the selected node ?
   public buttonFontIcon: string // icon to display for states : expanded/collapsed or not expandable (spacer)
   public node_column_model: NodeTreeviewColumnModel
 
@@ -36,11 +34,16 @@ export class AdminPermissionsTreeviewNodeRenderer implements OnInit, OnChanges {
     // Check required input parameters
     this.checkInputParameters()
     this.is_expanded = this.treecontrol.isExpanded(this.node)
-    this.isNodeSelected()
     this.setNodeIcon()
     this.compute_column_model()
   }
 
+  /**
+   * Set node expanded icon on changes
+   */
+  ngDoCheck() {
+    this.setNodeIcon()
+  }
   /**
    * Tree node checkbox change status
    * @param status 
@@ -74,29 +77,9 @@ export class AdminPermissionsTreeviewNodeRenderer implements OnInit, OnChanges {
     // Check required input parameters  
     this.checkInputParameters()
 
-    if (changes['selected_node']) {
-      this.isNodeSelected()
-    }
-    
-    
-    if (changes['node']) {
-      this.isNodeSelected()
-      this.setNodeIcon()
-      this.compute_column_model()
-    }
-    if (changes['expandable'] || changes['expanded']) {
-      this.setNodeIcon()
-    }
     if (changes['column_model']) {
       this.compute_column_model()
     }
-  }
-
-  /**
-   * 
-   */
-  private isNodeSelected(): void {
-    this.is_selected = this.selected_node == this.node ? true : false
   }
 
   /**

@@ -12,7 +12,7 @@ import {
 } from "../../../models/admin.permissions.model"
 import { cloneDeep } from 'lodash';
 import { v4 as uuid } from 'uuid';
-import {} from 'normalizr'
+import { } from 'normalizr'
 
 /**
  * Factory to create entities, also used for normalize data
@@ -27,7 +27,7 @@ export function factory(rawdata: AdminPermissionsEntityRawData, parent: AdminPer
     let entity: AdminPermissionsEntityTypes = null
 
     /** special case : 'this' refers to EntitySchema when called from normalizer. Use it to define entity type creation */
-    if (this !== undefined && this.constructor.name==='EntitySchema') {
+    if (this !== undefined && this.constructor.name === 'EntitySchema') {
         if (type === null) type = this.key
     }
     /** function to compute entity parent UID */
@@ -49,7 +49,7 @@ export function factory(rawdata: AdminPermissionsEntityRawData, parent: AdminPer
                 allowed = null
                 break
             default:
-                allowed = entity_raw_data.allowed
+                allowed = entity_raw_data.allowed ? entity_raw_data.allowed : ALLOWED_STATES.FORBIDDEN
                 break
         }
         return allowed

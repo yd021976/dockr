@@ -18,7 +18,11 @@ const default_state: AdminPermissionsStateModel = {
         operations: {},
         fields: {}
     },
-    dirty_entities: {},
+    dirty_entities: {
+        added: {},
+        removed: {},
+        updated: {}
+    },
     previous_entities: null
 }
 
@@ -32,13 +36,7 @@ export class AdminPermissionsEntitiesState extends EntityUtilitiesService {
     constructor(@Inject(AdminPermissionsEntityDataService) entity_data_service) {
         super(entity_data_service)
     }
-    /**
-     * Return a deep copy of current state entities
-     * @param ctx 
-     */
-    get_cloned_entities(ctx: StateContext<AdminPermissionsStateModel>): AdminPermissionsStateEntities {
-        return _.cloneDeep(ctx.getState().entities)
-    }
+
     /*******************************************************************************************************************************************************************
      *                                                              Load entities
      *******************************************************************************************************************************************************************/
@@ -108,20 +106,20 @@ export class AdminPermissionsEntitiesState extends EntityUtilitiesService {
      */
     @Action(AdminPermissionsStateActions.NodeUpdateAllowedStatus)
     admin_permissions_node_update_allowed(ctx: StateContext<AdminPermissionsStateModel>, action: AdminPermissionsStateActions.NodeUpdateAllowedStatus) {
-        /** Create a copy of current state entities and will also reset class instance dirty entities*/
-        this.entity_data_service.entities = this.get_cloned_entities(ctx)
+        /** Init entity service */
+        this.init_entity_data_service(ctx)
 
         /** Update allowed value of entities, entity's children and entity's parents */
-        const dirty_entities: AdminPermissionsEntitiesTypes = this.update_allowed_property(action.node.item, action.allowed_status)
+        this.update_allowed_property(action.node.item, action.allowed_status)
 
         /** merge new dirty role entities with current state ones */
-        const merged_dirty_entities = _.merge(dirty_entities, ctx.getState().dirty_entities)
+        const merged_dirty_entities = _.merge(ctx.getState().dirty_entities, this.entity_data_service.dirty_entities)
 
         /** update state */
         ctx.setState(
             patch({
                 entities: patch({ ...this.entity_data_service.entities }),
-                dirty_entities: patch<AdminPermissionsEntitiesTypes>({ ...merged_dirty_entities }) /** those entities should be saved */
+                dirty_entities: patch({ ...merged_dirty_entities }),
             })
         )
 
@@ -131,57 +129,53 @@ export class AdminPermissionsEntitiesState extends EntityUtilitiesService {
 
     @Action(AdminPermissionsRolesStateActions.Add_Entity)
     admin_permissions_role_add_entity(ctx: StateContext<AdminPermissionsStateModel>, action: AdminPermissionsRolesStateActions.Add_Entity) {
-        this.entity_data_service.entities = this.get_cloned_entities(ctx) /** ensure we get a fresh copy of state entities to work on */
+        this.init_entity_data_service(ctx)
 
         /** create role entity */
         const role_entity: AdminPermissionsEntityTypes = this.createEntity({ name: action.entity_name, id: action.entity_name }, null, ENTITY_TYPES.ROLE)
-        const merged_dirty_entities = _.merge({ [role_entity.uid]: role_entity }, ctx.getState().dirty_entities)
-        const previous_entities = _.cloneDeep(ctx.getState().entities) /** backup entities state to revert on error */
+        const dirty_entities = _.merge(ctx.getState().dirty_entities, this.entity_data_service.dirty_entities)
 
         ctx.setState(
-            patch(
-                {
-                    entities: patch({ roles: patch({ [role_entity.uid]: role_entity }), root_results: append([role_entity.uid]) }),
-                    dirty_entities: patch<AdminPermissionsEntitiesTypes>({ ...merged_dirty_entities }),
-                    previous_entities: previous_entities
-                }
-            ))
+            patch({
+                entities: patch({ roles: patch({ [role_entity.uid]: role_entity }), root_results: append([role_entity.uid]) }),
+                dirty_entities: patch({ ...dirty_entities })
+            }))
+    }
+    @Action(AdminPermissionsRolesStateActions.Remove_Entity)
+    admin_permissions_role_remove_entity(ctx: StateContext<AdminPermissionsStateModel>, action: AdminPermissionsRolesStateActions.Remove_Entity) {
+        this.init_entity_data_service(ctx)
+        /** as we are removing entity and children, we must sets dirties data to entity service so we should remove unsaved pending dirtiy entities */
+        const dirties = _.cloneDeep(ctx.getState().dirty_entities)
+        this.entity_data_service.dirty_entities = dirties
+
+        /** remove role entity */
+        this.role_remove_entity(action.role_entity_uid)
+
+        /** update state */
+        ctx.setState(
+            patch({
+                entities: patch({ ...this.entity_data_service.entities }),
+                dirty_entities : patch({...this.entity_data_service.dirty_entities})
+            })
+        )
     }
 
     @Action(AdminPermissionsRolesStateActions.Add_Service)
     admin_permissions_role_add_service(ctx: StateContext<AdminPermissionsStateModel>, action: AdminPermissionsRolesStateActions.Add_Service) {
-        /** init entitites data service */
-        this.entity_data_service.reset_dirty_entities()
-        this.entity_data_service.entities = this.get_cloned_entities(ctx)
-        const previous_entities = _.cloneDeep(ctx.getState().entities) /** backup entities state to revert on error */
-
-        this.role_add_service(action.role_entity, action.service)
-        const dirty_entities = _.merge(this.entity_data_service.dirty_entities, ctx.getState().dirty_entities)
+        this.init_entity_data_service(ctx)
+        this.role_add_service(action.role_entity, action.service_to_add)
+        const dirty_entities = _.merge(ctx.getState().dirty_entities, this.entity_data_service.dirty_entities)
 
         /** Update state */
-        ctx.patchState({
-            entities: { ...this.entity_data_service.entities },
-            dirty_entities: { ...dirty_entities },
-            previous_entities: previous_entities
-        })
-    }
-    @Action(AdminPermissionsRolesStateActions.Add_Entity_Success)
-    admin_permissions_role_add_entity_success(ctx: StateContext<AdminPermissionsStateModel>, action: AdminPermissionsRolesStateActions.Add_Entity_Success) {
-        /**TODO set state isloading to false */
-    }
-
-
-    @Action(AdminPermissionsRolesStateActions.Add_Entity_Error)
-    admin_permissions_role_add_entity_error(ctx: StateContext<AdminPermissionsStateModel>, action: AdminPermissionsRolesStateActions.Add_Entity_Error) {
-        const previous_entities = _.cloneDeep(ctx.getState().previous_entities)
-
         ctx.setState(
             patch({
-                entities:
-                    patch({ ...previous_entities }),
-                previous_entities: null
-            })
-        )
+                entities: patch({ ...this.entity_data_service.entities }),
+                dirty_entities:
+                    patch({ ...dirty_entities })
+            }))
+
+        /**DEBUG */
+        const state = ctx.getState()
     }
 
     /**
@@ -194,7 +188,11 @@ export class AdminPermissionsEntitiesState extends EntityUtilitiesService {
 
         ctx.patchState({
             entities: { ...previous_entities },
-            dirty_entities: {}
+            dirty_entities: {
+                added: {},
+                removed: {},
+                updated: {},
+            },
         })
     }
 
@@ -203,9 +201,24 @@ export class AdminPermissionsEntitiesState extends EntityUtilitiesService {
      */
     @Action(AdminPermissionsStateActions.RoleSaved)
     admin_permissions_role_saved(ctx: StateContext<AdminPermissionsStateModel>, action: AdminPermissionsStateActions.RoleSaved) {
-        /** get role dirty children entities to update */
 
-        /** */
     }
 
+    /**
+     * Init entity data service : reset dirties state et set a freshest entities working space from current state 
+     * @param ctx 
+     * @param reset_dirties True(Default) if dirties must be resetted
+     */
+    private init_entity_data_service(ctx: StateContext<AdminPermissionsStateModel>, reset_dirties: boolean = true) {
+        const entities = this.get_cloned_entities(ctx) /** get cloned entities from current state */
+        if (this.resetDirty) this.resetDirty()
+        this.entity_data_service.entities = entities
+    }
+    /**
+     * Return a deep copy of current state entities
+     * @param ctx 
+     */
+    private get_cloned_entities(ctx: StateContext<AdminPermissionsStateModel>): AdminPermissionsStateEntities {
+        return _.cloneDeep(ctx.getState().entities)
+    }
 }

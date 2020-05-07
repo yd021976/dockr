@@ -1,7 +1,7 @@
 import { Selector, createSelector } from '@ngxs/store';
 import { AdminPermissionsEntitiesState } from '../state/entities/admin.permissions.entities.state';
-import { AdminPermissionsStateModel, AdminPermissionsEntitiesTypes, AdminPermissionsEntityTypes, AdminPermissionsStateEntities, AdminPermissionsRoleEntity, ENTITY_TYPES } from '../models/admin.permissions.model';
-import { AdminPermissionsNormalizrSchemas } from '../entity.management/entity.utilities/internals/normalizer';
+import { AdminPermissionsStateModel, AdminPermissionsEntitiesTypes, AdminPermissionsEntityTypes, AdminPermissionsStateEntities, ENTITY_TYPES } from '../models/admin.permissions.model';
+import {merge} from 'lodash';
 
 export class AdminPermissionsStateSelectors {
 
@@ -50,19 +50,20 @@ export class AdminPermissionsStateSelectors {
     /**
      * Is state dirty
      */
-    @Selector([AdminPermissionsEntitiesState])
-    public static isDirty(state: AdminPermissionsStateModel): boolean {
-        const dirty = Object.keys(state.dirty_entities).length 
-        return  dirty !== 0
+    @Selector([AdminPermissionsStateSelectors.getDirtyEntities])
+    public static isDirty(state: AdminPermissionsStateModel, dirties): boolean {
+        const dirty = Object.keys(dirties).length
+        return dirty !== 0
     }
 
     /**
      * is an entity is dirty 
      */
     public static isEntityDirty(entity: AdminPermissionsEntityTypes) {
-        return createSelector([AdminPermissionsEntitiesState], (state: AdminPermissionsStateModel): boolean => {
+        return createSelector([AdminPermissionsStateSelectors.getDirtyEntities], (dirties:AdminPermissionsEntityTypes): boolean => {
+            
             let isDirty: boolean = false
-            if (state.dirty_entities[entity.uid]) isDirty = true
+            if (dirties[entity.uid]) isDirty = true
             return isDirty
         })
     }
@@ -72,7 +73,8 @@ export class AdminPermissionsStateSelectors {
     */
     @Selector([AdminPermissionsEntitiesState])
     public static getDirtyEntities(state: AdminPermissionsStateModel): AdminPermissionsEntitiesTypes {
-        return state.dirty_entities
+        const dirties = merge({},{...state.dirty_entities.added}, {...state.dirty_entities.removed}, {...state.dirty_entities.updated})
+        return dirties
     }
 
     /**

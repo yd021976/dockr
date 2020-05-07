@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AdminPermissionsStateEntities, AdminPermissionsEntitiesTypes } from "../../../models/admin.permissions.model";
+import { AdminPermissionsStateEntities, AdminPermissionsEntitiesTypes, AdminPermissionsStateDirtyEntities } from "../../../models/admin.permissions.model";
 
 @Injectable()
 export class AdminPermissionsEntityDataService {
@@ -7,12 +7,16 @@ export class AdminPermissionsEntityDataService {
     protected _entities: AdminPermissionsStateEntities
 
     /** Dirty entities that has been updated/removed/created */
-    protected _dirty_entities: AdminPermissionsEntitiesTypes = {}
+    protected _dirty_entities: AdminPermissionsStateDirtyEntities = {
+        added: {},
+        removed: {},
+        updated: {}
+    }
 
     set entities(entities) {
         this._entities = entities
         /** Reset dirty entities */
-        this._dirty_entities = {}
+        this.reset_dirty_entities()
     }
     get entities(): AdminPermissionsStateEntities {
         return this._entities
@@ -26,7 +30,11 @@ export class AdminPermissionsEntityDataService {
     }
 
     public reset_dirty_entities() {
-        this._dirty_entities = {}
+        this._dirty_entities = {
+            added: {},
+            removed: {},
+            updated: {}
+        }
     }
 
 }
