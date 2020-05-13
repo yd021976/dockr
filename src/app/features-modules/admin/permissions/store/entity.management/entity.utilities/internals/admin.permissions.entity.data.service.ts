@@ -15,8 +15,6 @@ export class AdminPermissionsEntityDataService {
 
     set entities(entities) {
         this._entities = entities
-        /** Reset dirty entities */
-        this.reset_dirty_entities()
     }
     get entities(): AdminPermissionsStateEntities {
         return this._entities

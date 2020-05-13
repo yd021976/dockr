@@ -11,6 +11,6 @@ export namespace AdminPermissionsStateActions {
     }
     export class RoleSaved {
         static readonly type = '[admin permissions] dirty role saved'
-        constructor(public entity: AdminPermissionsRoleEntity) { }
+        constructor(public entity_uid: string) { }
     }
 }

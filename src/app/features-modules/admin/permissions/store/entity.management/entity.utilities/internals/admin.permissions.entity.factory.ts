@@ -57,8 +57,7 @@ export function factory(rawdata: AdminPermissionsEntityRawData, parent: AdminPer
     const compute_id = (entity_raw_data: AdminPermissionsEntityRawData) => {
         let id: string = null
         if (entity_raw_data['_id']) id = entity_raw_data['_id']
-        if (entity_raw_data['id']) id = entity_raw_data['id']
-        if (id === null) id = entity_raw_data['name']
+        if (id === null) id = entity_raw_data['id'] /**FIXME This case should never appears since _id is a required property in NeDB database */
         return id
     }
 
@@ -117,8 +116,8 @@ export function factory(rawdata: AdminPermissionsEntityRawData, parent: AdminPer
      */
     if (entity) {
         entity.uid = compute_uuid(rawdata)
-        entity.id = compute_id(rawdata)
-        entity.name = rawdata['name']
+        entity._id = compute_id(rawdata)
+        entity.name = rawdata['name'] ? rawdata['name'] : entity._id
         entity.parent_entity_meta = parent_meta
         entity.children_entities_meta = children_meta
         entity.storage_key = type === null ? ENTITY_TYPES.ROLE : type

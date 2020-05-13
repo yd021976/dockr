@@ -1,7 +1,7 @@
 import { Selector, createSelector } from '@ngxs/store';
 import { AdminPermissionsEntitiesState } from '../state/entities/admin.permissions.entities.state';
-import { AdminPermissionsStateModel, AdminPermissionsEntitiesTypes, AdminPermissionsEntityTypes, AdminPermissionsStateEntities, ENTITY_TYPES } from '../models/admin.permissions.model';
-import {merge} from 'lodash';
+import { AdminPermissionsStateModel, AdminPermissionsEntitiesTypes, AdminPermissionsEntityTypes, AdminPermissionsStateEntities, ENTITY_TYPES, AdminPermissionsStateDirtyEntities, EntityChildren } from '../models/admin.permissions.model';
+import { merge } from 'lodash';
 
 export class AdminPermissionsStateSelectors {
 
@@ -51,7 +51,7 @@ export class AdminPermissionsStateSelectors {
      * Is state dirty
      */
     @Selector([AdminPermissionsStateSelectors.getDirtyEntities])
-    public static isDirty(state: AdminPermissionsStateModel, dirties): boolean {
+    public static isDirty(dirties: AdminPermissionsEntitiesTypes): boolean {
         const dirty = Object.keys(dirties).length
         return dirty !== 0
     }
@@ -60,8 +60,8 @@ export class AdminPermissionsStateSelectors {
      * is an entity is dirty 
      */
     public static isEntityDirty(entity: AdminPermissionsEntityTypes) {
-        return createSelector([AdminPermissionsStateSelectors.getDirtyEntities], (dirties:AdminPermissionsEntityTypes): boolean => {
-            
+        return createSelector([AdminPermissionsStateSelectors.getDirtyEntities], (dirties: AdminPermissionsEntityTypes): boolean => {
+
             let isDirty: boolean = false
             if (dirties[entity.uid]) isDirty = true
             return isDirty
@@ -73,7 +73,7 @@ export class AdminPermissionsStateSelectors {
     */
     @Selector([AdminPermissionsEntitiesState])
     public static getDirtyEntities(state: AdminPermissionsStateModel): AdminPermissionsEntitiesTypes {
-        const dirties = merge({},{...state.dirty_entities.added}, {...state.dirty_entities.removed}, {...state.dirty_entities.updated})
+        const dirties = merge({}, { ...state.dirty_entities.added }, { ...state.dirty_entities.removed }, { ...state.dirty_entities.updated })
         return dirties
     }
 
@@ -81,40 +81,54 @@ export class AdminPermissionsStateSelectors {
      * Get dirty Role entities
      */
     @Selector([AdminPermissionsEntitiesState])
-    public static getDirtyRoles(state: AdminPermissionsStateModel): AdminPermissionsEntitiesTypes {
-        const getParent = (entity: AdminPermissionsEntityTypes, state: AdminPermissionsStateModel): AdminPermissionsEntityTypes => {
-            /** if entity has no parent, return null */
-            if (entity.parent_entity_meta.type === null) return null
-            return state.entities[entity.parent_entity_meta.storage_key][entity.parent_entity_meta.uid]
+    public static getDirtyRoles(state: AdminPermissionsStateModel): AdminPermissionsStateDirtyEntities {
+        let dirty_entities: AdminPermissionsStateDirtyEntities = {
+            added: {}, removed: {}, updated: {}
         }
 
-        let dirty_roles: AdminPermissionsEntitiesTypes = {}
-
-        Object.values(state.dirty_entities).forEach((entity: AdminPermissionsEntityTypes) => {
-            if (entity.entity_type === ENTITY_TYPES.ROLE) {
-                dirty_roles[entity.uid] = entity
-            } else {
-                /** get role for entity */
-                let parent = getParent(entity, state)
-                while (parent !== null) {
-                    if (parent.entity_type === ENTITY_TYPES.ROLE) {
-                        if (!dirty_roles[parent.uid]) {
-                            dirty_roles[parent.uid] = parent
-                        }
+        Object.assign(dirty_entities, {
+            "added": Object.assign({}, ...Object.values(state.dirty_entities.added)
+                .filter((added_entity: AdminPermissionsEntityTypes) => {
+                    if (added_entity.entity_type === ENTITY_TYPES.ROLE) {
+                        return added_entity
                     }
-                    parent = getParent(parent, state)
-                }
-            }
+                })
+                .map(entity => { return { [entity.uid]: entity } })
+            ),
+
+            "updated": Object.assign({}, ...Object.values(state.dirty_entities.updated)
+                .filter((updated_entity: AdminPermissionsEntityTypes) => {
+                    if (updated_entity.entity_type === ENTITY_TYPES.ROLE) {
+                        return updated_entity
+                    }
+                })
+                .map(entity => { return { [entity.uid]: entity } })
+            ),
+
+            "removed": Object.assign({}, ...Object.values(state.dirty_entities.removed)
+                .filter((removed_entity: AdminPermissionsEntityTypes) => {
+                    if (removed_entity.entity_type === ENTITY_TYPES.ROLE) {
+                        return removed_entity
+                    }
+                })
+                .map(entity => { return { [entity.uid]: entity } })
+            ),
         })
-        return dirty_roles
+        return dirty_entities
     }
 
+    public static getNormalizedRole(role_uids: EntityChildren) {
+        return createSelector([AdminPermissionsEntitiesState], (state: AdminPermissionsStateModel): AdminPermissionsEntitiesTypes => {
+            const denormalized_roles = Object.assign({},
+                ...Object.values(state.denormalized)
+                    .filter((role_entity: AdminPermissionsEntityTypes) => {
+                        if (role_uids.find((uid) => uid === role_entity.uid)) return role_entity
+                    })
+                    .map((entity) => {
+                        return { [entity.uid]: entity }
+                    }))
+            return denormalized_roles
+        })
+    }
 
-    // public static denormalized_role(role_entity: AdminPermissionsRoleEntity) {
-    //     return createSelector([AdminPermissionsEntitiesState], (state: AdminPermissionsStateModel): any => {
-    //         const denormalizr = new AdminPermissionsNormalizrSchemas()
-    //         const denormalized_entity = denormalizr.denormalize(role_entity, denormalizr.roleSchema, state.entities)
-    //         return denormalized_entity
-    //     })
-    // }
 }

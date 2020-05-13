@@ -14,7 +14,7 @@ import { BackendServiceModel } from 'src/app/shared/models/acl.services.model';
  */
 export abstract class AdminPermissionsSandboxInterface extends BaseSandboxService {
     protected readonly logger_name: string = 'AdminPermissionslSandbox'
-    
+
     /** Services */
     protected rolesService: RolesService
     protected backendServices: BackendServicesInterface
@@ -23,13 +23,14 @@ export abstract class AdminPermissionsSandboxInterface extends BaseSandboxServic
     public datasource: MatTreeFlatDataSource<AdminPermissionsEntityTypes, AdminPermissionsFlatNode>
     public treecontrol: FlatTreeControl<AdminPermissionsFlatNode>
     public hasChild: (_: number, node: any) => boolean
-    
+
     /** Selectors/Observables */
     public selectedNode$: Observable<AdminPermissionsFlatNode> /** current treeview selected node */
     public treenodes$: Observable<AdminPermissionsEntityTypes[]> /** treeview nodes for datasource service */
-    public available_services$: Observable<any> /** list of available services for a selected role */    
+    public available_services$: Observable<any> /** list of available services for a selected role */
     public isAclLocked$: Observable<boolean> /** are data lock for modifications ? */
     public isDirty$: Observable<boolean> /** wether state has dirty entities to save */
+
 
 
     constructor() {
@@ -44,7 +45,7 @@ export abstract class AdminPermissionsSandboxInterface extends BaseSandboxServic
      *                  SELECTORS
      * 
      */
-
+    public abstract role_exists(role_name): boolean
 
     /**
      * 

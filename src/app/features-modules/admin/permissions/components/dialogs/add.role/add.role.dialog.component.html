@@ -2,11 +2,16 @@
 <mat-dialog-content>
   <form>
     <mat-form-field class="">
-      <input matInput placeholder="Role name" [(ngModel)]="dialogData.result" (keyup.enter)="onInputEnter()" name="role-name" cdkFocusInitial>
+      <input matInput placeholder="Role name" [(ngModel)]="dialogData.result" (keyup.enter)="onInputEnter()"
+        [formControl]="role_name" name="role-name" cdkFocusInitial>
+      <mat-error *ngIf="role_name.invalid">
+        <div *ngIf="role_name.errors.required">You must enter a role name</div>
+        <div *ngIf="role_name.errors.invalid_role_name">Role name already exists</div>
+      </mat-error>
     </mat-form-field>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button [mat-dialog-close]="dialogData" (click)="onClose(true)">Cancel</button>
-  <button #submitdialog mat-button [mat-dialog-close]="dialogData" (click)="onClose(false)">Confirm</button>
+  <button mat-button (click)="onClose(true)">Cancel</button>
+  <button #submitdialog mat-button (click)="onClose(false)">Confirm</button>
 </mat-dialog-actions>

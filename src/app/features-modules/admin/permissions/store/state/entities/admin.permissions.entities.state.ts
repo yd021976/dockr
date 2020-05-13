@@ -9,6 +9,7 @@ import { patch, append } from "@ngxs/store/operators";
 import { removeEntity } from './admin.permisions.state.operators';
 import { EntityUtilitiesService } from "../../entity.management/entity.utilities/admin.permissions.entity.utilities";
 import { AdminPermissionsEntityDataService } from "../../entity.management/entity.utilities/internals/admin.permissions.entity.data.service";
+import { AdminPermissionsUIActions } from "../../actions/admin.permissions.ui.actions";
 
 const default_state: AdminPermissionsStateModel = {
     entities: {
@@ -23,7 +24,8 @@ const default_state: AdminPermissionsStateModel = {
         removed: {},
         updated: {}
     },
-    previous_entities: null
+    previous_entities: null,
+    denormalized: {}
 }
 
 @State<AdminPermissionsStateModel>({
@@ -132,12 +134,12 @@ export class AdminPermissionsEntitiesState extends EntityUtilitiesService {
         this.init_entity_data_service(ctx)
 
         /** create role entity */
-        const role_entity: AdminPermissionsEntityTypes = this.createEntity({ name: action.entity_name, id: action.entity_name }, null, ENTITY_TYPES.ROLE)
+        this.role_add_entity(action.entity_name)
         const dirty_entities = _.merge(ctx.getState().dirty_entities, this.entity_data_service.dirty_entities)
 
         ctx.setState(
             patch({
-                entities: patch({ roles: patch({ [role_entity.uid]: role_entity }), root_results: append([role_entity.uid]) }),
+                entities: patch({ ...this.entity_data_service.entities }),
                 dirty_entities: patch({ ...dirty_entities })
             }))
     }
@@ -155,15 +157,44 @@ export class AdminPermissionsEntitiesState extends EntityUtilitiesService {
         ctx.setState(
             patch({
                 entities: patch({ ...this.entity_data_service.entities }),
-                dirty_entities : patch({...this.entity_data_service.dirty_entities})
+                dirty_entities: patch({ ...this.entity_data_service.dirty_entities })
             })
         )
+        /** deselect entity */
+        ctx.dispatch(new AdminPermissionsUIActions.SelectTreeviewNode(null))
     }
 
     @Action(AdminPermissionsRolesStateActions.Add_Service)
     admin_permissions_role_add_service(ctx: StateContext<AdminPermissionsStateModel>, action: AdminPermissionsRolesStateActions.Add_Service) {
         this.init_entity_data_service(ctx)
         this.role_add_service(action.role_entity, action.service_to_add)
+        const dirty_entities = _.merge(ctx.getState().dirty_entities, this.entity_data_service.dirty_entities)
+
+        /** Update state */
+        ctx.setState(
+            patch({
+                entities: patch({ ...this.entity_data_service.entities }),
+                dirty_entities:
+                    patch({ ...dirty_entities })
+            }))
+
+        /**DEBUG */
+        const state = ctx.getState()
+    }
+
+
+    /**
+     * 
+     * @param ctx 
+     * @param action 
+     */
+    @Action(AdminPermissionsRolesStateActions.Remove_Service)
+    admin_permissions_role_remove_service(ctx: StateContext<AdminPermissionsStateModel>, action: AdminPermissionsRolesStateActions.Remove_Service) {
+        this.init_entity_data_service(ctx)
+        this.entity_data_service.dirty_entities = _.cloneDeep(ctx.getState().dirty_entities)
+
+        const role_entity = this.entity_data_service.entities.roles[action.role_uid]
+        this.role_remove_service(role_entity, action.service_to_remove)
         const dirty_entities = _.merge(ctx.getState().dirty_entities, this.entity_data_service.dirty_entities)
 
         /** Update state */
@@ -201,7 +232,65 @@ export class AdminPermissionsEntitiesState extends EntityUtilitiesService {
      */
     @Action(AdminPermissionsStateActions.RoleSaved)
     admin_permissions_role_saved(ctx: StateContext<AdminPermissionsStateModel>, action: AdminPermissionsStateActions.RoleSaved) {
+        /** init entity data service */
+        this.init_entity_data_service(ctx, true)
+        this.entity_data_service.dirty_entities = _.cloneDeep(ctx.getState().dirty_entities) /** we need a fresh copy of current dirty state */
 
+        /**Clean dirty state & get cleaned entities to update "previous state" */
+        const saved_entities = this.role_saved(action.entity_uid)
+
+        /** update previous state */
+        let previous_entities = ctx.getState().previous_entities
+        const entities_to_update = _.merge({}, saved_entities.added, saved_entities.updated)
+        /** added and updated entities */
+        Object.values(entities_to_update).forEach((entity: AdminPermissionsEntityTypes) => {
+            /** update previous state entity */
+            previous_entities[entity.storage_key][entity.uid] = entity
+
+            /** if entity is a role, check if we should add it to role UIDs list */
+            if (entity.entity_type === ENTITY_TYPES.ROLE && !previous_entities.root_results.find((uid) => uid === entity.uid)) {
+                previous_entities.root_results.push(entity.uid)
+            }
+        })
+        /** removed entities */
+        Object.values(saved_entities.removed).forEach((entity: AdminPermissionsEntityTypes) => {
+            /** if entity is a role, check if we should remove it from role UIDs list */
+            if (entity.entity_type === ENTITY_TYPES.ROLE && previous_entities.root_results.find((uid) => uid === entity.uid)) {
+                previous_entities.root_results.splice(previous_entities.root_results.findIndex((uid) => uid === entity.uid), 1)
+            }
+            /** remove previous state entity */
+            delete previous_entities[entity.uid]
+        })
+        ctx.setState(patch({
+            previous_entities: patch({ ...previous_entities }),
+            dirty_entities: patch({ ...this.entity_data_service.dirty_entities })
+        }))
+
+    }
+
+
+    /**
+     * 
+     */
+    @Action(AdminPermissionsRolesStateActions.denormalize)
+    admin_permissions_role_denormalize(ctx: StateContext<AdminPermissionsStateModel>, action: AdminPermissionsRolesStateActions.denormalize) {
+        /** build a new entity state with removed ones to ensure normlizer find object instances */
+        const entities = _.cloneDeep(ctx.getState().entities)
+        const dirties = ctx.getState().dirty_entities
+
+        Object.values(dirties.removed).forEach((removed_entity: AdminPermissionsEntityTypes) => {
+            entities[removed_entity.storage_key][removed_entity.uid] = _.cloneDeep(removed_entity)
+        })
+
+        /** denormalize role entities */
+        const denormalized_array: AdminPermissionsEntityTypes[] = this.denormalize(action.role_entities, this.normalizr.mainSchema, entities)
+        const denormized_entities: AdminPermissionsEntitiesTypes = Object.assign({}, ...denormalized_array.map((entity) => {
+            return { [entity.uid]: entity }
+        }))
+
+        ctx.patchState({
+            denormalized: { ...denormized_entities }
+        })
     }
 
     /**

@@ -51,7 +51,7 @@ export interface AdminPermissionChildrenEntityMeta {
 
 /** Base entity data : Should be extended */
 export interface EntityBaseModel {
-    id: string
+    _id: string
     name: string
 
     /** optionnal properties */
@@ -67,7 +67,7 @@ export interface EntityBaseModel {
  */
 export abstract class AdminPermissionsStateEntityBaseModel implements EntityBaseModel {
     uid: string
-    id: string
+    _id: string /** NeDB unique id */
     entity_type: ENTITY_TYPES
     name: string
     storage_key: string /** name of entities collection key this entity is part of */
@@ -131,17 +131,18 @@ export class AdminPermissionsStateEntities {
     fields: AdminPermissionsFieldEntities
 }
 export interface AdminPermissionsStateDirtyEntities {
-    added : AdminPermissionsEntitiesTypes
+    added: AdminPermissionsEntitiesTypes
     removed: AdminPermissionsEntitiesTypes
-    updated : AdminPermissionsEntitiesTypes
+    updated: AdminPermissionsEntitiesTypes
 }
 /**
  * State model for State
  */
 export class AdminPermissionsStateModel {
     entities: AdminPermissionsStateEntities
-    previous_entities: AdminPermissionsStateEntities  // Backup entities before update : Usefull to revert entities when error occured
+    previous_entities: AdminPermissionsStateEntities  /** Backup entities before update : Usefull to revert entities when error occured */
     dirty_entities: AdminPermissionsStateDirtyEntities /** Dirty entities collection that have been updated and required backend updates */
+    denormalized: AdminPermissionsEntitiesTypes /** denormalized ROLE entities */
 }
 
 

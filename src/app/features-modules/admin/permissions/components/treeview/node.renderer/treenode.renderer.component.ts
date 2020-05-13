@@ -49,7 +49,15 @@ export class AdminPermissionsTreeviewNodeRenderer implements OnInit, OnChanges, 
    * @param status 
    */
   public checkChange(status: MatCheckboxChange) {
+
     this.on_node_checked.emit(status.checked)
+  }
+
+  /**
+   * Just avoid clicking checkbox to select the node 
+   */
+  public onCheckBoxClick(event: MouseEvent) {
+    event.stopPropagation()
   }
   /**
    * 

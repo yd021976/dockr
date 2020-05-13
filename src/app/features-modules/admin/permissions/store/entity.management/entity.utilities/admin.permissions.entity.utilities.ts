@@ -4,9 +4,12 @@ import {
     ALLOWED_STATES,
     AdminPermissionsRoleEntity,
     EntityChildren,
-    AdminPermissionsServiceEntity,
     AdminPermissionsFieldEntity,
     AdminPermissionsEntitiesTypes,
+    ENTITY_TYPES,
+    AdminPermissionsStateDirtyEntities,
+    AdminPermissionsServiceEntity,
+    AdminPermissionParentEntityMeta,
 } from '../../models/admin.permissions.model';
 
 import { Schema } from 'normalizr';
@@ -21,7 +24,7 @@ import { cloneDeep, merge } from 'lodash';
 /**
  * Main "façade" utility service to manage state entities
  * 
- * IMPORTANT This class WILL update service <AdminPermissionsEntityDataService> data 
+ * IMPORTANT This class WILL update service <AdminPermissionsEntityDataService> entities & dirty entities to patch state
  * 
  */
 @Injectable()
@@ -56,8 +59,10 @@ export class EntityUtilitiesService extends AdminPermissionsBaseEntityUtility {
     normalize(data, schema: Schema) {
         return this.normalizr.normalize(data, schema)
     }
-    denormalize(input: AdminPermissionsEntityTypes, schema: Schema, entities: AdminPermissionsStateEntities) {
-        return this.normalizr.denormalize(input, schema, entities)
+    denormalize(input: AdminPermissionsEntitiesTypes, schema: Schema, entities: AdminPermissionsStateEntities) {
+        const entities_array = Object.keys(input)
+        const denormalized = this.normalizr.denormalize(entities_array, schema, entities)
+        return denormalized
     }
 
     /**
@@ -76,64 +81,82 @@ export class EntityUtilitiesService extends AdminPermissionsBaseEntityUtility {
         const service_uids = Object.keys(service_entities.entities['services'])
         merge(this.entity_data_service.entities.fields, service_entities.entities['fields'])
         merge(this.entity_data_service.entities.services, service_entities.entities['services'])
-        merge(this.entity_data_service.entities.operations, service_entities.entities['operations']);
-        (this.entity_data_service.entities.roles[role_entity.uid].services as EntityChildren).push(...service_uids) /** add new service to role */
+        merge(this.entity_data_service.entities.operations, service_entities.entities['operations'])
+        let role_updated_entity: AdminPermissionsRoleEntity = this.entity_data_service.entities.roles[role_entity.uid];
+        (role_updated_entity.services as EntityChildren).push(...service_uids) /** add new service to role */
 
         /** update added dirty entities */
         merge(this.entity_data_service.dirty_entities.added, service_entities.entities['services'])
         merge(this.entity_data_service.dirty_entities.added, service_entities.entities['operations'])
         merge(this.entity_data_service.dirty_entities.added, service_entities.entities['fields'])
-        merge(this.entity_data_service.dirty_entities.updated, { [role_entity.uid]: role_entity })
+        merge(this.entity_data_service.dirty_entities.updated, { [role_updated_entity.uid]: role_updated_entity })
     }
 
+    /**
+     * Remove service entity from role entity
+     * 
+     * @param role_entity 
+     * @param service 
+     */
+    role_remove_service(role_entity: AdminPermissionsRoleEntity, service: AdminPermissionsServiceEntity) {
+        let entities_to_remove: AdminPermissionsEntityTypes[] = []
+        /** Get dirty entities to mark */
+        const getEntitiesToRemove = (entities, accumulator) => {
+            let children: AdminPermissionsEntityTypes[]
+
+            entities.forEach((entity) => {
+                accumulator.push(entity)
+                children = this.getChildren(entity)
+                if (children.length !== 0) getEntitiesToRemove(children, accumulator)
+            })
+        }
+        const service_entities_to_remove: AdminPermissionsEntityTypes[] = [service]
+
+        getEntitiesToRemove(service_entities_to_remove, entities_to_remove)
+
+        entities_to_remove.forEach((entity) => {
+            delete this.entity_data_service.entities[entity.storage_key][entity.uid] /** remove entity from current state */
+
+            /** if entity is currently dirty added or updated, remove it from dirty 'added' or 'updated' and don't add it to 'removed' ones */
+            if (this.entity_data_service.dirty_entities.added[entity.uid] || this.entity_data_service.dirty_entities.updated[entity.uid]) {
+                delete this.entity_data_service.dirty_entities.added[entity.uid]
+                delete this.entity_data_service.dirty_entities.updated[entity.uid]
+            } else {
+                /** add this entity as "removed" */
+                this.entity_data_service.dirty_entities.removed[entity.uid] = cloneDeep(entity)
+            }
+
+        })
+
+        /** remove service from role children and mark it as updated */
+        this.entity_data_service.entities.roles[role_entity.uid].services.splice(
+            this.entity_data_service.entities.roles[role_entity.uid].services.findIndex((uid) => service.uid === uid), 1
+        )
+        this.entity_data_service.dirty_entities.updated[role_entity.uid] = cloneDeep(role_entity)
+    }
     /**
      * Remove a role
      * 
      * @param role_uid 
      */
     role_remove_entity(role_uid: string) {
-        /** function to recursively run in field children to sets dirty entities to remove */
-        const add_field = (fields: AdminPermissionsFieldEntity[], accumulator: AdminPermissionsFieldEntity[]) => {
-            accumulator.push(...fields)
-            fields.forEach((field) => {
-                if (field.fields !== null && field.fields.length !== 0) {
-                    add_field(this.getChildren(field) as AdminPermissionsFieldEntity[], accumulator)
-                }
-            })
-        }
-
         /** 
          * Init entities to remove from state 
          */
-        /** Roles */
-        let removed_roles = { [role_uid]: this.entity_data_service.entities.roles[role_uid] }
+        /** add all role children to remove */
+        const add_children = (entity: AdminPermissionsEntityTypes, accumulator) => {
+            let entity_children: AdminPermissionsEntityTypes[]
+            accumulator[entity.uid] = entity
+            entity_children = this.getChildren(entity)
+            Object.values(entity_children).forEach((children_entity) => {
+                add_children(children_entity, accumulator)
+            })
+        }
+        let dirty_entities_to_remove: AdminPermissionsEntitiesTypes = {}
+        add_children(this.entity_data_service.entities.roles[role_uid], dirty_entities_to_remove)
 
-        /** Services */
-        let removed_services: AdminPermissionsEntitiesTypes = Object.assign({}, ...Object.values(this.entity_data_service.entities.roles[role_uid].services)
-            .map((service_uid) => {
-                return { [service_uid]: this.entity_data_service.entities.services[service_uid] }
-            }))
-
-        /** Operations */
-        let operations = [], children = []
-        Object.values(removed_services).forEach((service_entity) => {
-            children = this.getChildren(service_entity).map((operation_entity) => { return { [operation_entity.uid]: operation_entity } })
-            operations.push(...children)
-        })
-        let removed_operations: AdminPermissionsEntitiesTypes = Object.assign({}, ...operations)
-
-        /** Fields */
-        let fields = []
-        children = []
-        Object.values(removed_operations).forEach((operation_entity) => {
-            children = this.getChildren(operation_entity)
-            add_field(children, fields)
-        })
-        let removed_fields: AdminPermissionsEntitiesTypes = Object.assign({}, ...fields.map((field_entity) => { return { [field_entity.uid]: field_entity } }))
-
-        /** merge dirty entities to remove */
-        let dirty_entities_to_remove = merge({}, removed_roles, removed_services, removed_operations, removed_fields) // Dirty entities
-        let entities_to_remove = cloneDeep(dirty_entities_to_remove) // entities to remove from current stat
+        /** Clone dirty entities to remove */
+        let entities_to_remove = cloneDeep(dirty_entities_to_remove) // entities to remove from current state
 
         /** 
          * Remove the new entities to remove from current dirty entities to add (i.e. An entity that was marked to add that become marked to remove is no more dirty)
@@ -145,7 +168,7 @@ export class EntityUtilitiesService extends AdminPermissionsBaseEntityUtility {
                     delete dirty_entities_to_remove[uid] /** this entity uid do not need to be marked as removed */
                 }
                 if (this.entity_data_service.dirty_entities.updated[uid]) {
-                    delete this.entity_data_service.dirty_entities.updated[uid] /** as we remove this uid, no need to mark it as added , but keep it marked as to remove */
+                    delete this.entity_data_service.dirty_entities.updated[uid] /** as we remove this uid, no need to mark it as updated , but keep it marked as to remove */
                 }
             }))
         /** set dirty entities to remove */
@@ -160,5 +183,74 @@ export class EntityUtilitiesService extends AdminPermissionsBaseEntityUtility {
         })
         /** remove role from root_results */
         this.entity_data_service.entities.root_results.splice(this.entity_data_service.entities.root_results.findIndex((uid => uid === role_uid)), 1)
+    }
+
+    /**
+     * Create an empty role entity with a name
+     * 
+     * @param role_name 
+     */
+    role_add_entity(role_name: string) {
+        const role_entity = this.createEntity({ name: role_name, _id: role_name }, null, ENTITY_TYPES.ROLE)
+        this.entity_data_service.dirty_entities.added[role_entity.uid] = role_entity
+        this.entity_data_service.entities.roles[role_entity.uid] = role_entity as AdminPermissionsRoleEntity
+        this.entity_data_service.entities.root_results.push(role_entity.uid)
+    }
+
+    /**
+     * - Unmark role and its children as dirty
+     * - Return touched entities
+     */
+    role_saved(role_uid: string): AdminPermissionsStateDirtyEntities {
+        let entities_to_unmark: AdminPermissionsRoleEntity[] = []
+
+        /** build a temporary workspace : add removed dirty entities to entity data service */
+        const entities_backup = cloneDeep(this.entity_data_service.entities)
+        Object.values(this.entity_data_service.dirty_entities.removed).forEach((entity: AdminPermissionsEntityTypes) => {
+            this.entity_data_service.entities[entity.storage_key][entity.uid] = cloneDeep(entity)
+        })
+
+        /** Get dirty entities to unmark */
+        const getEntitiesToUnmark = (role_uid: string, dirty_entities: AdminPermissionsEntitiesTypes, accumulator) => {
+            let parent_entity: AdminPermissionsEntityTypes = null
+            Object.values(dirty_entities).forEach((entity: AdminPermissionsEntityTypes) => {
+                parent_entity = entity
+                while (parent_entity.entity_type !== ENTITY_TYPES.ROLE) {
+                    parent_entity = this.getParent(parent_entity)
+                }
+                /** Add entity to unmark if parent role UID */
+                if (parent_entity.uid === role_uid) {
+                    accumulator.push(entity)
+                }
+            })
+        }
+
+        /** Get entities to unmark */
+        const dirty_entities = merge({}, this.entity_data_service.dirty_entities.added, this.entity_data_service.dirty_entities.updated, this.entity_data_service.dirty_entities.removed)
+        getEntitiesToUnmark(role_uid, dirty_entities, entities_to_unmark)
+
+        /** Clone touched entities to return them */
+        const touched_entities: AdminPermissionsStateDirtyEntities = { added: {}, updated: {}, removed: {} }
+
+        /** Unmark saved entities  */
+        entities_to_unmark.forEach((entity) => {
+            if (this.entity_data_service.dirty_entities.added[entity.uid]) {
+                touched_entities.added[entity.uid] = cloneDeep(entity)
+                delete this.entity_data_service.dirty_entities.added[entity.uid]
+            }
+            if (this.entity_data_service.dirty_entities.updated[entity.uid]) {
+                touched_entities.updated[entity.uid] = cloneDeep(entity)
+                delete this.entity_data_service.dirty_entities.updated[entity.uid]
+            }
+            if (this.entity_data_service.dirty_entities.removed[entity.uid]) {
+                touched_entities.removed[entity.uid] = cloneDeep(entity)
+                delete this.entity_data_service.dirty_entities.removed[entity.uid]
+            }
+        })
+
+        /** swap temporary entity data workspace */
+        this.entity_data_service.entities = entities_backup
+        /** return touched entities */
+        return touched_entities
     }
 }

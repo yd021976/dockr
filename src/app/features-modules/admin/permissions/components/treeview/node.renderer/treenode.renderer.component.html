@@ -13,12 +13,12 @@
     </button>
     <div class="node-renderer" fxFlex>
       <div class="node-renderer-description" fxFlex="1 0" fxLayoutAlign="left center"
-        [class.dirty]="node.is_dirty | async">{{node.item.name || node.item.id}}
+        [class.dirty]="node.is_dirty | async">{{node.item.name || node.item._id}}
       </div>
       <div class="node-renderer-checkbox" fxFlex="1 0" fxLayoutAlign="left center"
         *ngIf="node.item.allowed!==null && node.item.allowed!==undefined">
         <mat-checkbox [disabled]="disabled" [checked]="node.item.allowed=='1'"
-          [indeterminate]="node.item.allowed==allowed_states.INDETERMINATE" (change)="checkChange($event)">
+          [indeterminate]="node.item.allowed==allowed_states.INDETERMINATE" (change)="checkChange($event)" (click)="onCheckBoxClick($event)">
         </mat-checkbox>
       </div>
     </div>

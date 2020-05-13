@@ -13,7 +13,9 @@ import {
     AdminPermissionsEntitiesTypes,
     AdminPermissionsStateModel,
     AdminPermissionsStateUIModel,
-    ENTITY_TYPES
+    ENTITY_TYPES,
+    AdminPermissionsStateDirtyEntities,
+    AdminPermissionsRoleEntities
 } from "../store/models/admin.permissions.model";
 import { AdminPermissionsStateSelectors } from '../store/selectors/admin.permissions.selectors';
 import { AdminPermissionsTreedataService } from "../services/admin.permissions.treedata.service";
@@ -56,7 +58,7 @@ export class AdminPermissionsSandboxService extends AdminPermissionsSandboxInter
             })
         const role_available_services = Object.values(available_services.services).filter((available_service: BackendServiceModel) => {
             /** Check service id is not already associated to a role */
-            if (!(role_current_services.find((service_entity) => { return available_service.id === service_entity.id }))) {
+            if (!(role_current_services.find((service_entity) => { return available_service.id === service_entity._id }))) {
                 /** add this available service */
                 return available_service
             }
@@ -140,14 +142,88 @@ export class AdminPermissionsSandboxService extends AdminPermissionsSandboxInter
      */
     public save_changes() {
         /** get dirty roles to save */
-        const roles_to_save: AdminPermissionsEntitiesTypes = this.store.selectSnapshot(AdminPermissionsStateSelectors.getDirtyRoles)
+        const roles_to_save: AdminPermissionsStateDirtyEntities = this.store.selectSnapshot(AdminPermissionsStateSelectors.getDirtyRoles)
+        let p = Promise.resolve()
 
         /** Iterate on roles to save */
-        Object.values(roles_to_save).forEach((role_entity: AdminPermissionsRoleEntity) => {
+        Object.keys(roles_to_save).forEach((update_type: string) => {
+            if (Object.keys(roles_to_save[update_type]).length !== 0) {
+                this.denormalize_roles(roles_to_save[update_type] as AdminPermissionsRoleEntities)
+                    .then((denormalized_roles) => {
+                        /** sequentially call updates */
+                        return p = p.then(() => this.do_save_changes(denormalized_roles as AdminPermissionsRoleEntities, update_type))
+                    })
+                    .catch((err) => {
+                        /** Errors are handled by <do_save_changes> method */
+                    })
+            }
 
         })
     }
+    protected denormalize_roles(roles: AdminPermissionsRoleEntities): Promise<AdminPermissionsEntitiesTypes> {
+        let denormalized_roles: AdminPermissionsEntitiesTypes = {}
+        /** denormalize role objects */
+        return this.store.dispatch(new AdminPermissionsRolesStateActions.denormalize(roles))
+            .toPromise()
+            .then(() => {
+                /** get denormalized roles */
+                const role_uids = Object.keys(roles)
+                denormalized_roles = this.store.selectSnapshot(AdminPermissionsStateSelectors.getNormalizedRole(role_uids))
+                return denormalized_roles
+            })
+    }
+    protected do_save_changes(roles_to_save: AdminPermissionsRoleEntities, update_type: string): Promise<any> {
+        let service_method, service_method_params
+        let promises: Promise<any>[] = []
+        let p = null
 
+        /** local func to update state when save is done and notify user */
+        const update_state_and_notify = (entity: AdminPermissionsEntityTypes):Promise<void> => {
+            return this.store.dispatch(new AdminPermissionsStateActions.RoleSaved(entity.uid)).toPromise().then(() => {
+                this.store.dispatch(new ApplicationActions.Application_Event_Notification(
+                    new ApplicationNotification(`Role ${entity.name} saved`, '', ApplicationNotificationType.INFO, 20000)
+                ))
+            })
+        }
+
+        Object.values(roles_to_save).forEach((entity) => {
+            switch (update_type) {
+                case 'updated':
+                case 'added':
+                    service_method = 'update'
+                    service_method_params = [entity, true]
+                    break
+                case "removed":
+                    service_method = 'delete'
+                    service_method_params = [entity]
+                    break
+                default:
+                    throw new Error('Unknow update type')
+            }
+            promises.push(
+                this.rolesService[service_method](...service_method_params)
+                    .then((result) => {
+                        this.loggerService.debug(this.logger_name, { message: 'Role saved :', otherParams: [result] })
+                        /** sequentially call state actions */
+                        if (p === null) {
+                            p = update_state_and_notify(entity)
+                        } else {
+                            p = p.then(() => {
+                                update_state_and_notify(entity)
+                            })
+                        }
+                    })
+                    /** backend service failed to save role entity */
+                    .catch(err => {
+                        this.store.dispatch(new ApplicationActions.Application_Event_Notification((
+                            new ApplicationNotification(`Role ${entity.name} not saved: ` + err.message, 'AdminPermissionsRoleSave', ApplicationNotificationType.ERROR))
+                        ))
+                    })
+            )
+        })
+
+        return Promise.all(promises)
+    }
     /**
      * Update allowed status of an entity, its parents and children 
      */
@@ -254,10 +330,20 @@ export class AdminPermissionsSandboxService extends AdminPermissionsSandboxInter
     /**
      * remove service entity
      */
-    remove_service_entity(node: AdminPermissionsFlatNode) { }
+    remove_service_entity(node: AdminPermissionsFlatNode) {
+        this.store.dispatch(new AdminPermissionsRolesStateActions.Remove_Service(node.item.parent_entity_meta.uid, node.item as AdminPermissionsServiceEntity))
+    }
 
     /** unused but must be implemented */
     protected on_login() { }
     protected on_logout() { }
+    public role_exists(role_name: string): boolean {
+        const role_entities = this.store.selectSnapshot(AdminPermissionsStateSelectors.getChildren())
+        const exists: boolean = Object.values(role_entities).some((entity) => {
+            if (entity.name === role_name) return true
+        })
 
+        return exists === true ? exists : false
+
+    }
 }

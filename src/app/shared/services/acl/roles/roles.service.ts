@@ -7,6 +7,7 @@ import * as DATA from './roles.data';
 import { AclRoleModel } from 'src/app/shared/models/acl.role.model';
 import { BackendServiceToken } from '../../backend.api.endpoint/backend.service.token';
 import { BackendBaseServiceInterface } from '../../backend.api.endpoint/interfaces/backend.base.service';
+import { AdminPermissionsRoleEntity, AdminPermissionsEntityTypes } from 'src/app/features-modules/admin/permissions/store/models/admin.permissions.model';
 
 @Injectable( { providedIn: 'root' } )
 export class RolesService {
@@ -23,7 +24,7 @@ export class RolesService {
      * 
      * @param params 
      */
-    public async find( params?: any ): Promise<AclRoleModel[]> {
+    public async find( params?: any ): Promise<AdminPermissionsEntityTypes[]> {
         // return new Promise<RoleModel[]>( ( resolve, reject ) => {
         //     resolve( DATA.default )
         // } );
@@ -44,7 +45,7 @@ export class RolesService {
      * @param role The role object to store
      * @param force_create Permit to create a new role if provided one doesn't exist
      */
-    public async update( role: AclRoleModel, force_create: boolean = false ): Promise<any> {
+    public async update( role: AdminPermissionsRoleEntity, force_create: boolean = false ): Promise<any> {
         // First check the role object exists
         return this.service.get( role._id )
             .then( () => {
@@ -64,7 +65,7 @@ export class RolesService {
             } )
     }
 
-    public async delete( role_id: string ): Promise<any> {
-        return this.service.remove( role_id )
+    public async delete( role: AdminPermissionsRoleEntity ): Promise<any> {
+        return this.service.remove( role._id )
     }
 }

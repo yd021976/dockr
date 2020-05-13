@@ -13,7 +13,8 @@ export class ApplicationNotification {
      * Constructor
      * @param message 
      * @param name 
-     * @param type 
+     * @param type notification type @see ApplicationNotificationType, default is "INFO"
+     * @param ttl Duration in ms, default is 10000ms (10s)
      */
     constructor( message: string, name: string, type: ApplicationNotificationType = ApplicationNotificationType.INFO, ttl: number = 10000 ) {
         this.message = message

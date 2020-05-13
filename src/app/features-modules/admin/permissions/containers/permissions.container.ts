@@ -6,6 +6,7 @@ import { IActionClick } from '../components/treeview/actions/admin.permissions.t
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AdminPermissionsAddRoleDialogComponent, dialogResult } from '../components/dialogs/add.role/add.role.dialog.component';
 import { AdminPermissionsAddServiceDialogComponent, dialog_add_service_result } from '../components/dialogs/add.service/add.service.dialog.component';
+import { ValidatorFn, AbstractControl } from '@angular/forms';
 
 @Component({
     selector: 'app-admin-permissions-container',
@@ -103,7 +104,7 @@ export class AdminPermissionsContainer implements OnInit, OnDestroy {
      * Save state changes
      */
     public save_changes() {
-
+        this.sandbox.save_changes()
     }
     private setColmodel(): TreeViewColumnModel[] {
         return [
@@ -131,7 +132,11 @@ export class AdminPermissionsContainer implements OnInit, OnDestroy {
      */
     private add_role_dialog() {
         if (!this.dialog_add_role) {
-            this.dialog_add_role = this.dialog_service.open(AdminPermissionsAddRoleDialogComponent, { disableClose: true })
+            this.dialog_add_role = this.dialog_service.open(AdminPermissionsAddRoleDialogComponent, {
+                disableClose: true, data: {
+                    validator: this.isRoleNameValid
+                }
+            })
             this.dialog_add_role.afterClosed().subscribe((data: dialogResult) => {
                 if (!data.cancelled && data.result != '') {
                     this.sandbox.add_role_entity(data.result)
@@ -172,6 +177,15 @@ export class AdminPermissionsContainer implements OnInit, OnDestroy {
      * 
      */
     private remove_service_entity(node: AdminPermissionsFlatNode) {
+        this.sandbox.remove_service_entity(node)
+    }
 
+    public isRoleNameValid = (): ValidatorFn => {
+        return (control: AbstractControl): { [key: string]: any } | null => {
+            if (this.sandbox.role_exists(control.value)) {
+                return { 'invalid_role_name': true }
+            }
+            return null
+        }
     }
 }

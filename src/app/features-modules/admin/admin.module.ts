@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AdminRoutingModule } from './admin-routing.module';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -44,10 +44,11 @@ import { AdminPermissionsEntityDataService } from './permissions/store/entity.ma
 import { backendservicesServiceToken } from 'src/app/shared/services/acl/services/backen-services.service.token';
 import { BackendServicesService } from 'src/app/shared/services/acl/services/backend-services.service';
 import { AdminPermissionsAddServiceDialogComponent } from './permissions/components/dialogs/add.service/add.service.dialog.component';
+import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 
 const components = [
   /** Permissions : Role based data permissions */
-  AdminPermissionsContainer, AdminPermissionsTreeviewComponent, AdminPermissionsTreeviewNodeRenderer, AdminPermissionsTreeviewActionsComponent, 
+  AdminPermissionsContainer, AdminPermissionsTreeviewComponent, AdminPermissionsTreeviewNodeRenderer, AdminPermissionsTreeviewActionsComponent,
   AdminPermissionsAddRoleDialogComponent, AdminPermissionsAddServiceDialogComponent,
   /** User admin */
   UsersContainer, UsersComponent, RolesListComponent, UsersListComponent, UserDetailsComponent, UsersActionsComponent,
@@ -62,6 +63,7 @@ const components = [
     BrowserAnimationsModule,
     AdminRoutingModule,
     MatBadgeModule,
+    ReactiveFormsModule,
     FormsModule,
     MatTreeModule,
     MatCheckboxModule,
@@ -76,6 +78,10 @@ const components = [
   declarations: components,
   entryComponents: [AuthUsersAddUserDialog, AdminPermissionsAddRoleDialogComponent, AdminPermissionsAddServiceDialogComponent],
   providers: [
+    {
+      provide: ErrorStateMatcher,
+      useClass: ShowOnDirtyErrorStateMatcher
+    },
     /** Module services depedencies */
     {
       provide: siteZonesServiceToken,
