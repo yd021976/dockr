@@ -48,7 +48,7 @@
     "flatnest": "^1.0.0",
     "font-awesome": "^4.7.0",
     "immer": "^6.0.3",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "material-design-icons": "^3.0.1",
     "ng2-logger": "^3.0.11",
     "ngx-permissions": "^7.0.3",
